@@ -39,7 +39,7 @@ export default async function AdminLayout({
       <div
         data-sep-interaction-ignore="true"
         data-admin-header
-        className="border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-5 py-4 sm:px-7 lg:px-9 admin_layout_div_container_2"
+        className="border-b border-[rgb(var(--sep-colour-60482e))]/45 px-5 py-4 sm:px-7 lg:px-9 admin_layout_div_container_2"
       >
         <div className="flex flex-wrap items-center justify-between gap-4 admin_layout_div_container_3">
           <div className="admin_layout_div_administration">

@@ -1484,9 +1484,7 @@ body[data-portal-skin="vellum"] {
 }
 
 [data-portal-skin="vellum"] [data-portal-centre-host],
-[data-portal-skin="vellum"] main[data-portal-column] {
-  background-color: rgb(232 223 205) !important;
-}
+
 
 [data-portal-skin="vellum"] :where(input, select, textarea) {
   background-color: rgb(239 232 217) !important;

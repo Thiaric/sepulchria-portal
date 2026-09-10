@@ -20760,27 +20760,78 @@ html[data-portal-skin] [data-homepage-nav-button="true"] [data-homepage-nav-role
   overflow: visible;
 }
 
+
+
 /* =========================================
    LEFT + RIGHT SIDEBAR BACKGROUND
    Same mechanism as Location Atmosphere
    ========================================= */
 
-.components_portal_portal_sidebar_aside_sidebar,
-.components_portal_portal_responsive_right_sidebar_aside_context_sidebar,
-.components_portal_portal_header_div_container,
-.components_portal_portal_collapsible_columns_div_container_3,
-.components_portal_portal_responsive_right_sidebar_section_context_sidebar,
-.areas_slug_page_section_section_2,
-.layout_main_main_2,
-.missions_page_article_article_2,
-.components_codex_codex_entry_card_article_article,
-.messages_id_page_main_main,
-.store_page_section_section,
-.missions_page_div_container_3 {
+.components_portal_portal_sidebar_aside_sidebar
+{
   background-image:
     linear-gradient(
-      rgb(var(--sep-colour-100d0b) / 70%),
-      rgb(var(--sep-colour-100d0b) / 70%)
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/left_sidebar_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.components_notifications_notification_bell_div_container_2 {
+
+  background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/notifications_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+
+}
+
+
+.components_portal_portal_responsive_right_sidebar_aside_context_sidebar {
+  background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/right_sidebar_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.components_portal_portal_header_div_container {
+  background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/header_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.components_portal_portal_collapsible_columns_div_container_3,
+.areas_slug_page_section_section_2,
+.missions_page_article_article_2,
+.missions_page_div_container_3,
+.components_portal_portal_appearance_modal_section_dialog {
+  background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
     ),
     url("/backgrounds/portal_background.png") !important;
 
@@ -20790,29 +20841,211 @@ html[data-portal-skin] [data-homepage-nav-button="true"] [data-homepage-nav-role
 }
 
 
-.components_portal_portal_responsive_right_sidebar_section_context_sidebar, 
-.components_portal_admin_context_panel_div_admin_navigation_2,
-.components_world_world_indicator_button_open_game_calendar,
+.components_rules_public_rules_main_main {
+
+  background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/rules_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.components_codex_public_codex_main_main_2 {
+ background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/codex_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+
+}
+
+.components_portal_active_city_counter_div_people_sepulchria_2,
+.layout_main_main_2:has(.characters_page_div_container, .characters_slug_page_div_container, .character_page_div_container) {
+
+  background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/people_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.components_world_world_indicator_section_dialog {
+
+  background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/calendar_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.layout_main_main_2:has(.messages_components_messages_inbox_client_div_container),.messages_id_page_main_main {
+  background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/private_messages_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.layout_main_main_2:has(.market_page_div_container,.components_market_market_catalogue_div_container_2) {
+  background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/market_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.layout_main_main_2:has(.ancestries_page_div_container) {
+background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/ancestries_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.layout_main_main_2:has(.associations_page_div_container) {
+background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/associations_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.layout_main_main_2:has(.orders_page_div_container) {
+background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/orders_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.layout_main_main_2:has(.warping_page_main_main) {
+background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/warping_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.layout_main_main_2:has(.feats_page_div_container) {
+background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/feats_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.layout_main_main_2:has(.crafting_page_div_container_3) {
+background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/crafting_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.layout_main_main_2:has(.store_page_section_section), .store_page_section_section {
+background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/sepulchriastore_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.layout_main_main_2:has(.forum_page_main_main, .forum_sectionslug_page_main_main, .forum_sectionslug_topicslug_page_main_main) {
+background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/forum_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.game_components_oddjobspanel_div_container_4 {
+background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/oddjobs_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+
+}
+
+.components_portal_game_context_panel_div_container,
+.components_portal_portal_responsive_right_sidebar_section_context_sidebar,
 .admin_layout_div_container_2,
-.components_portal_active_city_counter_button_toggle_open,
-.components_audio_portal_sound_toggle_button_toggle_muted,
-.components_portal_portal_skin_switcher_button_portal_appearance,
-.components_portal_staff_appear_offline_toggle_button_action,
-.components_portal_header_character_identity_button_action,
-.components_logout_button_button_log_out,
-.components_notifications_notification_bell_button_action,
-.components_portal_portal_sidebar_div_container_18
- {
-opacity: 0.6 !important;
-
+.admin_layout_div_container_5 {
+  background: rgb(var(--sep-colour-100c09) / 0%) !important;
 }
 
-
-.components_portal_interactive_world_map_div_container {
-  background: rgb(var(--sep-colour-17110d) / 30%) !important;
-}
-
-button[aria-label$="unread messages"], 
-a[aria-label$="Open administration panel"] {
-  opacity: 0.6 !important;
-}

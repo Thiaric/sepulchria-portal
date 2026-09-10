@@ -535,7 +535,7 @@ const nextTop =
 
 
 
-<section className="relative min-h-[108px] overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] components_portal_portal_responsive_right_sidebar_section_section">{character
+<section className="relative min-h-[108px] overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 components_portal_portal_responsive_right_sidebar_section_section">{character
                   ?.currentRoom
                   ?.image_url ? (
                   <LocationAtmosphericImage
@@ -590,7 +590,7 @@ const nextTop =
             </div>
             ) : null}
 
-            <section className="min-h-0 flex-1 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4 xl:p-[var(--portal-section-pad,1rem)] components_portal_portal_responsive_right_sidebar_section_context_sidebar">
+            <section className="min-h-0 flex-1 border border-[rgb(var(--sep-colour-60482e))]/45 p-4 xl:p-[var(--portal-section-pad,1rem)] components_portal_portal_responsive_right_sidebar_section_context_sidebar">
               {isAdminOrderSubmissionsPath ? (
                 <OrderSubmissionsContext
                   key={`order-submissions-${adminRevision}`}
