@@ -771,7 +771,7 @@ function StoreProductCard({
         <img
           src={product.image_url}
           alt=""
-          className="h-full w-full object-contain p-3 opacity-80 transition group-hover:opacity-100 store_page_img_image"
+          className="h-full object-contain p-3 opacity-80 transition group-hover:opacity-100 store_page_img_image"
         />
       ) : null}
       <StoreMusicPreview
@@ -782,10 +782,19 @@ function StoreProductCard({
   ) : product.image_url ? (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={product.image_url}
-      alt=""
-      className="h-full w-full object-contain p-3 opacity-80 transition group-hover:opacity-100 store_page_img_image"
-    />
+  src={product.image_url}
+  alt=""
+  className={[
+    "h-full object-contain p-3 opacity-80 transition group-hover:opacity-100 store_page_img_image",
+    product.category === "music" ||
+    product.category === "friend_list" ||
+    product.category === "private_location"
+      ? "w-auto object-left"
+      : "w-full",
+  ]
+    .filter(Boolean)
+    .join(" ")}
+/>
   ) : (
     <div className="flex h-full items-center justify-center store_page_div_container_15">
       <span className="font-serif text-4xl text-[rgb(var(--sep-colour-4e402f))] store_page_span_text_2">
@@ -817,8 +826,8 @@ function StoreProductCard({
   ) : null}
 </div>
 
-      <div className="flex flex-1 flex-col p-4 store_page_div_container_18">
-        <h3 className="font-serif text-xl text-[rgb(var(--sep-colour-dec79d))] store_page_h3_heading">
+      <div className="flex flex-1 flex-col p-4 mx-2 store_page_div_container_18">
+        <h3 className="font-serif text-xl text-[rgb(var(--sep-global-c1))] store_page_h3_heading">
           {product.name}
         </h3>
 

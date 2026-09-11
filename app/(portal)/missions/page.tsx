@@ -376,8 +376,8 @@ export default async function MissionsPage() {
                   milestone.background_image_url
                     ? {
                         backgroundImage: `linear-gradient(
-                          rgb(var(--sep-colour-100d0b) / 82%),
-                          rgb(var(--sep-colour-100d0b) / 88%)
+                          rgb(var(--sep-colour-100d0b) / 62%),
+                          rgb(var(--sep-colour-100d0b) / 68%)
                         ),
                         url("${milestone.background_image_url}")`,
                         backgroundSize: "cover",
@@ -487,8 +487,8 @@ export default async function MissionsPage() {
                         mission.background_image_url
                           ? {
                               backgroundImage: `linear-gradient(
-                                rgb(var(--sep-colour-100d0b) / 82%),
-                                rgb(var(--sep-colour-100d0b) / 82%)
+                                rgb(var(--sep-colour-100d0b) / 62%),
+                                rgb(var(--sep-colour-100d0b) / 68%)
                               ),
                               url("${mission.background_image_url}")`,
                               backgroundSize: "100% 100%",

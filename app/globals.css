@@ -21162,8 +21162,19 @@ background-image:
 .components_portal_game_context_panel_div_container,
 .components_portal_portal_responsive_right_sidebar_section_context_sidebar,
 .admin_layout_div_container_2,
-.admin_layout_div_container_5 {
+.admin_layout_div_container_5,
+.store_page_div_container_16,
+.store_page_div_container_13,
+.store_page_div_container_14,
+.store_page_div_container_15 {
   background: rgb(var(--sep-colour-100c09) / 0%) !important;
+}
+
+.store_page_div_container_16,
+.store_page_div_container_13,
+.store_page_div_container_14,
+.store_page_div_container_15 {
+  border: none !important;
 }
 
 .components_cosmetics_player_cosmetics_manager_section_section_3,

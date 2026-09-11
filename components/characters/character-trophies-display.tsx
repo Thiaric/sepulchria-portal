@@ -291,8 +291,8 @@ export async function CharacterTrophiesDisplay({
     groupByCategory(visibleTrophies);
 
   return (
-    <section className="bg-[rgb(var(--sep-colour-120d0a))] components_characters_character_trophies_display_section_section">
-      <header className="bg-[rgb(var(--sep-colour-17110d))] px-4 py-4 sm:px-5 components_characters_character_trophies_display_header_header">
+    <section className="flex h-full max-h-full min-h-0 flex-col overflow-hidden bg-[rgb(var(--sep-colour-120d0a))] components_characters_character_trophies_display_section_section">
+      <header className="shrink-0 bg-[rgb(var(--sep-colour-17110d))] px-4 py-4 sm:px-5 components_characters_character_trophies_display_header_header">
         <div className="flex flex-wrap items-end justify-between gap-3 components_characters_character_trophies_display_div_container">
           <div className="components_characters_character_trophies_display_div_trophies">
             <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-846b4a))] components_characters_character_trophies_display_p_trophies">
@@ -335,7 +335,7 @@ export async function CharacterTrophiesDisplay({
           </p>
         </div>
       ) : (
-        <div className="space-y-5 p-3 sm:p-4 components_characters_character_trophies_display_div_container_4">
+        <div className="max-h-[calc(100dvh-260px)] space-y-5 overflow-y-auto overscroll-contain p-3 sm:p-4 components_characters_character_trophies_display_div_container_4">
           {groups.map((group) => {
             const categoryEarned =
               group.trophies.filter(
