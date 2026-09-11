@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
 
+import backgroundStyles from "./store-product-backgrounds.module.css";
+
 import { StoreLiveFilterBar } from "@/components/store/store-live-filter-bar";
 import { StoreStripePurchaseButton } from "@/components/store/store-stripe-purchase-button";
 import { StoreRemnantPurchaseButton } from "@/components/store/store-remnant-purchase-button";
@@ -70,6 +72,18 @@ const CATEGORY_LABELS: Record<StoreProduct["category"], string> = {
   friend_list: "Friend List",
   private_location: "Private Locations",
   bundle: "Bundles",
+};
+
+const CATEGORY_BACKGROUND_CLASSES: Record<
+  StoreProduct["category"],
+  string
+> = {
+  skin: backgroundStyles.skin,
+  cosmetic: backgroundStyles.cosmetic,
+  music: backgroundStyles.music,
+  friend_list: backgroundStyles.friendList,
+  private_location: backgroundStyles.privateLocation,
+  bundle: backgroundStyles.bundle,
 };
 
 function moneyLabel(
@@ -437,6 +451,9 @@ export default async function StorePage() {
                     cosmeticNames={cosmeticNames}
                     musicNames={musicNames}
                     musicPreviewUrls={musicPreviewUrls}
+                    allProducts={products}
+                    allPrices={prices}
+                    allGrants={grants}
                     featured
                   />
                 ))}
@@ -459,7 +476,7 @@ export default async function StorePage() {
             </div>
 
             {products.length ? (
-              <div className="mt-3 grid gap-3 sm:grid-cols-2 2xl:grid-cols-3 store_page_div_container_11">
+              <div className="mt-3 grid gap-3 sm:grid-cols-3 2xl:grid-cols-3 store_page_div_container_11">
                 {products.map((product) => (
                   <StoreProductCard
                     key={product.id}
@@ -480,6 +497,9 @@ export default async function StorePage() {
                     cosmeticNames={cosmeticNames}
                     musicNames={musicNames}
                     musicPreviewUrls={musicPreviewUrls}
+                    allProducts={products}
+                    allPrices={prices}
+                    allGrants={grants}
                   />
                 ))}
               </div>
@@ -510,6 +530,9 @@ function StoreProductCard({
   cosmeticNames,
   musicNames,
   musicPreviewUrls,
+  allProducts,
+  allPrices,
+  allGrants,
   featured = false,
 }: {
   product: StoreProduct;
@@ -523,6 +546,9 @@ function StoreProductCard({
   cosmeticNames: Map<string, string>;
   musicNames: Map<string, string>;
   musicPreviewUrls: Map<string, string>;
+  allProducts: StoreProduct[];
+  allPrices: StorePrice[];
+  allGrants: StoreGrant[];
   featured?: boolean;
 }) {
   const skinGrant = grants.find(
@@ -552,25 +578,79 @@ function StoreProductCard({
       ? musicNames.get(musicGrant.music_track_id) ?? product.name
       : product.name;
 
-  const grantLabels = grants.map((grant) => {
+  const sameGrant = (a: StoreGrant, b: StoreGrant) => {
+    if (a.grant_type !== b.grant_type) {
+      return false;
+    }
+
+    if (a.grant_type === "portal_skin") {
+      return (
+        Boolean(a.portal_skin_id) &&
+        a.portal_skin_id === b.portal_skin_id
+      );
+    }
+
+    if (a.grant_type === "cosmetic") {
+      return (
+        Boolean(a.cosmetic_item_id) &&
+        a.cosmetic_item_id === b.cosmetic_item_id
+      );
+    }
+
+    if (a.grant_type === "music") {
+      return (
+        Boolean(a.music_track_id) &&
+        a.music_track_id === b.music_track_id
+      );
+    }
+
+    if (a.grant_type === "feature") {
+      return (
+        Boolean(a.feature_key) &&
+        a.feature_key === b.feature_key
+      );
+    }
+
+    return false;
+  };
+
+  const standaloneProductForGrant = (grant: StoreGrant) => {
+    const matchingProductGrant = allGrants.find(
+      (candidateGrant) =>
+        candidateGrant.product_id !== product.id &&
+        sameGrant(candidateGrant, grant) &&
+        allProducts.some(
+          (candidateProduct) =>
+            candidateProduct.id === candidateGrant.product_id &&
+            candidateProduct.product_type === "single",
+        ),
+    );
+
+    if (!matchingProductGrant) {
+      return null;
+    }
+
+    return (
+      allProducts.find(
+        (candidateProduct) =>
+          candidateProduct.id === matchingProductGrant.product_id,
+      ) ?? null
+    );
+  };
+
+  const labelForGrant = (grant: StoreGrant) => {
     if (
       grant.grant_type === "portal_skin" &&
       grant.portal_skin_id
     ) {
-      return (
-        skinNames.get(grant.portal_skin_id) ??
-        "Portal Skin"
-      );
+      return skinNames.get(grant.portal_skin_id) ?? "Portal Skin";
     }
 
     if (
       grant.grant_type === "cosmetic" &&
       grant.cosmetic_item_id
     ) {
-      return (
-        cosmeticNames.get(grant.cosmetic_item_id) ??
-        "Cosmetic"
-      );
+      return cosmeticNames.get(grant.cosmetic_item_id) ?? "Cosmetic";
     }
 
     if (
@@ -580,16 +660,21 @@ function StoreProductCard({
       return musicNames.get(grant.music_track_id) ?? "Music";
     }
 
-    if (
-      grant.grant_type === "feature"
-    ) {
+    if (grant.grant_type === "feature") {
       return grant.feature_key === "private_chat"
         ? "Private Location"
         : "Friend List";
     }
 
     return "Premium unlock";
-  });
+  };
+
+  const grantItems = grants.map((grant) => ({
+    grant,
+    label: labelForGrant(grant),
+    storeProduct: standaloneProductForGrant(grant),
+  }));
+
 
   const isPartiallyOwnedBundle =
     product.product_type === "bundle" &&
@@ -665,18 +750,30 @@ function StoreProductCard({
       data-store-filter-card
       data-store-name={product.name}
       data-store-category={product.category}
-      className={[(([
-        "group flex h-full min-h-[290px] min-w-0 flex-col overflow-hidden border bg-[rgb(var(--sep-colour-100c09))]",
+      className={[
+        "group relative flex h-full min-h-[290px] min-w-0 flex-col overflow-visible border",
+        CATEGORY_BACKGROUND_CLASSES[product.category],
         featured
           ? "border-[rgb(var(--sep-colour-987344))]/70"
           : "border-[rgb(var(--sep-colour-60482e))]/40",
-      ].join(" "))), "store_page_article_article"].filter(Boolean).join(" ")}
+        "store_page_article_article",
+      ]
+        .filter(Boolean)
+        .join(" ")}
     >
-      <div className="relative h-36 shrink-0 overflow-hidden border-b border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-0d0b0a))] store_page_div_container_13">
+      <div className="relative h-36 shrink-0 overflow-hidden border-b border-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-0d0b0a))]/35 store_page_div_container_13">
   {skin ? (
     <StoreSkinMiniPreview skin={skin} />
   ) : product.category === "music" && musicPreviewUrl ? (
     <div className="flex h-full w-full items-center justify-center p-3 store_page_div_container_14">
+      {product.image_url ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={product.image_url}
+          alt=""
+          className="h-full w-full object-contain p-3 opacity-80 transition group-hover:opacity-100 store_page_img_image"
+        />
+      ) : null}
       <StoreMusicPreview
         src={musicPreviewUrl}
         title={musicPreviewName}
@@ -732,15 +829,173 @@ function StoreProductCard({
 
         
 
-        {grantLabels.length ? (
+        {grantItems.length ? (
           <div className="mt-3 border-t border-[rgb(var(--sep-colour-60482e))]/25 pt-3 store_page_div_container_19">
             <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756958))] store_page_p_text_9">
               Includes
             </p>
 
-            <p className="mt-1 text-[9px] leading-4 text-[rgb(var(--sep-colour-a99b89))] store_page_p_text_10">
-              {grantLabels.join(" · ")}
-            </p>
+            <div className="mt-1 flex flex-wrap gap-x-1 gap-y-1 text-[9px] leading-4 text-[rgb(var(--sep-colour-a99b89))] store_page_p_text_10">
+              {grantItems.map((item, index) => {
+                const previewProduct = item.storeProduct;
+                const previewPrices = previewProduct
+                  ? allPrices.filter(
+                      (price) =>
+                        price.product_id === previewProduct.id,
+                    )
+                  : [];
+
+                const previewMoneyPrice = previewPrices.find(
+                  (price) =>
+                    price.money_amount_minor !== null &&
+                    Boolean(price.currency),
+                );
+
+                const previewRemnantPrice = previewPrices.find(
+                  (price) => price.remnants_amount !== null,
+                );
+
+                const previewMoneyLabel = previewMoneyPrice
+                  ? moneyLabel(
+                      previewMoneyPrice.money_amount_minor,
+                      previewMoneyPrice.currency,
+                    )
+                  : null;
+
+                return (
+                  <span
+                    key={item.grant.id}
+                    className="group/bundleitem relative inline-flex items-center"
+                  >
+                    <span
+                      className={[
+                        "transition",
+                        previewProduct
+                          ? "cursor-help border-b border-dotted border-[rgb(var(--sep-colour-a99b89))]/55 hover:text-[rgb(var(--sep-colour-efd9aa))]"
+                          : "",
+                      ]
+                        .filter(Boolean)
+                        .join(" ")}
+                    >
+                      {item.label}
+                    </span>
+
+                    {index < grantItems.length - 1 ? (
+                      <span className="mx-1 text-[rgb(var(--sep-colour-756958))]">
+                        ·
+                      </span>
+                    ) : null}
+
+                    {previewProduct ? (
+                      <div className="absolute bottom-full left-0 z-[100] hidden w-[260px] pb-2 group-hover/bundleitem:block">
+  <div className="overflow-hidden border border-[rgb(var(--sep-colour-987344))]/70 bg-[rgb(var(--sep-colour-100c09))] shadow-[0_12px_30px_rgba(var(--sep-rgb-0-0-0),0.55)]">  <div
+                          className={[
+                            "relative h-28 overflow-hidden border-b border-[rgb(var(--sep-colour-60482e))]/35",
+                            CATEGORY_BACKGROUND_CLASSES[
+                              previewProduct.category
+                            ],
+                          ]
+                            .filter(Boolean)
+                            .join(" ")}
+                        >
+                          {item.grant.grant_type === "portal_skin" &&
+                          item.grant.portal_skin_id &&
+                          skinDetails.get(item.grant.portal_skin_id) ? (
+                            <StoreSkinMiniPreview
+                              skin={
+                                skinDetails.get(
+                                  item.grant.portal_skin_id,
+                                ) as Skin
+                              }
+                            />
+                          ) : item.grant.grant_type === "music" &&
+                            item.grant.music_track_id &&
+                            musicPreviewUrls.get(
+                              item.grant.music_track_id,
+                            ) ? (
+                            <div className="flex h-full w-full items-center justify-center p-2">
+                              {previewProduct.image_url ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                  src={previewProduct.image_url}
+                                  alt=""
+                                  className="absolute inset-0 h-full w-full object-contain p-3 opacity-55"
+                                />
+                              ) : null}
+
+                              <div className="relative z-10 w-full">
+                                <StoreMusicPreview
+                                  src={
+                                    musicPreviewUrls.get(
+                                      item.grant.music_track_id,
+                                    ) as string
+                                  }
+                                  title={
+                                    musicNames.get(
+                                      item.grant.music_track_id,
+                                    ) ?? previewProduct.name
+                                  }
+                                />
+                              </div>
+                            </div>
+                          ) : previewProduct.image_url ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={previewProduct.image_url}
+                              alt=""
+                              className="h-full w-full object-contain p-3"
+                            />
+                          ) : (
+                            <div className="flex h-full items-center justify-center">
+                              <span className="font-serif text-3xl text-[rgb(var(--sep-colour-4e402f))]">
+                                ◇
+                              </span>
+                            </div>
+                          )}
+
+                          <span className="absolute left-2 top-2 z-20 border border-[rgb(var(--sep-colour-80613b))]/60 bg-[rgb(var(--sep-colour-100c09))]/90 px-2 py-1 text-[6px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c6a979))]">
+                            {CATEGORY_LABELS[previewProduct.category]}
+                          </span>
+                        </div>
+
+                        <div className="p-3">
+                          <p className="font-serif text-sm text-[rgb(var(--sep-colour-dec79d))]">
+                            {previewProduct.name}
+                          </p>
+
+                          {previewProduct.description ? (
+                            <p className="mt-1 line-clamp-2 text-[8px] leading-4 text-[rgb(var(--sep-colour-8f8271))]">
+                              {previewProduct.description}
+                            </p>
+                          ) : null}
+
+                          <div className="mt-2 flex flex-wrap items-center gap-2 border-t border-[rgb(var(--sep-colour-60482e))]/25 pt-2 text-[8px] text-[rgb(var(--sep-colour-c6a979))]">
+                            {previewMoneyLabel ? (
+                              <span>{previewMoneyLabel}</span>
+                            ) : null}
+
+                            {previewMoneyLabel &&
+                            previewRemnantPrice?.remnants_amount !== null &&
+                            previewRemnantPrice?.remnants_amount !== undefined ? (
+                              <span className="text-[rgb(var(--sep-colour-756958))]">
+                                ·
+                              </span>
+                            ) : null}
+
+                            {previewRemnantPrice?.remnants_amount !== null &&
+                            previewRemnantPrice?.remnants_amount !== undefined ? (
+                              <span>
+                                {previewRemnantPrice.remnants_amount} Remnants
+                              </span>
+                            ) : null}
+                          </div>
+                        </div>
+                      </div></div>
+                    ) : null}
+                  </span>
+                );
+              })}
+            </div>
           </div>
         ) : null}
 

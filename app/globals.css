@@ -21181,3 +21181,7 @@ background-image:
 .ranking_page_header_header {
 background: rgb(var(--sep-colour-100c09) / 80%) !important;
 }
+
+.sep-notification-read {
+background: rgb(var(--sep-colour-100c09) / 50%) !important;
+}

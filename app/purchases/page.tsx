@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { EmbeddedPortalSkinBridge } from "@/components/portal/embedded-portal-skin-bridge";
 
-const contactEmail = "sepulchriarpg@gmail.com";
+const contactEmail = "support@sepulchria.com";
 
 export const metadata = {
   title: "Optional Purchases | Sepulchria",

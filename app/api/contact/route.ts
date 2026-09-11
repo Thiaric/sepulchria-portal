@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
-const CONTACT_TO = "sepulchriarpg@gmail.com";
+const CONTACT_TO = "info@sepulchria.com";
 
 function cleanText(value: unknown, maxLength: number) {
   return typeof value === "string"

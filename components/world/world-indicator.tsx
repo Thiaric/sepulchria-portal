@@ -43,6 +43,12 @@ type CalendarEvent = {
   title: string;
   description: string | null;
   event_date: string;
+  recurrence_type:
+    | "once"
+    | "daily"
+    | "weekly"
+    | "monthly"
+    | "yearly";
   start_time: string | null;
   end_time: string | null;
   location_name: string | null;
@@ -52,6 +58,230 @@ type CalendarEvent = {
     slug: string;
   } | null;
 };
+
+function daysBetween(
+  first: Date,
+  second: Date,
+) {
+  return Math.floor(
+    (
+      Date.UTC(
+        second.getUTCFullYear(),
+        second.getUTCMonth(),
+        second.getUTCDate(),
+      ) -
+      Date.UTC(
+        first.getUTCFullYear(),
+        first.getUTCMonth(),
+        first.getUTCDate(),
+      )
+    ) /
+      86_400_000,
+  );
+}
+
+function clampedUtcDate(
+  year: number,
+  monthIndex: number,
+  preferredDay: number,
+) {
+  const daysInMonth =
+    new Date(
+      Date.UTC(
+        year,
+        monthIndex + 1,
+        0,
+        12,
+      ),
+    ).getUTCDate();
+
+  return new Date(
+    Date.UTC(
+      year,
+      monthIndex,
+      Math.min(
+        preferredDay,
+        daysInMonth,
+      ),
+      12,
+    ),
+  );
+}
+
+function expandEventForMonth(
+  event: CalendarEvent,
+  bounds: {
+    start: string;
+    end: string;
+  },
+) {
+  const firstDate =
+    fromIsoDateKey(
+      event.event_date,
+    );
+
+  const monthStart =
+    fromIsoDateKey(
+      bounds.start,
+    );
+
+  const monthEnd =
+    fromIsoDateKey(
+      bounds.end,
+    );
+
+  if (firstDate > monthEnd) {
+    return [];
+  }
+
+  const occurrenceDates: Date[] = [];
+
+  if (
+    event.recurrence_type ===
+    "once"
+  ) {
+    if (
+      firstDate >= monthStart &&
+      firstDate <= monthEnd
+    ) {
+      occurrenceDates.push(
+        firstDate,
+      );
+    }
+  } else if (
+    event.recurrence_type ===
+    "daily"
+  ) {
+    const first =
+      firstDate > monthStart
+        ? firstDate
+        : monthStart;
+
+    for (
+      let date = new Date(
+        first.getTime(),
+      );
+      date <= monthEnd;
+      date = new Date(
+        Date.UTC(
+          date.getUTCFullYear(),
+          date.getUTCMonth(),
+          date.getUTCDate() + 1,
+          12,
+        ),
+      )
+    ) {
+      occurrenceDates.push(
+        date,
+      );
+    }
+  } else if (
+    event.recurrence_type ===
+    "weekly"
+  ) {
+    const distance =
+      daysBetween(
+        firstDate,
+        monthStart,
+      );
+
+    const weeksToAdvance =
+      distance <= 0
+        ? 0
+        : Math.ceil(
+            distance / 7,
+          );
+
+    let date = new Date(
+      Date.UTC(
+        firstDate.getUTCFullYear(),
+        firstDate.getUTCMonth(),
+        firstDate.getUTCDate() +
+          weeksToAdvance * 7,
+        12,
+      ),
+    );
+
+    while (date < monthStart) {
+      date = new Date(
+        Date.UTC(
+          date.getUTCFullYear(),
+          date.getUTCMonth(),
+          date.getUTCDate() + 7,
+          12,
+        ),
+      );
+    }
+
+    while (date <= monthEnd) {
+      occurrenceDates.push(
+        date,
+      );
+
+      date = new Date(
+        Date.UTC(
+          date.getUTCFullYear(),
+          date.getUTCMonth(),
+          date.getUTCDate() + 7,
+          12,
+        ),
+      );
+    }
+  } else if (
+    event.recurrence_type ===
+    "monthly"
+  ) {
+    const candidate =
+      clampedUtcDate(
+        monthStart.getUTCFullYear(),
+        monthStart.getUTCMonth(),
+        firstDate.getUTCDate(),
+      );
+
+    if (
+      candidate >= firstDate &&
+      candidate >= monthStart &&
+      candidate <= monthEnd
+    ) {
+      occurrenceDates.push(
+        candidate,
+      );
+    }
+  } else if (
+    event.recurrence_type ===
+    "yearly"
+  ) {
+    if (
+      monthStart.getUTCMonth() ===
+      firstDate.getUTCMonth()
+    ) {
+      const candidate =
+        clampedUtcDate(
+          monthStart.getUTCFullYear(),
+          firstDate.getUTCMonth(),
+          firstDate.getUTCDate(),
+        );
+
+      if (
+        candidate >= firstDate &&
+        candidate >= monthStart &&
+        candidate <= monthEnd
+      ) {
+        occurrenceDates.push(
+          candidate,
+        );
+      }
+    }
+  }
+
+  return occurrenceDates.map(
+    (date) => ({
+      ...event,
+      event_date:
+        toIsoDateKey(date),
+    }),
+  );
+}
 
 function weatherLabel(value: string) {
   return value
@@ -638,15 +868,11 @@ export function WorldIndicator({
           "calendar_events",
         )
         .select(
-          "id, title, description, event_date, start_time, end_time, location_name, room:rooms!calendar_events_room_id_fkey(id, name, slug)",
+          "id, title, description, event_date, recurrence_type, start_time, end_time, location_name, room:rooms!calendar_events_room_id_fkey(id, name, slug)",
         )
         .eq(
           "is_active",
           true,
-        )
-        .gte(
-          "event_date",
-          bounds.start,
         )
         .lte(
           "event_date",
@@ -676,37 +902,71 @@ export function WorldIndicator({
         );
         setEvents([]);
       } else {
-        setEvents(
-  (data ?? []).map((event) => {
-    const room =
-      Array.isArray(event.room)
-        ? event.room[0] ?? null
-        : event.room;
+        const baseEvents =
+          (data ?? []).map(
+            (event) => {
+              const room =
+                Array.isArray(
+                  event.room,
+                )
+                  ? event.room[0] ??
+                    null
+                  : event.room;
 
-    return {
-      id: String(event.id),
-      title: String(event.title),
-      description:
-        event.description ?? null,
-      event_date: String(
-        event.event_date,
-      ),
-      start_time:
-        event.start_time ?? null,
-      end_time:
-        event.end_time ?? null,
-      location_name:
-        event.location_name ?? null,
-      room: room
-        ? {
-            id: String(room.id),
-            name: String(room.name),
-            slug: String(room.slug),
-          }
-        : null,
-    };
-  }),
-);
+              return {
+                id: String(
+                  event.id,
+                ),
+                title: String(
+                  event.title,
+                ),
+                description:
+                  event.description ??
+                  null,
+                event_date:
+                  String(
+                    event.event_date,
+                  ),
+                recurrence_type:
+                  (
+                    event.recurrence_type ??
+                    "once"
+                  ) as CalendarEvent["recurrence_type"],
+                start_time:
+                  event.start_time ??
+                  null,
+                end_time:
+                  event.end_time ??
+                  null,
+                location_name:
+                  event.location_name ??
+                  null,
+                room: room
+                  ? {
+                      id: String(
+                        room.id,
+                      ),
+                      name: String(
+                        room.name,
+                      ),
+                      slug: String(
+                        room.slug,
+                      ),
+                    }
+                  : null,
+              };
+            },
+          );
+
+        setEvents(
+          baseEvents.flatMap(
+            (event) =>
+              expandEventForMonth(
+                event,
+                bounds,
+              ),
+          ),
+        );
       }
 
       setEventsLoading(false);

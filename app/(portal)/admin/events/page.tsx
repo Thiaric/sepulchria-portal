@@ -23,6 +23,12 @@ type EventRow = {
   title: string;
   description: string | null;
   event_date: string;
+  recurrence_type:
+    | "once"
+    | "daily"
+    | "weekly"
+    | "monthly"
+    | "yearly";
   start_time: string | null;
   end_time: string | null;
   location_name: string | null;
@@ -153,6 +159,41 @@ function EventFields({
       <EventDateFields
         date={eventDate}
       />
+
+      <label className="block admin_events_page_label_recurrence">
+        <span className="mb-1.5 block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+          Repeat
+        </span>
+
+        <select
+          name="recurrenceType"
+          defaultValue={
+            event?.recurrence_type ??
+            "once"
+          }
+          className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-9b7446))]"
+        >
+          <option value="once">
+            Does not repeat
+          </option>
+          <option value="daily">
+            Every day
+          </option>
+          <option value="weekly">
+            Every week
+          </option>
+          <option value="monthly">
+            Every month
+          </option>
+          <option value="yearly">
+            Every year
+          </option>
+        </select>
+
+        <span className="mt-1.5 block text-[9px] leading-4 text-[rgb(var(--sep-colour-756958))]">
+          The selected date is the first occurrence.
+        </span>
+      </label>
 
       <div className="grid gap-3 sm:grid-cols-2 admin_events_page_div_visible_calendar_2">
         <label className="block admin_events_page_label_visible_calendar_2">
@@ -302,7 +343,7 @@ export default async function EventsAdminPage() {
     supabase
       .from("calendar_events")
       .select(
-        "id, title, description, event_date, start_time, end_time, location_name, room_id, is_active, notify_on_publish, notify_24h, notify_1h, created_at, updated_at",
+        "id, title, description, event_date, recurrence_type, start_time, end_time, location_name, room_id, is_active, notify_on_publish, notify_24h, notify_1h, created_at, updated_at",
       )
       .order("event_date", {
         ascending: false,
@@ -484,6 +525,9 @@ export default async function EventsAdminPage() {
                         {aureth.day}{" "}
                         {aureth.monthName},{" "}
                         {aureth.year} ADN
+                        {event.recurrence_type !== "once"
+                          ? ` · Repeats ${event.recurrence_type}`
+                          : ""}
                         {event.start_time
                           ? ` · ${timeValue(
                               event.start_time,

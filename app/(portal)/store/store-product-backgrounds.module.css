@@ -1,0 +1,65 @@
+.cardBackground {
+  background-size: 100% 100% !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.skin {
+  composes: cardBackground;
+  background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/store/skin.png") !important;
+}
+
+.cosmetic {
+  composes: cardBackground;
+  background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/store/cosmetic.png") !important;
+}
+
+.music {
+  composes: cardBackground;
+  background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/store/music.png") !important;
+}
+
+.friendList {
+  composes: cardBackground;
+  background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/store/friend-list.png") !important;
+}
+
+.privateLocation {
+  composes: cardBackground;
+  background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/store/private-location.png") !important;
+}
+
+.bundle {
+  composes: cardBackground;
+  background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/store/bundle.png") !important;
+}

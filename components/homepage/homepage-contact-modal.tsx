@@ -237,7 +237,7 @@ export function HomepageContactModal({
 
           <div className="flex flex-col gap-2 border-t border-[rgb(var(--sep-colour-60482e))]/35 pt-4 sm:flex-row sm:items-center sm:justify-between components_homepage_homepage_contact_modal_div_container_2">
             <p className="text-[10px] text-[rgb(var(--sep-colour-817566))] components_homepage_homepage_contact_modal_p_text">
-              Messages are delivered to sepulchriarpg@gmail.com.
+              Messages are delivered to info@sepulchria.com.
             </p>
 
             <button

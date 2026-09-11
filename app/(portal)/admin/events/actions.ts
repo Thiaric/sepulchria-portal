@@ -118,6 +118,36 @@ function readCheckbox(
   );
 }
 
+type EventRecurrence =
+  | "once"
+  | "daily"
+  | "weekly"
+  | "monthly"
+  | "yearly";
+
+function readRecurrence(
+  value: FormDataEntryValue | null,
+): EventRecurrence {
+  const next =
+    typeof value === "string"
+      ? value.trim()
+      : "once";
+
+  if (
+    next !== "once" &&
+    next !== "daily" &&
+    next !== "weekly" &&
+    next !== "monthly" &&
+    next !== "yearly"
+  ) {
+    throw new Error(
+      "Event recurrence is invalid.",
+    );
+  }
+
+  return next;
+}
+
 function readTime(
   value: FormDataEntryValue | null,
   fieldName: string,
@@ -205,6 +235,11 @@ export async function createCalendarEvent(
   const eventDate =
     readEventDate(formData);
 
+  const recurrenceType =
+    readRecurrence(
+      formData.get("recurrenceType"),
+    );
+
   const startTime = readTime(
     formData.get("startTime"),
     "Start time",
@@ -260,6 +295,7 @@ export async function createCalendarEvent(
       title,
       description,
       event_date: eventDate,
+      recurrence_type: recurrenceType,
       start_time: startTime,
       end_time: endTime,
       room_id: roomId,
@@ -305,6 +341,11 @@ export async function updateCalendarEvent(
 
   const eventDate =
     readEventDate(formData);
+
+  const recurrenceType =
+    readRecurrence(
+      formData.get("recurrenceType"),
+    );
 
   const startTime = readTime(
     formData.get("startTime"),
@@ -361,6 +402,7 @@ export async function updateCalendarEvent(
       title,
       description,
       event_date: eventDate,
+      recurrence_type: recurrenceType,
       start_time: startTime,
       end_time: endTime,
       room_id: roomId,

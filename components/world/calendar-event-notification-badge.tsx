@@ -43,14 +43,13 @@ export function CalendarEventNotificationBadge({
         error: eventsError,
       } = await supabase
         .from("calendar_events")
-        .select("id")
+        .select("id, recurrence_type")
         .eq(
           "is_active",
           true,
         )
-        .gte(
-          "event_date",
-          today,
+        .or(
+          `event_date.gte.${today},recurrence_type.neq.once`,
         );
 
       if (eventsError) {
@@ -143,14 +142,13 @@ export function CalendarEventNotificationBadge({
         error,
       } = await supabase
         .from("calendar_events")
-        .select("id")
+        .select("id, recurrence_type")
         .eq(
           "is_active",
           true,
         )
-        .gte(
-          "event_date",
-          today,
+        .or(
+          `event_date.gte.${today},recurrence_type.neq.once`,
         );
 
       if (
