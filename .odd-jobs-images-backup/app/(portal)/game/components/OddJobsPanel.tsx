@@ -9,7 +9,6 @@ export type OddJobStateRow = {
   job_id: string;
   job_name: string;
   job_description: string;
-  image_url: string | null;
   pay: number;
   starting_pay: number;
   claims_used: number;
@@ -127,23 +126,9 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
 
             return (
               <article
-  key={job.job_id}
-  className="flex min-h-[124px] flex-col border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))] p-3 game_components_oddjobspanel_article_article"
-  style={
-    job.image_url
-      ? {
-          backgroundImage: `linear-gradient(
-            rgb(var(--sep-colour-100d0b) / 70%),
-            rgb(var(--sep-colour-100d0b) / 70%)
-          ),
-          url("${job.image_url}")`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }
-      : undefined
-  }
->
+                key={job.job_id}
+                className="flex min-h-[124px] flex-col border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))] p-3 game_components_oddjobspanel_article_article"
+              >
                 <div className="flex items-start justify-between gap-2 game_components_oddjobspanel_div_container_6">
                   <h3 className="font-serif text-[13px] text-[rgb(var(--sep-skin-C1))] game_components_oddjobspanel_h3_heading">
                     {job.job_name}

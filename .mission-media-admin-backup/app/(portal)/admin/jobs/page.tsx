@@ -12,7 +12,6 @@ type OddJobRow = {
   id: string;
   name: string;
   description: string;
-  image_url: string | null;
   sort_order: number;
 };
 
@@ -23,7 +22,7 @@ export default async function AdminJobsPage() {
 
   const { data, error } = await supabase
     .from("odd_jobs")
-    .select("id, name, description, image_url, sort_order")
+    .select("id, name, description, sort_order")
     .order("sort_order", { ascending: true })
     .order("name", { ascending: true });
 
@@ -96,19 +95,6 @@ export default async function AdminJobsPage() {
               />
             </label>
 
-            <label className="admin_jobs_page_label_job_image">
-              <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
-                Background Image URL
-              </span>
-              <input
-                type="text"
-                name="image_url"
-                maxLength={500}
-                placeholder="/backgrounds/oddjobs/Example.png"
-                className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
-              />
-            </label>
-
             <div className="flex justify-end admin_jobs_page_div_job_new">
               <button
                 type="submit"
@@ -170,20 +156,6 @@ export default async function AdminJobsPage() {
                     rows={4}
                     defaultValue={job.description}
                     className="w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_jobs_page_textarea_description_2"
-                  />
-                </label>
-
-                <label className="admin_jobs_page_label_job_image_edit">
-                  <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
-                    Background Image URL
-                  </span>
-                  <input
-                    type="text"
-                    name="image_url"
-                    maxLength={500}
-                    defaultValue={job.image_url ?? ""}
-                    placeholder="/backgrounds/oddjobs/Example.png"
-                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))]"
                   />
                 </label>
 

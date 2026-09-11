@@ -18,6 +18,17 @@ type MissionJumpRow = {
   completed_at: string | null;
   claimed_at: string | null;
   sort_order: number;
+  icon_url: string | null;
+};
+
+type MissionAssignmentRow = Omit<
+  MissionJumpRow,
+  "icon_url"
+>;
+
+type MissionDefinitionMediaRow = {
+  code: string;
+  icon_url: string | null;
 };
 
 export function MissionsContextPanel() {
@@ -54,7 +65,10 @@ export function MissionsContextPanel() {
       .eq("user_id", user.id)
       .maybeSingle();
 
-    if (!character || character.status !== "approved") {
+    if (
+      !character ||
+      character.status !== "approved"
+    ) {
       setMissions([]);
       setLoading(false);
       return;
@@ -72,6 +86,7 @@ export function MissionsContextPanel() {
         "Unable to load Daily Missions context:",
         dayError?.message,
       );
+
       setMissions([]);
       setLoading(false);
       return;
@@ -82,8 +97,8 @@ export function MissionsContextPanel() {
     );
 
     const {
-      data,
-      error,
+      data: assignmentData,
+      error: assignmentError,
     } = await supabase
       .from("daily_mission_assignments")
       .select(
@@ -94,17 +109,86 @@ export function MissionsContextPanel() {
         ascending: true,
       });
 
-    if (error) {
+    if (assignmentError) {
       console.error(
         "Unable to load Daily Missions context:",
-        error.message,
+        assignmentError.message,
       );
+
       setMissions([]);
-    } else {
-      setMissions(
-        (data ?? []) as MissionJumpRow[],
-      );
+      setLoading(false);
+      return;
     }
+
+    const assignments =
+      (assignmentData ??
+        []) as MissionAssignmentRow[];
+
+    const missionCodes =
+      assignments.map(
+        (mission) =>
+          mission.code_snapshot,
+      );
+
+    let definitionMedia:
+      MissionDefinitionMediaRow[] = [];
+
+    if (missionCodes.length > 0) {
+      const {
+        data: definitionData,
+        error: definitionError,
+      } = await supabase
+        .from(
+          "daily_mission_definitions",
+        )
+        .select(
+          "code, icon_url",
+        )
+        .in(
+          "code",
+          missionCodes,
+        );
+
+      if (definitionError) {
+        console.error(
+          "Unable to load Daily Mission icons:",
+          definitionError.message,
+        );
+      } else {
+        definitionMedia =
+          (definitionData ??
+            []) as MissionDefinitionMediaRow[];
+      }
+    }
+
+    const iconByCode =
+      new Map<
+        string,
+        string | null
+      >(
+        definitionMedia.map(
+          (definition) => [
+            definition.code,
+            definition.icon_url,
+          ],
+        ),
+      );
+
+    const missionsWithIcons:
+      MissionJumpRow[] =
+      assignments.map(
+        (mission) => ({
+          ...mission,
+          icon_url:
+            iconByCode.get(
+              mission.code_snapshot,
+            ) ?? null,
+        }),
+      );
+
+    setMissions(
+      missionsWithIcons,
+    );
 
     setLoading(false);
   }, [supabase]);
@@ -182,24 +266,26 @@ export function MissionsContextPanel() {
       .toLocaleLowerCase();
 
   const visibleMissions =
-    missions.filter((mission) => {
-      if (!query) {
-        return true;
-      }
+    missions.filter(
+      (mission) => {
+        if (!query) {
+          return true;
+        }
 
-      const statusSearch =
-        mission.claimed_at
-          ? "claimed"
-          : mission.completed_at
-            ? "ready reward ready"
-            : "";
+        const statusSearch =
+          mission.claimed_at
+            ? "claimed"
+            : mission.completed_at
+              ? "ready reward ready"
+              : "";
 
-      return (
-        `${mission.family_snapshot} ${mission.name_snapshot} ${statusSearch}`
-          .toLocaleLowerCase()
-          .includes(query)
-      );
-    });
+        return (
+          `${mission.family_snapshot} ${mission.name_snapshot} ${statusSearch}`
+            .toLocaleLowerCase()
+            .includes(query)
+        );
+      },
+    );
 
   function jumpToMission(
     event: React.MouseEvent<HTMLAnchorElement>,
@@ -207,9 +293,13 @@ export function MissionsContextPanel() {
   ) {
     event.preventDefault();
 
-    const id = `mission-${code}`;
+    const id =
+      `mission-${code}`;
+
     const target =
-      document.getElementById(id);
+      document.getElementById(
+        id,
+      );
 
     if (target) {
       target.scrollIntoView({
@@ -222,10 +312,12 @@ export function MissionsContextPanel() {
         "",
         `#${id}`,
       );
+
       return;
     }
 
-    window.location.hash = id;
+    window.location.hash =
+      id;
   }
 
   return (
@@ -255,7 +347,10 @@ export function MissionsContextPanel() {
       <div className="my-4 h-px bg-[rgb(var(--sep-colour-59432c))]/35 components_portal_missions_context_panel_div_container_2" />
 
       <p className="mb-2 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))] components_portal_missions_context_panel_p_text">
-        Missions · {visibleMissions.length}
+        Missions ·{" "}
+        {
+          visibleMissions.length
+        }
       </p>
 
       <div
@@ -269,7 +364,8 @@ export function MissionsContextPanel() {
         ) : null}
 
         {!loading &&
-        visibleMissions.length === 0 ? (
+        visibleMissions.length ===
+          0 ? (
           <p className="px-2 py-3 text-xs text-[rgb(var(--sep-colour-8f826f))] components_portal_missions_context_panel_p_text_3">
             No matching missions.
           </p>
@@ -278,31 +374,54 @@ export function MissionsContextPanel() {
         {visibleMissions.map(
           (mission) => {
             const complete =
-              mission.completed_at !== null;
+              mission.completed_at !==
+              null;
 
             const claimed =
-              mission.claimed_at !== null;
+              mission.claimed_at !==
+              null;
 
             return (
               <Link
-                key={mission.id}
+                key={
+                  mission.id
+                }
                 href={`/missions#mission-${mission.code_snapshot}`}
-                onClick={(event) =>
+                onClick={(
+                  event,
+                ) =>
                   jumpToMission(
                     event,
                     mission.code_snapshot,
                   )
                 }
-                className="block border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-[rgb(var(--sep-colour-cbb28a))] transition-colors hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] "
+                className="block border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-[rgb(var(--sep-colour-cbb28a))] transition-colors hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]"
               >
                 <span className="flex items-center justify-between gap-2 components_portal_missions_context_panel_span_text">
-                  <span className="block min-w-0 components_portal_missions_context_panel_span_text_2">
-                    <span className="block text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-756550))] components_portal_missions_context_panel_span_text_3">
-                      {mission.family_snapshot}
-                    </span>
+                  <span className="flex min-w-0 items-center gap-3 components_portal_missions_context_panel_span_text_2">
+                    {mission.icon_url ? (
+                      <img
+                        src={
+                          mission.icon_url
+                        }
+                        alt=""
+                        aria-hidden="true"
+                        className="h-10 w-10 shrink-0 object-contain"
+                      />
+                    ) : null}
 
-                    <span className="mt-0.5 block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] components_portal_missions_context_panel_span_text_4">
-                      {mission.name_snapshot}
+                    <span className="min-w-0">
+                      <span className="block text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-756550))] components_portal_missions_context_panel_span_text_3">
+                        {
+                          mission.family_snapshot
+                        }
+                      </span>
+
+                      <span className="mt-0.5 block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] components_portal_missions_context_panel_span_text_4">
+                        {
+                          mission.name_snapshot
+                        }
+                      </span>
                     </span>
                   </span>
 

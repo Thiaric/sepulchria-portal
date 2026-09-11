@@ -20767,7 +20767,8 @@ html[data-portal-skin] [data-homepage-nav-button="true"] [data-homepage-nav-role
    Same mechanism as Location Atmosphere
    ========================================= */
 
-.components_portal_portal_sidebar_aside_sidebar
+.components_portal_portal_sidebar_aside_sidebar,
+.components_portal_mobile_portal_navigation_section_more_sepulchria_navigation
 {
   background-image:
     linear-gradient(
@@ -20779,21 +20780,6 @@ html[data-portal-skin] [data-homepage-nav-button="true"] [data-homepage-nav-role
   background-size: cover !important;
   background-position: center !important;
   background-repeat: no-repeat !important;
-}
-
-.components_notifications_notification_bell_div_container_2 {
-
-  background-image:
-    linear-gradient(
-      rgb(var(--sep-colour-100d0b) / 80%),
-      rgb(var(--sep-colour-100d0b) / 80%)
-    ),
-    url("/backgrounds/notifications_background.png") !important;
-
-  background-size: cover !important;
-  background-position: center !important;
-  background-repeat: no-repeat !important;
-
 }
 
 
@@ -20825,9 +20811,9 @@ html[data-portal-skin] [data-homepage-nav-button="true"] [data-homepage-nav-role
 
 .components_portal_portal_collapsible_columns_div_container_3,
 .areas_slug_page_section_section_2,
-.missions_page_article_article_2,
-.missions_page_div_container_3,
-.components_portal_portal_appearance_modal_section_dialog {
+.components_portal_portal_appearance_modal_section_dialog,
+.layout_main_main,
+.components_portal_interactive_world_map_div_container_3 {
   background-image:
     linear-gradient(
       rgb(var(--sep-colour-100d0b) / 80%),
@@ -20838,6 +20824,21 @@ html[data-portal-skin] [data-homepage-nav-button="true"] [data-homepage-nav-role
   background-size: cover !important;
   background-position: center !important;
   background-repeat: no-repeat !important;
+}
+
+.components_notifications_notification_bell_div_container_2 {
+
+  background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/notifications_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+
 }
 
 
@@ -20937,6 +20938,19 @@ background-image:
   background-repeat: no-repeat !important;
 }
 
+.layout_main_main_2:has(.missions_page_div_container_3) {
+background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/dailymissions_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
 .layout_main_main_2:has(.associations_page_div_container) {
 background-image:
     linear-gradient(
@@ -20950,7 +20964,8 @@ background-image:
   background-repeat: no-repeat !important;
 }
 
-.layout_main_main_2:has(.orders_page_div_container) {
+.layout_main_main_2:has(.orders_page_div_container),
+.components_orders_order_headquarters_panel_div_container_3 {
 background-image:
     linear-gradient(
       rgb(var(--sep-colour-100d0b) / 80%),
@@ -21015,6 +21030,79 @@ background-image:
   background-repeat: no-repeat !important;
 }
 
+
+
+.layout_main_main_2:has(.cosmetics_page_main_main) {
+background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/cosmetics_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+
+}
+
+.layout_main_main_2:has(.friends_page_main_main_2) {
+
+  background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/friendlist_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.layout_main_main_2:has(.polls_page_main_main) {
+background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/polls_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+
+}
+
+.ranking_page_main_main, .ranking_page_div_container_3 {
+  background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/hallofrenown_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+
+.private_locations_page_main_main {
+  
+  background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/privatelocations_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+
 .layout_main_main_2:has(.forum_page_main_main, .forum_sectionslug_page_main_main, .forum_sectionslug_topicslug_page_main_main) {
 background-image:
     linear-gradient(
@@ -21042,6 +21130,35 @@ background-image:
 
 }
 
+.game_components_gatheringpanel_div_container_5 {
+background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/gathering_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+
+}
+
+.game_components_houseofchancespanel_div_container_7 {
+background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 80%),
+      rgb(var(--sep-colour-100d0b) / 80%)
+    ),
+    url("/backgrounds/houseofchances_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+
+}
+
+
 .components_portal_game_context_panel_div_container,
 .components_portal_portal_responsive_right_sidebar_section_context_sidebar,
 .admin_layout_div_container_2,
@@ -21049,3 +21166,18 @@ background-image:
   background: rgb(var(--sep-colour-100c09) / 0%) !important;
 }
 
+.components_cosmetics_player_cosmetics_manager_section_section_3,
+.friends_page_section_section,
+.game_components_houseofchancespanel_div_container_16,
+.game_components_houseofchancespanel_div_container_17
+ {
+
+  background: rgb(var(--sep-colour-100c09) / 30%) !important;
+}
+
+
+
+.friends_page_div_container_2,
+.ranking_page_header_header {
+background: rgb(var(--sep-colour-100c09) / 80%) !important;
+}

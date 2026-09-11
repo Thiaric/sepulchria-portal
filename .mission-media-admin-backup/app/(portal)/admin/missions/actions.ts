@@ -100,10 +100,6 @@ export async function createDailyMissionDefinition(
     const family = text(formData, "family");
     const objectiveType = text(formData, "objective_type");
     const difficulty = text(formData, "difficulty") || "easy";
-    const backgroundImageUrl =
-      text(formData, "background_image_url") || null;
-    const iconUrl =
-      text(formData, "icon_url") || null;
 
     const targetValue = positiveInteger(
       formData,
@@ -180,8 +176,6 @@ export async function createDailyMissionDefinition(
         target_value: targetValue,
         criteria: {},
         difficulty,
-        background_image_url: backgroundImageUrl,
-        icon_url: iconUrl,
         reward_remnants: rewardRemnants,
         reward_item_id: rewardItemId,
         reward_item_quantity: rewardItemId
@@ -234,10 +228,6 @@ export async function updateDailyMissionDefinition(
     );
     const rewardItemId =
       text(formData, "reward_item_id") || null;
-    const backgroundImageUrl =
-      text(formData, "background_image_url") || null;
-    const iconUrl =
-      text(formData, "icon_url") || null;
     const isActive =
       formData.get("is_active") === "on";
     const countsToward =
@@ -290,8 +280,6 @@ export async function updateDailyMissionDefinition(
           formData,
           "difficulty",
         ),
-        background_image_url: backgroundImageUrl,
-        icon_url: iconUrl,
         reward_remnants: rewardRemnants,
         reward_item_id: rewardItemId,
         reward_item_quantity: rewardItemId
@@ -339,10 +327,6 @@ export async function createDailyMilestoneDefinition(
       formData,
       "description",
     );
-    const backgroundImageUrl =
-      text(formData, "background_image_url") || null;
-    const iconUrl =
-      text(formData, "icon_url") || null;
 
     const targetCount = positiveInteger(
       formData,
@@ -381,7 +365,7 @@ export async function createDailyMilestoneDefinition(
       );
     }
 
-    if (!isAll && targetCount === null) {
+    if (targetCount === null) {
       return failure(
         "Missions Required must be a positive whole number.",
       );
@@ -410,9 +394,7 @@ export async function createDailyMilestoneDefinition(
         milestone_key: milestoneKey,
         name,
         description,
-        background_image_url: backgroundImageUrl,
-        icon_url: iconUrl,
-        target_count: isAll ? null : targetCount,
+        target_count: targetCount,
         is_all: isAll,
         reward_remnants: rewardRemnants,
         reward_item_id: rewardItemId,
@@ -470,10 +452,6 @@ export async function updateDailyMilestoneDefinition(
 
     const rewardItemId =
       text(formData, "reward_item_id") || null;
-    const backgroundImageUrl =
-      text(formData, "background_image_url") || null;
-    const iconUrl =
-      text(formData, "icon_url") || null;
 
     const isAll =
       formData.get("is_all") === "on";
@@ -483,9 +461,8 @@ export async function updateDailyMilestoneDefinition(
     }
 
     if (
-      !isAll &&
-      (!Number.isSafeInteger(targetCount) ||
-        targetCount < 1)
+      !Number.isSafeInteger(targetCount) ||
+      targetCount < 1
     ) {
       return failure(
         "Missions Required must be a positive whole number.",
@@ -524,9 +501,7 @@ export async function updateDailyMilestoneDefinition(
           formData,
           "description",
         ),
-        background_image_url: backgroundImageUrl,
-        icon_url: iconUrl,
-        target_count: isAll ? null : targetCount,
+        target_count: targetCount,
         is_all: isAll,
         reward_remnants: rewardRemnants,
         reward_item_id: rewardItemId,

@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
-import { createAdminClient } from "@/lib/supabase/admin";
 import {
   claimDailyMilestone,
   claimDailyMission,
@@ -32,8 +31,6 @@ type MissionRow = {
   completed_at: string | null;
   claimed_at: string | null;
   sort_order: number;
-  background_image_url: string | null;
-  icon_url: string | null;
 };
 
 type MilestoneRow = {
@@ -47,8 +44,6 @@ type MilestoneRow = {
   reward_item_name_snapshot: string | null;
   reward_item_quantity_snapshot: number;
   claimed_at: string | null;
-  background_image_url: string | null;
-  icon_url: string | null;
 };
 
 function Reward({
@@ -119,7 +114,6 @@ function ProgressBeads({
 
 export default async function MissionsPage() {
   const supabase = await createClient();
-  const admin = createAdminClient();
 
   const {
     data: { user },
@@ -165,137 +159,8 @@ export default async function MissionsPage() {
   if (missionResult.error) throw new Error(missionResult.error.message);
   if (milestoneResult.error) throw new Error(milestoneResult.error.message);
 
-  const missionBase =
-    (missionResult.data ?? []) as Omit<
-      MissionRow,
-      "background_image_url" | "icon_url"
-    >[];
-
-  const milestoneBase =
-    (milestoneResult.data ?? []) as Omit<
-      MilestoneRow,
-      "background_image_url" | "icon_url"
-    >[];
-
-  const [missionMediaResult, milestoneMediaResult] =
-    await Promise.all([
-      missionBase.length > 0
-        ? admin
-            .from("daily_mission_definitions")
-            .select("code, background_image_url, icon_url")
-            .in(
-              "code",
-              missionBase.map(
-                (mission) => mission.code_snapshot,
-              ),
-            )
-        : Promise.resolve({ data: [], error: null }),
-      milestoneBase.length > 0
-        ? admin
-            .from(
-              "daily_mission_milestone_definitions",
-            )
-            .select(
-              "milestone_key, background_image_url, icon_url",
-            )
-            .in(
-              "milestone_key",
-              milestoneBase.map(
-                (milestone) => milestone.milestone_key,
-              ),
-            )
-        : Promise.resolve({ data: [], error: null }),
-    ]);
-
-  if (missionMediaResult.error) {
-    throw new Error(
-      `Unable to load Daily Mission media: ${missionMediaResult.error.message}`,
-    );
-  }
-
-  if (milestoneMediaResult.error) {
-    throw new Error(
-      `Unable to load Daily Milestone media: ${milestoneMediaResult.error.message}`,
-    );
-  }
-
-  const missionMediaByCode =
-    new Map<
-      string,
-      {
-        background_image_url: string | null;
-        icon_url: string | null;
-      }
-    >(
-      (missionMediaResult.data ?? []).map(
-        (row) => [
-          String(row.code),
-          {
-            background_image_url:
-              row.background_image_url
-                ? String(row.background_image_url)
-                : null,
-            icon_url: row.icon_url
-              ? String(row.icon_url)
-              : null,
-          },
-        ],
-      ),
-    );
-
-  const milestoneMediaByKey =
-    new Map<
-      string,
-      {
-        background_image_url: string | null;
-        icon_url: string | null;
-      }
-    >(
-      (milestoneMediaResult.data ?? []).map(
-        (row) => [
-          String(row.milestone_key),
-          {
-            background_image_url:
-              row.background_image_url
-                ? String(row.background_image_url)
-                : null,
-            icon_url: row.icon_url
-              ? String(row.icon_url)
-              : null,
-          },
-        ],
-      ),
-    );
-
-  const missions: MissionRow[] =
-    missionBase.map((mission) => {
-      const media =
-        missionMediaByCode.get(
-          mission.code_snapshot,
-        );
-
-      return {
-        ...mission,
-        background_image_url:
-          media?.background_image_url ?? null,
-        icon_url: media?.icon_url ?? null,
-      };
-    });
-
-  const milestones: MilestoneRow[] =
-    milestoneBase.map((milestone) => {
-      const media =
-        milestoneMediaByKey.get(
-          milestone.milestone_key,
-        );
-
-      return {
-        ...milestone,
-        background_image_url:
-          media?.background_image_url ?? null,
-        icon_url: media?.icon_url ?? null,
-      };
-    });
+  const missions = (missionResult.data ?? []) as MissionRow[];
+  const milestones = (milestoneResult.data ?? []) as MilestoneRow[];
 
   const countableMissions = missions.filter(
     (mission) => mission.counts_toward_milestones,
@@ -315,7 +180,7 @@ export default async function MissionsPage() {
   });
 
   return (
-    <div className="mx-auto h-full min-h-0 w-full overflow-y-auto px-5 py-7 sm:px-7 lg:px-9 missions_page_div_container_3">
+    <div className="mx-auto w-full max-w-6xl px-5 py-7 sm:px-7 lg:px-9 missions_page_div_container_3">
       <MissionsLiveSync dayId={String(dayId)} />
       <header className="border-b border-[rgb(var(--sep-colour-60482e))]/45 pb-5 missions_page_header_daily_missions">
         <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))] missions_page_p_daily_missions">
@@ -324,7 +189,7 @@ export default async function MissionsPage() {
         <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] missions_page_h1_daily_missions">
           Daily Missions
         </h1>
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-global-c1))] missions_page_p_daily_missions_2">
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))] missions_page_p_daily_missions_2">
           Complete as many as you wish before midnight UTC. Rewards must be
           claimed here before the daily reset.
         </p>
@@ -333,7 +198,7 @@ export default async function MissionsPage() {
       <section id="daily-milestones" className="mt-7 missions_page_section_daily_milestones">
         <div className="mb-3 flex items-end justify-between gap-4 missions_page_div_daily_milestones">
           <div className="missions_page_div_day_apos_s_progress">
-            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-global-c1))] missions_page_p_day_apos_s_progress">
+            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))] missions_page_p_day_apos_s_progress">
               Daily Milestones
             </p>
             <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dcc59a))] missions_page_h2_day_apos_s_progress">
@@ -366,47 +231,20 @@ export default async function MissionsPage() {
                     : "false"
                 }
                 className={[(([
-                  "border bg-cover bg-center bg-no-repeat p-4 transition-all duration-200",
+                  "border p-4 transition-all duration-200",
                   complete &&
                   milestone.claimed_at === null
                     ? "border-[rgb(var(--sep-colour-b98c50))] bg-[rgb(var(--sep-colour-21170f))] shadow-[0_0_18px_rgba(var(--sep-rgb-185-140-80),0.16)]"
                     : "border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]",
                 ].join(" "))), "missions_page_article_article"].filter(Boolean).join(" ")}
-                style={
-                  milestone.background_image_url
-                    ? {
-                        backgroundImage: `linear-gradient(
-                          rgb(var(--sep-colour-100d0b) / 82%),
-                          rgb(var(--sep-colour-100d0b) / 88%)
-                        ),
-                        url("${milestone.background_image_url}")`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "top",
-                        backgroundRepeat: "no-repeat",
-                      }
-                    : undefined
-                }
               >
-                <div className="flex items-start gap-3">
-                  {milestone.icon_url ? (
-                    <img
-                      src={milestone.icon_url}
-                      alt=""
-                      aria-hidden="true"
-                      className="h-12 w-12 shrink-0 object-contain"
-                    />
-                  ) : null}
-
-                  <div className="min-w-0">
-                    <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] missions_page_p_text">
-                      Milestone
-                    </p>
-                    <h3 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-cbb28a))] missions_page_h3_heading">
-                      {milestone.name_snapshot}
-                    </h3>
-                  </div>
-                </div>
-                <p className="mt-2 min-h-10 text-sm leading-6 text-[rgb(var(--sep-global-c1))] missions_page_p_text_2">
+                <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] missions_page_p_text">
+                  Milestone
+                </p>
+                <h3 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-cbb28a))] missions_page_h3_heading">
+                  {milestone.name_snapshot}
+                </h3>
+                <p className="mt-2 min-h-10 text-sm leading-6 text-[rgb(var(--sep-colour-c0af95))] missions_page_p_text_2">
                   {milestone.description_snapshot}
                 </p>
 
@@ -447,7 +285,7 @@ export default async function MissionsPage() {
             className="mb-8 missions_page_div_container_5"
           >
             <div className="mb-3 border-b border-[rgb(var(--sep-colour-59432c))]/35 pb-2 missions_page_div_container_6">
-              <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-global-c1))] missions_page_p_text_3">
+              <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))] missions_page_p_text_3">
                 Daily Missions
               </p>
               <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dcc59a))] missions_page_h2_heading">
@@ -455,8 +293,8 @@ export default async function MissionsPage() {
               </h2>
             </div>
 
-           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4 missions_page_div_daily_milestones_2">
-          {missions
+            <div className="grid gap-3 lg:grid-cols-2 missions_page_div_container_7">
+              {missions
                 .filter((mission) => mission.family_snapshot === family)
                 .map((mission) => {
                   const complete = mission.completed_at !== null;
@@ -477,46 +315,21 @@ export default async function MissionsPage() {
                           : "false"
                       }
                       className={[(([
-                        "scroll-mt-6 border bg-cover bg-center bg-no-repeat p-4 transition-all duration-200",
+                        "scroll-mt-6 border p-4 transition-all duration-200",
                         complete &&
                         mission.claimed_at === null
                           ? "border-[rgb(var(--sep-colour-b98c50))] bg-[rgb(var(--sep-colour-21170f))] shadow-[0_0_18px_rgba(var(--sep-rgb-185-140-80),0.16)]"
                           : "border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]",
                       ].join(" "))), "missions_page_article_article_2"].filter(Boolean).join(" ")}
-                      style={
-                        mission.background_image_url
-                          ? {
-                              backgroundImage: `linear-gradient(
-                                rgb(var(--sep-colour-100d0b) / 82%),
-                                rgb(var(--sep-colour-100d0b) / 82%)
-                              ),
-                              url("${mission.background_image_url}")`,
-                              backgroundSize: "100% 100%",
-                              backgroundPosition: "center",
-                              backgroundRepeat: "no-repeat",
-                            }
-                          : undefined
-                      }
                     >
                       <div className="flex items-start justify-between gap-4 missions_page_div_container_8">
-                        <div className="flex min-w-0 items-start gap-3 missions_page_div_container_9">
-                          {mission.icon_url ? (
-                            <img
-                              src={mission.icon_url}
-                              alt=""
-                              aria-hidden="true"
-                              className="h-12 w-12 shrink-0 object-contain"
-                            />
-                          ) : null}
-
-                          <div className="min-w-0">
+                        <div className="min-w-0 missions_page_div_container_9">
                           <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] missions_page_p_text_4">
                             {mission.difficulty_snapshot}
                           </p>
                           <h3 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-cbb28a))] missions_page_h3_heading_2">
                             {mission.name_snapshot}
                           </h3>
-                          </div>
                         </div>
                         <div className="flex shrink-0 flex-col items-end gap-1.5 missions_page_div_container_10">
                           <span
@@ -537,7 +350,7 @@ export default async function MissionsPage() {
                         </div>
                       </div>
 
-                      <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-global-c1))] missions_page_p_text_5">
+                      <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-c0af95))] missions_page_p_text_5">
                         {mission.description_snapshot}
                         {locationName ? ` Today: ${locationName}.` : ""}
                       </p>

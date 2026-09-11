@@ -214,28 +214,6 @@ export default async function AdminMissionsPage() {
             </label>
           </div>
 
-          <div className="mt-3 grid gap-3 lg:grid-cols-2">
-            <label className={labelClass}>
-              Background Image URL
-              <input
-                name="background_image_url"
-                maxLength={500}
-                placeholder="/backgrounds/missions/code_background.png"
-                className={inputClass}
-              />
-            </label>
-
-            <label className={labelClass}>
-              Icon URL
-              <input
-                name="icon_url"
-                maxLength={500}
-                placeholder="/backgrounds/missions/code_icon.png"
-                className={inputClass}
-              />
-            </label>
-          </div>
-
           <div className="mt-3 grid gap-3 md:grid-cols-[1fr_1.4fr_100px_120px] admin_missions_page_div_family">
             <label className={[((labelClass)), "admin_missions_page_label_family"].filter(Boolean).join(" ")}>
               Family
@@ -418,28 +396,6 @@ export default async function AdminMissionsPage() {
                 name="description"
                 required
                 className={[((inputClass)), "admin_missions_page_input_description_2"].filter(Boolean).join(" ")}
-              />
-            </label>
-          </div>
-
-          <div className="mt-3 grid gap-3 lg:grid-cols-2">
-            <label className={labelClass}>
-              Background Image URL
-              <input
-                name="background_image_url"
-                maxLength={500}
-                placeholder="/backgrounds/missions/code_background.png"
-                className={inputClass}
-              />
-            </label>
-
-            <label className={labelClass}>
-              Icon URL
-              <input
-                name="icon_url"
-                maxLength={500}
-                placeholder="/backgrounds/missions/code_icon.png"
-                className={inputClass}
               />
             </label>
           </div>
@@ -629,30 +585,6 @@ export default async function AdminMissionsPage() {
               </label>
             </div>
 
-            <div className="mt-3 grid gap-3 lg:grid-cols-2">
-              <label className={labelClass}>
-                Background Image URL
-                <input
-                  name="background_image_url"
-                  maxLength={500}
-                  defaultValue={mission.background_image_url ?? ""}
-                  placeholder="/backgrounds/missions/code_background.png"
-                  className={inputClass}
-                />
-              </label>
-
-              <label className={labelClass}>
-                Icon URL
-                <input
-                  name="icon_url"
-                  maxLength={500}
-                  defaultValue={mission.icon_url ?? ""}
-                  placeholder="/backgrounds/missions/code_icon.png"
-                  className={inputClass}
-                />
-              </label>
-            </div>
-
             <div className="mt-3 grid gap-3 md:grid-cols-[120px_1fr_110px_auto_auto_auto] md:items-end admin_missions_page_div_remnants_2">
               <label className={[((labelClass)), "admin_missions_page_label_remnants_7"].filter(Boolean).join(" ")}>
                 Remnants
@@ -768,7 +700,7 @@ export default async function AdminMissionsPage() {
           </h3>
         </div>
 
-        <div className="grid grid-cols-1 gap-3 admin_missions_page_div_mission_milestones">
+        <div className="grid gap-3 lg:grid-cols-2 admin_missions_page_div_mission_milestones">
           {milestones.map(
             (milestone) => (
               <AdminMissionForm
@@ -814,30 +746,6 @@ export default async function AdminMissionsPage() {
                     className={[((inputClass)), "admin_missions_page_input_description_4"].filter(Boolean).join(" ")}
                   />
                 </label>
-
-                <div className="mt-3 grid gap-3 lg:grid-cols-2">
-                  <label className={labelClass}>
-                    Background Image URL
-                    <input
-                      name="background_image_url"
-                      maxLength={500}
-                      defaultValue={milestone.background_image_url ?? ""}
-                      placeholder="/backgrounds/missions/key_background.png"
-                      className={inputClass}
-                    />
-                  </label>
-
-                  <label className={labelClass}>
-                    Icon URL
-                    <input
-                      name="icon_url"
-                      maxLength={500}
-                      defaultValue={milestone.icon_url ?? ""}
-                      placeholder="/backgrounds/missions/key_icon.png"
-                      className={inputClass}
-                    />
-                  </label>
-                </div>
 
                 <div className="mt-3 grid gap-3 md:grid-cols-[130px_110px_1fr_100px_auto_auto] md:items-end admin_missions_page_div_missions_required_2">
                   <label

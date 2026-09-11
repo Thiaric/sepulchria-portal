@@ -381,7 +381,7 @@ export async function createDailyMilestoneDefinition(
       );
     }
 
-    if (!isAll && targetCount === null) {
+    if (targetCount === null) {
       return failure(
         "Missions Required must be a positive whole number.",
       );
@@ -412,7 +412,7 @@ export async function createDailyMilestoneDefinition(
         description,
         background_image_url: backgroundImageUrl,
         icon_url: iconUrl,
-        target_count: isAll ? null : targetCount,
+        target_count: targetCount,
         is_all: isAll,
         reward_remnants: rewardRemnants,
         reward_item_id: rewardItemId,
@@ -483,9 +483,8 @@ export async function updateDailyMilestoneDefinition(
     }
 
     if (
-      !isAll &&
-      (!Number.isSafeInteger(targetCount) ||
-        targetCount < 1)
+      !Number.isSafeInteger(targetCount) ||
+      targetCount < 1
     ) {
       return failure(
         "Missions Required must be a positive whole number.",
@@ -526,7 +525,7 @@ export async function updateDailyMilestoneDefinition(
         ),
         background_image_url: backgroundImageUrl,
         icon_url: iconUrl,
-        target_count: isAll ? null : targetCount,
+        target_count: targetCount,
         is_all: isAll,
         reward_remnants: rewardRemnants,
         reward_item_id: rewardItemId,

@@ -26,8 +26,6 @@ export async function createOddJob(formData: FormData) {
 
   const name = readText(formData, "name");
   const description = readText(formData, "description");
-  const imageUrl =
-    readText(formData, "image_url") || null;
 
   validateJob(name, description);
 
@@ -47,7 +45,6 @@ export async function createOddJob(formData: FormData) {
   const { error } = await supabase.from("odd_jobs").insert({
     name,
     description,
-    image_url: imageUrl,
     is_active: true,
     sort_order: sortOrder,
     updated_at: new Date().toISOString(),
@@ -70,8 +67,6 @@ export async function updateOddJob(formData: FormData) {
   const jobId = readText(formData, "jobId");
   const name = readText(formData, "name");
   const description = readText(formData, "description");
-  const imageUrl =
-    readText(formData, "image_url") || null;
 
   if (!jobId) throw new Error("Job is required.");
 
@@ -84,7 +79,6 @@ export async function updateOddJob(formData: FormData) {
     .update({
       name,
       description,
-      image_url: imageUrl,
       updated_at: new Date().toISOString(),
     })
     .eq("id", jobId);

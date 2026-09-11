@@ -569,45 +569,8 @@ async function GameContent() {
     );
   }
 
-  const oddJobsBase =
-    (oddJobsData ?? []) as Omit<
-      OddJobStateRow,
-      "image_url"
-    >[];
-
-  const oddJobIds =
-    oddJobsBase.map((job) => job.job_id);
-
-  const oddJobImagesResult =
-    oddJobIds.length > 0
-      ? await supabase
-          .from("odd_jobs")
-          .select("id, image_url")
-          .in("id", oddJobIds)
-      : { data: [], error: null };
-
-  if (oddJobImagesResult.error) {
-    throw new Error(
-      `Unable to load Odd Job images: ${oddJobImagesResult.error.message}`,
-    );
-  }
-
-  const oddJobImageById =
-    new Map<string, string | null>(
-      (oddJobImagesResult.data ?? []).map(
-        (job) => [
-          String(job.id),
-          job.image_url ? String(job.image_url) : null,
-        ],
-      ),
-    );
-
-  const oddJobs: OddJobStateRow[] =
-    oddJobsBase.map((job) => ({
-      ...job,
-      image_url:
-        oddJobImageById.get(job.job_id) ?? null,
-    }));
+  const oddJobs =
+    (oddJobsData ?? []) as OddJobStateRow[];
 
   const {
     data: houseOfChancesData,
