@@ -21162,11 +21162,7 @@ background-image:
 .components_portal_game_context_panel_div_container,
 .components_portal_portal_responsive_right_sidebar_section_context_sidebar,
 .admin_layout_div_container_2,
-.admin_layout_div_container_5,
-.store_page_div_container_16,
-.store_page_div_container_13,
-.store_page_div_container_14,
-.store_page_div_container_15 {
+.admin_layout_div_container_5 {
   background: rgb(var(--sep-colour-100c09) / 0%) !important;
 }
 
@@ -21193,6 +21189,28 @@ background-image:
 background: rgb(var(--sep-colour-100c09) / 80%) !important;
 }
 
-.sep-notification-read {
+.sep-notification-read  {
 background: rgb(var(--sep-colour-100c09) / 50%) !important;
+}
+
+.store_page_div_container_16,
+.store_page_div_container_13,
+.store_page_div_container_14,
+.store_page_div_container_15 {
+  position: relative;
+  z-index: 0;
+  background: transparent !important;
+}
+
+.store_page_div_container_16::before,
+.store_page_div_container_13::before,
+.store_page_div_container_14::before,
+.store_page_div_container_15::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgb(var(--sep-colour-100c09));
+  opacity: 0.5;
+  z-index: -1;
+  pointer-events: none;
 }
