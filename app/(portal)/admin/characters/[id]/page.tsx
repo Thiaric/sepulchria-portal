@@ -96,6 +96,7 @@ type CharacterRow = {
   physical_description: string | null;
   personality: string | null;
   public_notes: string | null;
+  master_notes: string | null;
   relationships: string | null;
   offgame: string | null;
   title: string | null;
@@ -251,6 +252,7 @@ export default async function AdminCharacterPage({
         physical_description,
         personality,
         public_notes,
+        master_notes,
         relationships,
         offgame,
         title,
@@ -353,10 +355,9 @@ export default async function AdminCharacterPage({
       }),
 
     supabase
-      .from("character_gifts")
-      .select("gift_id")
-      .eq("character_id", id)
-      .eq("acquisition_source", "ancestry"),
+  .from("character_gifts")
+  .select("gift_id")
+  .eq("character_id", id),
   ]);
 
   if (
@@ -383,11 +384,23 @@ export default async function AdminCharacterPage({
       ),
     })) satisfies AdminAncestryGiftOption[];
 
-  const selectedAncestryGiftIds =
-    (selectedAncestryGiftResult.data ?? []).map(
-      (entry) => entry.gift_id,
-    );
+  const ownedGiftIds = new Set(
+  (selectedAncestryGiftResult.data ?? []).map(
+    (entry) => entry.gift_id,
+  ),
+);
 
+const selectedAncestryGiftIds =
+  ancestryGiftOptions
+    .filter(
+      (gift) =>
+        character.race_id !== null &&
+        gift.raceIds.includes(
+          character.race_id,
+        ) &&
+        ownedGiftIds.has(gift.id),
+    )
+    .map((gift) => gift.id);
   const race =
     normaliseRelation(
       character.race,
@@ -682,51 +695,7 @@ export default async function AdminCharacterPage({
           </section>
         ) : null}
 
-        <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px] admin_characters_id_page_div_container_5">
-          <div className="space-y-6 admin_characters_id_page_div_container_6">
-            <CharacterTextSection
-              title="Biography"
-              content={
-                character.biography
-              }
-            />
-
-            <CharacterTextSection
-              title="Physical description"
-              content={
-                character.physical_description
-              }
-            />
-
-            <CharacterTextSection
-              title="Personality"
-              content={
-                character.personality
-              }
-            />
-
-            <CharacterTextSection
-              title="Public notes"
-              content={
-                character.public_notes
-              }
-            />
-
-            <CharacterTextSection
-              title="Relationships"
-              content={
-                character.relationships
-              }
-            />
-
-            <CharacterTextSection
-              title="Offgame"
-              content={
-                character.offgame
-              }
-            />
-          </div>
-
+        <div className="mt-6 admin_characters_id_page_div_container_5">
           <section id="admin-character-review" className="scroll-mt-4 h-fit border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 sm:p-6 admin_characters_id_page_section_admin_character_review">
             <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))] admin_characters_id_page_p_admin_character_review">
               Staff controls
@@ -780,6 +749,20 @@ export default async function AdminCharacterPage({
                         character.surname
                       }
                       className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_characters_id_page_input_surname"
+                    />
+                  </AdminField>
+
+                  <AdminField label="Public title">
+                    <input
+                      type="text"
+                      name="title"
+                      defaultValue={
+                        character.title ??
+                        ""
+                      }
+                      maxLength={120}
+                      placeholder="Optional public title"
+                      className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))] admin_characters_id_page_input_title"
                     />
                   </AdminField>
 
@@ -953,6 +936,19 @@ export default async function AdminCharacterPage({
                       ""
                     }
                     className="w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_characters_id_page_textarea_public_notes"
+                  />
+                </AdminField>
+
+                <AdminField label="Masters' Notes">
+                  <textarea
+                    name="masterNotes"
+                    rows={8}
+                    maxLength={10000}
+                    defaultValue={
+                      character.master_notes ??
+                      ""
+                    }
+                    className="w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_characters_id_page_textarea_master_notes"
                   />
                 </AdminField>
 
@@ -1199,51 +1195,57 @@ export default async function AdminCharacterPage({
                   </div>
                 </div>
 
-                <AdminField label="Ancestry">
-                  <select
-                    name="raceId"
-                    defaultValue={
-                      character.race_id ??
-                      ""
-                    }
-                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_characters_id_page_select_race_id"
-                  >
-                    <option className="admin_characters_id_page_option_race_id" value="">
-                      No ancestry assigned
-                    </option>
+                <div className="space-y-3 admin_characters_id_page_div_ancestry_and_feats">
+                  <AdminField label="Ancestry">
+                    <select
+                      name="raceId"
+                      defaultValue={
+                        character.race_id ??
+                        ""
+                      }
+                      className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_characters_id_page_select_race_id"
+                    >
+                      <option className="admin_characters_id_page_option_race_id" value="">
+                        No ancestry assigned
+                      </option>
 
-                    {races.map(
-                      (option) => (
-                        <option className="admin_characters_id_page_option_option"
-                          key={
-                            option.id
-                          }
-                          value={
-                            option.id
-                          }
-                        >
-                          {
-                            option.name
-                          }
-                        </option>
-                      ),
-                    )}
-                  </select>
-                </AdminField>
+                      {races.map(
+                        (option) => (
+                          <option className="admin_characters_id_page_option_option"
+                            key={
+                              option.id
+                            }
+                            value={
+                              option.id
+                            }
+                          >
+                            {
+                              option.name
+                            }
+                          </option>
+                        ),
+                      )}
+                    </select>
+                  </AdminField>
 
-                <AdminAncestryGiftSelector
-                  gifts={ancestryGiftOptions}
-                  initialRaceId={character.race_id ?? ""}
-                  initialSelectedIds={selectedAncestryGiftIds}
-                />
-
-                {/* PHASE6_ADMIN_GIFTS_DISPLAY */}
-                <div className="mt-4 admin_characters_id_page_div_container_11">
-                  <CharacterGiftsDisplay
-                    characterId={id}
-                    compact
+                  <AdminAncestryGiftSelector
+                    gifts={ancestryGiftOptions}
+                    initialRaceId={character.race_id ?? ""}
+                    initialSelectedIds={selectedAncestryGiftIds}
                   />
                 </div>
+
+                {/* PHASE6_ADMIN_GIFTS_DISPLAY */}
+                <div
+  data-admin-full-row="true"
+  className="mt-4 w-full admin_characters_id_page_div_container_11"
+>
+  <CharacterGiftsDisplay
+    characterId={id}
+    compact
+    twoColumns
+  />
+</div>
 
                 <CharacterReviewFields
                   initialStatus={
@@ -1253,20 +1255,6 @@ export default async function AdminCharacterPage({
                     character.rejection_reason
                   }
                 />
-
-                <AdminField label="Public title">
-                  <input
-                    type="text"
-                    name="title"
-                    defaultValue={
-                      character.title ??
-                      ""
-                    }
-                    maxLength={120}
-                    placeholder="Optional public title"
-                    className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none placeholder:text-[rgb(var(--sep-colour-625747))] focus:border-[rgb(var(--sep-colour-a17a49))] admin_characters_id_page_input_title"
-                  />
-                </AdminField>
 
                 <AdminField label="Private staff notes">
                   <textarea

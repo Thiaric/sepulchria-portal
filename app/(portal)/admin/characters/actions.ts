@@ -428,6 +428,14 @@ export async function updateCharacterAdministration(
       10000,
     );
 
+  const masterNotes =
+    readOptionalText(
+      formData.get(
+        "masterNotes",
+      ),
+      10000,
+    );
+
   const relationships =
     readOptionalText(
       formData.get(
@@ -541,6 +549,7 @@ export async function updateCharacterAdministration(
       personality,
       biography,
       public_notes,
+      master_notes,
       relationships,
       offgame,
       muscles,
@@ -926,6 +935,8 @@ currentHealth =
       biography,
       public_notes:
         publicNotes,
+      master_notes:
+        masterNotes,
       relationships,
       offgame,
       ...attributes,
@@ -983,6 +994,8 @@ currentHealth =
         character.biography,
       public_notes:
         character.public_notes,
+      master_notes:
+        character.master_notes,
       relationships:
         character.relationships,
       offgame:
@@ -1115,6 +1128,8 @@ currentHealth =
             character.biography,
           public_notes:
             character.public_notes,
+          master_notes:
+            character.master_notes,
           relationships:
             character.relationships,
           offgame:

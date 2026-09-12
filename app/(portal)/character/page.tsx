@@ -25,6 +25,7 @@ import { CharacterDisplayTrophies } from "@/components/characters/character-disp
 import { CharacterConditionsDisplay } from "@/components/characters/character-conditions-display";
 import { CharacterLifeStateBadge } from "@/components/characters/character-life-state";
 import { CharacterConditionsEditor } from "@/components/characters/character-conditions-editor";
+import { CharacterMasterNotes } from "@/components/characters/character-master-notes";
 import { AutoFitCharacterName } from "@/components/characters/auto-fit-character-name";
 import { DisplayTrophySelector } from "@/components/characters/display-trophy-selector";
 import { LiveCharacterSheetRefresh } from "@/components/characters/live-character-sheet-refresh";
@@ -59,6 +60,7 @@ type CharacterProfile = {
   personality?: string | null;
   biography?: string | null;
   public_notes?: string | null;
+  master_notes?: string | null;
   relationships?: string | null;
   offgame?: string | null;
   portrait_url?: string | null;
@@ -140,6 +142,7 @@ export default async function CharacterPage({
       personality,
       biography,
       public_notes,
+      master_notes,
       relationships,
       offgame,
       portrait_url,
@@ -584,12 +587,16 @@ export function Profile({
             ) : null}
           </div>
 
-              <div className="min-w-0 character_page_div_container_25">
+              <div className="min-w-0 space-y-4 character_page_div_container_25">
                 {character.id ? (
                   <CharacterMechanicsDisplay
                     characterId={character.id}
                   />
                 ) : null}
+
+                <CharacterMasterNotes
+                  notes={character.master_notes}
+                />
               </div>
             </section>
           

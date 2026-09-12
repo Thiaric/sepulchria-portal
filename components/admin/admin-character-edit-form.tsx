@@ -639,7 +639,7 @@ export function AdminCharacterEditForm({
                 : selectedRace.max_age ===
                     null
                   ? `${selectedRace.name}: ${selectedRace.min_age}+ years`
-                  : `${selectedRace.name}: ${selectedRace.min_age}â€“${selectedRace.max_age} years`}
+                  : `${selectedRace.name}: ${selectedRace.min_age} - ${selectedRace.max_age} years`}
         </p>
 
         

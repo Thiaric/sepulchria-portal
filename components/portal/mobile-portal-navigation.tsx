@@ -1034,12 +1034,12 @@ const moreDragging =
   return (
     <>
       <nav
-        data-mobile-portal-nav
-        data-portal-navigation
-        data-sep-interaction-ignore="true"
-        aria-label="Mobile portal navigation"
-        className="fixed inset-x-0 bottom-0 z-[85] border-t border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0b0a))]/[0.97] px-2 pb-[max(0.45rem,env(safe-area-inset-bottom))] pt-1.5 shadow-[0_-10px_32px_rgba(var(--sep-rgb-0-0-0),0.42)] backdrop-blur lg:hidden components_portal_mobile_portal_navigation_nav_mobile_portal_navigation"
-      >
+  data-mobile-portal-nav
+  data-portal-navigation
+  data-sep-interaction-ignore="true"
+  aria-label="Mobile portal navigation"
+  className="relative z-[85] w-full shrink-0 border-t border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0b0a))]/[0.97] px-2 pb-[max(0.45rem,env(safe-area-inset-bottom))] pt-1.5 shadow-[0_-10px_32px_rgba(var(--sep-rgb-0-0-0),0.42)] backdrop-blur lg:hidden components_portal_mobile_portal_navigation_nav_mobile_portal_navigation"
+>
         <div
           className={[((`mx-auto grid max-w-md gap-1 ${
             orderHeadquartersRoomId

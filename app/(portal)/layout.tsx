@@ -439,17 +439,63 @@ async function PortalLayoutContent({
 
               /*
                * MOBILE
-               * Centre cosmetic frames the mobile viewport.
-               * Left cosmetic frames the More drawer.
-               * Right cosmetic frames the mobile context drawer.
+               *
+               * Real vertical layout:
+               * HEADER
+               * CENTRE (fills remaining height)
+               * TIDINGS (36px only when present)
+               * MOBILE NAV (its own real height)
                */
               @media (max-width: 1023px) {
+                [data-portal-mobile-stack] {
+                  display: flex;
+                  min-height: 0;
+                  flex: 1 1 0%;
+                  flex-direction: column;
+                  overflow: hidden;
+                }
+
+                .sepulchria-viewport-body {
+                  display: block;
+                  width: 100%;
+                  max-width: none;
+                  min-height: 0;
+                  flex: 1 1 0%;
+                  overflow: hidden;
+                  padding-bottom: 0;
+                }
+
+                .portal-left-shell {
+                  display: contents !important;
+                }
+
+                .portal-left-shell > aside {
+                  display: none !important;
+                }
+
+                .sepulchria-viewport-body
+                  > [data-portal-centre-host] {
+                  height: 100%;
+                  min-height: 0;
+                  box-sizing: border-box;
+                  overflow: hidden;
+                }
+
+                .sepulchria-viewport-body
+                  > [data-portal-centre-host]
+                  > [data-portal-column] {
+                  height: 100%;
+                  min-height: 0;
+                  overflow-y: auto;
+                  overscroll-behavior: contain;
+                }
+
                 [data-portal-shell-inner][data-has-cosmetic-centre-panel="true"]
                   [data-portal-centre-host] {
                   position: relative;
                   box-sizing: border-box;
                   padding-top: 15px;
-                  padding-bottom: 76px;
+                  padding-bottom: 12px;
                   padding-right: 12px;
                   padding-left: 12px;
                   overflow: hidden;
@@ -470,10 +516,6 @@ async function PortalLayoutContent({
                   filter: drop-shadow(0 3px 8px rgba(0,0,0,.35));
                 }
 
-                /*
-                 * Do NOT set position on these surfaces here.
-                 * Their components already use position: fixed on mobile.
-                 */
                 [data-portal-shell-inner][data-has-cosmetic-left-panel="true"]
                   [data-mobile-left-cosmetic-surface]::after {
                   content: "";
@@ -504,64 +546,35 @@ async function PortalLayoutContent({
                   filter: drop-shadow(0 3px 8px rgba(0,0,0,.35));
                 }
 
-                .sepulchria-viewport-body {
-                  display: block;
-                  width: 100%;
-                  max-width: none;
-                  overflow: hidden;
-                  padding-bottom: 0;
-                }
-
-                .portal-left-shell {
-                  display: contents !important;
-                }
-
-                .portal-left-shell > aside {
-                  display: none !important;
-                }
-
-                .sepulchria-viewport-body
-                  > [data-portal-centre-host] {
-                  /*
-                   * The parent viewport is already flex-1.
-                   * Mobile nav space is reserved by the Tidings footer below,
-                   * so the centre should use its full allocated height.
-                   */
-                  height: 100%;
-                  min-height: 0;
-                  overflow: hidden;
-                }
-
-                .sepulchria-viewport-body
-                  > [data-portal-centre-host]
-                  > [data-portal-column] {
-                  height: 100%;
-                  min-height: 0;
-                  overflow-y: auto;
-                  overscroll-behavior: contain;
-                }
-
                 [data-portal-shell] {
                   padding-top: env(safe-area-inset-top);
                 }
 
-                /*
-                 * Mobile navigation is fixed, so it occupies no flex space.
-                 * Give Tidings its real 36px height plus a 64px bottom margin
-                 * for the fixed navigation bar. This keeps Tidings visible
-                 * immediately above the nav instead of underneath it.
-                 */
                 footer[aria-label="Tidings"] {
-  display: block !important;
-  flex: 0 0 36px;
-  height: 36px;
-  min-height: 36px;
+                  display: block !important;
+                  position: relative;
+                  flex: 0 0 36px;
+                  height: 36px;
+                  min-height: 36px;
                   max-height: 36px;
-                  margin-bottom:
-                    calc(
-                      64px + env(safe-area-inset-bottom)
-                    );
+                  margin: 0;
                   z-index: 84;
+                }
+
+                [data-mobile-portal-nav] {
+                  position: relative !important;
+                  inset: auto !important;
+                  width: 100%;
+                  flex: 0 0 auto;
+                  margin: 0;
+                }
+
+                [data-portal-shell-inner]:has([data-tidings-ticker="true"])
+                  [data-portal-centre-host]
+                  > main[data-portal-column] {
+                  overflow-y: auto !important;
+                  overflow-x: visible !important;
+                  overscroll-behavior-y: contain;
                 }
               }
 
@@ -899,25 +912,6 @@ async function PortalLayoutContent({
                 color: #ffffff;
               }
 
-              /* MOBILE + TIDINGS: only while ticker exists */
-              @media (max-width: 1023px) {
-                [data-portal-shell-inner]:has([data-tidings-ticker="true"]) [data-portal-centre-host] > main[data-portal-column] {
-                  overflow-y: auto !important;
-                  overflow-x: visible !important;
-                  overscroll-behavior-y: contain;
-                }
-
-                [data-portal-shell-inner] {
-  --sep-mobile-tidings-height: 0px;
-}
-
-[data-portal-shell-inner]:has(
-  footer[data-tidings-ticker="true"]
-) {
-  --sep-mobile-tidings-height: 36px;
-}
-              }
-
               .sepulchria-viewport-body [data-portal-scroll] {
                 scrollbar-width: thin;
                 scrollbar-color: rgb(var(--sep-colour-5c472f)) transparent;
@@ -937,6 +931,10 @@ async function PortalLayoutContent({
               }
             `}</style>
 
+            <div
+              data-portal-mobile-stack
+              className="flex min-h-0 flex-1 flex-col overflow-hidden"
+            >
             <PortalCollapsibleColumns
               left={
                 <PortalSidebar
@@ -984,6 +982,7 @@ async function PortalLayoutContent({
                 context.isStaff
               }
             />
+            </div>
           </div>
         </div>
         </PortalNotificationCountsProvider>

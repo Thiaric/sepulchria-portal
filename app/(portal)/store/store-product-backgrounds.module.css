@@ -8,8 +8,8 @@
   composes: cardBackground;
   background-image:
     linear-gradient(
-      rgb(var(--sep-colour-100d0b) / 62%),
-      rgb(var(--sep-colour-100d0b) / 68%)
+      rgb(var(--sep-colour-100d0b) / 72%),
+      rgb(var(--sep-colour-100d0b) / 77%)
     ),
     url("/backgrounds/store/skin.png") !important;
 }
@@ -18,8 +18,8 @@
   composes: cardBackground;
   background-image:
     linear-gradient(
-      rgb(var(--sep-colour-100d0b) / 62%),
-      rgb(var(--sep-colour-100d0b) / 68%)
+      rgb(var(--sep-colour-100d0b) / 72%),
+      rgb(var(--sep-colour-100d0b) / 77%)
     ),
     url("/backgrounds/store/cosmetic.png") !important;
 }
@@ -28,8 +28,8 @@
   composes: cardBackground;
   background-image:
     linear-gradient(
-      rgb(var(--sep-colour-100d0b) / 62%),
-      rgb(var(--sep-colour-100d0b) / 68%)
+      rgb(var(--sep-colour-100d0b) / 72%),
+      rgb(var(--sep-colour-100d0b) / 77%)
     ),
     url("/backgrounds/store/music.png") !important;
 }
@@ -38,8 +38,8 @@
   composes: cardBackground;
   background-image:
     linear-gradient(
-      rgb(var(--sep-colour-100d0b) / 62%),
-      rgb(var(--sep-colour-100d0b) / 68%)
+      rgb(var(--sep-colour-100d0b) / 72%),
+      rgb(var(--sep-colour-100d0b) / 77%)
     ),
     url("/backgrounds/store/friend-list.png") !important;
 
@@ -51,8 +51,8 @@
   composes: cardBackground;
   background-image:
     linear-gradient(
-      rgb(var(--sep-colour-100d0b) / 62%),
-      rgb(var(--sep-colour-100d0b) / 68%)
+      rgb(var(--sep-colour-100d0b) / 72%),
+      rgb(var(--sep-colour-100d0b) / 77%)
     ),
     url("/backgrounds/store/private-location.png") !important;
 }
@@ -61,8 +61,8 @@
   composes: cardBackground;
   background-image:
     linear-gradient(
-      rgb(var(--sep-colour-100d0b) / 62%),
-      rgb(var(--sep-colour-100d0b) / 68%)
+      rgb(var(--sep-colour-100d0b) / 72%),
+      rgb(var(--sep-colour-100d0b) / 77%)
     ),
     url("/backgrounds/store/bundle.png") !important;
 }

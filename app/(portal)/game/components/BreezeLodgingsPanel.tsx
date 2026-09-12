@@ -243,31 +243,36 @@ export function BreezeLodgingsPanel({ rooms }: { rooms: BreezeLodgingStateRow[] 
                       className="relative flex min-h-[148px] flex-col overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-17110d))] game_components_breezelodgingspanel_article_article"
                     >
                       {room.image_url ? (
-                        <>
-                          <LocationAtmosphericImage
-                            src={room.image_url}
-                            alt={room.room_name}
-                            sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 20vw"
-                            objectFit="cover"
-                            isOutdoors={room.is_outdoors}
-                          />
+  <>
+    <div
+      className="pointer-events-none absolute inset-0 z-0 game_components_breezelodgingspanel_div_container_9"
+      style={{
+        backgroundImage: `
+          linear-gradient(
+            rgb(var(--sep-colour-100d0b) / 58%),
+            rgb(var(--sep-colour-100d0b) / 58%)
+          ),
+          url("${room.image_url}")
+        `,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    />
 
-                          <LocationImageLightbox
-                            src={room.image_url}
-                            name={room.room_name}
-                          />
-
-                          <div className="pointer-events-none absolute inset-0 z-[6] bg-black/42 game_components_breezelodgingspanel_div_container_9" />
-                          <div className="pointer-events-none absolute inset-0 z-[7] bg-gradient-to-t from-black/82 via-black/32 to-black/10 game_components_breezelodgingspanel_div_container_10" />
-                        </>
-                      ) : null}
+    <LocationImageLightbox
+      src={room.image_url}
+      name={room.room_name}
+    />
+  </>
+) : null}
 
                       <div className="pointer-events-none relative z-20 flex min-h-[148px] flex-1 flex-col p-3 game_components_breezelodgingspanel_div_container_11">
-                        <h4 className="font-serif text-[12px] text-[#f0dfbd] [text-shadow:0_2px_4px_rgba(0,0,0,0.95)] game_components_breezelodgingspanel_h4_heading">
+                        <h4 className="font-serif text-[12px] text-[#f0dfbd] game_components_breezelodgingspanel_h4_heading">
                           {room.room_name}
                         </h4>
 
-                        <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[#c9b99d] [text-shadow:0_2px_4px_rgba(0,0,0,0.95)] game_components_breezelodgingspanel_p_text_9">
+                        <p className="mt-1 text-[8px] uppercase tracking-[0.12em] text-[#c9b99d] game_components_breezelodgingspanel_p_text_9">
                           {room.rented_by_me
                             ? "Your room"
                             : occupied

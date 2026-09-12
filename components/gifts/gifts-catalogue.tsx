@@ -345,9 +345,11 @@ function FeatCard({
 export function GiftsCatalogue({
   gifts,
   characterMode = false,
+  twoColumns = false,
 }: {
   gifts: GiftCard[];
   characterMode?: boolean;
+  twoColumns?: boolean;
 }) {
   const [type, setType] = useState<GiftType>("all");
   const [ancestryId, setAncestryId] = useState("");
@@ -553,7 +555,14 @@ export function GiftsCatalogue({
       </section>
 
       {filtered.length ? (
-        <section className="mt-3 grid items-start gap-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 components_gifts_gifts_catalogue_section_section_2">
+        <section
+          className={[
+            "mt-3 grid items-start gap-3 grid-cols-1 md:grid-cols-2 components_gifts_gifts_catalogue_section_section_2",
+            twoColumns ? "" : "xl:grid-cols-3",
+          ]
+            .filter(Boolean)
+            .join(" ")}
+        >
   {filtered.map((gift) => (
     <FeatCard key={gift.id} gift={gift} />
   ))}

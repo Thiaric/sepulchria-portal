@@ -17,9 +17,11 @@ function one<T>(
 export async function CharacterGiftsDisplay({
   characterId,
   compact = false,
+  twoColumns = false,
 }: {
   characterId: string;
   compact?: boolean;
+  twoColumns?: boolean;
 }) {
   const supabase = await createClient();
 
@@ -243,6 +245,7 @@ export async function CharacterGiftsDisplay({
       <GiftsCatalogue
         gifts={gifts}
         characterMode
+        twoColumns={twoColumns}
       />
     </section>
   );
