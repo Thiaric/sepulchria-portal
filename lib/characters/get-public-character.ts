@@ -62,6 +62,7 @@ type CharacterRow = {
   personality: string | null;
   public_notes: string | null;
   master_notes: string | null;
+  master_notes_expires_at: string | null;
   relationships: string | null;
   offgame: string | null;
   title: string | null;
@@ -252,6 +253,7 @@ export const getPublicCharacter = cache(
         personality,
         public_notes,
         master_notes,
+        master_notes_expires_at,
         relationships,
         offgame,
         title,
@@ -462,6 +464,8 @@ export const getPublicCharacter = cache(
       personality: row.personality,
       public_notes: row.public_notes,
       master_notes: row.master_notes,
+      master_notes_expires_at:
+        row.master_notes_expires_at,
       relationships: row.relationships,
       offgame: row.offgame,
       title: row.title,

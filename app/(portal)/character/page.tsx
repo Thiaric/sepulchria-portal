@@ -61,6 +61,7 @@ type CharacterProfile = {
   biography?: string | null;
   public_notes?: string | null;
   master_notes?: string | null;
+  master_notes_expires_at?: string | null;
   relationships?: string | null;
   offgame?: string | null;
   portrait_url?: string | null;
@@ -143,6 +144,7 @@ export default async function CharacterPage({
       biography,
       public_notes,
       master_notes,
+      master_notes_expires_at,
       relationships,
       offgame,
       portrait_url,
@@ -596,6 +598,9 @@ export function Profile({
 
                 <CharacterMasterNotes
                   notes={character.master_notes}
+                  expiresAt={
+                    character.master_notes_expires_at
+                  }
                 />
               </div>
             </section>

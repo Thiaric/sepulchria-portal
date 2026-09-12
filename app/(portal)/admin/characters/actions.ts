@@ -436,6 +436,74 @@ export async function updateCharacterAdministration(
       10000,
     );
 
+  const masterNotesDurationMode =
+    String(
+      formData.get(
+        "masterNotesDurationMode",
+      ) ?? "permanent",
+    ).trim();
+
+  if (
+    masterNotesDurationMode !==
+      "permanent" &&
+    masterNotesDurationMode !==
+      "temporary"
+  ) {
+    throw new Error(
+      "Masters' Notes duration is invalid.",
+    );
+  }
+
+  const masterNotesDurationDaysRaw =
+    String(
+      formData.get(
+        "masterNotesDurationDays",
+      ) ?? "",
+    ).trim();
+
+  const masterNotesOriginalExpiresAt =
+    String(
+      formData.get(
+        "masterNotesOriginalExpiresAt",
+      ) ?? "",
+    ).trim();
+
+  const masterNotesOriginalDurationDaysRaw =
+    String(
+      formData.get(
+        "masterNotesOriginalDurationDays",
+      ) ?? "",
+    ).trim();
+
+  let masterNotesDurationDays:
+    number | null = null;
+
+  if (
+    masterNotes &&
+    masterNotesDurationMode ===
+      "temporary"
+  ) {
+    const parsedDays =
+      Number(
+        masterNotesDurationDaysRaw,
+      );
+
+    if (
+      !Number.isInteger(
+        parsedDays,
+      ) ||
+      parsedDays < 1 ||
+      parsedDays > 36500
+    ) {
+      throw new Error(
+        "Temporary Masters' Notes must last between 1 and 36500 days.",
+      );
+    }
+
+    masterNotesDurationDays =
+      parsedDays;
+  }
+
   const relationships =
     readOptionalText(
       formData.get(
@@ -550,6 +618,7 @@ export async function updateCharacterAdministration(
       biography,
       public_notes,
       master_notes,
+      master_notes_expires_at,
       relationships,
       offgame,
       muscles,
@@ -914,6 +983,57 @@ currentHealth =
     currentHealth,
   );
 
+  let masterNotesExpiresAt:
+    string | null = null;
+
+  if (
+    masterNotes &&
+    masterNotesDurationMode ===
+      "temporary"
+  ) {
+    const originalDurationDays =
+      Number(
+        masterNotesOriginalDurationDaysRaw,
+      );
+
+    const existingExpiryTimestamp =
+      character.master_notes_expires_at
+        ? new Date(
+            character.master_notes_expires_at,
+          ).getTime()
+        : Number.NaN;
+
+    const preserveExistingExpiry =
+      Boolean(
+        character.master_notes_expires_at,
+      ) &&
+      masterNotesOriginalExpiresAt ===
+        character.master_notes_expires_at &&
+      Number.isInteger(
+        originalDurationDays,
+      ) &&
+      originalDurationDays ===
+        masterNotesDurationDays &&
+      !Number.isNaN(
+        existingExpiryTimestamp,
+      ) &&
+      existingExpiryTimestamp >
+        Date.now();
+
+    masterNotesExpiresAt =
+      preserveExistingExpiry
+        ? character
+            .master_notes_expires_at
+        : new Date(
+            Date.now() +
+              (
+                masterNotesDurationDays ??
+                1
+              ) *
+                86_400_000,
+          ).toISOString();
+  }
+
   const candidatePayload:
     Record<string, unknown> = {
       first_name: firstName,
@@ -937,6 +1057,8 @@ currentHealth =
         publicNotes,
       master_notes:
         masterNotes,
+      master_notes_expires_at:
+        masterNotesExpiresAt,
       relationships,
       offgame,
       ...attributes,
@@ -996,6 +1118,8 @@ currentHealth =
         character.public_notes,
       master_notes:
         character.master_notes,
+      master_notes_expires_at:
+        character.master_notes_expires_at,
       relationships:
         character.relationships,
       offgame:
@@ -1130,6 +1254,8 @@ currentHealth =
             character.public_notes,
           master_notes:
             character.master_notes,
+          master_notes_expires_at:
+            character.master_notes_expires_at,
           relationships:
             character.relationships,
           offgame:

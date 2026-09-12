@@ -439,6 +439,9 @@ export function PublicCharacterProfileView({
 
               <CharacterMasterNotes
                 notes={character.master_notes}
+                expiresAt={
+                  character.master_notes_expires_at
+                }
               />
             </div>
           </section>

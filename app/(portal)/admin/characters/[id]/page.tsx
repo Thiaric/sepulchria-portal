@@ -97,6 +97,7 @@ type CharacterRow = {
   personality: string | null;
   public_notes: string | null;
   master_notes: string | null;
+  master_notes_expires_at: string | null;
   relationships: string | null;
   offgame: string | null;
   title: string | null;
@@ -253,6 +254,7 @@ export default async function AdminCharacterPage({
         personality,
         public_notes,
         master_notes,
+        master_notes_expires_at,
         relationships,
         offgame,
         title,
@@ -940,16 +942,110 @@ const selectedAncestryGiftIds =
                 </AdminField>
 
                 <AdminField label="Masters' Notes">
-                  <textarea
-                    name="masterNotes"
-                    rows={8}
-                    maxLength={10000}
-                    defaultValue={
-                      character.master_notes ??
-                      ""
-                    }
-                    className="w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_characters_id_page_textarea_master_notes"
-                  />
+                  <div className="space-y-3">
+                    <textarea
+                      name="masterNotes"
+                      rows={8}
+                      maxLength={10000}
+                      defaultValue={
+                        character.master_notes ??
+                        ""
+                      }
+                      className="w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_characters_id_page_textarea_master_notes"
+                    />
+
+                    <input
+                      type="hidden"
+                      name="masterNotesOriginalExpiresAt"
+                      value={
+                        character.master_notes_expires_at ??
+                        ""
+                      }
+                    />
+
+                    <input
+                      type="hidden"
+                      name="masterNotesOriginalDurationDays"
+                      value={
+                        character.master_notes_expires_at
+                          ? Math.max(
+                              1,
+                              Math.ceil(
+                                (
+                                  new Date(
+                                    character.master_notes_expires_at,
+                                  ).getTime() -
+                                  Date.now()
+                                ) /
+                                  86_400_000,
+                              ),
+                            )
+                          : ""
+                      }
+                    />
+
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <label className="block">
+                        <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+                          Duration
+                        </span>
+
+                        <select
+                          name="masterNotesDurationMode"
+                          defaultValue={
+                            character.master_notes_expires_at
+                              ? "temporary"
+                              : "permanent"
+                          }
+                          className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+                        >
+                          <option value="permanent">
+                            Permanent
+                          </option>
+                          <option value="temporary">
+                            Temporary
+                          </option>
+                        </select>
+                      </label>
+
+                      <label className="block">
+                        <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+                          Days
+                        </span>
+
+                        <input
+                          type="number"
+                          name="masterNotesDurationDays"
+                          min={1}
+                          max={36500}
+                          step={1}
+                          defaultValue={
+                            character.master_notes_expires_at
+                              ? Math.max(
+                                  1,
+                                  Math.ceil(
+                                    (
+                                      new Date(
+                                        character.master_notes_expires_at,
+                                      ).getTime() -
+                                      Date.now()
+                                    ) /
+                                      86_400_000,
+                                  ),
+                                )
+                              : 7
+                          }
+                          className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+                        />
+                      </label>
+                    </div>
+
+                    <p className="text-[10px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+                      Permanent notes remain until manually removed.
+                      Temporary notes disappear automatically from the
+                      character sheet when their duration ends.
+                    </p>
+                  </div>
                 </AdminField>
 
                 <AdminField label="Relationships">

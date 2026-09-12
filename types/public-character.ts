@@ -80,6 +80,7 @@ export type PublicCharacterProfile = {
   personality: string | null;
   public_notes: string | null;
   master_notes: string | null;
+  master_notes_expires_at: string | null;
   relationships: string | null;
   offgame: string | null;
   title: string | null;
