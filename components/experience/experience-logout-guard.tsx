@@ -138,13 +138,21 @@ export function ExperienceLogoutGuard() {
   }
 
   async function maybeStartPrompt(pending: PendingAction) {
-    pendingActionRef.current = pending;
+  const confirmed = window.confirm(
+    "Are you sure you want to log out?",
+  );
 
-    if (flowLockRef.current) {
-      return;
-    }
+  if (!confirmed) {
+    return;
+  }
 
-    flowLockRef.current = true;
+  pendingActionRef.current = pending;
+
+  if (flowLockRef.current) {
+    return;
+  }
+
+  flowLockRef.current = true;
 
     try {
       const status = await readJson<StatusPayload>(

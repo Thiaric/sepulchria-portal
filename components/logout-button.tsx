@@ -114,7 +114,7 @@ export function LogoutButton() {
   aria-label="Log out"
   data-experience-logout="1"
   onClick={logout}
-  disabled={isLoggingOut}
+    disabled={isLoggingOut}
     className="relative
   flex
   h-8
