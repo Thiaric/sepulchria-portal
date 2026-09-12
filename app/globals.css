@@ -21176,7 +21176,9 @@ background-image:
 .components_cosmetics_player_cosmetics_manager_section_section_3,
 .friends_page_section_section,
 .game_components_houseofchancespanel_div_container_16,
-.game_components_houseofchancespanel_div_container_17
+.game_components_houseofchancespanel_div_container_17,
+.components_homepage_homepage_contact_modal_div_dialog,
+.components_homepage_homepage_contact_modal_button_close_contact
  {
 
   background: rgb(var(--sep-colour-100c09) / 30%) !important;
@@ -21210,7 +21212,7 @@ background: rgb(var(--sep-colour-100c09) / 50%) !important;
   position: absolute;
   inset: 0;
   background: rgb(var(--sep-colour-100c09));
-  opacity: 0.5;
+  opacity: 0.1;
   z-index: -1;
   pointer-events: none;
 }

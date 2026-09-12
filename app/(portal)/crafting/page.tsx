@@ -345,12 +345,12 @@ export default async function CraftingPage() {
               </h1>
             </div>
 
-            <p className="max-w-2xl text-[11px] leading-6 text-[rgb(var(--sep-colour-9f9281))] sm:text-right crafting_page_p_text">
+            <p className="max-w-2xl text-[11px] leading-6 text-[rgb(var(--sep-colour-9f9281))] sm:text-left crafting_page_p_text">
               Use materials carried by{" "}
               <span className="text-[rgb(var(--sep-colour-d4bd94))] crafting_page_span_text">
                 {character.display_name ?? "your character"}
               </span>{" "}
-              to create items from recipes they have learned.
+              to create items from recipes they have learned. Recipes are learned via Recipe Items, found in Gathering or Purcheasable. 
             </p>
           </div>
         </header>

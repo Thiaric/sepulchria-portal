@@ -110,19 +110,11 @@ export function LogoutButton() {
 
   return (
   <button
-    type="button"
-    aria-label="Log out"
-    data-experience-logout="1"
-    data-experience-logout-bypass="1"
-    onPointerDown={() => {
-      window.dispatchEvent(
-        new Event(
-          "sepulchria-logout-started",
-        ),
-      );
-    }}
-    onClick={logout}
-    disabled={isLoggingOut}
+  type="button"
+  aria-label="Log out"
+  data-experience-logout="1"
+  onClick={logout}
+  disabled={isLoggingOut}
     className="relative
   flex
   h-8

@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 
 const CONTACT_TO = "info@sepulchria.com";
+const CONTACT_FROM =
+  "Sepulchria Contact <contact@sepulchria.com>";
 
 function cleanText(value: unknown, maxLength: number) {
   return typeof value === "string"
@@ -25,11 +27,9 @@ function escapeHtml(value: string) {
 
 export async function POST(request: NextRequest) {
   const apiKey = process.env.RESEND_API_KEY?.trim();
-  const from =
-    process.env.CONTACT_EMAIL_FROM?.trim() ||
-    process.env.STORE_EMAIL_FROM?.trim();
+  
 
-  if (!apiKey || !from) {
+  if (!apiKey) {
     return NextResponse.json(
       {
         ok: false,
@@ -98,9 +98,9 @@ export async function POST(request: NextRequest) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from,
-      to: [CONTACT_TO],
-      reply_to: email,
+  from: CONTACT_FROM,
+  to: [CONTACT_TO],
+  reply_to: email,
       subject: `[Sepulchria Contact] ${subject}`,
       text: [
         "New message from the Sepulchria public contact form",

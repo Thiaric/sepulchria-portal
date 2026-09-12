@@ -5375,3 +5375,86 @@ body[data-portal-skin]
   color: rgb(var(--sep-skin-c2)) !important;
   -webkit-text-fill-color: rgb(var(--sep-skin-c2)) !important;
 }
+
+/* ================================================================
+   PUBLIC / HOMEPAGE AUTOFILL
+   Uses the active skin directly because public surfaces do NOT
+   inherit --sep-unified-field-* from [data-portal-shell].
+   ================================================================ */
+
+:is(
+  html[data-portal-skin],
+  body[data-portal-skin]
+)
+[data-public-skin-surface="true"]
+input:-webkit-autofill,
+
+:is(
+  html[data-portal-skin],
+  body[data-portal-skin]
+)
+[data-public-skin-surface="true"]
+input:-webkit-autofill:hover,
+
+:is(
+  html[data-portal-skin],
+  body[data-portal-skin]
+)
+[data-public-skin-surface="true"]
+input:-webkit-autofill:focus,
+
+:is(
+  html[data-portal-skin],
+  body[data-portal-skin]
+)
+[data-public-skin-surface="true"]
+input:-webkit-autofill:active {
+  -webkit-text-fill-color:
+    rgb(var(--sep-skin-c2)) !important;
+
+  color:
+    rgb(var(--sep-skin-c2)) !important;
+
+  caret-color:
+    rgb(var(--sep-skin-c2)) !important;
+
+  border-color:
+    rgb(var(--sep-skin-c1) / 0.55) !important;
+
+  -webkit-box-shadow:
+    0 0 0 1000px
+    color-mix(
+      in srgb,
+      rgb(var(--sep-skin-c1)) 6%,
+      rgb(var(--sep-colour-15100d))
+    )
+    inset !important;
+
+  box-shadow:
+    0 0 0 1000px
+    color-mix(
+      in srgb,
+      rgb(var(--sep-skin-c1)) 6%,
+      rgb(var(--sep-colour-15100d))
+    )
+    inset !important;
+
+  transition:
+    background-color 999999s ease-out 0s !important;
+}
+
+:is(
+  html[data-portal-skin],
+  body[data-portal-skin]
+)
+[data-public-skin-surface="true"]
+input:autofill {
+  color:
+    rgb(var(--sep-skin-c2)) !important;
+
+  caret-color:
+    rgb(var(--sep-skin-c2)) !important;
+
+  border-color:
+    rgb(var(--sep-skin-c1) / 0.55) !important;
+}

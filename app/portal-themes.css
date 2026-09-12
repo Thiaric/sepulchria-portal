@@ -1539,7 +1539,10 @@ body[data-portal-skin="vellum"] {
 [data-portal-skin="vellum"] [class~="_th]:border-[rgb(var(--sep-colour-60482e))]/45"] {
   border-color: rgb(169 148 113) !important;
 }
-[data-portal-skin="vellum"] [class~="bg-[rgb(var(--sep-colour-050403))]/88"] {
+[data-portal-skin="vellum"]
+[class~="bg-[rgb(var(--sep-colour-050403))]/88"]:not(
+  .components_homepage_homepage_contact_modal_button_close_contact
+) {
   background-color: rgb(232 223 205) !important;
 }
 [data-portal-skin="vellum"] [class~="bg-[rgb(var(--sep-colour-090705))]"] {
