@@ -714,12 +714,15 @@ export async function enterRoomFromMap(
   }
 
   await touchPresence(
-    supabase,
-    character.id,
-    roomId,
-  );
+  supabase,
+  character.id,
+  roomId,
+);
 
-  redirect("/game");
+revalidatePath("/game");
+revalidatePath("/");
+
+redirect("/game");
 }
 
 type WhisperRecipient = {
