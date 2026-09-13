@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-
+import { PendingSubmitButton } from "@/components/forms/pending-submit-button";
 import { RichTextContentClient } from "@/components/editor/rich-text-content-client";
 import { CollapsibleRoomDescription } from "@/components/world/collapsible-room-description";
 import { LocationAtmosphericImage } from "@/components/world/location-atmospheric-image";
@@ -256,12 +256,11 @@ export default async function AreaPage({
                           value={room.id}
                         />
 
-                        <button
-                          type="submit"
-                          className="w-full border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-241a12))] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:border-[rgb(var(--sep-colour-b28b55))] hover:bg-[rgb(var(--sep-colour-302217))] hover:text-white areas_slug_page_button_enter"
-                        >
-                          Enter
-                        </button>
+                        <PendingSubmitButton
+  idleText="Enter"
+  pendingText="Entering..."
+  className="w-full border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-241a12))] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:border-[rgb(var(--sep-colour-b28b55))] hover:bg-[rgb(var(--sep-colour-302217))] hover:text-white disabled:cursor-wait disabled:opacity-60 areas_slug_page_button_enter"
+/>
                       </form>
                     ) : null}
                   </div>

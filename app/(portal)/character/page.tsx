@@ -760,6 +760,7 @@ export function Profile({
                 action={updateApprovedCharacterProfile}
                 className="space-y-5 character_page_form_update_approved_character_profile"
               >
+                <div className="grid gap-5 md:grid-cols-2 character_page_div_container_portrait_etc">
                 <label className="block character_page_label_label">
                   <span className="text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))] character_page_span_text">
                     Portrait URL
@@ -794,6 +795,23 @@ export function Profile({
                 
                 </label>
 
+                <label className="block character_page_label_pronouns">
+  <span className="text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))] character_page_span_pronouns">
+    Pronouns
+  </span>
+
+  <input
+    type="text"
+    name="pronouns"
+    maxLength={80}
+    defaultValue={
+      character.pronouns ?? ""
+    }
+    placeholder="Optional"
+    className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] character_page_input_pronouns"
+  />
+</label>
+
                 <label className="block character_page_label_label_3">
   <span className="text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))] character_page_span_text_3">
     Sexual orientation
@@ -810,7 +828,7 @@ export function Profile({
     placeholder="Optional"
     className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] character_page_input_sexual_orientation"
   />
-</label>
+</label></div>
 
                 <div className="grid gap-5 md:grid-cols-2 character_page_div_container_39">
                   <ApprovedProfileTextArea

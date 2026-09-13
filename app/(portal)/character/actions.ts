@@ -755,6 +755,13 @@ export async function updateApprovedCharacterProfile(
     10000,
   );
 
+  const pronouns =
+  text(
+    formData,
+    "pronouns",
+    80,
+  );
+
   const sexualOrientation =
   text(
     formData,
@@ -792,11 +799,12 @@ export async function updateApprovedCharacterProfile(
   } = await supabase
     .from("characters")
     .select(`
-      id,
-      status,
-      portrait_url,
-      music_url,
-      sexual_orientation,
+  id,
+  status,
+  portrait_url,
+  music_url,
+  pronouns,
+  sexual_orientation,
       physical_description,
       personality,
       biography,
@@ -847,6 +855,12 @@ export async function updateApprovedCharacterProfile(
     character.music_url,
     musicUrl || null,
   );
+
+  setIfChanged(
+  "pronouns",
+  character.pronouns,
+  pronouns || null,
+);
 
   setIfChanged(
     "sexual_orientation",

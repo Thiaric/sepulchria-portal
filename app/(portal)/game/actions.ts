@@ -639,7 +639,9 @@ export async function enterRoomFromMap(
   ).trim();
 
   if (!roomId) {
-    throw new Error("Invalid destination room.");
+    throw new Error(
+      "Invalid destination room.",
+    );
   }
 
   const { supabase, character } =
@@ -647,15 +649,27 @@ export async function enterRoomFromMap(
       skipCurrentAccessCheck: true,
     });
 
+  const [
+    destinationRoomResult,
+    destinationAccess,
+  ] = await Promise.all([
+    supabase
+      .from("rooms")
+      .select("id")
+      .eq("id", roomId)
+      .eq("is_active", true)
+      .maybeSingle(),
+
+    getPrivateLocationAccess(
+      roomId,
+      character.id,
+    ),
+  ]);
+
   const {
     data: destinationRoom,
     error: roomError,
-  } = await supabase
-    .from("rooms")
-    .select("id")
-    .eq("id", roomId)
-    .eq("is_active", true)
-    .maybeSingle();
+  } = destinationRoomResult;
 
   if (roomError) {
     throw new Error(
@@ -669,12 +683,6 @@ export async function enterRoomFromMap(
     );
   }
 
-  const destinationAccess =
-    await getPrivateLocationAccess(
-      roomId,
-      character.id,
-    );
-
   if (
     destinationAccess.isPrivate &&
     !destinationAccess.allowed
@@ -685,20 +693,19 @@ export async function enterRoomFromMap(
   }
 
   await rememberOrderHeadquartersReturnRoom({
-    characterId:
-      character.id,
-    destinationRoomId:
-      roomId,
+    characterId: character.id,
+    destinationRoomId: roomId,
     currentRoomId:
       character.current_room_id,
   });
 
-  const { error: moveError } = await supabase
-    .from("characters")
-    .update({
-      current_room_id: roomId,
-    })
-    .eq("id", character.id);
+  const { error: moveError } =
+    await supabase
+      .from("characters")
+      .update({
+        current_room_id: roomId,
+      })
+      .eq("id", character.id);
 
   if (moveError) {
     throw new Error(
@@ -711,9 +718,6 @@ export async function enterRoomFromMap(
     character.id,
     roomId,
   );
-
-  revalidatePath("/game");
-  revalidatePath("/");
 
   redirect("/game");
 }
