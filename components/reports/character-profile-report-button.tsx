@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { createPortal } from "react-dom";
 import { Flag } from "lucide-react";
 import { useState } from "react";
 
@@ -150,15 +151,21 @@ export function CharacterProfileReportButton({
         <Flag aria-hidden="true" className="h-3.5 w-3.5" />
       </button>
 
-      {open ? (
+      {open && typeof document !== "undefined"
+        ? createPortal(
         <div
-          className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/75 p-4 components_reports_character_profile_report_button_div_report_character_profile"
+          className={[
+            "fixed z-[20000] flex items-center justify-center bg-black/75 p-2 sm:p-4 components_reports_character_profile_report_button_div_report_character_profile",
+            window.self === window.top
+              ? "left-0 right-0 top-[clamp(56px,8dvh,80px)] bottom-[calc(64px+env(safe-area-inset-bottom))] lg:inset-0"
+              : "inset-0",
+          ].join(" ")}
           role="dialog"
           aria-modal="true"
           aria-label="Report character profile"
         >
-          <div className="w-full max-w-xl border border-[rgb(var(--sep-colour-73513a))] bg-[rgb(var(--sep-colour-100c09))] shadow-2xl components_reports_character_profile_report_button_div_report_character_profile_2">
-            <div className="flex items-start justify-between gap-4 border-b border-[rgb(var(--sep-colour-59432c))]/45 px-5 py-4 components_reports_character_profile_report_button_div_report_character_profile_3">
+          <div className="flex max-h-full min-h-0 w-full max-w-xl flex-col overflow-hidden border border-[rgb(var(--sep-colour-73513a))] bg-[rgb(var(--sep-colour-100c09))] shadow-2xl components_reports_character_profile_report_button_div_report_character_profile_2">
+            <div className="flex shrink-0 items-start justify-between gap-4 border-b border-[rgb(var(--sep-colour-59432c))]/45 px-4 py-3 sm:px-5 sm:py-4 components_reports_character_profile_report_button_div_report_character_profile_3">
               <div className="components_reports_character_profile_report_button_div_report_character_profile_4">
                 <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-8c704b))] components_reports_character_profile_report_button_p_report_character_profile">
                   Moderation Report
@@ -180,7 +187,7 @@ export function CharacterProfileReportButton({
             </div>
 
             {reference ? (
-              <div className="p-5 components_reports_character_profile_report_button_div_container">
+              <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 sm:p-5 components_reports_character_profile_report_button_div_container">
                 <div className="border border-[rgb(var(--sep-colour-6e7547))]/60 bg-[rgb(var(--sep-colour-182016))] p-4 text-sm leading-6 text-[rgb(var(--sep-colour-c9c99d))] components_reports_character_profile_report_button_div_container_2">
                   Your report has been submitted as <strong className="components_reports_character_profile_report_button_strong_emphasis">{reference}</strong>.
                   Every selected profile field has been preserved for staff review.
@@ -204,7 +211,7 @@ export function CharacterProfileReportButton({
                 </div>
               </div>
             ) : (
-              <div className="space-y-5 p-5 components_reports_character_profile_report_button_div_container_4">
+              <div className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain p-4 sm:space-y-5 sm:p-5 components_reports_character_profile_report_button_div_container_4">
                 <p className="text-xs leading-6 text-[rgb(var(--sep-colour-9e8c75))] components_reports_character_profile_report_button_p_text">
                   Select every profile field that should be reviewed. The current
                   value of each selected field will be preserved as evidence.
@@ -306,8 +313,10 @@ export function CharacterProfileReportButton({
               </div>
             )}
           </div>
-        </div>
-      ) : null}
+        </div>,
+        document.body,
+      )
+        : null}
     </>
   );
 }

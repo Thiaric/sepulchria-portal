@@ -631,14 +631,12 @@ export async function moveCharacter(formData: FormData): Promise<void> {
   redirect("/game");
 }
 
-export async function enterRoomFromMap(
-  formData: FormData,
+async function enterRoomById(
+  roomId: string,
 ): Promise<void> {
-  const roomId = String(
-    formData.get("roomId") ?? "",
-  ).trim();
+  const cleanRoomId = roomId.trim();
 
-  if (!roomId) {
+  if (!cleanRoomId) {
     throw new Error(
       "Invalid destination room.",
     );
@@ -656,12 +654,12 @@ export async function enterRoomFromMap(
     supabase
       .from("rooms")
       .select("id")
-      .eq("id", roomId)
+      .eq("id", cleanRoomId)
       .eq("is_active", true)
       .maybeSingle(),
 
     getPrivateLocationAccess(
-      roomId,
+      cleanRoomId,
       character.id,
     ),
   ]);
@@ -694,7 +692,7 @@ export async function enterRoomFromMap(
 
   await rememberOrderHeadquartersReturnRoom({
     characterId: character.id,
-    destinationRoomId: roomId,
+    destinationRoomId: cleanRoomId,
     currentRoomId:
       character.current_room_id,
   });
@@ -703,7 +701,7 @@ export async function enterRoomFromMap(
     await supabase
       .from("characters")
       .update({
-        current_room_id: roomId,
+        current_room_id: cleanRoomId,
       })
       .eq("id", character.id);
 
@@ -714,15 +712,31 @@ export async function enterRoomFromMap(
   }
 
   await touchPresence(
-  supabase,
-  character.id,
-  roomId,
-);
+    supabase,
+    character.id,
+    cleanRoomId,
+  );
 
-revalidatePath("/game");
-revalidatePath("/");
+  revalidatePath("/game");
+  revalidatePath("/");
+}
 
-redirect("/game");
+export async function enterRoomFromMap(
+  formData: FormData,
+): Promise<void> {
+  const roomId = String(
+    formData.get("roomId") ?? "",
+  );
+
+  await enterRoomById(roomId);
+
+  redirect("/game");
+}
+
+export async function enterRoomFromModal(
+  roomId: string,
+): Promise<void> {
+  await enterRoomById(roomId);
 }
 
 type WhisperRecipient = {

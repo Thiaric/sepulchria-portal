@@ -14,6 +14,10 @@ import {
 } from "next/navigation";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import {
+  readPreferenceStorage,
+  writePreferenceStorage,
+} from "@/lib/privacy/storage-preferences";
 
 import {
   CHAT_MAX_LENGTH,
@@ -105,6 +109,9 @@ const ATTRIBUTE_LABELS: Record<
   shrewd: "Shrewd",
   presence_score: "Presence",
 };
+
+const TEXTAREA_ROWS_STORAGE_KEY =
+  "sepulchria-room-chat-textarea-rows";
 
 type AttributeBreakdownEntry = {
   base: number | null;
@@ -849,7 +856,30 @@ export default function RoomChatForm({
   ] = useState(0);
 
   const [textareaRows, setTextareaRows] =
-    useState<1 | 2 | 3 | 4>(2);
+  useState<1 | 2 | 3 | 4>(2);
+
+useEffect(() => {
+  try {
+    const stored =
+      readPreferenceStorage(
+        TEXTAREA_ROWS_STORAGE_KEY,
+      );
+
+    const parsed =
+      Number(stored);
+
+    if (
+      parsed === 1 ||
+      parsed === 2 ||
+      parsed === 3 ||
+      parsed === 4
+    ) {
+      setTextareaRows(parsed);
+    }
+  } catch {
+    // Storage unavailable: keep default of 2.
+  }
+}, []);
 
   const textareaHeight =
     textareaRows * 20 + 16;
@@ -1673,10 +1703,24 @@ function ignoreSpellingWord() {
               <label className="flex shrink-0 items-center gap-1 text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-685d50))] game_components_roomchatform_label_label">
                 <span className="game_components_roomchatform_span_text">Rows</span>
                 <select
-                  value={textareaRows}
-                  onChange={(event) =>
-                    setTextareaRows(Number(event.target.value) as 1 | 2 | 3 | 4)
-                  }
+  value={textareaRows}
+  onChange={(event) => {
+    const nextRows =
+      Number(
+        event.target.value,
+      ) as 1 | 2 | 3 | 4;
+
+    setTextareaRows(nextRows);
+
+    try {
+      writePreferenceStorage(
+        TEXTAREA_ROWS_STORAGE_KEY,
+        String(nextRows),
+      );
+    } catch {
+      // Storage unavailable.
+    }
+  }}
                   className="h-5 border border-[rgb(var(--sep-colour-5f4930))] bg-[rgb(var(--sep-colour-100c09))] px-1 text-[8px] text-[rgb(var(--sep-colour-bda77f))] outline-none game_components_roomchatform_select_textarea_rows"
                   aria-label="Textarea rows"
                 >

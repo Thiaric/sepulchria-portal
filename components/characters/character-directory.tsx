@@ -8,7 +8,7 @@ import {
 } from "react";
 
 import {
-  enterRoomFromMap,
+  enterRoomFromModal,
 } from "@/app/(portal)/game/actions";
 import { MessageCharacterModalButton } from "@/components/messages/message-character-modal-button";
 import type { PublicCharacterListItem } from "@/lib/characters/get-public-character";
@@ -583,20 +583,26 @@ function CharacterDirectoryCard({
                 ) : viewerCharacterId !== null && viewerCharacterId !== character.id && communication.blocked ? (<div className="pointer-events-auto absolute bottom-4 right-4 z-20 components_characters_character_directory_div_container_12"><SanctionRestrictionNotice message={communication.message} compact /></div>) : null}
 
                 {character.currentRoom ? (
-                  <form className="components_characters_character_directory_form_form"
-                    action={enterRoomFromMap}
-                  >
-                    <input className="components_characters_character_directory_input_room_id"
-                      type="hidden"
-                      name="roomId"
-                      value={
-                        character.currentRoom
-                          .id
-                      }
-                    />
-
+                  <div className="components_characters_character_directory_form_form">
                     <button
-                      type="submit"
+                      type="button"
+                      onClick={async () => {
+                        await enterRoomFromModal(
+                          character.currentRoom!.id,
+                        );
+
+                        if (
+                          window.top &&
+                          window.top !== window
+                        ) {
+                          window.top.location.href =
+                            "/game";
+                          return;
+                        }
+
+                        window.location.href =
+                          "/game";
+                      }}
                       aria-label={`Go to ${character.currentRoom.name}`}
                       title={`Go to ${character.currentRoom.name}`}
                       className="flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-271c12))] text-sm text-[rgb(var(--sep-colour-dfc79c))] transition hover:border-[rgb(var(--sep-colour-997042))] hover:bg-[rgb(var(--sep-colour-3b2919))] components_characters_character_directory_button_action_2"
@@ -605,7 +611,7 @@ function CharacterDirectoryCard({
                         →
                       </span>
                     </button>
-                  </form>
+                  </div>
                 ) : null}
               </div>
             </div>
