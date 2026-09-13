@@ -9,6 +9,9 @@ import { StoreMusicPreview } from "@/components/store/store-music-preview";
 import { StoreAccountPanels } from "@/components/store/store-account-panels";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import {
+  StoreProductImageLightbox,
+} from "@/components/store/store-product-image-lightbox";
 
 type StoreProduct = {
   id: string;
@@ -767,35 +770,50 @@ function StoreProductCard({
   ) : product.category === "music" && musicPreviewUrl ? (
     <div className="flex h-full w-full items-center justify-center p-3 store_page_div_container_14">
       {product.image_url ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={product.image_url}
-          alt=""
-          className="h-full object-contain p-3 opacity-80 transition group-hover:opacity-100 store_page_img_image"
-        />
-      ) : null}
-      <StoreMusicPreview
-        src={musicPreviewUrl}
-        title={musicPreviewName}
-      />
-    </div>
-  ) : product.image_url ? (
-    // eslint-disable-next-line @next/next/no-img-element
+  <div className="relative h-full w-full">
+    {/* eslint-disable-next-line @next/next/no-img-element */}
     <img
-  src={product.image_url}
-  alt=""
-  className={[
-    "h-full object-contain p-3 opacity-80 transition group-hover:opacity-100 store_page_img_image",
-    product.category === "music" ||
-    product.category === "friend_list" ||
-    product.category === "private_location"
-      ? "w-auto object-left"
-      : "w-full",
-  ]
-    .filter(Boolean)
-    .join(" ")}
+      src={product.image_url}
+      alt=""
+      className="h-full w-full object-contain p-3 opacity-80 transition group-hover:opacity-100 store_page_img_image"
+    />
+
+    <StoreProductImageLightbox
+      src={product.image_url}
+      name={product.name}
+    />
+  </div>
+) : null}
+
+<StoreMusicPreview
+  src={musicPreviewUrl}
+  title={musicPreviewName}
 />
-  ) : (
+</div>
+) : product.image_url ? (
+  <div className="relative h-full w-full">
+    {/* eslint-disable-next-line @next/next/no-img-element */}
+    <img
+      src={product.image_url}
+      alt=""
+      className={[
+        "h-full object-contain p-3 opacity-80 transition group-hover:opacity-100 store_page_img_image",
+        product.category === "music" ||
+        product.category === "friend_list" ||
+        product.category === "private_location"
+          ? "w-auto object-left"
+          : "w-full",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    />
+
+    <StoreProductImageLightbox
+      src={product.image_url}
+      name={product.name}
+    />
+  </div>
+) : (
     <div className="flex h-full items-center justify-center store_page_div_container_15">
       <span className="font-serif text-4xl text-[rgb(var(--sep-colour-4e402f))] store_page_span_text_2">
         ◇

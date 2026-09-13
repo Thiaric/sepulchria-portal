@@ -304,28 +304,7 @@ export default async function CraftingPage() {
 
   return (
     <>
-      <style>{`
-        .sepulchria-viewport-body:has([data-crafting-page]) {
-          grid-template-columns:
-            minmax(0, 1fr) !important;
-          max-width: none !important;
-          width: 100% !important;
-        }
-
-        .sepulchria-viewport-body:has([data-crafting-page])
-          > .portal-right-shell,
-        .sepulchria-viewport-body:has([data-crafting-page])
-          .portal-right-collapse-toggle {
-          display: none !important;
-        }
-
-        .sepulchria-viewport-body:has([data-crafting-page])
-          > [data-portal-centre-host] {
-          grid-column: 1 !important;
-          min-width: 0 !important;
-          width: 100% !important;
-        }
-      `}</style>
+      
 
       <main
         data-crafting-page

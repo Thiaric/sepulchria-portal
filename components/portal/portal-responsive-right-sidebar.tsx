@@ -28,7 +28,9 @@ import { PollsContextPanel } from "@/components/polls/polls-context-panel";
 import { StoreContextPanel } from "@/components/portal/store-context-panel";
 import { RoomInfoButton } from "@/components/portal/room-info-button";
 import { LocationAtmosphericImage } from "@/components/world/location-atmospheric-image";
+import { CraftingContextPanel } from "@/components/portal/crafting-context-panel";
 import type { PortalContext } from "@/types/portal";
+
 
 type PortalResponsiveRightSidebarProps = {
   context: PortalContext;
@@ -131,6 +133,9 @@ const suppressClick =
 
   const isStorePath =
     pathname === "/store";
+
+    const isCraftingPath =
+  pathname === "/crafting";
 
   const isAdminLocationsPath =
     pathname === "/admin/rooms";
@@ -635,8 +640,10 @@ const nextTop =
                   admin
                 />
               ) : isStorePath ? (
-                <StoreContextPanel />
-              ) : isAdminLocationsPath ? (
+  <StoreContextPanel />
+) : isCraftingPath ? (
+  <CraftingContextPanel />
+) : isAdminLocationsPath ? (
                 <AdminRecordSearchContext
                   key={`locations-${adminRevision}`}
                   mode="locations"
