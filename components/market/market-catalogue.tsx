@@ -837,13 +837,12 @@ if (!confirmed) {
   }
 
   const compactInput =
-    "h-8 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-2.5 text-[9px] text-[rgb(var(--sep-colour-cdb897))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]";
+  "h-7 min-w-0 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-2 text-[8px] text-[rgb(var(--sep-colour-cdb897))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))] sm:h-8 sm:px-2.5 sm:text-[9px]";
 
   return (
     <>
-      <section className="mt-5 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2.5 components_market_market_catalogue_section_section">
-        <div className="grid gap-1.5 lg:grid-cols-[minmax(170px,1.35fr)_130px_130px_110px_130px_90px_90px_auto] components_market_market_catalogue_div_container">
-          <input
+      <section className="mt-3 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2 sm:mt-5 sm:px-3 sm:py-2.5 components_market_market_catalogue_section_section">
+<div className="grid grid-cols-1 gap-1.5 min-[420px]:grid-cols-2 sm:grid-cols-4 lg:grid-cols-[minmax(170px,1.35fr)_130px_130px_110px_130px_90px_90px_auto] components_market_market_catalogue_div_container">          <input
             type="search"
             value={search}
             onChange={(event) =>
@@ -852,8 +851,7 @@ if (!confirmed) {
               )
             }
             placeholder="Search name / description..."
-            className={[((compactInput)), "components_market_market_catalogue_input_search_name_description"].filter(Boolean).join(" ")}
-          />
+className={[((`${compactInput} col-span-1 min-[420px]:col-span-2 sm:col-span-4 lg:col-span-1`)), "components_market_market_catalogue_input_search_name_description"].filter(Boolean).join(" ")}          />
 
           <select
             value={category}
@@ -986,13 +984,12 @@ if (!confirmed) {
           <button
             type="button"
             onClick={resetFilters}
-            className="h-8 border border-[rgb(var(--sep-colour-6b5235))] bg-[rgb(var(--sep-colour-21170f))] px-3 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-b89a70))] transition hover:border-[rgb(var(--sep-colour-927047))] components_market_market_catalogue_button_reset"
-          >
+className="col-span-1 h-7 border border-[rgb(var(--sep-colour-6b5235))] bg-[rgb(var(--sep-colour-21170f))] px-3 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-b89a70))] transition hover:border-[rgb(var(--sep-colour-927047))] min-[420px]:col-span-2 sm:col-span-4 sm:h-8 lg:col-span-1 components_market_market_catalogue_button_reset"          >
             Reset
           </button>
         </div>
 
-        <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-1.5 components_market_market_catalogue_div_stock">
+        <div className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-1 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-1 sm:mt-1.5 sm:gap-x-2 sm:pt-1.5 components_market_market_catalogue_div_stock">
           <span className="mr-0.5 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))] components_market_market_catalogue_span_stock">
             Effects
           </span>

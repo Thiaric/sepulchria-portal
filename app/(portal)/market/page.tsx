@@ -38,29 +38,29 @@ export default async function MarketPage() {
   return (
     <main className="p-5 sm:p-7 lg:p-9 market_page_main_main">
       <div className="mx-auto max-w-7xl market_page_div_container">
-        <div className="flex flex-wrap items-end justify-between gap-4 market_page_div_container_2">
-          <div className="market_page_div_market">
-            <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))] market_page_p_market">
-              Commerce
-            </p>
+        <header className="flex flex-wrap items-end justify-between gap-4 border-b border-[rgb(var(--sep-colour-60482e))]/45 pb-5 market_page_div_container_2">
+  <div className="market_page_div_market">
+    <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))] market_page_p_market">
+      Commerce
+    </p>
 
-            <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] market_page_h1_market">
-              Market
-            </h1>
+    <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] market_page_h1_market">
+      Market
+    </h1>
 
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))] market_page_p_market_2">
-              Browse the merchants and traders of Sepulchria. Each shop maintains
-              its own catalogue, prices and stock.
-            </p>
-          </div>
+    <p className="mt-3 max-w-3xl text-sm leading-7 text-[rgb(var(--sep-global-c1))] market_page_p_market_2">
+      Browse the merchants and traders of Sepulchria. Each shop maintains
+      its own catalogue, prices and stock.
+    </p>
+  </div>
 
-          <Link
-            href="/crafting"
-            className="border border-[rgb(var(--sep-colour-a47b43))] bg-[rgb(var(--sep-colour-472d18))] px-4 py-2 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-f3d7a5))] transition hover:border-[rgb(var(--sep-colour-d0a15c))] hover:bg-[rgb(var(--sep-colour-5c391d))]"
-          >
-            Open Crafting Workbench
-          </Link>
-        </div>
+  <Link
+    href="/crafting"
+    className="border border-[rgb(var(--sep-colour-a47b43))] bg-[rgb(var(--sep-colour-472d18))] px-4 py-2 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-f3d7a5))] transition hover:border-[rgb(var(--sep-colour-d0a15c))] hover:bg-[rgb(var(--sep-colour-5c391d))]"
+  >
+    Open Crafting Workbench
+  </Link>
+</header>
 
         {shops.length ? (
           <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3 market_page_div_container_3">
@@ -88,15 +88,33 @@ export default async function MarketPage() {
                 </div>
 
                 <div className="p-5 market_page_div_container_7">
-                  <h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-dec79d))] group-hover:text-[rgb(var(--sep-colour-f0d8aa))] market_page_h2_heading">
-                    {shop.name}
-                  </h2>
+                  <h2
+  data-skin-role="primary"
+  className="font-serif text-2xl normal-case tracking-normal text-[rgb(var(--sep-global-c1))] group-hover:text-[rgb(var(--sep-global-c1))] market_page_h2_heading"
+  style={{
+    textTransform: "none",
+    letterSpacing: "normal",
+    color: "rgb(var(--sep-global-c1))",
+    WebkitTextFillColor: "rgb(var(--sep-global-c1))",
+  }}
+>
+  {shop.name}
+</h2>
 
-                  <p className="mt-2 line-clamp-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] market_page_p_text">
+                  <p
+  data-skin-role="secondary"
+  className="mt-2 line-clamp-3 text-[11px] normal-case tracking-normal leading-5 text-[rgb(var(--sep-global-c2))] market_page_p_text"
+  style={{
+    textTransform: "none",
+    letterSpacing: "normal",
+    color: "rgb(var(--sep-global-c2))",
+    WebkitTextFillColor: "rgb(var(--sep-global-c2))",
+  }}
+>
                     {shop.description || "A merchant of Sepulchria."}
                   </p>
 
-                  <p className="mt-4 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-a88658))] market_page_p_text_2">
+                  <p className="mt-4 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-global-c1))] market_page_p_text_2">
                     Enter shop →
                   </p>
                 </div>

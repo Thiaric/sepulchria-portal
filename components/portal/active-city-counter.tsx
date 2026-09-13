@@ -46,6 +46,14 @@ type CharacterSummary = {
   public_slug: string;
   title: string | null;
   occupation: string | null;
+    order_memberships:
+    | {
+        order:
+          | CodexSummary
+          | CodexSummary[]
+          | null;
+      }[]
+    | null;
 
   race:
     | CodexSummary
@@ -207,14 +215,24 @@ export function ActiveCityCounter({
             ),
 
             character:characters!character_presence_character_id_fkey(
-              id,
-              display_name,
-              portrait_url,
-              public_slug,
-              title,
-              occupation,
+  id,
+  display_name,
+  portrait_url,
+  public_slug,
+  title,
+  occupation,
 
-              race:races!characters_race_id_fkey(
+  order_memberships(
+    order:orders!order_memberships_order_id_fkey(
+      id,
+      name,
+      slug,
+      icon_url,
+      colour
+    )
+  ),
+
+  race:races!characters_race_id_fkey(
                 id,
                 name,
                 slug,
@@ -236,12 +254,7 @@ export function ActiveCityCounter({
           "last_seen_at",
           activeSince,
         )
-        .order(
-          "last_seen_at",
-          {
-            ascending: false,
-          },
-        );
+        
 
       if (presenceError) {
         console.error(
@@ -269,9 +282,40 @@ export function ActiveCityCounter({
                 true,
             );
 
-      setPresentCharacters(
-        visibleRows,
+      const sortedRows =
+  [...visibleRows].sort(
+    (a, b) => {
+      const aCharacter =
+        normaliseRelation(
+          a.character,
+        );
+
+      const bCharacter =
+        normaliseRelation(
+          b.character,
+        );
+
+      const aName =
+        aCharacter?.display_name?.trim() ??
+        "";
+
+      const bName =
+        bCharacter?.display_name?.trim() ??
+        "";
+
+      return aName.localeCompare(
+        bName,
+        undefined,
+        {
+          sensitivity: "base",
+        },
       );
+    },
+  );
+
+setPresentCharacters(
+  sortedRows,
+);
       setCount(
         visibleRows.length,
       );
@@ -569,11 +613,20 @@ export function ActiveCityCounter({
             );
 
           const association =
-            normaliseRelation(
-              person.association,
-            );
+  normaliseRelation(
+    person.association,
+  );
 
-          const room =
+const orderNames =
+  (person.order_memberships ?? [])
+    .map((membership) =>
+      normaliseRelation(
+        membership.order,
+      )?.name,
+    )
+    .filter(Boolean);
+
+const room =
             normaliseRelation(
               presence.room,
             );
@@ -614,16 +667,17 @@ export function ActiveCityCounter({
             );
 
           const searchableText = [
-            person.display_name,
-            person.title,
-            person.occupation,
-            race?.name,
-            association?.name,
-            maySeePrivateRoom
-              ? room?.name
-              : null,
-            presence.status,
-          ]
+  person.display_name,
+  person.title,
+  person.occupation,
+  race?.name,
+  association?.name,
+  ...orderNames,
+  maySeePrivateRoom
+    ? room?.name
+    : null,
+  presence.status,
+]
             .filter(Boolean)
             .join(" ")
             .toLocaleLowerCase();
@@ -770,7 +824,7 @@ export function ActiveCityCounter({
                           .value,
                       )
                     }
-                    placeholder="Search name, ancestry, Order, location…"
+                    placeholder="Search name, ancestry, order, location…"
                     autoComplete="off"
                     className="w-full border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-100c09))] py-2.5 pl-8 pr-9 text-xs text-[rgb(var(--sep-colour-d8c4a4))] outline-none placeholder:text-[rgb(var(--sep-colour-62584b))] focus:border-[rgb(var(--sep-colour-9a7445))] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden components_portal_active_city_counter_input_search_name_ancestry_order_location"
                   />

@@ -441,7 +441,7 @@ export default async function MarketShopPage({ params }: Props) {
       : Number(wallet.balance);
 
   return (
-    <main className="p-5 sm:p-7 lg:p-9 market_slug_page_main_main">
+    <main className="p-2.5 min-[420px]:p-4 sm:p-7 lg:p-9 market_slug_page_main_main">
       <div className="mx-auto max-w-7xl market_slug_page_div_container">
         <Link
           href="/market"
@@ -452,42 +452,33 @@ export default async function MarketShopPage({ params }: Props) {
         </Link>
 
         <section className="mt-4 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] market_slug_page_section_section">
-          {shop.image_url ? (
-            <div className="relative h-44 border-b border-[rgb(var(--sep-colour-60482e))]/35 market_slug_page_div_container_2">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={shop.image_url}
-                alt=""
-                className="h-full w-full object-cover opacity-65 market_slug_page_img_image"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--sep-colour-15100d))] via-[rgb(var(--sep-colour-15100d))]/30 to-transparent market_slug_page_div_container_3" />
-            </div>
-          ) : null}
+          
 
-          <div className="p-5 sm:p-7 market_slug_page_div_container_4">
-            <p className="text-[9px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))] market_slug_page_p_text">
-              Market shop
-            </p>
-            <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] market_slug_page_h1_title">
-              {shop.name}
-            </h1>
-            <div className="mt-3 flex flex-wrap items-end justify-between gap-5 market_slug_page_div_container_5">
-              <p className="max-w-4xl text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))] market_slug_page_p_text_2">
-                {shop.description}
-              </p>
+          <div className="px-5 py-3 sm:px-7 sm:py-4 market_slug_page_div_container_4">
+  <div className="flex items-start justify-between gap-6">
+    <div className="min-w-0 flex-1">
+      <h1 className="font-serif text-3xl text-[rgb(var(--sep-colour-ead5ac))] market_slug_page_h1_title">
+        {shop.name}
+      </h1>
 
-              <div className="ml-auto shrink-0 text-right market_slug_page_div_container_6">
-                <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] market_slug_page_p_text_3">
-                  Available Remnants
-                </p>
-                <p className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-e3c17e))] market_slug_page_p_text_4">
-                  {walletBalance === null
-                    ? "—"
-                    : formatRemnants(walletBalance)}
-                </p>
-              </div>
-            </div>
-          </div>
+      <p className="mt-0.5 max-w-4xl text-sm leading-6 text-[rgb(var(--sep-global-c1))] market_slug_page_p_text_2">
+        {shop.description}
+      </p>
+    </div>
+
+    <div className="shrink-0 text-right market_slug_page_div_container_6">
+      <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] market_slug_page_p_text_3">
+        Available Remnants
+      </p>
+
+      <p className="mt-0.5 font-serif text-xl text-[rgb(var(--sep-colour-e3c17e))] market_slug_page_p_text_4">
+        {walletBalance === null
+          ? "—"
+          : formatRemnants(walletBalance)}
+      </p>
+    </div>
+  </div>
+</div>
         </section>
 
         <MarketCatalogue
