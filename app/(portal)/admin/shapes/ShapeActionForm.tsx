@@ -46,6 +46,17 @@ export function ShapeActionForm({
       state.submittedAt
     ){
       router.refresh();
+
+      window.dispatchEvent(
+        new CustomEvent(
+          "sepulchria:admin-data-changed",
+          {
+            detail:{
+              section:"shapes",
+            },
+          },
+        ),
+      );
     }
   },[
     router,

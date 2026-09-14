@@ -7,6 +7,10 @@ import {
   useState,
 } from "react";
 
+import {
+  useSearchParams,
+} from "next/navigation";
+
 import { createClient } from "@/lib/supabase/client";
 import { TicketContextPanel } from "@/components/support/ticket-context-panel";
 import { SanctionContextPanel } from "@/components/sanctions/sanction-context-panel";
@@ -2216,10 +2220,94 @@ function AdminShapesJumpContext() {
   const [loading,setLoading]=useState(true);
   const [error,setError]=useState<string|null>(null);
   const [search,setSearch]=useState("");
-  useEffect(()=>{let cancelled=false;async function load(){const supabase=createClient();const {data,error}=await supabase.from("shapes").select("id,name,word_of_power,level,is_active").order("level").order("name");if(cancelled)return;if(error){setError(error.message);setLoading(false);return;}setEntries((data??[]).map(row=>({id:String(row.id),label:String(row.name),secondary:`L${String(row.level)} · ${String(row.word_of_power)}`,active:row.is_active===true})));setLoading(false);setError(null);}void load();return()=>{cancelled=true;};},[]);
+
+  const searchParams=
+    useSearchParams();
+
+  const searchParamsKey=
+    searchParams.toString();
+  useEffect(()=>{
+    let cancelled=false;
+
+    async function load(){
+      const supabase=createClient();
+
+      const {data,error}=await supabase
+        .from("shapes")
+        .select("id,name,word_of_power,level,is_active")
+        .order("level")
+        .order("name");
+
+      if(cancelled)return;
+
+      if(error){
+        setError(error.message);
+        setLoading(false);
+        return;
+      }
+
+      setEntries((data??[]).map(row=>({
+        id:String(row.id),
+        label:String(row.name),
+        secondary:`L${String(row.level)} · ${String(row.word_of_power)}`,
+        active:row.is_active===true,
+      })));
+
+      setLoading(false);
+      setError(null);
+    }
+
+    function handleShapesChanged(
+      event:Event,
+    ){
+      const detail=
+        (
+          event as CustomEvent<{
+            section?:string;
+          }>
+        ).detail;
+
+      if(
+        detail?.section&&
+        detail.section!=="shapes"
+      ){
+        return;
+      }
+
+      void load();
+    }
+
+    void load();
+
+    window.addEventListener(
+      "sepulchria:admin-data-changed",
+      handleShapesChanged,
+    );
+
+        return()=>{
+      cancelled=true;
+
+      window.removeEventListener(
+        "sepulchria:admin-data-changed",
+        handleShapesChanged,
+      );
+    };
+  },[
+    searchParamsKey,
+  ]);
   const q=search.trim().toLowerCase();
   const visible=entries.filter(e=>!q||e.label.toLowerCase().includes(q)||(e.secondary??"").toLowerCase().includes(q));
-  function jump(entry:JumpEntry){const el=document.getElementById(`shape-${entry.id}`);if(el instanceof HTMLDetailsElement)el.open=true;el?.scrollIntoView({behavior:"smooth",block:"start"});}
+  function jump(entry:JumpEntry){
+  const el=
+    document.getElementById(
+      `shape-card-${entry.id}`,
+    );
+
+  el?.scrollIntoView({
+    behavior:"smooth",
+    block:"center",
+  });
+}
   function create(){document.getElementById("shape-new")?.scrollIntoView({behavior:"smooth",block:"start"});}
   return <div className="flex h-full min-h-0 flex-col components_portal_admin_context_panel_div_jump_shapes"><p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_p_jump_shapes">Administration</p><h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_admin_context_panel_h2_jump_shapes">Jump to Shapes</h2><p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_jump_shapes_2">Search the Shape catalogue and jump directly to a Shape.</p><button type="button" onClick={create} className="mt-3 flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d6b37d))] components_portal_admin_context_panel_button_create"><span className="components_portal_admin_context_panel_span_jump_shapes">Create new</span><span className="components_portal_admin_context_panel_span_jump_shapes_2">+</span></button><label className="mt-3 block components_portal_admin_context_panel_label_jump_shapes"><span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_span_jump_shapes_3">Search Shapes</span><input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Name or Word of Power..." className="mt-2 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none components_portal_admin_context_panel_input_name_word_power"/><span className="mt-1.5 block text-right text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-6f6353))] components_portal_admin_context_panel_span_jump_shapes_4">{visible.length}{q?` / ${entries.length}`:""} Shapes</span></label>{error?<p className="mt-3 text-[10px] text-[rgb(var(--sep-colour-d8a49a))] components_portal_admin_context_panel_p_jump_shapes_3">{error}</p>:null}<div className="mt-3 min-h-0 flex-1 overflow-y-auto pr-1 components_portal_admin_context_panel_div_jump_shapes_2">{loading?<p className="text-[10px] text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_jump_shapes_4">Loading...</p>:<div className="space-y-1.5 components_portal_admin_context_panel_div_jump_shapes_3">{visible.map(e=><button key={e.id} type="button" onClick={()=>jump(e)} className="group flex w-full items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-left components_portal_admin_context_panel_button_action_9"><span className="min-w-0 components_portal_admin_context_panel_span_text_33"><span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] components_portal_admin_context_panel_span_text_34">{e.label}</span><span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))] components_portal_admin_context_panel_span_text_35">{e.secondary}</span></span><span className={[((`h-1.5 w-1.5 rounded-full ${e.active?"bg-emerald-600":"bg-[rgb(var(--sep-colour-66594b))]"}`)), "components_portal_admin_context_panel_span_text_36"].filter(Boolean).join(" ")}/></button>)}</div>}</div></div>;
 }

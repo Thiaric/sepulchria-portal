@@ -16,7 +16,7 @@ import {
   RichTextEditor,
 } from "@/components/editor/rich-text-editor";
 
-type Props={searchParams?:Promise<{success?:string;error?:string}>}; type S=Record<string,any>;
+type Props={searchParams?:Promise<{success?:string;error?:string;shape?:string}>}; type S=Record<string,any>;
 const cls="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none";
 const lab="mb-1 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]";
 function Sel({name,value,options,none=false}:{name:string;value?:string|null;options:readonly (readonly [string,...unknown[]])[];none?:boolean}){
@@ -139,49 +139,451 @@ function ShapeForm({
   </ShapeActionForm>;
 }
 export default async function AdminShapesPage({searchParams}:Props){
-  await requireAdminSection("shapes"); const params=(await searchParams)??{}; const db=await createClient();
-  const [sr,cr,lr]=await Promise.all([
-    db.from("shapes").select("*,assignments:character_shapes(id,character_id,acquisition_source,level_override),order_links:order_level_shapes(id,order_level_id)").order("level").order("name"),
-    db.from("characters").select("id,display_name").eq("status","approved").eq("is_system",false).order("display_name"),
-    db.from("order_levels").select("id,level,order:orders(id,name)").order("level",{ascending:true}),
-  ]);
-  const err=sr.error??cr.error??lr.error;if(err)throw new Error(`Unable to load Shapes: ${err.message}`);
-  const shapes=(sr.data??[]) as S[];const chars=(cr.data??[]) as {id:string;display_name:string}[];const charMap=new Map(chars.map(c=>[c.id,c.display_name]));
-  const levels=(lr.data??[])
-  .map((r:any)=>{
-    const o=Array.isArray(r.order)
-      ?r.order[0]
-      :r.order;
+  await requireAdminSection("shapes");
 
-    return{
-      id:r.id,
-      level:r.level,
-      orderName:o?.name??"Unknown"
-    };
-  })
-  .sort((a,b)=>{
-    const orderCompare=
-      a.orderName.localeCompare(
-        b.orderName,
+  const params=
+    (await searchParams)??{};
+
+  const selectedShapeId=
+    typeof params.shape==="string"
+      ?params.shape.trim()
+      :"";
+
+  const db=
+    await createClient();
+
+  const summaryResult=
+    await db
+      .from("shapes")
+      .select("id,name,level,school,word_of_power,is_active")
+      .order("level")
+      .order("name");
+
+  if(summaryResult.error){
+    throw new Error(
+      `Unable to load Shapes: ${summaryResult.error.message}`,
+    );
+  }
+
+  const shapes=
+    (summaryResult.data??[]) as S[];
+
+  let selectedShape:S|null=null;
+  let chars:{
+    id:string;
+    display_name:string;
+  }[]=[];
+  let levels:{
+    id:string;
+    level:number;
+    orderName:string;
+  }[]=[];
+
+  if(selectedShapeId){
+    const [
+      selectedResult,
+      characterResult,
+      levelResult,
+    ]=await Promise.all([
+      db
+        .from("shapes")
+        .select("*,assignments:character_shapes(id,character_id,acquisition_source,level_override),order_links:order_level_shapes(id,order_level_id)")
+        .eq("id",selectedShapeId)
+        .maybeSingle(),
+      db
+        .from("characters")
+        .select("id,display_name")
+        .eq("status","approved")
+        .eq("is_system",false)
+        .order("display_name"),
+      db
+        .from("order_levels")
+        .select("id,level,order:orders(id,name)")
+        .order("level",{ascending:true}),
+    ]);
+
+    const selectedError=
+      selectedResult.error??
+      characterResult.error??
+      levelResult.error;
+
+    if(selectedError){
+      throw new Error(
+        `Unable to load Shape: ${selectedError.message}`,
       );
-
-    if(orderCompare!==0){
-      return orderCompare;
     }
 
-    return a.level-b.level;
-  });
-  return <main className="p-5 sm:p-7 lg:p-9 admin_shapes_page_main_main"><div className="mx-auto max-w-7xl admin_shapes_page_div_warping_shapes"><p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))] admin_shapes_page_p_warping_shapes">Administration</p><h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] admin_shapes_page_h1_warping_shapes">Warping — Shapes</h1>
-    <section id="shape-new" className="mt-8 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 admin_shapes_page_section_shape_new"><h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))] admin_shapes_page_h2_shape_new">Create a Shape</h2><WarpingReference/><ShapeForm action={createShape}/></section>
-    <div className="mt-8 space-y-4 admin_shapes_page_div_warping_shapes_2">{shapes.map(s=><details key={s.id} id={`shape-${s.id}`} className={[((`scroll-mt-6 border bg-[rgb(var(--sep-colour-15100d))] transition-[border-color,box-shadow] duration-200 ${shapeSchoolBorderClass(
-        s.school,
-      )}`)), "admin_shapes_page_details_details"].filter(Boolean).join(" ")}>
-      <summary className="cursor-pointer list-none px-5 py-4 transition hover:bg-[rgb(var(--sep-colour-1c140e))] admin_shapes_page_summary_summary"><div className="flex items-center justify-between gap-3 admin_shapes_page_div_container_10"><div className="min-w-0 admin_shapes_page_div_container_11"><p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8c704b))] admin_shapes_page_p_text_4">Level {s.level} · {s.school} · {s.word_of_power}</p><h2 className="mt-1 truncate font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))] admin_shapes_page_h2_heading">{s.name}</h2></div><span className="text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8c704b))] admin_shapes_page_span_text_22">Open / Close</span></div></summary>
-      <div className="border-t border-[rgb(var(--sep-colour-60482e))]/35 p-5 admin_shapes_page_div_container_12"><div className="flex justify-end admin_shapes_page_div_container_13"><form className="admin_shapes_page_form_delete_shape" action={deleteShape}><input className="admin_shapes_page_input_shape_id_2" type="hidden" name="shape_id" value={s.id}/><ShapeDeleteSubmit shapeName={s.name}/></form></div>
-      <ShapeForm s={s} action={updateShape}/>
-      <div className="mt-5 grid gap-4 lg:grid-cols-2 admin_shapes_page_div_container_14"><div className="border border-[rgb(var(--sep-colour-60482e))]/35 p-4 admin_shapes_page_div_direct_assignment"><h3 className="font-serif text-lg text-[rgb(var(--sep-colour-d8c29b))] admin_shapes_page_h3_direct_assignment">Direct Assignment</h3><form action={assignShape} className="mt-3 grid gap-2 sm:grid-cols-[1fr_auto_auto] admin_shapes_page_form_assign_shape"><input className="admin_shapes_page_input_shape_id_3" type="hidden" name="shape_id" value={s.id}/><select required name="character_id" className={[((cls)), "admin_shapes_page_select_character_id"].filter(Boolean).join(" ")}><option className="admin_shapes_page_option_character_id" value="">Character...</option>{chars.map(c=><option className="admin_shapes_page_option_character_id_2" key={c.id} value={c.id}>{c.display_name}</option>)}</select><label className="flex items-center gap-2 text-[9px] text-[rgb(var(--sep-colour-c6ae88))] admin_shapes_page_label_level_override"><input className="admin_shapes_page_input_override_level" type="checkbox" name="override_level"/>Level override</label><button className="border border-[rgb(var(--sep-colour-765937))] px-3 py-2 text-[8px] uppercase text-[rgb(var(--sep-colour-d6bb8d))] admin_shapes_page_button_assign">Assign</button></form><div className="mt-3 space-y-1 admin_shapes_page_div_direct_assignment_2">{(s.assignments??[]).filter((a:any)=>a.acquisition_source==="staff").map((a:any)=><form key={a.id} action={removeAssignment} className="flex justify-between border-t border-[rgb(var(--sep-colour-60482e))]/25 pt-2 admin_shapes_page_form_remove_assignment"><input className="admin_shapes_page_input_assignment_id" type="hidden" name="assignment_id" value={a.id}/><span className="text-[10px] text-[rgb(var(--sep-colour-a99b89))] admin_shapes_page_span_text_23">{charMap.get(a.character_id)??a.character_id}{a.level_override?" · override":""}</span><button className="text-[8px] uppercase text-red-400 admin_shapes_page_button_remove">Remove</button></form>)}</div></div>
-      <div className="border border-[rgb(var(--sep-colour-60482e))]/35 p-4 admin_shapes_page_div_order_level_shapes"><h3 className="font-serif text-lg text-[rgb(var(--sep-colour-d8c29b))] admin_shapes_page_h3_order_level_shapes">Order Level Shapes</h3><p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-766a5b))] admin_shapes_page_p_order_level_shapes">Members inherit Shapes from their current Order Level and every lower Level.</p><form action={linkOrderLevel} className="mt-3 grid gap-2 sm:grid-cols-[1fr_auto] admin_shapes_page_form_link_order_level"><input className="admin_shapes_page_input_shape_id_4" type="hidden" name="shape_id" value={s.id}/><select required name="order_level_id" className={[((cls)), "admin_shapes_page_select_order_level_id"].filter(Boolean).join(" ")}><option className="admin_shapes_page_option_order_level_id" value="">Order Level...</option>{levels.filter((l:any)=>!(s.order_links??[]).some((x:any)=>x.order_level_id===l.id)).map((l:any)=><option className="admin_shapes_page_option_order_level_id_2" key={l.id} value={l.id}>{l.orderName} - Level {l.level}</option>)}</select><button className="border border-[rgb(var(--sep-colour-765937))] px-3 py-2 text-[8px] uppercase text-[rgb(var(--sep-colour-d6bb8d))] admin_shapes_page_button_link">Link</button></form><div className="mt-3 space-y-1 admin_shapes_page_div_order_level_shapes_2">{(s.order_links??[]).map((link:any)=>{const level=levels.find((entry:any)=>entry.id===link.order_level_id);return <form key={link.id??`${s.id}-${link.order_level_id}`} action={unlinkOrderLevel} className="flex items-center justify-between gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/25 pt-2 admin_shapes_page_form_unlink_order_level"><input className="admin_shapes_page_input_shape_id_5" type="hidden" name="shape_id" value={s.id}/><input className="admin_shapes_page_input_order_level_id" type="hidden" name="order_level_id" value={link.order_level_id}/><span className="text-[9px] text-[rgb(var(--sep-colour-8f8271))] admin_shapes_page_span_text_24">{level?`${level.orderName} - Level ${level.level}`:"Unknown Order Level"}</span><button className="text-[8px] uppercase tracking-[0.1em] text-red-300 admin_shapes_page_button_unlink">Unlink</button></form>})}{!(s.order_links??[]).length?<p className="text-[9px] italic text-[rgb(var(--sep-colour-746858))] admin_shapes_page_p_order_level_shapes_2">Not linked to an Order Level.</p>:null}</div></div></div>
+    selectedShape=
+      (selectedResult.data??null) as S|null;
+
+    chars=
+      (characterResult.data??[]) as {
+        id:string;
+        display_name:string;
+      }[];
+
+    levels=
+      (levelResult.data??[])
+        .map((r:any)=>{
+          const o=
+            Array.isArray(r.order)
+              ?r.order[0]
+              :r.order;
+
+          return{
+            id:r.id,
+            level:r.level,
+            orderName:
+              o?.name??
+              "Unknown",
+          };
+        })
+        .sort((a,b)=>{
+          const orderCompare=
+            a.orderName.localeCompare(
+              b.orderName,
+            );
+
+          if(orderCompare!==0){
+            return orderCompare;
+          }
+
+          return a.level-b.level;
+        });
+  }
+
+  const charMap=
+    new Map(
+      chars.map(
+        c=>[
+          c.id,
+          c.display_name,
+        ],
+      ),
+    );
+
+  return (
+    <main className="p-5 sm:p-7 lg:p-9 admin_shapes_page_main_main">
+      <div className="mx-auto max-w-7xl admin_shapes_page_div_warping_shapes">
+        <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))] admin_shapes_page_p_warping_shapes">
+          Administration
+        </p>
+
+        <h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] admin_shapes_page_h1_warping_shapes">
+          Warping — Shapes
+        </h1>
+
+        <section
+          id="shape-new"
+          className="mt-8 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 admin_shapes_page_section_shape_new"
+        >
+          <h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))] admin_shapes_page_h2_shape_new">
+            Create a Shape
+          </h2>
+
+          <WarpingReference/>
+          <ShapeForm action={createShape}/>
+        </section>
+
+        <section className="mt-8">
+          <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+                Existing Shapes
+              </p>
+
+              <p className="mt-1 text-[10px] text-[rgb(var(--sep-colour-8f8271))]">
+                Select a Shape to open its complete editor below.
+              </p>
+            </div>
+
+            <span className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8c704b))]">
+              {shapes.length} Shapes
+            </span>
+          </div>
+
+          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+            {shapes.map((shape)=>{
+              const selected=
+                selectedShapeId===shape.id;
+
+              return (
+                <a
+                  key={shape.id}
+                  id={`shape-card-${shape.id}`}
+                  href={`/admin/shapes?shape=${shape.id}#shape-editor`}
+                  className={[
+                    `block border bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 transition hover:bg-[rgb(var(--sep-colour-1c140e))] ${shapeSchoolBorderClass(shape.school)}`,
+                    selected
+                      ?"ring-1 ring-[rgb(var(--sep-colour-a17a49))]/70"
+                      :"",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                >
+                  <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8c704b))]">
+                    Level {shape.level} · {shape.school} · {shape.word_of_power}
+                  </p>
+
+                  <div className="mt-1 flex items-center justify-between gap-3">
+                    <h2 className="truncate font-serif text-lg text-[rgb(var(--sep-colour-dfc99f))]">
+                      {shape.name}
+                    </h2>
+
+                    <span className="shrink-0 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806b50))]">
+                      {shape.is_active
+                        ?"Active"
+                        :"Inactive"}
+                    </span>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </section>
+
+        {selectedShape ? (
+          <section
+            id="shape-editor"
+            className={[
+              `mt-8 scroll-mt-6 border bg-[rgb(var(--sep-colour-15100d))] ${shapeSchoolBorderClass(selectedShape.school)}`,
+              "admin_shapes_page_selected_shape_editor",
+            ].join(" ")}
+          >
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/35 px-5 py-4">
+              <div>
+                <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8c704b))]">
+                  Level {selectedShape.level} · {selectedShape.school} · {selectedShape.word_of_power}
+                </p>
+
+                <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">
+                  {selectedShape.name}
+                </h2>
+              </div>
+
+              <a
+                href="/admin/shapes"
+                className="border border-[rgb(var(--sep-colour-765937))]/55 px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-c8aa7b))]"
+              >
+                Close Editor
+              </a>
+            </div>
+
+            <div className="p-5 admin_shapes_page_div_container_12">
+              <div className="flex justify-end admin_shapes_page_div_container_13">
+                <form
+                  className="admin_shapes_page_form_delete_shape"
+                  action={deleteShape}
+                >
+                  <input
+                    className="admin_shapes_page_input_shape_id_2"
+                    type="hidden"
+                    name="shape_id"
+                    value={selectedShape.id}
+                  />
+
+                  <ShapeDeleteSubmit
+                    shapeName={selectedShape.name}
+                  />
+                </form>
+              </div>
+
+              <ShapeForm
+                s={selectedShape}
+                action={updateShape}
+              />
+
+              <div className="mt-5 grid gap-4 lg:grid-cols-2 admin_shapes_page_div_container_14">
+                <div className="border border-[rgb(var(--sep-colour-60482e))]/35 p-4 admin_shapes_page_div_direct_assignment">
+                  <h3 className="font-serif text-lg text-[rgb(var(--sep-colour-d8c29b))] admin_shapes_page_h3_direct_assignment">
+                    Direct Assignment
+                  </h3>
+
+                  <form
+                    action={assignShape}
+                    className="mt-3 grid gap-2 sm:grid-cols-[1fr_auto_auto] admin_shapes_page_form_assign_shape"
+                  >
+                    <input
+                      className="admin_shapes_page_input_shape_id_3"
+                      type="hidden"
+                      name="shape_id"
+                      value={selectedShape.id}
+                    />
+
+                    <select
+                      required
+                      name="character_id"
+                      className={[cls,"admin_shapes_page_select_character_id"].filter(Boolean).join(" ")}
+                    >
+                      <option value="">
+                        Character...
+                      </option>
+
+                      {chars.map((c)=>(
+                        <option
+                          key={c.id}
+                          value={c.id}
+                        >
+                          {c.display_name}
+                        </option>
+                      ))}
+                    </select>
+
+                    <label className="flex items-center gap-2 text-[9px] text-[rgb(var(--sep-colour-c6ae88))] admin_shapes_page_label_level_override">
+                      <input
+                        className="admin_shapes_page_input_override_level"
+                        type="checkbox"
+                        name="override_level"
+                      />
+                      Level override
+                    </label>
+
+                    <button className="border border-[rgb(var(--sep-colour-765937))] px-3 py-2 text-[8px] uppercase text-[rgb(var(--sep-colour-d6bb8d))] admin_shapes_page_button_assign">
+                      Assign
+                    </button>
+                  </form>
+
+                  <div className="mt-3 space-y-1 admin_shapes_page_div_direct_assignment_2">
+                    {(selectedShape.assignments??[])
+                      .filter(
+                        (a:any)=>
+                          a.acquisition_source==="staff",
+                      )
+                      .map((a:any)=>(
+                        <form
+                          key={a.id}
+                          action={removeAssignment}
+                          className="flex justify-between border-t border-[rgb(var(--sep-colour-60482e))]/25 pt-2 admin_shapes_page_form_remove_assignment"
+                        >
+                          <input
+                            className="admin_shapes_page_input_assignment_id"
+                            type="hidden"
+                            name="assignment_id"
+                            value={a.id}
+                          />
+
+                          <span className="text-[10px] text-[rgb(var(--sep-colour-a99b89))] admin_shapes_page_span_text_23">
+                            {charMap.get(a.character_id)??a.character_id}
+                            {a.level_override
+                              ?" · override"
+                              :""}
+                          </span>
+
+                          <button className="text-[8px] uppercase text-red-400 admin_shapes_page_button_remove">
+                            Remove
+                          </button>
+                        </form>
+                      ))}
+                  </div>
+                </div>
+
+                <div className="border border-[rgb(var(--sep-colour-60482e))]/35 p-4 admin_shapes_page_div_order_level_shapes">
+                  <h3 className="font-serif text-lg text-[rgb(var(--sep-colour-d8c29b))] admin_shapes_page_h3_order_level_shapes">
+                    Order Level Shapes
+                  </h3>
+
+                  <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-766a5b))] admin_shapes_page_p_order_level_shapes">
+                    Members inherit Shapes from their current Order Level and every lower Level.
+                  </p>
+
+                  <form
+                    action={linkOrderLevel}
+                    className="mt-3 grid gap-2 sm:grid-cols-[1fr_auto] admin_shapes_page_form_link_order_level"
+                  >
+                    <input
+                      className="admin_shapes_page_input_shape_id_4"
+                      type="hidden"
+                      name="shape_id"
+                      value={selectedShape.id}
+                    />
+
+                    <select
+                      required
+                      name="order_level_id"
+                      className={[cls,"admin_shapes_page_select_order_level_id"].filter(Boolean).join(" ")}
+                    >
+                      <option value="">
+                        Order Level...
+                      </option>
+
+                      {levels
+                        .filter(
+                          (l:any)=>
+                            !(selectedShape.order_links??[])
+                              .some(
+                                (x:any)=>
+                                  x.order_level_id===l.id,
+                              ),
+                        )
+                        .map((l:any)=>(
+                          <option
+                            key={l.id}
+                            value={l.id}
+                          >
+                            {l.orderName} - Level {l.level}
+                          </option>
+                        ))}
+                    </select>
+
+                    <button className="border border-[rgb(var(--sep-colour-765937))] px-3 py-2 text-[8px] uppercase text-[rgb(var(--sep-colour-d6bb8d))] admin_shapes_page_button_link">
+                      Link
+                    </button>
+                  </form>
+
+                  <div className="mt-3 space-y-1 admin_shapes_page_div_order_level_shapes_2">
+                    {(selectedShape.order_links??[])
+                      .map((link:any)=>{
+                        const level=
+                          levels.find(
+                            (entry:any)=>
+                              entry.id===link.order_level_id,
+                          );
+
+                        return (
+                          <form
+                            key={link.id??`${selectedShape.id}-${link.order_level_id}`}
+                            action={unlinkOrderLevel}
+                            className="flex items-center justify-between gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/25 pt-2 admin_shapes_page_form_unlink_order_level"
+                          >
+                            <input
+                              className="admin_shapes_page_input_shape_id_5"
+                              type="hidden"
+                              name="shape_id"
+                              value={selectedShape.id}
+                            />
+
+                            <input
+                              className="admin_shapes_page_input_order_level_id"
+                              type="hidden"
+                              name="order_level_id"
+                              value={link.order_level_id}
+                            />
+
+                            <span className="text-[9px] text-[rgb(var(--sep-colour-8f8271))] admin_shapes_page_span_text_24">
+                              {level
+                                ?`${level.orderName} - Level ${level.level}`
+                                :"Unknown Order Level"}
+                            </span>
+
+                            <button className="text-[8px] uppercase tracking-[0.1em] text-red-300 admin_shapes_page_button_unlink">
+                              Unlink
+                            </button>
+                          </form>
+                        );
+                      })}
+
+                    {!(selectedShape.order_links??[]).length ? (
+                      <p className="text-[9px] italic text-[rgb(var(--sep-colour-746858))] admin_shapes_page_p_order_level_shapes_2">
+                        Not linked to an Order Level.
+                      </p>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        ) : null}
       </div>
-    </details>)}</div>
-  </div></main>;
+    </main>
+  );
 }
