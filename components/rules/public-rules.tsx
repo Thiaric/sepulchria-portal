@@ -194,19 +194,38 @@ export function PublicRules({
             />
 
             <button
-              type="button"
-              onClick={() => {
-                setGlossaryOpen(true);
-                setSelectedRuleId(null);
-              }}
-              className={[((`h-9 shrink-0 border px-4 text-[8px] uppercase tracking-[0.18em] transition ${
-                glossaryOpen
-                  ? "border-[rgb(var(--sep-colour-9a7445))] bg-[rgb(var(--sep-colour-302115))] text-[rgb(var(--sep-colour-e7c996))]"
-                  : "border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] text-[rgb(var(--sep-colour-9f8d71))] hover:border-[rgb(var(--sep-colour-8c693e))] hover:text-[rgb(var(--sep-colour-d6b782))]"
-              }`)), "components_rules_public_rules_button_glossary"].filter(Boolean).join(" ")}
-            >
-              Glossary
-            </button>
+  type="button"
+  onClick={() => {
+    if (glossaryOpen) {
+      setGlossaryOpen(false);
+
+      setSelectedRuleId(
+        firstRule?.id ?? null,
+      );
+
+      return;
+    }
+
+    setGlossaryOpen(true);
+    setSelectedRuleId(null);
+  }}
+  className={[
+    (
+      `h-9 shrink-0 border px-4 text-[8px] uppercase tracking-[0.18em] transition ${
+        glossaryOpen
+          ? "border-[rgb(var(--sep-colour-9a7445))] bg-[rgb(var(--sep-colour-302115))] text-[rgb(var(--sep-colour-e7c996))]"
+          : "border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] text-[rgb(var(--sep-colour-9f8d71))] hover:border-[rgb(var(--sep-colour-8c693e))] hover:text-[rgb(var(--sep-colour-d6b782))]"
+      }`
+    ),
+    "components_rules_public_rules_button_glossary",
+  ]
+    .filter(Boolean)
+    .join(" ")}
+>
+  {glossaryOpen
+    ? "← Back to Rules"
+    : "Glossary"}
+</button>
           </div>
         </div>
       </header>

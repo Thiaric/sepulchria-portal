@@ -20,19 +20,19 @@ const PRIMARY_LINKS = [
     label: "Codex",
     eyebrow: "Discover",
     href: "/codex",
-    symbol: "⌘",
+    icon: "/icons/homepage/codex.png",
   },
   {
     label: "Rules",
     eyebrow: "Understand",
     href: "/rules",
-    symbol: "◇",
+    icon: "/icons/homepage/rules.png",
   },
   {
     label: "Register",
     eyebrow: "Begin",
     href: "/auth/sign-up",
-    symbol: "✦",
+    icon: "/icons/homepage/register.png",
   },
 ] as const;
 
@@ -307,7 +307,7 @@ export function SepulchriaHomepage({
                 <HomepageActionButton
                   eyebrow="Introduction"
                   label="About Sepulchria"
-                  symbol="◉"
+                  icon="/icons/homepage/about.png"
                   onClick={() =>
                     setAboutOpen(true)
                   }
@@ -331,7 +331,7 @@ export function SepulchriaHomepage({
                         key={item.label}
                         eyebrow={item.eyebrow}
                         label={item.label}
-                        symbol={item.symbol}
+                        icon={item.icon}
                         onClick={() =>
                           setPublicModal({
                             title: item.label,
@@ -347,7 +347,7 @@ export function SepulchriaHomepage({
                   <HomepageDisabledButton
                     eyebrow="Already entered"
                     label="Sepulchria is open"
-                    symbol="◆"
+                    icon="/icons/homepage/enter.png"
                   />
                 ) : (
                   <HomepageButton
@@ -358,7 +358,7 @@ export function SepulchriaHomepage({
                     }
                     eyebrow="Enter"
                     label="Enter Sepulchria"
-                    symbol="◆"
+                    icon="/icons/homepage/enter.png"
                     featured
                   />
                 )}
@@ -769,67 +769,77 @@ export function SepulchriaHomepage({
               </div>
 
               <div className="mt-6 grid gap-2 sm:grid-cols-2 components_homepage_sepulchria_homepage_div_container_32">
-                <Link
-                  href="/codex"
-                  onClick={() =>
-                    setAboutOpen(false)
-                  }
-                  className="border border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-1a120d))] px-4 py-3 text-center transition hover:border-[rgb(var(--sep-colour-a17a48))] hover:bg-[rgb(var(--sep-colour-25180f))]"
-                >
-                  <span
-                    className="block text-[7px] uppercase tracking-[0.22em] components_homepage_sepulchria_homepage_span_text_10"
-                    style={{
-                      color:
-                        "rgb(var(--sep-skin-c1, 169 138 96))",
-                      WebkitTextFillColor:
-                        "rgb(var(--sep-skin-c1, 169 138 96))",
-                    }}
-                  >
-                    Explore the setting
-                  </span>
-                  <span
-                    className="mt-1 block font-serif text-sm components_homepage_sepulchria_homepage_span_text_11"
-                    style={{
-                      color:
-                        "rgb(var(--sep-skin-c2, 211 194 170))",
-                      WebkitTextFillColor:
-                        "rgb(var(--sep-skin-c2, 211 194 170))",
-                    }}
-                  >
-                    Read the Codex →
-                  </span>
-                </Link>
+                <button
+  type="button"
+  onClick={() => {
+    setAboutOpen(false);
+    setPublicModal({
+      title: "Codex",
+      href: "/codex",
+    });
+  }}
+  className="border border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-1a120d))] px-4 py-3 text-center transition hover:border-[rgb(var(--sep-colour-a17a48))] hover:bg-[rgb(var(--sep-colour-25180f))]"
+>
+  <span
+    className="block text-[7px] uppercase tracking-[0.22em] components_homepage_sepulchria_homepage_span_text_10"
+    style={{
+      color:
+        "rgb(var(--sep-skin-c1, 169 138 96))",
+      WebkitTextFillColor:
+        "rgb(var(--sep-skin-c1, 169 138 96))",
+    }}
+  >
+    Explore the setting
+  </span>
 
-                <Link
-                  href="/rules"
-                  onClick={() =>
-                    setAboutOpen(false)
-                  }
-                  className="border border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-1a120d))] px-4 py-3 text-center transition hover:border-[rgb(var(--sep-colour-a17a48))] hover:bg-[rgb(var(--sep-colour-25180f))]"
-                >
-                  <span
-                    className="block text-[7px] uppercase tracking-[0.22em] components_homepage_sepulchria_homepage_span_text_12"
-                    style={{
-                      color:
-                        "rgb(var(--sep-skin-c1, 169 138 96))",
-                      WebkitTextFillColor:
-                        "rgb(var(--sep-skin-c1, 169 138 96))",
-                    }}
-                  >
-                    Learn the game
-                  </span>
-                  <span
-                    className="mt-1 block font-serif text-sm components_homepage_sepulchria_homepage_span_text_13"
-                    style={{
-                      color:
-                        "rgb(var(--sep-skin-c2, 211 194 170))",
-                      WebkitTextFillColor:
-                        "rgb(var(--sep-skin-c2, 211 194 170))",
-                    }}
-                  >
-                    Read the Rules →
-                  </span>
-                </Link>
+  <span
+    className="mt-1 block font-serif text-sm components_homepage_sepulchria_homepage_span_text_11"
+    style={{
+      color:
+        "rgb(var(--sep-skin-c2, 211 194 170))",
+      WebkitTextFillColor:
+        "rgb(var(--sep-skin-c2, 211 194 170))",
+    }}
+  >
+    Read the Codex →
+  </span>
+</button>
+
+                <button
+  type="button"
+  onClick={() => {
+    setAboutOpen(false);
+    setPublicModal({
+      title: "Rules",
+      href: "/rules",
+    });
+  }}
+  className="border border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-1a120d))] px-4 py-3 text-center transition hover:border-[rgb(var(--sep-colour-a17a48))] hover:bg-[rgb(var(--sep-colour-25180f))]"
+>
+  <span
+    className="block text-[7px] uppercase tracking-[0.22em] components_homepage_sepulchria_homepage_span_text_12"
+    style={{
+      color:
+        "rgb(var(--sep-skin-c1, 169 138 96))",
+      WebkitTextFillColor:
+        "rgb(var(--sep-skin-c1, 169 138 96))",
+    }}
+  >
+    Learn the game
+  </span>
+
+  <span
+    className="mt-1 block font-serif text-sm components_homepage_sepulchria_homepage_span_text_13"
+    style={{
+      color:
+        "rgb(var(--sep-skin-c2, 211 194 170))",
+      WebkitTextFillColor:
+        "rgb(var(--sep-skin-c2, 211 194 170))",
+    }}
+  >
+    Read the Rules →
+  </span>
+</button>
               </div>
             </div>
           </section>
@@ -921,17 +931,53 @@ export function SepulchriaHomepage({
   );
 }
 
+function HomepageNavIcon({
+  icon,
+  disabled = false,
+}: {
+  icon: string;
+  disabled?: boolean;
+}) {
+  return (
+    <span
+      data-homepage-nav-role="symbol"
+      aria-hidden="true"
+      className={[
+        "absolute right-4 top-1/2 h-9 w-9 -translate-y-1/2",
+        "transition duration-500",
+        disabled
+          ? "opacity-30"
+          : "opacity-55 group-hover:scale-110 group-hover:opacity-90",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      style={{
+        backgroundColor:
+          "rgb(var(--sep-skin-c1, 169 138 96))",
+        WebkitMaskImage: `url("${icon}")`,
+        maskImage: `url("${icon}")`,
+        WebkitMaskRepeat: "no-repeat",
+        maskRepeat: "no-repeat",
+        WebkitMaskPosition: "center",
+        maskPosition: "center",
+        WebkitMaskSize: "contain",
+        maskSize: "contain",
+      }}
+    />
+  );
+}
+
 function HomepageButton({
   href,
   eyebrow,
   label,
-  symbol,
+  icon,
   featured = false,
 }: {
   href: string;
   eyebrow: string;
   label: string;
-  symbol: string;
+  icon: string;
   featured?: boolean;
 }) {
   return (
@@ -944,9 +990,7 @@ function HomepageButton({
           : "border-[rgb(var(--sep-colour-654b30))]/55 bg-[rgb(var(--sep-colour-15100c))]/92 hover:-translate-y-0.5 hover:border-[rgb(var(--sep-colour-987044))] hover:bg-[rgb(var(--sep-colour-21170f))]"
       }`}
     >
-      <span data-homepage-nav-role="symbol" className="absolute right-4 top-1/2 -translate-y-1/2 font-serif text-3xl text-[rgb(var(--sep-colour-a87c43))]/15 transition duration-500 group-hover:scale-125 group-hover:text-[rgb(var(--sep-colour-c99a58))]/25 components_homepage_sepulchria_homepage_span_text_14">
-        {symbol}
-      </span>
+      <HomepageNavIcon icon={icon} />
 
       <span data-homepage-nav-role="eyebrow" className="relative block text-[7px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-836c50))] components_homepage_sepulchria_homepage_span_text_15">
         {eyebrow}
@@ -964,11 +1008,11 @@ function HomepageButton({
 function HomepageDisabledButton({
   eyebrow,
   label,
-  symbol,
+  icon,
 }: {
   eyebrow: string;
   label: string;
-  symbol: string;
+  icon: string;
 }) {
   return (
     <div
@@ -976,9 +1020,10 @@ function HomepageDisabledButton({
       title="Sepulchria is already open in the game window."
       className="relative min-h-[64px] cursor-default overflow-hidden border border-[rgb(var(--sep-colour-654b30))]/35 bg-[rgb(var(--sep-colour-15100c))]/70 px-4 py-3 opacity-55 components_homepage_sepulchria_homepage_div_sepulchria_already_open_game_window"
     >
-      <span className="absolute right-4 top-1/2 -translate-y-1/2 font-serif text-3xl text-[rgb(var(--sep-colour-a87c43))]/10 components_homepage_sepulchria_homepage_span_sepulchria_already_open_game_window">
-        {symbol}
-      </span>
+      <HomepageNavIcon
+        icon={icon}
+        disabled
+      />
 
       <span className="relative block text-[7px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-6f6251))] components_homepage_sepulchria_homepage_span_sepulchria_already_open_game_window_2">
         {eyebrow}
@@ -994,12 +1039,12 @@ function HomepageDisabledButton({
 function HomepageActionButton({
   eyebrow,
   label,
-  symbol,
+  icon,
   onClick,
 }: {
   eyebrow: string;
   label: string;
-  symbol: string;
+  icon: string;
   onClick: () => void;
 }) {
   return (
@@ -1009,9 +1054,7 @@ function HomepageActionButton({
       data-homepage-nav-button="true"
       className="group relative min-h-[64px] overflow-hidden border border-[rgb(var(--sep-colour-654b30))]/55 bg-[rgb(var(--sep-colour-15100c))]/92 px-4 py-3 text-left transition duration-300 hover:-translate-y-0.5 hover:border-[rgb(var(--sep-colour-987044))] hover:bg-[rgb(var(--sep-colour-21170f))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--sep-colour-d4a460))] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--sep-colour-090706))] components_homepage_sepulchria_homepage_button_click"
     >
-      <span data-homepage-nav-role="symbol" className="absolute right-4 top-1/2 -translate-y-1/2 font-serif text-3xl text-[rgb(var(--sep-colour-a87c43))]/15 transition duration-500 group-hover:scale-125 group-hover:text-[rgb(var(--sep-colour-c99a58))]/25 components_homepage_sepulchria_homepage_span_text_18">
-        {symbol}
-      </span>
+      <HomepageNavIcon icon={icon} />
 
       <span data-homepage-nav-role="eyebrow" className="relative block text-[7px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-836c50))] components_homepage_sepulchria_homepage_span_text_19">
         {eyebrow}
