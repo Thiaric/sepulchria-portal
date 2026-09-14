@@ -3,6 +3,7 @@
 import {
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
@@ -614,6 +615,18 @@ export function ShapesCatalogue({
   const [target, setTarget] = useState("");
   const [nature, setNature] = useState("");
 
+  const SHAPES_BATCH_SIZE = 24;
+
+  const [
+    visibleCount,
+    setVisibleCount,
+  ] = useState(
+    SHAPES_BATCH_SIZE,
+  );
+
+  const loadMoreRef =
+    useRef<HTMLDivElement>(null);
+
   const schools = useMemo(
     () =>
       Array.from(
@@ -654,6 +667,165 @@ export function ShapesCatalogue({
       nature,
     ],
   );
+
+  const visibleShapes =
+    useMemo(
+      () =>
+        filtered.slice(
+          0,
+          visibleCount,
+        ),
+      [
+        filtered,
+        visibleCount,
+      ],
+    );
+
+  useEffect(() => {
+    setVisibleCount(
+      SHAPES_BATCH_SIZE,
+    );
+  }, [
+    q,
+    level,
+    school,
+    movement,
+    target,
+    nature,
+  ]);
+
+  useEffect(() => {
+    const target =
+      loadMoreRef.current;
+
+    if (
+      !target ||
+      visibleCount >=
+        filtered.length
+    ) {
+      return;
+    }
+
+    const observer =
+      new IntersectionObserver(
+        (entries) => {
+          if (
+            entries.some(
+              (entry) =>
+                entry.isIntersecting,
+            )
+          ) {
+            setVisibleCount(
+              (current) =>
+                Math.min(
+                  current +
+                    SHAPES_BATCH_SIZE,
+                  filtered.length,
+                ),
+            );
+          }
+        },
+        {
+          rootMargin:
+            "900px 0px",
+        },
+      );
+
+    observer.observe(target);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [
+    filtered.length,
+    visibleCount,
+  ]);
+
+  useEffect(() => {
+    function revealAndScroll(
+      shapeId: string,
+    ) {
+      const index =
+        filtered.findIndex(
+          (shape) =>
+            shape.id === shapeId,
+        );
+
+      if (index < 0) {
+        return;
+      }
+
+      setVisibleCount(
+        (current) =>
+          Math.max(
+            current,
+            index + 1,
+          ),
+      );
+
+      window.requestAnimationFrame(
+        () => {
+          window.requestAnimationFrame(
+            () => {
+              document
+                .getElementById(
+                  `shape-${shapeId}`,
+                )
+                ?.scrollIntoView({
+                  behavior:
+                    "smooth",
+                  block: "start",
+                });
+            },
+          );
+        },
+      );
+    }
+
+    function handleJump(
+      event: Event,
+    ) {
+      const shapeId =
+        (
+          event as CustomEvent<{
+            id?: string;
+          }>
+        ).detail?.id;
+
+      if (shapeId) {
+        revealAndScroll(
+          shapeId,
+        );
+      }
+    }
+
+    window.addEventListener(
+      "sepulchria:shape-jump",
+      handleJump,
+    );
+
+    const hash =
+      window.location.hash;
+
+    if (
+      hash.startsWith(
+        "#shape-",
+      )
+    ) {
+      revealAndScroll(
+        hash.slice(
+          "#shape-".length,
+        ),
+      );
+    }
+
+    return () => {
+      window.removeEventListener(
+        "sepulchria:shape-jump",
+        handleJump,
+      );
+    };
+  }, [filtered]);
 
   useEffect(() => {
     const ids =
@@ -790,12 +962,27 @@ export function ShapesCatalogue({
       </section>
 
       <section className="mt-3 grid grid-cols-[repeat(auto-fit,minmax(380px,1fr))] items-start gap-3 components_warping_shapes_catalogue_section_section_2">
-        {filtered.map((shape) => (
+        {visibleShapes.map((shape) => (
           <ShapeArticle
             key={shape.id}
             shape={shape}
           />
         ))}
+
+        {visibleCount <
+        filtered.length ? (
+          <div
+            ref={loadMoreRef}
+            className="col-span-full flex min-h-16 items-center justify-center border border-[rgb(var(--sep-colour-59432c))]/25 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756957))]"
+          >
+            Showing{" "}
+            {Math.min(
+              visibleCount,
+              filtered.length,
+            )}{" "}
+            of {filtered.length} Shapes
+          </div>
+        ) : null}
 
         {!filtered.length ? (
           <p className="rounded-lg border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))] p-5 text-[11px] text-[rgb(var(--sep-colour-8f8271))] components_warping_shapes_catalogue_p_text_26">

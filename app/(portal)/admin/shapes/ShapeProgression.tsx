@@ -317,6 +317,10 @@ export function ShapeProgression() {
           ),
       );
 
+    const altSectionNextSibling =
+      altSection?.nextSibling ??
+      null;
+
     if (
       altSection &&
       steps[4]
@@ -597,6 +601,36 @@ export function ShapeProgression() {
     "change",
     syncAlternative,
   );
+
+  /*
+   * The alternative Other-effect section is temporarily moved inside
+   * the normal Other Effect step above. Restore it to its original
+   * position before allowing ShapeProgression to initialise again.
+   *
+   * Without this, the next initialisation sees the Other Effect section
+   * as containing [data-alt-other-toggle], excludes the whole section,
+   * and the six-step editor collapses to five steps.
+   */
+  if (
+    altSection &&
+    altSection.parentElement !==
+      form
+  ) {
+    if (
+      altSectionNextSibling &&
+      altSectionNextSibling.parentNode ===
+        form
+    ) {
+      form.insertBefore(
+        altSection,
+        altSectionNextSibling,
+      );
+    } else {
+      form.appendChild(
+        altSection,
+      );
+    }
+  }
 
   form
     .querySelectorAll(
