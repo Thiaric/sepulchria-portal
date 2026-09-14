@@ -41,7 +41,8 @@ export type DeferredChatItem = {
   targetMode: "self" | "other" | "either";
   maxCharges: number | null;
   chargesRemaining: number | null;
-  cooldownReadyAt: string | null;
+  cooldownMinutes: number | null;
+cooldownReadyAt: string | null;
   successDie?: number | null;
   successThreshold?: number | null;
   resolutionMode?: "automatic" | "fixed" | "opposed";
@@ -292,7 +293,10 @@ async function itemsFor(
           row.record_kind === "unique"
             ? charges.get(row.record_id) ?? null
             : null,
-        cooldownReadyAt: cooldowns.get(sourceKey) ?? null,
+        cooldownMinutes:
+  master.cooldown_minutes ?? null,
+cooldownReadyAt:
+  cooldowns.get(sourceKey) ?? null,
         successDie: master.success_die ?? null,
         successThreshold: master.success_threshold ?? null,
         resolutionMode: (master.resolution_mode ?? "automatic") as

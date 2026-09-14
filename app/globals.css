@@ -20767,6 +20767,16 @@ html[data-portal-skin] [data-homepage-nav-button="true"] [data-homepage-nav-role
    Same mechanism as Location Atmosphere
    ========================================= */
 
+   .character_page_p_text_7,
+   .components_characters_character_order_summary_p_text_2 {
+    text-transform: none !important;
+    color: rgb(var(--sep-global-c1)) !important;
+   }
+
+[data-portal-shell]
+button.components_characters_character_sheet_tabs_button_tab {
+  border-radius: 20px 20px 0 0 !important;
+}
 .components_portal_portal_sidebar_aside_sidebar,
 .components_portal_mobile_portal_navigation_section_more_sepulchria_navigation
 {

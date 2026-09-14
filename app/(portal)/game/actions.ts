@@ -3329,9 +3329,12 @@ export async function useRoomItem(
             ` - Description: ${item.description?.trim() || "No description"}` +
             ` - d${die} -> ${rolled}${attributeText} = ${total}` +
             ` - Awaiting ${allowedCounters
-              .map((counter) => counterLabels[counter] ?? counter)
-              .join(" / ")}`,
-          message_type: "action",
+  .map((counter) => counterLabels[counter] ?? counter)
+  .join(" / ")}` +
+`${item.cooldown_minutes
+  ? ` - Cooldown: ${item.cooldown_minutes} min`
+  : ""}`,
+message_type: "action",
           client_nonce: crypto.randomUUID(),
         });
 
@@ -3718,7 +3721,18 @@ export async function useRoomItem(
           `Duration: ${effect.duration_minutes} min`,
         );
       }
+
+
     }
+
+    if (
+  item.cooldown_minutes &&
+  Number(item.cooldown_minutes) > 0
+) {
+  effectParts.push(
+    `Cooldown: ${Number(item.cooldown_minutes)} min`,
+  );
+}
 
     if (damage > 0) {
       const attributeText =

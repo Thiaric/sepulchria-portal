@@ -132,7 +132,8 @@ type ChatItem = {
   targetMode: "self" | "other" | "either";
   maxCharges: number | null;
   chargesRemaining: number | null;
-  cooldownReadyAt: string | null;
+  cooldownMinutes: number | null;
+cooldownReadyAt: string | null;
   successDie?: number | null;
   successThreshold?: number | null;
   resolutionMode?: "automatic" | "fixed" | "opposed";
@@ -2753,14 +2754,24 @@ function ignoreSpellingWord() {
                       }
 
                       if (
-                        effect.effect_mode ===
-                          "temporary" &&
-                        effect.duration_minutes
-                      ) {
-                        parts.push(
-                          `${effect.duration_minutes} min`,
-                        );
-                      }
+  effect.effect_mode ===
+    "temporary" &&
+  effect.duration_minutes
+) {
+  parts.push(
+    `Duration: ${effect.duration_minutes} min`,
+  );
+}
+
+if (
+  index === 0 &&
+  selectedItem.cooldownMinutes &&
+  selectedItem.cooldownMinutes > 0
+) {
+  parts.push(
+    `Cooldown: ${selectedItem.cooldownMinutes} min`,
+  );
+}
 
                       return (
                         <span

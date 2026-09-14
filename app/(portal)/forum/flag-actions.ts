@@ -24,6 +24,8 @@ export type ForumFlagRecipient = {
   raceName: string | null;
   associationId: string | null;
   associationName: string | null;
+  orderIds: string[];
+  orderNames: string[];
   isFriend: boolean;
 };
 
@@ -94,6 +96,8 @@ async function getAccessibleCharacterRows(
   characters: CharacterRow[];
   races: Map<string, string>;
   associations: Map<string, string>;
+  orderIdsByCharacter: Map<string, string[]>;
+  orders: Map<string, string>;
 }> {
   const supabase = await createClient();
 
@@ -120,6 +124,8 @@ async function getAccessibleCharacterRows(
       characters: [],
       races: new Map(),
       associations: new Map(),
+      orderIdsByCharacter: new Map(),
+      orders: new Map(),
     };
   }
 
@@ -145,7 +151,6 @@ async function getAccessibleCharacterRows(
       `,
     )
     .eq("status", "approved")
-      .eq("is_system", false)
     .eq("is_system", false)
     .order("first_name", {
       ascending: true,
@@ -260,6 +265,83 @@ async function getAccessibleCharacterRows(
       ),
     );
 
+  const accessibleCharacterIds =
+    characters.map(
+      (character) => character.id,
+    );
+
+  const orderMembershipResult =
+    accessibleCharacterIds.length > 0
+      ? await supabase
+          .from("order_memberships")
+          .select("character_id, order_id")
+          .in(
+            "character_id",
+            accessibleCharacterIds,
+          )
+      : {
+          data: [],
+          error: null,
+        };
+
+  if (orderMembershipResult.error) {
+    throw new Error(
+      `Unable to load Order memberships: ${orderMembershipResult.error.message}`,
+    );
+  }
+
+  const orderIdsByCharacter =
+    new Map<string, string[]>();
+
+  for (
+    const row
+    of orderMembershipResult.data ?? []
+  ) {
+    const characterId =
+      String(row.character_id);
+
+    const orderId =
+      String(row.order_id);
+
+    const current =
+      orderIdsByCharacter.get(
+        characterId,
+      ) ?? [];
+
+    if (!current.includes(orderId)) {
+      current.push(orderId);
+    }
+
+    orderIdsByCharacter.set(
+      characterId,
+      current,
+    );
+  }
+
+  const orderIds = Array.from(
+    new Set(
+      [...orderIdsByCharacter.values()]
+        .flat(),
+    ),
+  );
+
+  const orderResult =
+    orderIds.length > 0
+      ? await supabase
+          .from("orders")
+          .select("id, name")
+          .in("id", orderIds)
+      : {
+          data: [],
+          error: null,
+        };
+
+  if (orderResult.error) {
+    throw new Error(
+      `Unable to load Orders: ${orderResult.error.message}`,
+    );
+  }
+
   const [
     raceResult,
     associationResult,
@@ -320,6 +402,16 @@ async function getAccessibleCharacterRows(
         association.name,
       ]),
     ),
+    orderIdsByCharacter,
+    orders: new Map(
+      (
+        (orderResult.data ??
+          []) as NamedRow[]
+      ).map((order) => [
+        order.id,
+        order.name,
+      ]),
+    ),
   };
 }
 
@@ -363,6 +455,8 @@ export async function loadForumFlagRecipients(
     characters: rawCharacters,
     races,
     associations,
+    orderIdsByCharacter,
+    orders,
   } =
     await getAccessibleCharacterRows(
       sectionId,
@@ -459,6 +553,29 @@ export async function loadForumFlagRecipients(
               character.association_id,
             ) ?? null
           : null,
+      orderIds:
+        orderIdsByCharacter.get(
+          character.id,
+        ) ?? [],
+      orderNames:
+        (
+          orderIdsByCharacter.get(
+            character.id,
+          ) ?? []
+        )
+          .map(
+            (orderId) =>
+              orders.get(orderId),
+          )
+          .filter(
+            (
+              name,
+            ): name is string =>
+              Boolean(name),
+          )
+          .sort((a, b) =>
+            a.localeCompare(b),
+          ),
       isFriend:
         friendIds.has(
           character.id,
@@ -541,12 +658,21 @@ export async function flagForumTopic(
         ),
       );
 
+    const selectedOrderIds =
+      new Set(
+        values(
+          formData,
+          "orderIds",
+        ),
+      );
+
     if (
       selectedCharacterIds.size ===
         0 &&
       selectedRaceIds.size === 0 &&
       selectedAssociationIds.size ===
-        0
+        0 &&
+      selectedOrderIds.size === 0
     ) {
       return {
         ok: false,
@@ -654,6 +780,8 @@ export async function flagForumTopic(
     const {
       characters:
         accessibleCharacters,
+      orderIdsByCharacter:
+        accessibleOrderIdsByCharacter,
     } =
       await getAccessibleCharacterRows(
         sectionId,
@@ -675,7 +803,16 @@ export async function flagForumTopic(
             null &&
             selectedAssociationIds.has(
               character.association_id,
-            )),
+            )) ||
+          (
+            accessibleOrderIdsByCharacter
+              .get(character.id)
+              ?.some((orderId) =>
+                selectedOrderIds.has(
+                  orderId,
+                ),
+              ) ?? false
+          ),
       );
 
     if (

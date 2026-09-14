@@ -101,7 +101,7 @@
     a[class~="border"]
   ):not(.portal-left-shell *):not(.portal-right-shell *):not(
     [data-sep-ui-ignore="true"] *
-  ):not(
+  ):not(.components_characters_character_sheet_tabs_button_tab):not(
     [class*="red-"]
   ):not([class*="amber-"]):not([class*="emerald-"]):not(
     [class*="rose-"]

@@ -1993,11 +1993,33 @@ export function CharacterInventoryBrowser({
     );
 
   const [
-    collapsed,
-    setCollapsed,
-  ] = useState<
-    Set<string>
-  >(() => new Set());
+  collapsed,
+  setCollapsed,
+] = useState<
+  Set<string>
+>(() => {
+  const initial =
+    new Set<string>(
+      rows.map(
+        (row) =>
+          row.category_name,
+      ),
+    );
+
+  if (
+    rows.some(
+      (row) =>
+        row.record_kind === "unique" &&
+        row.container_capacity !== null,
+    )
+  ) {
+    initial.add(
+      "__containers__",
+    );
+  }
+
+  return initial;
+});
 
   const [
     equipmentCollapsed,

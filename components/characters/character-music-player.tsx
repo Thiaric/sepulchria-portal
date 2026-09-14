@@ -13,43 +13,38 @@ type CharacterMusicPlayerProps = {
   src: string;
 };
 
+const CHARACTER_MUSIC_VOLUME_KEY =
+  "sepulchria-character-music-volume";
+
+const CHARACTER_MUSIC_MUTED_KEY =
+  "sepulchria-character-music-muted";
+
 /*
- * Keep a registry of every CharacterMusicPlayer audio element.
- *
- * This matters during Next.js client navigation: if a previous character
- * route is temporarily retained/cached, we can still stop or mute its audio.
+ * One shared audio element survives character-sheet
+ * remounts caused by tab navigation.
  */
-const characterMusicRegistry =
-  new Set<HTMLAudioElement>();
+let sharedCharacterMusicAudio:
+  | HTMLAudioElement
+  | null = null;
 
-function stopAudioElement(
-  audio: HTMLAudioElement,
-  reset = false,
-) {
-  try {
-    audio.pause();
+let sharedCharacterMusicSrc:
+  | string
+  | null = null;
 
-    if (reset) {
-      audio.currentTime = 0;
-    }
-  } catch {
-    // Ignore browser media cleanup errors.
+let sharedCharacterMusicStopTimer:
+  | ReturnType<typeof setTimeout>
+  | null = null;
+
+function getSharedCharacterMusicAudio() {
+  if (!sharedCharacterMusicAudio) {
+    sharedCharacterMusicAudio =
+      new Audio();
+
+    sharedCharacterMusicAudio.preload =
+      "auto";
   }
-}
 
-function stopOtherCharacterMusic(
-  current: HTMLAudioElement,
-) {
-  characterMusicRegistry.forEach(
-    (audio) => {
-      if (audio !== current) {
-        stopAudioElement(
-          audio,
-          true,
-        );
-      }
-    },
-  );
+  return sharedCharacterMusicAudio;
 }
 
 function formatTime(value: number) {
@@ -92,132 +87,384 @@ export function CharacterMusicPlayer({
   const autoplayFinishedRef =
     useRef(false);
 
+  const shouldAutoplayRef =
+    useRef(false);
+
   const { muted: portalMuted } =
     usePortalAudio();
 
   const [playing, setPlaying] =
     useState(false);
 
-  const [currentTime, setCurrentTime] =
-    useState(0);
+  const [
+    currentTime,
+    setCurrentTime,
+  ] = useState(0);
 
   const [duration, setDuration] =
     useState(0);
 
-  const [localMuted, setLocalMuted] =
-    useState(false);
+  const [
+    localMuted,
+    setLocalMuted,
+  ] = useState(false);
 
   const [volume, setVolume] =
     useState(0.65);
+
+  const [
+    preferencesLoaded,
+    setPreferencesLoaded,
+  ] = useState(false);
 
   const [error, setError] =
     useState(false);
 
   /*
-   * Callback ref gives us deterministic cleanup when React removes/replaces
-   * the <audio> node. We stop it BEFORE dropping our reference.
+   * Restore saved mute + volume.
    */
-  const setAudioElement =
-    useCallback(
-      (
-        next:
-          | HTMLAudioElement
-          | null,
-      ) => {
-        const previous =
-          audioRef.current;
+  useEffect(() => {
+    try {
+      const savedMuted =
+        window.localStorage.getItem(
+          CHARACTER_MUSIC_MUTED_KEY,
+        );
+
+      const savedVolume =
+        window.localStorage.getItem(
+          CHARACTER_MUSIC_VOLUME_KEY,
+        );
+
+      if (savedMuted !== null) {
+        setLocalMuted(
+          savedMuted === "true",
+        );
+      }
+
+      if (savedVolume !== null) {
+        const parsed =
+          Number(savedVolume);
 
         if (
-          previous &&
-          previous !== next
+          Number.isFinite(parsed) &&
+          parsed >= 0 &&
+          parsed <= 1
         ) {
-          stopAudioElement(
-            previous,
-            true,
-          );
+          setVolume(parsed);
+        }
+      }
+    } catch {
+      // Ignore unavailable localStorage.
+    }
 
-          characterMusicRegistry.delete(
-            previous,
-          );
+    setPreferencesLoaded(true);
+  }, []);
 
-          /*
-           * Remove the media source as an extra guard against a detached
-           * element continuing to stream after client-side navigation.
-           */
-          previous.removeAttribute(
+  /*
+   * Save mute.
+   */
+  useEffect(() => {
+    if (!preferencesLoaded) {
+      return;
+    }
+
+    try {
+      window.localStorage.setItem(
+        CHARACTER_MUSIC_MUTED_KEY,
+        String(localMuted),
+      );
+    } catch {
+      // Ignore unavailable localStorage.
+    }
+  }, [
+    localMuted,
+    preferencesLoaded,
+  ]);
+
+  /*
+   * Save volume.
+   */
+  useEffect(() => {
+    if (!preferencesLoaded) {
+      return;
+    }
+
+    try {
+      window.localStorage.setItem(
+        CHARACTER_MUSIC_VOLUME_KEY,
+        String(volume),
+      );
+    } catch {
+      // Ignore unavailable localStorage.
+    }
+  }, [
+    volume,
+    preferencesLoaded,
+  ]);
+
+  /*
+   * Connect this visible player to the shared audio.
+   *
+   * When a tab navigation remounts this component,
+   * the existing audio element is reused rather than
+   * recreated.
+   */
+  useEffect(() => {
+    if (
+      sharedCharacterMusicStopTimer
+    ) {
+      clearTimeout(
+        sharedCharacterMusicStopTimer,
+      );
+
+      sharedCharacterMusicStopTimer =
+        null;
+    }
+
+    const audio =
+      getSharedCharacterMusicAudio();
+
+    audioRef.current =
+      audio;
+
+    const sourceChanged =
+      sharedCharacterMusicSrc !==
+      src;
+
+    shouldAutoplayRef.current =
+      sourceChanged;
+
+    if (sourceChanged) {
+      autoplayCancelledRef.current =
+        false;
+
+      autoplayFinishedRef.current =
+        false;
+
+      audio.pause();
+
+      try {
+        audio.currentTime = 0;
+      } catch {
+        //
+      }
+
+      sharedCharacterMusicSrc =
+        src;
+
+      setPlaying(false);
+      setCurrentTime(0);
+      setDuration(0);
+      setError(false);
+
+      audio.src = src;
+      audio.load();
+    } else {
+      setPlaying(
+        !audio.paused &&
+          !audio.ended,
+      );
+
+      setCurrentTime(
+        Number.isFinite(
+          audio.currentTime,
+        )
+          ? audio.currentTime
+          : 0,
+      );
+
+      setDuration(
+        Number.isFinite(
+          audio.duration,
+        )
+          ? audio.duration
+          : 0,
+      );
+
+      setError(false);
+    }
+
+    function handlePlay() {
+      setPlaying(true);
+      setError(false);
+    }
+
+    function handlePause() {
+      setPlaying(false);
+    }
+
+    function handleEnded() {
+      setPlaying(false);
+      setCurrentTime(0);
+    }
+
+    function handleTimeUpdate() {
+      setCurrentTime(
+        Number.isFinite(
+          audio.currentTime,
+        )
+          ? audio.currentTime
+          : 0,
+      );
+    }
+
+    function handleLoadedMetadata() {
+      setDuration(
+        Number.isFinite(
+          audio.duration,
+        )
+          ? audio.duration
+          : 0,
+      );
+    }
+
+    function handleError() {
+      if (
+        sharedCharacterMusicSrc
+      ) {
+        setError(true);
+      }
+
+      setPlaying(false);
+    }
+
+    audio.addEventListener(
+      "play",
+      handlePlay,
+    );
+
+    audio.addEventListener(
+      "pause",
+      handlePause,
+    );
+
+    audio.addEventListener(
+      "ended",
+      handleEnded,
+    );
+
+    audio.addEventListener(
+      "timeupdate",
+      handleTimeUpdate,
+    );
+
+    audio.addEventListener(
+      "loadedmetadata",
+      handleLoadedMetadata,
+    );
+
+    audio.addEventListener(
+      "error",
+      handleError,
+    );
+
+    return () => {
+      audio.removeEventListener(
+        "play",
+        handlePlay,
+      );
+
+      audio.removeEventListener(
+        "pause",
+        handlePause,
+      );
+
+      audio.removeEventListener(
+        "ended",
+        handleEnded,
+      );
+
+      audio.removeEventListener(
+        "timeupdate",
+        handleTimeUpdate,
+      );
+
+      audio.removeEventListener(
+        "loadedmetadata",
+        handleLoadedMetadata,
+      );
+
+      audio.removeEventListener(
+        "error",
+        handleError,
+      );
+
+      audioRef.current =
+        null;
+
+      /*
+       * Wait until the current React commit has finished.
+       *
+       * A tab remount creates another CharacterMusicPlayer
+       * immediately, which cancels this timer.
+       *
+       * If no player remounts, we actually left the
+       * character sheet, so stop and reset the music.
+       */
+      sharedCharacterMusicStopTimer =
+        setTimeout(() => {
+          if (
+            sharedCharacterMusicSrc !==
+            src
+          ) {
+            return;
+          }
+
+          audio.pause();
+
+          try {
+            audio.currentTime =
+              0;
+          } catch {
+            //
+          }
+
+          sharedCharacterMusicSrc =
+            null;
+
+          audio.removeAttribute(
             "src",
           );
 
           try {
-            previous.load();
+            audio.load();
           } catch {
-            // Ignore cleanup errors.
+            //
           }
-        }
 
-        audioRef.current =
-          next;
-
-        if (next) {
-          characterMusicRegistry.add(
-            next,
-          );
-        }
-      },
-      [],
-    );
+          sharedCharacterMusicStopTimer =
+            null;
+        }, 0);
+    };
+  }, [src]);
 
   /*
-   * Volume belongs to this player.
+   * Apply volume to the shared track.
    */
   useEffect(() => {
     const audio =
-      audioRef.current;
+      audioRef.current ??
+      sharedCharacterMusicAudio;
 
     if (!audio) {
       return;
     }
 
-    audio.volume = volume;
+    audio.volume =
+      volume;
   }, [volume]);
 
   /*
-   * Global portal mute is authoritative.
-   *
-   * Apply it to EVERY registered CharacterMusicPlayer, including any stale
-   * player temporarily retained by Next.js.
-   */
-  useEffect(() => {
-    characterMusicRegistry.forEach(
-      (audio) => {
-        const ownLocalMute =
-          audio.dataset
-            .localMuted ===
-          "true";
-
-        audio.muted =
-          portalMuted ||
-          ownLocalMute;
-      },
-    );
-  }, [portalMuted]);
-
-  /*
-   * Local mute applies to this track and is also stored on the DOM element so
-   * the global portal mute can preserve it.
+   * Apply portal mute + character music mute.
    */
   useEffect(() => {
     const audio =
-      audioRef.current;
+      audioRef.current ??
+      sharedCharacterMusicAudio;
 
     if (!audio) {
       return;
     }
-
-    audio.dataset.localMuted =
-      localMuted
-        ? "true"
-        : "false";
 
     audio.muted =
       portalMuted ||
@@ -228,73 +475,22 @@ export function CharacterMusicPlayer({
   ]);
 
   /*
-   * Reset whenever the character music source changes.
+   * Controlled autoplay.
+   *
+   * This runs only for a genuinely new character track.
+   * A remount caused by changing sheet tabs does NOT
+   * trigger autoplay again.
    */
   useEffect(() => {
-    const audio =
-      audioRef.current;
-
-    if (!audio) {
+    if (
+      !shouldAutoplayRef.current
+    ) {
       return;
     }
 
-    autoplayCancelledRef.current =
+    shouldAutoplayRef.current =
       false;
 
-    autoplayFinishedRef.current =
-      false;
-
-    stopAudioElement(
-      audio,
-      true,
-    );
-
-    setPlaying(false);
-    setCurrentTime(0);
-    setDuration(0);
-    setError(false);
-
-    audio.src = src;
-    audio.load();
-
-    return () => {
-      autoplayCancelledRef.current =
-        true;
-
-      stopAudioElement(
-        audio,
-        true,
-      );
-
-      characterMusicRegistry.delete(
-        audio,
-      );
-
-      audio.removeAttribute(
-        "src",
-      );
-
-      try {
-        audio.load();
-      } catch {
-        // Ignore cleanup errors.
-      }
-    };
-  }, [src]);
-
-  /*
-   * Controlled autoplay.
-   *
-   * IMPORTANT: there is deliberately NO `autoPlay` attribute on <audio>.
-   * Native autoplay was able to start independently of our React controls
-   * during cached/client navigation.
-   *
-   * We try once immediately. If the browser blocks audible autoplay, the
-   * first interaction OUTSIDE the player can unlock it. Any interaction
-   * INSIDE the player permanently cancels fallback autoplay and leaves the
-   * viewer in control.
-   */
-  useEffect(() => {
     let listenersInstalled =
       false;
 
@@ -330,13 +526,6 @@ export function CharacterMusicPlayer({
       ) {
         return false;
       }
-
-      /*
-       * Only one character theme may ever play at a time.
-       */
-      stopOtherCharacterMusic(
-        audio,
-      );
 
       try {
         await audio.play();
@@ -410,53 +599,37 @@ export function CharacterMusicPlayer({
     );
 
     return () => {
-      autoplayCancelledRef.current =
-        true;
-
       removeListeners();
-
-      const audio =
-        audioRef.current;
-
-      if (audio) {
-        stopAudioElement(
-          audio,
-          true,
-        );
-      }
     };
   }, [src]);
 
-  async function togglePlayback() {
-    const audio =
-      audioRef.current;
+  const togglePlayback =
+    useCallback(
+      async () => {
+        const audio =
+          audioRef.current;
 
-    if (!audio || error) {
-      return;
-    }
+        if (!audio || error) {
+          return;
+        }
 
-    autoplayCancelledRef.current =
-      true;
+        autoplayCancelledRef.current =
+          true;
 
-    if (!audio.paused) {
-      stopAudioElement(audio);
-      return;
-    }
+        if (!audio.paused) {
+          audio.pause();
+          return;
+        }
 
-    /*
-     * If the viewer manually presses Play, stop every other character theme.
-     */
-    stopOtherCharacterMusic(
-      audio,
+        try {
+          await audio.play();
+        } catch {
+          setError(true);
+          setPlaying(false);
+        }
+      },
+      [error],
     );
-
-    try {
-      await audio.play();
-    } catch {
-      setError(true);
-      setPlaying(false);
-    }
-  }
 
   function toggleLocalMute() {
     autoplayCancelledRef.current =
@@ -485,7 +658,9 @@ export function CharacterMusicPlayer({
     audio.currentTime =
       value;
 
-    setCurrentTime(value);
+    setCurrentTime(
+      value,
+    );
   }
 
   function changeVolume(
@@ -495,6 +670,14 @@ export function CharacterMusicPlayer({
       true;
 
     setVolume(value);
+
+    const audio =
+      audioRef.current;
+
+    if (audio) {
+      audio.volume =
+        value;
+    }
   }
 
   return (
@@ -502,74 +685,6 @@ export function CharacterMusicPlayer({
       ref={playerRef}
       className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-120e0b))] px-4 py-3 sm:px-5 components_characters_character_music_player_section_section"
     >
-      <audio
-        ref={setAudioElement}
-        preload="auto"
-        muted={
-          portalMuted ||
-          localMuted
-        }
-        data-character-music="true"
-        data-local-muted={
-          localMuted
-            ? "true"
-            : "false"
-        }
-        onPlay={(event) => {
-          /*
-           * A last safety net: whenever THIS element begins playback,
-           * kill every other registered character theme.
-           */
-          stopOtherCharacterMusic(
-            event.currentTarget,
-          );
-
-          setPlaying(true);
-          setError(false);
-        }}
-        onPause={() => {
-          setPlaying(false);
-        }}
-        onEnded={() => {
-          setPlaying(false);
-          setCurrentTime(0);
-        }}
-        onTimeUpdate={(event) => {
-          setCurrentTime(
-            event.currentTarget
-              .currentTime,
-          );
-        }}
-        onLoadedMetadata={(
-          event,
-        ) => {
-          const loadedDuration =
-            event.currentTarget
-              .duration;
-
-          setDuration(
-            Number.isFinite(
-              loadedDuration,
-            )
-              ? loadedDuration
-              : 0,
-          );
-        }}
-        onError={() => {
-          /*
-           * During cleanup we intentionally clear `src`; don't show a player
-           * error for an element that is being removed.
-           */
-          if (
-            audioRef.current
-          ) {
-            setError(true);
-          }
-
-          setPlaying(false);
-        }}
-      />
-
       <div className="flex flex-wrap items-center gap-3 components_characters_character_music_player_div_container">
         <button
           type="button"
@@ -663,12 +778,22 @@ export function CharacterMusicPlayer({
                 ? "Unmute this track"
                 : "Mute this track"
           }
-          className={[((`flex h-9 w-9 shrink-0 items-center justify-center border bg-[rgb(var(--sep-colour-15100d))] text-xs transition ${
-            portalMuted ||
-            localMuted
-              ? "border-[rgb(var(--sep-colour-65443b))] text-[rgb(var(--sep-colour-a56f64))]"
-              : "border-[rgb(var(--sep-colour-60482e))]/60 text-[rgb(var(--sep-colour-c6a26d))] hover:border-[rgb(var(--sep-colour-987344))] hover:text-[rgb(var(--sep-colour-ead2a5))]"
-          }`)), "components_characters_character_music_player_button_toggle_local_mute"].filter(Boolean).join(" ")}
+          className={[
+            ((`
+              flex h-9 w-9 shrink-0 items-center justify-center border
+              bg-[rgb(var(--sep-colour-15100d))]
+              text-xs transition
+              ${
+                portalMuted ||
+                localMuted
+                  ? "border-[rgb(var(--sep-colour-65443b))] text-[rgb(var(--sep-colour-a56f64))]"
+                  : "border-[rgb(var(--sep-colour-60482e))]/60 text-[rgb(var(--sep-colour-c6a26d))] hover:border-[rgb(var(--sep-colour-987344))] hover:text-[rgb(var(--sep-colour-ead2a5))]"
+              }
+            `)),
+            "components_characters_character_music_player_button_toggle_local_mute",
+          ]
+            .filter(Boolean)
+            .join(" ")}
         >
           {portalMuted ||
           localMuted

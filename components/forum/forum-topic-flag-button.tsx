@@ -89,6 +89,22 @@ export function ForumTopicFlagButton({
   );
 
   const [
+    selectedOrders,
+    setSelectedOrders,
+  ] = useState<Set<string>>(
+    new Set(),
+  );
+
+  const [
+    targetGroup,
+    setTargetGroup,
+  ] = useState<
+    | "ancestries"
+    | "associations"
+    | "orders"
+  >("ancestries");
+
+  const [
     state,
     formAction,
     pending,
@@ -189,6 +205,10 @@ export function ForumTopicFlagButton({
       setSelectedAssociations(
         new Set(),
       );
+
+      setSelectedOrders(
+        new Set(),
+      );
     }
   }, [state]);
 
@@ -262,6 +282,49 @@ export function ForumTopicFlagButton({
         );
     }, [characters]);
 
+  const orders =
+    useMemo(() => {
+      const map =
+        new Map<
+          string,
+          string
+        >();
+
+      for (
+        const character
+        of characters
+      ) {
+        character.orderIds.forEach(
+          (id, index) => {
+            const name =
+              character.orderNames[
+                index
+              ];
+
+            if (id && name) {
+              map.set(
+                id,
+                name,
+              );
+            }
+          },
+        );
+      }
+
+      return [...map]
+        .map(
+          ([id, name]) => ({
+            id,
+            name,
+          }),
+        )
+        .sort((a, b) =>
+          a.name.localeCompare(
+            b.name,
+          ),
+        );
+    }, [characters]);
+
   const friends =
     useMemo(
       () =>
@@ -310,6 +373,7 @@ export function ForumTopicFlagButton({
             character.name,
             character.raceName,
             character.associationName,
+            ...character.orderNames,
           ]
             .filter(Boolean)
             .join(" ")
@@ -337,13 +401,20 @@ export function ForumTopicFlagButton({
             null &&
             selectedAssociations.has(
               character.associationId,
-            )),
+            )) ||
+          character.orderIds.some(
+            (orderId) =>
+              selectedOrders.has(
+                orderId,
+              ),
+          ),
       ).length;
     }, [
       characters,
       selectedCharacters,
       selectedRaces,
       selectedAssociations,
+      selectedOrders,
     ]);
 
   function toggle(
@@ -423,7 +494,7 @@ export function ForumTopicFlagButton({
                 event.target.value,
               )
             }
-            placeholder="Search characters, ancestries or associations…"
+            placeholder="Search characters, ancestries, associations or orders…"
             className="w-full border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-0b0806))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c1a0))] outline-none placeholder:text-[rgb(var(--sep-colour-62584b))] focus:border-[rgb(var(--sep-colour-9a7445))] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden components_forum_forum_topic_flag_button_input_search_characters_ancestries_associations"
           />
         </div>
@@ -484,35 +555,113 @@ export function ForumTopicFlagButton({
                 </section>
               ) : null}
 
-              <SelectionGroup
-                title="Ancestries"
-                options={races}
-                selected={
-                  selectedRaces
-                }
-                onToggle={(id) =>
-                  toggle(
-                    setSelectedRaces,
-                    id,
-                  )
-                }
-              />
+              <section className="components_forum_forum_topic_flag_button_section_target_groups">
+                <h3 className="mb-2 text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-9b774b))]">
+                  Target Groups
+                </h3>
 
-              <SelectionGroup
-                title="Associations"
-                options={
-                  associations
-                }
-                selected={
-                  selectedAssociations
-                }
-                onToggle={(id) =>
-                  toggle(
-                    setSelectedAssociations,
-                    id,
-                  )
-                }
-              />
+                <div className="grid grid-cols-3 gap-1.5">
+                  {[
+                    {
+                      id: "ancestries" as const,
+                      label: "Ancestries",
+                      count:
+                        selectedRaces.size,
+                    },
+                    {
+                      id: "associations" as const,
+                      label: "Associations",
+                      count:
+                        selectedAssociations.size,
+                    },
+                    {
+                      id: "orders" as const,
+                      label: "Orders",
+                      count:
+                        selectedOrders.size,
+                    },
+                  ].map((tab) => {
+                    const active =
+                      targetGroup ===
+                      tab.id;
+
+                    return (
+                      <button
+                        key={tab.id}
+                        type="button"
+                        onClick={() =>
+                          setTargetGroup(
+                            tab.id,
+                          )
+                        }
+                        className={[
+                          "border px-2 py-2 text-[8px] uppercase tracking-[0.13em] transition",
+                          active
+                            ? "border-[rgb(var(--sep-colour-a47a45))] bg-[rgb(var(--sep-colour-342216))] text-[rgb(var(--sep-colour-e3c79a))]"
+                            : "border-[rgb(var(--sep-colour-4f3b28))] bg-[rgb(var(--sep-colour-15100d))] text-[rgb(var(--sep-colour-89775f))] hover:border-[rgb(var(--sep-colour-765735))]",
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
+                      >
+                        {tab.label}
+                        {tab.count > 0
+                          ? ` · ${tab.count}`
+                          : ""}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-2 border border-[rgb(var(--sep-colour-4e3a27))]/45 bg-[rgb(var(--sep-colour-0d0a08))]/45 p-2.5">
+                  {targetGroup ===
+                  "ancestries" ? (
+                    <SelectionGroup
+                      title=""
+                      options={races}
+                      selected={
+                        selectedRaces
+                      }
+                      onToggle={(id) =>
+                        toggle(
+                          setSelectedRaces,
+                          id,
+                        )
+                      }
+                    />
+                  ) : targetGroup ===
+                    "associations" ? (
+                    <SelectionGroup
+                      title=""
+                      options={
+                        associations
+                      }
+                      selected={
+                        selectedAssociations
+                      }
+                      onToggle={(id) =>
+                        toggle(
+                          setSelectedAssociations,
+                          id,
+                        )
+                      }
+                    />
+                  ) : (
+                    <SelectionGroup
+                      title=""
+                      options={orders}
+                      selected={
+                        selectedOrders
+                      }
+                      onToggle={(id) =>
+                        toggle(
+                          setSelectedOrders,
+                          id,
+                        )
+                      }
+                    />
+                  )}
+                </div>
+              </section>
 
               <section className="components_forum_forum_topic_flag_button_section_section_2">
                 <div className="mb-2 flex items-center justify-between components_forum_forum_topic_flag_button_div_characters">
@@ -581,6 +730,13 @@ export function ForumTopicFlagButton({
                             {[
                               character.raceName,
                               character.associationName,
+                              character.orderNames.length ===
+                              0
+                                ? null
+                                : character.orderNames.length ===
+                                    1
+                                  ? character.orderNames[0]
+                                  : `${character.orderNames[0]} +${character.orderNames.length - 1}`,
                             ]
                               .filter(
                                 Boolean,
@@ -588,7 +744,7 @@ export function ForumTopicFlagButton({
                               .join(
                                 " · ",
                               ) ||
-                              "No ancestry or association"}
+                              "No ancestry, association or Order"}
                           </p>
                         </div>
                       </label>
@@ -663,6 +819,18 @@ export function ForumTopicFlagButton({
               key={`a-${id}`}
               type="hidden"
               name="associationIds"
+              value={id}
+            />
+          ))}
+
+          {[
+            ...selectedOrders,
+          ].map((id) => (
+            <input
+              className="components_forum_forum_topic_flag_button_input_order_ids"
+              key={`o-${id}`}
+              type="hidden"
+              name="orderIds"
               value={id}
             />
           ))}
@@ -769,9 +937,11 @@ function SelectionGroup({
 
   return (
     <section className="components_forum_forum_topic_flag_button_section_section_3">
-      <h3 className="mb-2 text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-9b774b))] components_forum_forum_topic_flag_button_h3_heading">
-        {title}
-      </h3>
+      {title ? (
+        <h3 className="mb-2 text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-9b774b))] components_forum_forum_topic_flag_button_h3_heading">
+          {title}
+        </h3>
+      ) : null}
 
       <div className="flex flex-wrap gap-1.5 components_forum_forum_topic_flag_button_div_container_11">
         {options.map(
