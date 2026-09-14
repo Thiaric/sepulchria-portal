@@ -2390,48 +2390,14 @@ function AdminGiftsJumpContext() {
   function jumpToGift(
     entry: JumpEntry,
   ) {
-    const input =
-      document.querySelector<HTMLInputElement>(
-        `input[name="giftId"][value="${CSS.escape(
-          entry.id,
-        )}"]`,
-      );
-
-    const details =
-      input?.closest<HTMLDetailsElement>(
-        "details",
-      ) ?? null;
-
-    if (details) {
-      details.open = true;
-
-      window.requestAnimationFrame(
-        () => {
-          details.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-        },
-      );
-
-      return;
-    }
-
     const anchor =
       document.getElementById(
-        `gift-${entry.id}`,
+        `gift-card-${entry.id}`,
       );
-
-    if (
-      anchor instanceof
-      HTMLDetailsElement
-    ) {
-      anchor.open = true;
-    }
 
     anchor?.scrollIntoView({
       behavior: "smooth",
-      block: "start",
+      block: "center",
     });
   }
 
@@ -2967,22 +2933,10 @@ function AdminRecordJumpContext({
     } else if (
       mode === "items"
     ) {
-      const details =
-        document.getElementById(
-          `item-${entry.id}`,
-        );
-
-      if (
-        details instanceof
-        HTMLDetailsElement
-      ) {
-        details.open = true;
-      }
-
       target =
-        details instanceof HTMLElement
-          ? details
-          : null;
+        document.getElementById(
+          `item-card-${entry.id}`,
+        );
     } else if (
       mode === "users"
     ) {

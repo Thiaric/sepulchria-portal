@@ -3,6 +3,7 @@
 import {
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
@@ -358,6 +359,18 @@ export function GiftsCatalogue({
   const [effectMode, setEffectMode] = useState("");
   const [targetMode, setTargetMode] = useState("");
 
+  const FEATS_BATCH_SIZE = 24;
+
+  const [
+    visibleCount,
+    setVisibleCount,
+  ] = useState(
+    FEATS_BATCH_SIZE,
+  );
+
+  const loadMoreRef =
+    useRef<HTMLDivElement>(null);
+
   const ancestries = useMemo(() => {
     const byId = new Map<string, string>();
 
@@ -432,6 +445,185 @@ export function GiftsCatalogue({
     type,
     ancestryId,
     orderId,
+  ]);
+
+  const visibleFiltered =
+    useMemo(
+      () =>
+        characterMode
+          ? filtered
+          : filtered.slice(
+              0,
+              visibleCount,
+            ),
+      [
+        characterMode,
+        filtered,
+        visibleCount,
+      ],
+    );
+
+  useEffect(() => {
+    if (characterMode) {
+      return;
+    }
+
+    setVisibleCount(
+      FEATS_BATCH_SIZE,
+    );
+  }, [
+    characterMode,
+    search,
+    effectMode,
+    targetMode,
+    type,
+    ancestryId,
+    orderId,
+  ]);
+
+  useEffect(() => {
+    if (characterMode) {
+      return;
+    }
+
+    const target =
+      loadMoreRef.current;
+
+    if (
+      !target ||
+      visibleCount >=
+        filtered.length
+    ) {
+      return;
+    }
+
+    const observer =
+      new IntersectionObserver(
+        (entries) => {
+          if (
+            entries.some(
+              (entry) =>
+                entry.isIntersecting,
+            )
+          ) {
+            setVisibleCount(
+              (current) =>
+                Math.min(
+                  current +
+                    FEATS_BATCH_SIZE,
+                  filtered.length,
+                ),
+            );
+          }
+        },
+        {
+          rootMargin:
+            "900px 0px",
+        },
+      );
+
+    observer.observe(target);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [
+    characterMode,
+    filtered.length,
+    visibleCount,
+  ]);
+
+  useEffect(() => {
+    if (characterMode) {
+      return;
+    }
+
+    function revealAndScroll(
+      giftId: string,
+    ) {
+      const index =
+        filtered.findIndex(
+          (gift) =>
+            gift.id === giftId,
+        );
+
+      if (index < 0) {
+        return;
+      }
+
+      setVisibleCount(
+        (current) =>
+          Math.max(
+            current,
+            index + 1,
+          ),
+      );
+
+      window.requestAnimationFrame(
+        () => {
+          window.requestAnimationFrame(
+            () => {
+              document
+                .getElementById(
+                  `gift-${giftId}`,
+                )
+                ?.scrollIntoView({
+                  behavior:
+                    "smooth",
+                  block: "start",
+                });
+            },
+          );
+        },
+      );
+    }
+
+    function handleJump(
+      event: Event,
+    ) {
+      const giftId =
+        (
+          event as CustomEvent<{
+            id?: string;
+          }>
+        ).detail?.id;
+
+      if (giftId) {
+        revealAndScroll(
+          giftId,
+        );
+      }
+    }
+
+    window.addEventListener(
+      "sepulchria:gift-jump",
+      handleJump,
+    );
+
+    const hash =
+      window.location.hash;
+
+    if (
+      hash.startsWith(
+        "#gift-",
+      )
+    ) {
+      revealAndScroll(
+        hash.slice(
+          "#gift-".length,
+        ),
+      );
+    }
+
+    return () => {
+      window.removeEventListener(
+        "sepulchria:gift-jump",
+        handleJump,
+      );
+    };
+  }, [
+    characterMode,
+    filtered,
   ]);
 
   useEffect(() => {
@@ -563,9 +755,24 @@ export function GiftsCatalogue({
             .filter(Boolean)
             .join(" ")}
         >
-  {filtered.map((gift) => (
+  {visibleFiltered.map((gift) => (
     <FeatCard key={gift.id} gift={gift} />
   ))}
+
+  {!characterMode &&
+  visibleCount < filtered.length ? (
+    <div
+      ref={loadMoreRef}
+      className="col-span-full flex min-h-16 items-center justify-center border border-[rgb(var(--sep-colour-59432c))]/25 bg-[rgb(var(--sep-colour-100c09))] px-4 py-3 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756957))]"
+    >
+      Showing{" "}
+      {Math.min(
+        visibleCount,
+        filtered.length,
+      )}{" "}
+      of {filtered.length} Feats
+    </div>
+  ) : null}
 </section>
       ) : (
         <p className="mt-3 border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))] p-4 text-[11px] text-[rgb(var(--sep-colour-8f8271))] components_gifts_gifts_catalogue_p_text_11">

@@ -68,7 +68,7 @@ type LevelRow = {
 };
 
 type Props = {
-  searchParams?: Promise<{ success?: string; error?: string }>;
+  searchParams?: Promise<{ success?: string; error?: string; gift?: string }>;
 };
 
 function one<T>(value: T | T[] | null): T | null {
@@ -140,6 +140,10 @@ function adminModifierLabel(gift: Gift) {
 export default async function AdminGiftsPage({ searchParams }: Props) {
   await requireAdminSection("gifts");
   const params = (await searchParams) ?? {};
+  const selectedGiftId =
+    typeof params.gift === "string"
+      ? params.gift.trim()
+      : "";
   const supabase = await createClient();
 
   const [giftsResult, racesResult, levelsResult, charactersResult] =
@@ -198,6 +202,8 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
   }
 
   const gifts = (giftsResult.data ?? []) as unknown as Gift[];
+  const selectedGift =
+    gifts.find((gift) => gift.id === selectedGiftId) ?? null;
   const races = (racesResult.data ?? []) as Race[];
   const characters = (charactersResult.data ?? []) as Character[];
 
@@ -268,224 +274,225 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
           />
         </section>
 
-        <div className="mt-6 space-y-4 admin_gifts_page_div_container_4">
+        <div className="mt-6 grid gap-3 md:grid-cols-2 xl:grid-cols-3 admin_gifts_page_div_container_4">
           {gifts.map((gift) => (
-            <details
+            <a
               key={gift.id}
-              id={`gift-${gift.id}`}
-              className="scroll-mt-6 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] admin_gifts_page_details_details"
+              id={`gift-card-${gift.id}`}
+              href={`/admin/gifts?gift=${gift.id}#gift-editor`}
+              className={[
+                "scroll-mt-6 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-4 py-4 transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-17110d))]",
+                selectedGiftId === gift.id
+                  ? "ring-1 ring-[rgb(var(--sep-colour-a17a49))]/70"
+                  : "",
+              ].filter(Boolean).join(" ")}
             >
-              <summary className="cursor-pointer list-none px-4 py-4 admin_gifts_page_summary_summary">
-                <div className="flex items-start justify-between gap-3 admin_gifts_page_div_container_5">
-                  <div className="min-w-0 admin_gifts_page_div_container_6">
-                    <p className="truncate font-serif text-lg text-[rgb(var(--sep-colour-d8bf91))] admin_gifts_page_p_text">
-                      {gift.name}
-                    </p>
-                    <p className="mt-1 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-766956))] admin_gifts_page_p_text_2">
-                      {gift.effect_mode === "passive"
-                        ? "Passive"
-                        : "Activated"}
-                      {gift.is_general ? " · General" : ""}
-                      {" · "}
-                      {gift.assignments?.length ?? 0} owners
-                    </p>
-                  </div>
-
-                  <span className="shrink-0 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9b8768))] admin_gifts_page_span_text">
-                    {gift.is_active ? "Active" : "Inactive"}
-                  </span>
-                </div>
-
-                <div className="mt-3 grid grid-cols-2 gap-1.5 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-3 md:grid-cols-3 xl:grid-cols-6 admin_gifts_page_div_container_7">
-                  <AdminRecapBox
-                    label="Use"
-                    value={`${
-                      gift.effect_mode === "passive"
-                        ? "Passive"
-                        : "Activated"
-                    } · ${adminTargetLabel(gift)}`}
-                  />
-
-                  <AdminRecapBox
-                    label="Success"
-                    value={adminSuccessLabel(gift)}
-                  />
-
-                  <AdminRecapBox
-                    label="Timing"
-                    value={`${
-                      adminDurationLabel(gift)
-                    } · ${
-                      gift.effect_mode === "temporary"
-                        ? gift.cooldown_minutes === 0
-                          ? "No cooldown"
-                          : `${gift.cooldown_minutes} min cooldown`
-                        : "No cooldown"
-                    }`}
-                  />
-
-                  <AdminRecapBox
-                    label="Health / Damage"
-                    value={`${
-                      gift.damage_dice
-                        ? `${gift.damage_dice}${
-                            gift.damage_type
-                              ? ` ${gift.damage_type}`
-                              : ""
-                          }`
-                        : "No damage"
-                    } · HP ${
-                      gift.health_delta !== 0
-                        ? `${gift.health_delta > 0 ? "+" : ""}${gift.health_delta}`
-                        : "—"
-                    } · Max ${
-                      gift.max_health_modifier !== 0
-                        ? `${gift.max_health_modifier > 0 ? "+" : ""}${gift.max_health_modifier}`
-                        : "—"
-                    }`}
-                  />
-
-                  <AdminRecapBox
-                    label="Attributes"
-                    value={adminModifierLabel(gift)}
-                  />
-
-                  <AdminRecapBox
-                    label="Access"
-                    value={`Ancestries ${
-                      gift.races?.length ?? 0
-                    } · Roles ${
-                      gift.roles?.length ?? 0
-                    } · General ${
-                      gift.is_general ? "Yes" : "No"
-                    }`}
-                  />
-                </div>
-              </summary>
-
-              <div className="border-t border-[rgb(var(--sep-colour-59432c))]/35 p-4 sm:p-5 admin_gifts_page_div_container_8">
-                <GiftForm
-                  action={updateGift}
-                  gift={gift}
-                  races={races}
-                  roles={roles}
-                />
-
-                <div className="mt-6 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-5 admin_gifts_page_div_container_9">
-                  <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] admin_gifts_page_p_text_3">
-                    Staff assignment
+              <div className="flex items-start justify-between gap-3 admin_gifts_page_div_container_5">
+                <div className="min-w-0 admin_gifts_page_div_container_6">
+                  <p className="truncate font-serif text-lg text-[rgb(var(--sep-colour-d8bf91))] admin_gifts_page_p_text">
+                    {gift.name}
                   </p>
-
-                  <AdminActionForm
-                    action={assignGiftToCharacter}
-                    className="mt-3 flex flex-wrap gap-2"
-                  >
-                    <input className="admin_gifts_page_input_gift_id" type="hidden" name="giftId" value={gift.id} />
-
-                    <select
-                      name="characterId"
-                      required
-                      defaultValue=""
-                      className="min-w-[240px] flex-1 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none admin_gifts_page_select_character_id"
-                    >
-                      <option className="admin_gifts_page_option_character_id" value="" disabled>
-                        Select character
-                      </option>
-                      {characters.map((character) => (
-                        <option className="admin_gifts_page_option_option" key={character.id} value={character.id}>
-                          {character.display_name}
-                        </option>
-                      ))}
-                    </select>
-
-                    <select
-                      name="assignmentMode"
-                      required
-                      defaultValue="permanent"
-                      className="min-w-[150px] border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none admin_gifts_page_select_assignment_mode"
-                    >
-                      <option className="admin_gifts_page_option_permanent" value="permanent">Permanent</option>
-                      <option className="admin_gifts_page_option_temporary" value="temporary">Temporary</option>
-                    </select>
-
-                    <input
-                      type="number"
-                      name="assignmentDays"
-                      min={1}
-                      step={1}
-                      placeholder="Days"
-                      aria-label="Temporary assignment duration in days"
-                      className="w-[100px] border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none admin_gifts_page_input_assignment_days"
-                    />
-
-                    <button
-                      type="submit"
-                      className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-2.5 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd6a8))] admin_gifts_page_button_assign_feat"
-                    >
-                      Assign Feat
-                    </button>
-                  </AdminActionForm>
-
-                  {gift.assignments?.length ? (
-                    <div className="mt-4 grid gap-2 md:grid-cols-2 xl:grid-cols-3 admin_gifts_page_div_container_10">
-                      {gift.assignments.map((assignment) => (
-                        <div
-                          key={assignment.id}
-                          className="flex items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 admin_gifts_page_div_container_11"
-                        >
-                          <div className="min-w-0 admin_gifts_page_div_container_12">
-                            <p className="truncate font-serif text-sm text-[rgb(var(--sep-colour-cab28a))] admin_gifts_page_p_text_4">
-                              {characterById.get(assignment.character_id)?.display_name ??
-                                "Unknown character"}
-                            </p>
-                            <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6e6252))] admin_gifts_page_p_text_5">
-                              {assignment.acquisition_source}
-                              {assignment.acquisition_source === "staff"
-                                ? assignment.expires_at
-                                  ? ` · Until ${new Date(assignment.expires_at).toLocaleDateString("en-GB")}`
-                                  : " · Permanent"
-                                : ""}
-                            </p>
-                          </div>
-
-                          <AdminActionForm action={removeGiftFromCharacter}>
-                            <input className="admin_gifts_page_input_assignment_id"
-                              type="hidden"
-                              name="assignmentId"
-                              value={assignment.id}
-                            />
-                            <button
-                              type="submit"
-                              className="text-[7px] uppercase tracking-[0.12em] text-red-300 admin_gifts_page_button_remove"
-                            >
-                              Remove
-                            </button>
-                          </AdminActionForm>
-                        </div>
-                      ))}
-                    </div>
-                  ) : null}
+                  <p className="mt-1 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-766956))] admin_gifts_page_p_text_2">
+                    {gift.effect_mode === "passive" ? "Passive" : "Activated"}
+                    {gift.is_general ? " · General" : ""}
+                    {" · "}
+                    {gift.assignments?.length ?? 0} owners
+                  </p>
                 </div>
 
-                <div className="mt-6 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-5 admin_gifts_page_div_container_13">
-                  <AdminActionForm
-  action={deleteGift}
-  confirmMessage={`Are you sure you want to permanently delete the Feat "${gift.name}"?`}
-  className="flex justify-end"
->
-                    <input className="admin_gifts_page_input_gift_id_2" type="hidden" name="giftId" value={gift.id} />
-                    <button
-                      type="submit"
-                      className="border border-red-900/55 bg-red-950/20 px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-red-300 admin_gifts_page_button_delete_feat"
-                    >
-                      Delete Feat
-                    </button>
-                  </AdminActionForm>
-                </div>
+                <span className="shrink-0 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-9b8768))] admin_gifts_page_span_text">
+                  {gift.is_active ? "Active" : "Inactive"}
+                </span>
               </div>
-            </details>
+
+              <div className="mt-3 grid grid-cols-2 gap-1.5 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-3 admin_gifts_page_div_container_7">
+                <AdminRecapBox
+                  label="Use"
+                  value={`${gift.effect_mode === "passive" ? "Passive" : "Activated"} · ${adminTargetLabel(gift)}`}
+                />
+                <AdminRecapBox label="Success" value={adminSuccessLabel(gift)} />
+                <AdminRecapBox
+                  label="Timing"
+                  value={`${adminDurationLabel(gift)} · ${
+                    gift.effect_mode === "temporary"
+                      ? gift.cooldown_minutes === 0
+                        ? "No cooldown"
+                        : `${gift.cooldown_minutes} min cooldown`
+                      : "No cooldown"
+                  }`}
+                />
+                <AdminRecapBox
+                  label="Health / Damage"
+                  value={`${
+                    gift.damage_dice
+                      ? `${gift.damage_dice}${gift.damage_type ? ` ${gift.damage_type}` : ""}`
+                      : "No damage"
+                  } · HP ${
+                    gift.health_delta !== 0
+                      ? `${gift.health_delta > 0 ? "+" : ""}${gift.health_delta}`
+                      : "—"
+                  } · Max ${
+                    gift.max_health_modifier !== 0
+                      ? `${gift.max_health_modifier > 0 ? "+" : ""}${gift.max_health_modifier}`
+                      : "—"
+                  }`}
+                />
+                <AdminRecapBox label="Attributes" value={adminModifierLabel(gift)} />
+                <AdminRecapBox
+                  label="Access"
+                  value={`Ancestries ${gift.races?.length ?? 0} · Roles ${
+                    gift.roles?.length ?? 0
+                  } · General ${gift.is_general ? "Yes" : "No"}`}
+                />
+              </div>
+            </a>
           ))}
         </div>
+
+        {selectedGift ? (
+          <section
+            id="gift-editor"
+            className="mt-8 scroll-mt-6 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))]"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-59432c))]/35 px-4 py-4">
+              <div>
+                <p className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-766956))]">
+                  Feat editor
+                </p>
+                <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-d8bf91))]">
+                  {selectedGift.name}
+                </h2>
+              </div>
+              <a
+                href="/admin/gifts"
+                className="border border-[rgb(var(--sep-colour-765937))]/55 px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-c8aa7b))]"
+              >
+                Close Editor
+              </a>
+            </div>
+
+            <div className="p-4 sm:p-5 admin_gifts_page_div_container_8">
+              <GiftForm
+                action={updateGift}
+                gift={selectedGift}
+                races={races}
+                roles={roles}
+              />
+
+              <div className="mt-6 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-5 admin_gifts_page_div_container_9">
+                <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] admin_gifts_page_p_text_3">
+                  Staff assignment
+                </p>
+
+                <AdminActionForm
+                  action={assignGiftToCharacter}
+                  className="mt-3 flex flex-wrap gap-2"
+                >
+                  <input className="admin_gifts_page_input_gift_id" type="hidden" name="giftId" value={selectedGift.id} />
+
+                  <select
+                    name="characterId"
+                    required
+                    defaultValue=""
+                    className="min-w-[240px] flex-1 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none admin_gifts_page_select_character_id"
+                  >
+                    <option className="admin_gifts_page_option_character_id" value="" disabled>
+                      Select character
+                    </option>
+                    {characters.map((character) => (
+                      <option className="admin_gifts_page_option_option" key={character.id} value={character.id}>
+                        {character.display_name}
+                      </option>
+                    ))}
+                  </select>
+
+                  <select
+                    name="assignmentMode"
+                    required
+                    defaultValue="permanent"
+                    className="min-w-[150px] border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none admin_gifts_page_select_assignment_mode"
+                  >
+                    <option className="admin_gifts_page_option_permanent" value="permanent">Permanent</option>
+                    <option className="admin_gifts_page_option_temporary" value="temporary">Temporary</option>
+                  </select>
+
+                  <input
+                    type="number"
+                    name="assignmentDays"
+                    min={1}
+                    step={1}
+                    placeholder="Days"
+                    aria-label="Temporary assignment duration in days"
+                    className="w-[100px] border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none admin_gifts_page_input_assignment_days"
+                  />
+
+                  <button
+                    type="submit"
+                    className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-2.5 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd6a8))] admin_gifts_page_button_assign_feat"
+                  >
+                    Assign Feat
+                  </button>
+                </AdminActionForm>
+
+                {selectedGift.assignments?.length ? (
+                  <div className="mt-4 grid gap-2 md:grid-cols-2 xl:grid-cols-3 admin_gifts_page_div_container_10">
+                    {selectedGift.assignments.map((assignment) => (
+                      <div
+                        key={assignment.id}
+                        className="flex items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 admin_gifts_page_div_container_11"
+                      >
+                        <div className="min-w-0 admin_gifts_page_div_container_12">
+                          <p className="truncate font-serif text-sm text-[rgb(var(--sep-colour-cab28a))] admin_gifts_page_p_text_4">
+                            {characterById.get(assignment.character_id)?.display_name ?? "Unknown character"}
+                          </p>
+                          <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6e6252))] admin_gifts_page_p_text_5">
+                            {assignment.acquisition_source}
+                            {assignment.acquisition_source === "staff"
+                              ? assignment.expires_at
+                                ? ` · Until ${new Date(assignment.expires_at).toLocaleDateString("en-GB")}`
+                                : " · Permanent"
+                              : ""}
+                          </p>
+                        </div>
+
+                        <AdminActionForm action={removeGiftFromCharacter}>
+                          <input
+                            className="admin_gifts_page_input_assignment_id"
+                            type="hidden"
+                            name="assignmentId"
+                            value={assignment.id}
+                          />
+                          <button
+                            type="submit"
+                            className="text-[7px] uppercase tracking-[0.12em] text-red-300 admin_gifts_page_button_remove"
+                          >
+                            Remove
+                          </button>
+                        </AdminActionForm>
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+
+              <div className="mt-6 border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-5 admin_gifts_page_div_container_13">
+                <AdminActionForm
+                  action={deleteGift}
+                  confirmMessage={`Are you sure you want to permanently delete the Feat "${selectedGift.name}"?`}
+                  className="flex justify-end"
+                >
+                  <input className="admin_gifts_page_input_gift_id_2" type="hidden" name="giftId" value={selectedGift.id} />
+                  <button
+                    type="submit"
+                    className="border border-red-900/55 bg-red-950/20 px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-red-300 admin_gifts_page_button_delete_feat"
+                  >
+                    Delete Feat
+                  </button>
+                </AdminActionForm>
+              </div>
+            </div>
+          </section>
+        ) : null}
       </div>
     </main>
   );

@@ -1315,7 +1315,23 @@ function AdminGiftsContext() {
         `gift-${giftId}`,
       );
 
+    window.history.replaceState(
+      null,
+      "",
+      `#gift-${giftId}`,
+    );
+
     if (!element) {
+      window.dispatchEvent(
+        new CustomEvent(
+          "sepulchria:gift-jump",
+          {
+            detail: {
+              id: giftId,
+            },
+          },
+        ),
+      );
       return;
     }
 
@@ -1330,12 +1346,6 @@ function AdminGiftsContext() {
       behavior: "smooth",
       block: "start",
     });
-
-    window.history.replaceState(
-      null,
-      "",
-      `#gift-${giftId}`,
-    );
   }
 
   function jumpToCreate() {
