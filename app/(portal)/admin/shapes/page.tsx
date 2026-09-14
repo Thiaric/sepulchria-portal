@@ -147,7 +147,30 @@ export default async function AdminShapesPage({searchParams}:Props){
   ]);
   const err=sr.error??cr.error??lr.error;if(err)throw new Error(`Unable to load Shapes: ${err.message}`);
   const shapes=(sr.data??[]) as S[];const chars=(cr.data??[]) as {id:string;display_name:string}[];const charMap=new Map(chars.map(c=>[c.id,c.display_name]));
-  const levels=(lr.data??[]).map((r:any)=>{const o=Array.isArray(r.order)?r.order[0]:r.order;return{id:r.id,level:r.level,orderName:o?.name??"Unknown"};});
+  const levels=(lr.data??[])
+  .map((r:any)=>{
+    const o=Array.isArray(r.order)
+      ?r.order[0]
+      :r.order;
+
+    return{
+      id:r.id,
+      level:r.level,
+      orderName:o?.name??"Unknown"
+    };
+  })
+  .sort((a,b)=>{
+    const orderCompare=
+      a.orderName.localeCompare(
+        b.orderName,
+      );
+
+    if(orderCompare!==0){
+      return orderCompare;
+    }
+
+    return a.level-b.level;
+  });
   return <main className="p-5 sm:p-7 lg:p-9 admin_shapes_page_main_main"><div className="mx-auto max-w-7xl admin_shapes_page_div_warping_shapes"><p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))] admin_shapes_page_p_warping_shapes">Administration</p><h1 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] admin_shapes_page_h1_warping_shapes">Warping — Shapes</h1>
     <section id="shape-new" className="mt-8 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 admin_shapes_page_section_shape_new"><h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))] admin_shapes_page_h2_shape_new">Create a Shape</h2><WarpingReference/><ShapeForm action={createShape}/></section>
     <div className="mt-8 space-y-4 admin_shapes_page_div_warping_shapes_2">{shapes.map(s=><details key={s.id} id={`shape-${s.id}`} className={[((`scroll-mt-6 border bg-[rgb(var(--sep-colour-15100d))] transition-[border-color,box-shadow] duration-200 ${shapeSchoolBorderClass(

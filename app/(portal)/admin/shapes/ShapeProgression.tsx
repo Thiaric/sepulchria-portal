@@ -583,21 +583,32 @@ export function ShapeProgression() {
     refreshLocks();
 
     return () => {
-      duration?.removeEventListener(
-        "change",
-        syncDuration,
-      );
+  duration?.removeEventListener(
+    "change",
+    syncDuration,
+  );
 
-      altToggle?.removeEventListener(
-        "change",
-        syncAlternative,
-      );
+  altToggle?.removeEventListener(
+    "change",
+    syncAlternative,
+  );
 
-      effectNature?.removeEventListener(
-        "change",
-        syncAlternative,
-      );
-    };
+  effectNature?.removeEventListener(
+    "change",
+    syncAlternative,
+  );
+
+  form
+    .querySelectorAll(
+      '[data-shape-progression-generated="true"]',
+    )
+    .forEach((node) => {
+      node.remove();
+    });
+
+  form.dataset.shapeProgressionReady =
+    "false";
+};
   }, []);
 
   return (

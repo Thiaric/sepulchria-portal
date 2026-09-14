@@ -1189,13 +1189,20 @@ const [activeShapeTags,setActiveShapeTags]=useState<
         return;
       }
 
-      const [shapeResult,priceResult]=await Promise.all([
+      const [shapeResult,itemResult,priceResult]=await Promise.all([
         supabase.rpc("get_active_shape_chat_tags",{p_character_ids:ids}),
+        supabase.rpc("get_active_item_chat_tags_v2",{p_character_ids:ids}),
         supabase.rpc("get_active_price_chat_tags",{p_character_ids:ids}),
       ]);
 
       if(shapeResult.error){
         console.error("Unable to load Shape chat tags:",shapeResult.error.message);
+        return;
+      }
+
+      
+      if(itemResult.error){
+        console.error("Unable to load Item chat tags:",itemResult.error.message);
         return;
       }
 
@@ -1229,6 +1236,24 @@ const [activeShapeTags,setActiveShapeTags]=useState<
           };
         }
 
+       
+
+        for(const row of itemResult.data??[]){
+          const id=String(row.character_id);
+          if(!next[id])next[id]={buffs:[],debuffs:[],conditions:[],prices:[]};
+
+          const mergedConditions=[
+            ...(next[id].conditions??[]),
+            ...(Array.isArray(row.conditions)
+              ? row.conditions
+              : []),
+          ];
+
+          next[id].conditions=[
+            ...new Set(mergedConditions),
+          ];
+        }
+
         for(const row of priceResult.data??[]){
           const id=String(row.character_id);
           if(!next[id])next[id]={buffs:[],debuffs:[],conditions:[],prices:[]};
@@ -1244,6 +1269,7 @@ const [activeShapeTags,setActiveShapeTags]=useState<
     const channel=supabase
       .channel(`shape-chat-effects-${crypto.randomUUID()}`)
       .on("postgres_changes",{event:"*",schema:"public",table:"character_shape_effects"},()=>void loadShapeTags())
+      .on("postgres_changes",{event:"*",schema:"public",table:"character_active_item_effects"},()=>void loadShapeTags())
       .on("postgres_changes",{event:"*",schema:"public",table:"character_price_effects"},()=>void loadShapeTags())
       .subscribe();
 

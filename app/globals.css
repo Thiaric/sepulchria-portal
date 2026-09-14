@@ -20768,7 +20768,9 @@ html[data-portal-skin] [data-homepage-nav-button="true"] [data-homepage-nav-role
    ========================================= */
 
    .character_page_p_text_7,
-   .components_characters_character_order_summary_p_text_2 {
+   .components_characters_character_order_summary_p_text_2,
+   .components_characters_public_character_order_p_text_2,
+   .components_characters_public_character_profile_p_text_7 {
     text-transform: none !important;
     color: rgb(var(--sep-global-c1)) !important;
    }

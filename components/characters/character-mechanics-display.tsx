@@ -4,6 +4,7 @@ import { getCharacterAttributeBreakdown } from "@/lib/characters/get-effective-c
 import { createClient } from "@/lib/supabase/server";
 import { getEffectiveCharacterWarping } from "@/lib/warping/get-effective-character-warping";
 import { ActiveShapeEffects } from "@/components/characters/ActiveShapeEffects";
+import { ActiveItemEffects } from "@/components/characters/ActiveItemEffects";
 import { ActivePriceEffects } from "@/components/characters/ActivePriceEffects";
 
 const DEFINITIONS = [
@@ -63,6 +64,7 @@ export async function CharacterMechanicsDisplay({
     <div className="space-y-4 components_characters_character_mechanics_display_div_container">
       <ActivePriceEffects characterId={characterId} />
       <ActiveShapeEffects characterId={characterId} />
+      <ActiveItemEffects characterId={characterId} />
             <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-5 sm:p-6 components_characters_character_mechanics_display_section_warping">
         <h2 className="font-serif text-[0.9rem] text-[rgb(var(--sep-colour-dec89f))] components_characters_character_mechanics_display_h2_warping">Warping</h2>
 
