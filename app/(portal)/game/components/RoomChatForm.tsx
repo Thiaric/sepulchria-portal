@@ -2612,17 +2612,22 @@ function ignoreSpellingWord() {
                     }
                     className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))] game_components_roomchatform_select_select_8"
                   >
-                    {regularItems.map((item) => (
-                      <option className="game_components_roomchatform_option_option_17"
-                        key={`${item.recordKind}:${item.recordId}`}
-                        value={`${item.recordKind}:${item.recordId}`}
-                      >
-                        {item.name}
-                        {item.quantity > 1
-                          ? ` ×${item.quantity}`
-                          : ""}
-                      </option>
-                    ))}
+                    {[...regularItems]
+  .sort((a, b) =>
+    a.name.localeCompare(b.name),
+  )
+  .map((item) => (
+    <option
+      className="game_components_roomchatform_option_option_17"
+      key={`${item.recordKind}:${item.recordId}`}
+      value={`${item.recordKind}:${item.recordId}`}
+    >
+      {item.name}
+      {item.quantity > 1
+        ? ` ×${item.quantity}`
+        : ""}
+    </option>
+  ))}
                   </select>
                 </label>
 

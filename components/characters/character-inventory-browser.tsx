@@ -44,6 +44,7 @@ export type InventoryItemEffect = {
   value: number;
   context: string;
   duration_minutes: number | null;
+  condition?: boolean;
 };
 
 export type InventoryBrowserRow = {
@@ -890,14 +891,21 @@ function ItemEffects({
           <span
             key={`${effect.context}-${effect.label}-${index}`}
             className={[((`border px-2 py-1 text-[7px] uppercase tracking-[0.1em] ${
-              effect.value > 0
-                ? "border-emerald-900/65 bg-emerald-950/20 text-emerald-400"
-                : "border-red-900/65 bg-red-950/20 text-red-400"
+              effect.condition
+                ? "border-[rgb(var(--sep-colour-765937))]/65 bg-[rgb(var(--sep-colour-21170f))] text-[rgb(var(--sep-colour-d9b77f))]"
+                : effect.value > 0
+                  ? "border-emerald-900/65 bg-emerald-950/20 text-emerald-400"
+                  : "border-red-900/65 bg-red-950/20 text-red-400"
             }`)), "components_characters_character_inventory_browser_span_text_9"].filter(Boolean).join(" ")}
           >
-            {effect.context} · {effect.label}{" "}
-            {effect.value > 0 ? "+" : ""}
-            {effect.value}
+            {effect.context} ·{" "}
+            {effect.condition
+              ? `Condition: ${effect.label}`
+              : `${effect.label} ${
+                  effect.value > 0
+                    ? "+"
+                    : ""
+                }${effect.value}`}
             {effect.duration_minutes !== null
               ? ` · ${effect.duration_minutes} min`
               : ""}

@@ -77,6 +77,7 @@ type ItemRequirementRow = {
         trigger_type: string;
         effect_mode: string;
         duration_minutes: number | null;
+        conditions: string[];
         health_delta: number;
         muscles_modifier: number;
         reflexes_modifier: number;
@@ -469,6 +470,20 @@ function itemEffects(
         ? effect.duration_minutes
         : null;
 
+    for (
+      const condition of
+        effect.conditions ?? []
+    ) {
+      result.push({
+        context,
+        duration_minutes:
+          durationMinutes,
+        label: condition,
+        value: 0,
+        condition: true,
+      });
+    }
+
     push(context, durationMinutes, "Health", effect.health_delta);
     push(context, durationMinutes, "Muscles", effect.muscles_modifier);
     push(context, durationMinutes, "Reflexes", effect.reflexes_modifier);
@@ -608,6 +623,7 @@ export async function CharacterInventoryDisplay({
               trigger_type,
               effect_mode,
               duration_minutes,
+              conditions,
               health_delta,
               muscles_modifier,
               reflexes_modifier,

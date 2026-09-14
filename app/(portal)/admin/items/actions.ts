@@ -1056,10 +1056,52 @@ function effectValues(formData: FormData) {
 
   const instantUse = triggerType === "use" && effectMode === "instant";
 
+  const rawConditions =
+    optionalText(
+      formData,
+      "conditions",
+    );
+
+  const conditions =
+    triggerType === "use" &&
+    effectMode === "temporary" &&
+    rawConditions
+      ? [
+          ...new Set(
+            rawConditions
+              .split(/\r?\n|,/)
+              .map((value) =>
+                value
+                  .replace(/\s+/g, " ")
+                  .trim(),
+              )
+              .filter(Boolean),
+          ),
+        ]
+      : [];
+
+  if (conditions.length > 10) {
+    throw new Error(
+      "An Item effect may apply at most 10 Conditions.",
+    );
+  }
+
+  if (
+    conditions.some(
+      (condition) =>
+        condition.length > 40,
+    )
+  ) {
+    throw new Error(
+      "Item Conditions may be at most 40 characters.",
+    );
+  }
+
   return {
     trigger_type: triggerType,
     effect_mode: effectMode,
     duration_minutes: durationMinutes,
+    conditions,
     muscles_modifier: instantUse ? 0 : mod("musclesModifier", "Muscles"),
     reflexes_modifier: instantUse ? 0 : mod("reflexesModifier", "Reflexes"),
     vigour_modifier: instantUse ? 0 : mod("vigourModifier", "Vigour"),

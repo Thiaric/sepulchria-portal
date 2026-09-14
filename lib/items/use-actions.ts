@@ -855,6 +855,7 @@ export async function useInventoryItem(
       target_name?: string;
       health_delta?: number;
       temporary_effects?: number;
+      conditions?: number;
     };
 
     if (
@@ -941,6 +942,25 @@ export async function useInventoryItem(
     ) {
       details.push(
         "temporary effect activated",
+      );
+    }
+
+    if (
+      Number(
+        result.conditions ?? 0,
+      ) > 0
+    ) {
+      const count =
+        Number(
+          result.conditions,
+        );
+
+      details.push(
+        `${count} Condition${
+          count === 1
+            ? ""
+            : "s"
+        } applied`,
       );
     }
 

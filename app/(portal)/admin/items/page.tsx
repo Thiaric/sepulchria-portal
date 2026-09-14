@@ -55,6 +55,7 @@ type Effect = {
   trigger_type: "owned" | "equipped" | "use";
   effect_mode: "instant" | "temporary" | "passive";
   duration_minutes: number | null;
+  conditions: string[];
   muscles_modifier: number;
   reflexes_modifier: number;
   vigour_modifier: number;
@@ -184,6 +185,7 @@ export default async function AdminItemsPage({ searchParams }: Props) {
           trigger_type,
           effect_mode,
           duration_minutes,
+          conditions,
           muscles_modifier,
           reflexes_modifier,
           vigour_modifier,
@@ -968,6 +970,18 @@ function EffectForm({ itemId, effect }: { itemId: string; effect?: Effect }) {
             name="durationMinutes"
             defaultValue={effect?.duration_minutes ?? ""}
             className={[((inputClass)), "admin_items_page_input_duration_minutes"].filter(Boolean).join(" ")}
+          />
+        </Field>
+
+        <Field label="Conditions">
+          <textarea
+            name="conditions"
+            rows={3}
+            defaultValue={
+              effect?.conditions?.join("\n") ?? ""
+            }
+            placeholder={"Blinded\nPoisoned\nBurning"}
+            className={inputClass}
           />
         </Field>
 
