@@ -254,7 +254,9 @@
 /* Full-frame context controls only; headings/plain links are untouched. */
 [data-portal-shell]
   .portal-right-shell
-  :is(button, a)[class~="border"] {
+  :is(button, a)[class~="border"]:not(
+    .components_instant_chat_instant_chat_dock_button_action_3
+  ) {
   border-width: 1px !important;
   border-style: solid !important;
   border-color: var(--sep-unified-context-border) !important;
@@ -269,7 +271,9 @@
 
 [data-portal-shell]
   .portal-right-shell
-  :is(button, a)[class~="border"]:hover:not(:disabled) {
+  :is(button, a)[class~="border"]:not(
+    .components_instant_chat_instant_chat_dock_button_action_3
+  ):hover:not(:disabled) {
   border-color: var(--sep-unified-context-border-hover) !important;
   background-color: var(--sep-unified-context-bg-hover) !important;
 }
