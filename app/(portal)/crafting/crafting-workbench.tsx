@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useEffect,
   useMemo,
   useState,
   useTransition,
@@ -93,6 +94,21 @@ export type KnownCraftingRecipe = {
     stackable: boolean;
     max_stack: number | null;
     is_usable: boolean;
+    effects: {
+      trigger_type: "owned" | "equipped" | "use";
+      effect_mode: "instant" | "temporary" | "passive";
+      duration_minutes: number | null;
+      health_delta: number;
+      muscles_modifier: number;
+      reflexes_modifier: number;
+      vigour_modifier: number;
+      shrewd_modifier: number;
+      brains_modifier: number;
+      presence_modifier: number;
+      max_health_modifier: number;
+      warping_affinity_modifier: number;
+      warps_per_day_modifier: number;
+    }[];
   };
   ingredients: CraftingIngredient[];
 };
@@ -127,6 +143,60 @@ function qualityLabel(value: string) {
     .join(" ");
 }
 
+function effectLines(
+  effects: KnownCraftingRecipe["result"]["effects"],
+) {
+  const result: string[] = [];
+
+  for (const effect of effects ?? []) {
+    const context =
+      effect.trigger_type === "use"
+        ? "On use"
+        : effect.trigger_type === "equipped"
+          ? "While equipped"
+          : "While owned";
+
+    const duration =
+      effect.effect_mode === "temporary" &&
+      effect.duration_minutes
+        ? ` for ${effect.duration_minutes} min`
+        : "";
+
+    const values: Array<[string, number]> = [
+      ["Health", effect.health_delta],
+      ["Muscles", effect.muscles_modifier],
+      ["Reflexes", effect.reflexes_modifier],
+      ["Vigour", effect.vigour_modifier],
+      ["Shrewd", effect.shrewd_modifier],
+      ["Brains", effect.brains_modifier],
+      ["Presence", effect.presence_modifier],
+      ["Max Health", effect.max_health_modifier],
+      ["Affinity", effect.warping_affinity_modifier],
+      ["Shapes/day", effect.warps_per_day_modifier],
+    ];
+
+    for (const [label, value] of values) {
+      if (!value) continue;
+
+      if (
+        label === "Health" &&
+        effect.trigger_type === "use" &&
+        effect.effect_mode === "instant" &&
+        value > 0
+      ) {
+        result.push(`${context}: heals ${value} Health`);
+        continue;
+      }
+
+      result.push(
+        `${context}${duration}: ${value > 0 ? "+" : ""}${value} ${label}`,
+      );
+    }
+  }
+
+  return result;
+}
+
 function ItemImage({
   src,
   quality,
@@ -139,62 +209,110 @@ function ItemImage({
   size?: "sm" | "md" | "lg";
 }) {
   const dimensions =
-    size === "lg"
-      ? "h-20 w-20"
-      : size === "sm"
-        ? "h-10 w-10"
-        : "h-12 w-12";
-
-  return (
-    <ItemImageFrame
-      src={src}
-      quality={quality}
-      fallback={fallback}
-      className={dimensions}
-      badgeSize={
   size === "lg"
-    ? "lg"
+    ? "h-14 w-14 sm:h-20 sm:w-20"
     : size === "sm"
-      ? "xs"
-      : "sm"
-}
-      imageClassName="h-full w-full object-contain p-1 transition-transform duration-500 ease-out group-hover:scale-[1.045]"
-    />
-  );
+      ? "h-10 w-10"
+      : "h-12 w-12";
+
+return (
+  <ItemImageFrame
+    src={src}
+    quality={quality}
+    fallback={fallback}
+    className={dimensions}
+    badgeSize={
+      size === "lg"
+        ? "lg"
+        : size === "sm"
+          ? "xs"
+          : "sm"
+    }
+    imageClassName="h-full w-full object-contain p-1 transition-transform duration-500 ease-out group-hover:scale-[1.045]"
+  />
+);
 }
 
 function ingredientPosition(
   index: number,
   total: number,
 ) {
-  if (total === 1) {
-    return "col-start-2 row-start-1";
-  }
+  const layouts: Record<number, string[]> = {
+    1: [
+      "col-start-2 row-start-1",
+    ],
 
-  if (total === 2) {
-    return index === 0
-      ? "col-start-1 row-start-2"
-      : "col-start-3 row-start-2";
-  }
+    2: [
+      "col-start-1 row-start-2",
+      "col-start-3 row-start-2",
+    ],
 
-  if (total === 3) {
-    return [
+    3: [
       "col-start-2 row-start-1",
       "col-start-1 row-start-2",
       "col-start-3 row-start-2",
-    ][index] ?? "";
-  }
+    ],
 
-  if (total === 4) {
-    return [
+    4: [
       "col-start-2 row-start-1",
       "col-start-3 row-start-2",
       "col-start-2 row-start-3",
       "col-start-1 row-start-2",
-    ][index] ?? "";
-  }
+    ],
 
-  return "";
+    5: [
+      "col-start-2 row-start-1",
+      "col-start-3 row-start-1",
+      "col-start-3 row-start-2",
+      "col-start-2 row-start-3",
+      "col-start-1 row-start-2",
+    ],
+
+    6: [
+      "col-start-1 row-start-1",
+      "col-start-2 row-start-1",
+      "col-start-3 row-start-1",
+      "col-start-3 row-start-2",
+      "col-start-2 row-start-3",
+      "col-start-1 row-start-2",
+    ],
+
+    7: [
+      "col-start-1 row-start-1",
+      "col-start-2 row-start-1",
+      "col-start-3 row-start-1",
+      "col-start-3 row-start-2",
+      "col-start-3 row-start-3",
+      "col-start-2 row-start-3",
+      "col-start-1 row-start-2",
+    ],
+
+    8: [
+      "col-start-1 row-start-1",
+      "col-start-2 row-start-1",
+      "col-start-3 row-start-1",
+      "col-start-3 row-start-2",
+      "col-start-3 row-start-3",
+      "col-start-2 row-start-3",
+      "col-start-1 row-start-3",
+      "col-start-1 row-start-2",
+    ],
+  };
+
+  return layouts[total]?.[index] ?? "";
+}
+
+function isSideIngredient(
+  index: number,
+  total: number,
+) {
+  const position =
+    ingredientPosition(index, total);
+
+  return (
+    position.includes("col-start-1") ||
+    position.includes("col-start-3")
+  );
 }
 
 export function CraftingWorkbench({
@@ -262,6 +380,13 @@ export function CraftingWorkbench({
     null,
   );
 
+  const [
+    craftedRevealMode,
+    setCraftedRevealMode,
+  ] = useState<"preview" | "success">(
+    "success",
+  );
+
   const selectedRecipe =
     useMemo(
       () =>
@@ -300,6 +425,40 @@ export function CraftingWorkbench({
     setFilledSlots({});
     setNotice(null);
   }
+
+  useEffect(() => {
+    function handleContextRecipeSelect(event: Event) {
+      const customEvent = event as CustomEvent<{ recipeId?: string }>;
+      const recipeId = customEvent.detail?.recipeId;
+
+      if (!recipeId || !recipes.some((recipe) => recipe.id === recipeId)) {
+        return;
+      }
+
+      chooseRecipe(recipeId);
+
+      window.requestAnimationFrame(() => {
+        document
+          .getElementById(`crafting-recipe-${recipeId}`)
+          ?.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+          });
+      });
+    }
+
+    window.addEventListener(
+      "sepulchria:crafting-select-recipe",
+      handleContextRecipeSelect,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "sepulchria:crafting-select-recipe",
+        handleContextRecipeSelect,
+      );
+    };
+  }, [recipes]);
 
   function fillIngredient(
     itemId: string,
@@ -433,6 +592,7 @@ export function CraftingWorkbench({
         });
 
         if (result.success) {
+          setCraftedRevealMode("success");
           setCraftedReveal({
             quantity:
               selectedRecipe.result_quantity,
@@ -466,7 +626,7 @@ export function CraftingWorkbench({
   }
 
   const spatialLayout =
-    (selectedRecipe?.ingredients.length ?? 0) <= 4;
+  (selectedRecipe?.ingredients.length ?? 0) <= 8;
 
   return (
     <>
@@ -517,6 +677,7 @@ export function CraftingWorkbench({
 
             return (
               <button
+                id={`crafting-recipe-${recipe.id}`}
                 key={recipe.id}
                 type="button"
                 onClick={() => chooseRecipe(recipe.id)}
@@ -778,7 +939,40 @@ export function CraftingWorkbench({
             >
               {spatialLayout ? (
                 <div
-                  className="relative col-start-2 row-start-2 flex h-28 w-28 items-center justify-center border p-[4px] transition-all duration-300 sm:h-32 sm:w-32 2xl:h-36 2xl:w-36 crafting_crafting_workbench_div_container_20"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`View details for ${selectedRecipe?.result.name ?? "crafted item"}`}
+                  title="View item details"
+                  onClick={() => {
+                    if (!selectedRecipe) return;
+
+                    setCraftedRevealMode("preview");
+                    setCraftedReveal({
+                      quantity: selectedRecipe.result_quantity,
+                      recipeName: selectedRecipe.name,
+                      item: selectedRecipe.result,
+                    });
+                  }}
+                  onKeyDown={(event) => {
+                    if (
+                      event.key !== "Enter" &&
+                      event.key !== " "
+                    ) {
+                      return;
+                    }
+
+                    event.preventDefault();
+
+                    if (!selectedRecipe) return;
+
+                    setCraftedRevealMode("preview");
+                    setCraftedReveal({
+                      quantity: selectedRecipe.result_quantity,
+                      recipeName: selectedRecipe.name,
+                      item: selectedRecipe.result,
+                    });
+                  }}
+                  className="relative col-start-2 row-start-2 flex h-28 w-28 cursor-pointer items-center justify-center border p-[4px] transition-all duration-300 sm:h-32 sm:w-32 2xl:h-36 2xl:w-36 crafting_crafting_workbench_div_container_20"
                   style={{
                     borderColor: allSlotsFilled
                       ? craftingLineAccent
@@ -803,15 +997,31 @@ export function CraftingWorkbench({
                     }}
                   />
                   <div className="relative flex flex-col items-center text-center crafting_crafting_workbench_div_container_22">
-                    <ItemImage
-                      src={selectedRecipe?.result.image_url ?? null}
-                      quality={
-                        selectedRecipe?.result.quality ??
-                        "average"
-                      }
-                      size="lg"
-                      fallback="✦"
-                    />
+                    <div className="sm:hidden">
+  <ItemImageFrame
+    src={selectedRecipe?.result.image_url ?? null}
+    quality={
+      selectedRecipe?.result.quality ??
+      "average"
+    }
+    fallback="✦"
+    className="h-14 w-14"
+    badgeSize="sm"
+    imageClassName="h-full w-full object-contain p-0.5 transition-transform duration-500 ease-out group-hover:scale-[1.045]"
+  />
+</div>
+
+<div className="hidden sm:block">
+  <ItemImage
+    src={selectedRecipe?.result.image_url ?? null}
+    quality={
+      selectedRecipe?.result.quality ??
+      "average"
+    }
+    size="lg"
+    fallback="✦"
+  />
+</div>
                     <p className="mt-2 max-w-[120px] truncate font-serif text-[11px] text-[rgb(var(--sep-colour-d4bd94))] crafting_crafting_workbench_p_text_9">
                       {selectedRecipe?.result.name}
                     </p>
@@ -853,7 +1063,12 @@ export function CraftingWorkbench({
                       fillIngredient(itemId);
                       setDraggedItemId(null);
                     }}
-                    className={[((`${spatialLayout ? ingredientPosition(index, selectedRecipe.ingredients.length) : ""} group relative flex h-auto min-h-[70px] w-full max-w-[160px] items-center border transition duration-300 ease-out hover:-translate-y-px sm:min-h-[76px] sm:max-w-[180px] xl:max-w-[190px]`)), "crafting_crafting_workbench_div_container_23"].filter(Boolean).join(" ")}
+                    className={[((`${spatialLayout ? ingredientPosition(index, selectedRecipe.ingredients.length) : ""} group relative flex h-auto min-h-[70px] w-full max-w-[160px] border transition duration-300 ease-out hover:-translate-y-px sm:min-h-[76px] sm:max-w-[180px] xl:max-w-[190px] ${
+  spatialLayout &&
+  isSideIngredient(index, selectedRecipe.ingredients.length)
+    ? "flex-col items-center justify-center gap-1.5 px-2 py-2 text-center xl:flex-row xl:items-center xl:justify-start xl:gap-0 xl:px-0 xl:py-0 xl:text-left"
+    : "items-center"
+}`)), "crafting_crafting_workbench_div_container_23"].filter(Boolean).join(" ")}
                     style={{
                       borderColor: filled
                         ? craftingAccent
@@ -886,14 +1101,35 @@ export function CraftingWorkbench({
                           fillIngredient(ingredient.item_id);
                         }
                       }}
-                      className="relative z-10 flex h-full min-h-0 w-full items-center gap-2 px-2.5 py-1.5 text-left sm:gap-3 sm:px-3 sm:py-2 crafting_crafting_workbench_button_action_3"
+                      className={[
+                        "relative z-10 flex h-full min-h-0 w-full crafting_crafting_workbench_button_action_3",
+                        spatialLayout &&
+                        isSideIngredient(
+                          index,
+                          selectedRecipe.ingredients.length,
+                        )
+                          ? "flex-col items-center justify-center gap-1.5 px-2 py-2 text-center xl:flex-row xl:items-center xl:justify-start xl:gap-2 xl:px-2.5 xl:py-1.5 xl:text-left"
+                          : "items-center gap-2 px-2.5 py-1.5 text-left sm:gap-3 sm:px-3 sm:py-2",
+                      ]
+                        .filter(Boolean)
+                        .join(" ")}
                     >
                       <ItemImage
                         src={ingredient.image_url}
                         quality={ingredient.quality}
                         size="sm"
                       />
-                      <div className="min-w-0 flex-1 crafting_crafting_workbench_div_container_24">
+                      <div
+  className={[
+    "min-w-0 crafting_crafting_workbench_div_container_24",
+    spatialLayout &&
+    isSideIngredient(index, selectedRecipe.ingredients.length)
+      ? "w-full flex-none xl:w-auto xl:flex-1"
+      : "flex-1",
+  ]
+    .filter(Boolean)
+    .join(" ")}
+>
                         <p className="line-clamp-2 text-[9px] leading-3.5 text-[rgb(var(--sep-colour-d4bd94))] sm:text-[10px] sm:leading-4 crafting_crafting_workbench_p_text_11">
                           {ingredient.name}
                         </p>
@@ -1009,11 +1245,11 @@ export function CraftingWorkbench({
           role="dialog"
           aria-modal="true"
           aria-labelledby="crafted-item-title"
-          className="fixed inset-0 z-[120] flex items-center justify-center bg-black/75 p-4 backdrop-blur-[3px] sm:p-8 crafting_crafting_workbench_div_dialog"
+          className="fixed inset-0 z-[120] flex items-center justify-center bg-black/75 p-2 backdrop-blur-[3px] sm:p-8 crafting_crafting_workbench_div_dialog"
         >
           <div
             data-sep-interaction-fixed="true"
-            className="relative w-full max-w-2xl border bg-[rgb(var(--sep-colour-0d0907))] p-[5px] shadow-2xl crafting_crafting_workbench_div_container_29"
+            className="relative max-h-[94dvh] w-full max-w-2xl overflow-y-auto border bg-[rgb(var(--sep-colour-0d0907))] p-[4px] shadow-2xl sm:p-[5px] crafting_crafting_workbench_div_container_29"
             style={{
               borderColor: craftingAccent,
               boxShadow: `0 24px 70px rgba(0,0,0,0.72), 0 0 34px color-mix(in srgb, ${craftingAccent} 18%, transparent)`,
@@ -1033,16 +1269,20 @@ export function CraftingWorkbench({
                 borderColor: `color-mix(in srgb, ${craftingAccent} 34%, transparent)`,
               }}
             >
-              <div className="flex items-center justify-between gap-4 border-b border-[rgb(var(--sep-colour-60482e))]/35 px-5 py-3 crafting_crafting_workbench_div_container_32">
+              <div className="flex items-center justify-between gap-4 border-b border-[rgb(var(--sep-colour-60482e))]/35 px-3 py-2.5 sm:px-5 sm:py-3 crafting_crafting_workbench_div_container_32">
                 <div className="crafting_crafting_workbench_div_container_33">
                   <p
                     className="text-[7px] uppercase tracking-[0.3em] crafting_crafting_workbench_p_text_16"
                     style={{ color: craftingAccent }}
                   >
-                    Craft complete
+                    {craftedRevealMode === "preview"
+                      ? "Result preview"
+                      : "Craft complete"}
                   </p>
                   <p className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-e7d2aa))] crafting_crafting_workbench_p_text_17">
-                    Crafting complete
+                    {craftedRevealMode === "preview"
+                      ? "Item to be crafted"
+                      : "Crafting complete"}
                   </p>
                 </div>
 
@@ -1053,16 +1293,16 @@ export function CraftingWorkbench({
                   onClick={() =>
                     setCraftedReveal(null)
                   }
-                  aria-label="Close crafted item"
+                  aria-label="Close item details"
                 >
                   ×
                 </SepIconButton>
               </div>
 
-              <div className="p-5 sm:p-6 crafting_crafting_workbench_div_container_34">
+              <div className="p-3 sm:p-6 crafting_crafting_workbench_div_container_34">
                 <article
                   data-sep-interactive-surface="card"
-                  className="relative overflow-hidden border bg-[rgb(var(--sep-colour-100c09))] p-4 sm:p-5 crafting_crafting_workbench_article_article"
+                  className="relative overflow-hidden border bg-[rgb(var(--sep-colour-100c09))] p-3 sm:p-5 crafting_crafting_workbench_article_article"
                   style={{
                     borderColor: `color-mix(in srgb, ${craftingAccent} 48%, transparent)`,
                     boxShadow: `inset 0 0 28px color-mix(in srgb, ${craftingAccent} 5%, transparent)`,
@@ -1076,21 +1316,33 @@ export function CraftingWorkbench({
                     }}
                   />
 
-                  <div className="relative grid gap-5 sm:grid-cols-[180px_1fr] crafting_crafting_workbench_div_container_36">
+                  <div className="relative grid gap-3 sm:grid-cols-[180px_1fr] sm:gap-5 crafting_crafting_workbench_div_container_36">
                     <div
-                      className="flex aspect-square items-center justify-center overflow-hidden border bg-black/25 p-3 crafting_crafting_workbench_div_container_37"
+                      className="flex items-center justify-center sm:aspect-square sm:overflow-hidden sm:border sm:bg-black/25 sm:p-3 crafting_crafting_workbench_div_container_37"
                       style={{
                         borderColor: `color-mix(in srgb, ${craftingAccent} 40%, transparent)`,
                         boxShadow: `inset 0 0 26px rgba(0,0,0,0.48), 0 0 18px color-mix(in srgb, ${craftingAccent} 8%, transparent)`,
                       }}
                     >
-                      <ItemImageFrame
-                        src={craftedReveal.item.image_url}
-                        quality={craftedReveal.item.quality}
-                        className="h-full w-full"
-                        badgeSize="lg"
-                        imageClassName="h-full w-full object-contain"
-                      />
+                      <div className="sm:hidden">
+                        <ItemImageFrame
+                          src={craftedReveal.item.image_url}
+                          quality={craftedReveal.item.quality}
+                          className="h-20 w-20"
+                          badgeSize="sm"
+                          imageClassName="h-full w-full object-contain p-1"
+                        />
+                      </div>
+
+                      <div className="hidden h-full w-full sm:block">
+                        <ItemImageFrame
+                          src={craftedReveal.item.image_url}
+                          quality={craftedReveal.item.quality}
+                          className="h-full w-full"
+                          badgeSize="lg"
+                          imageClassName="h-full w-full object-contain"
+                        />
+                      </div>
                     </div>
 
                     <div className="min-w-0 crafting_crafting_workbench_div_container_38">
@@ -1189,6 +1441,27 @@ export function CraftingWorkbench({
                             .description
                         }
                       </p>
+
+                      {effectLines(craftedReveal.item.effects).length ? (
+                        <div className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/35 bg-black/15 p-3 crafting_crafting_workbench_div_item_effects">
+                          <p className="text-[6px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-806b50))] crafting_crafting_workbench_p_item_effects">
+                            Effects
+                          </p>
+
+                          <div className="mt-2 space-y-1.5 crafting_crafting_workbench_div_item_effect_lines">
+                            {effectLines(
+                              craftedReveal.item.effects,
+                            ).map((line, index) => (
+                              <p
+                                key={`${line}-${index}`}
+                                className="text-[9px] leading-4 text-[rgb(var(--sep-colour-c8b18d))] crafting_crafting_workbench_p_item_effect_line"
+                              >
+                                {line}
+                              </p>
+                            ))}
+                          </div>
+                        </div>
+                      ) : null}
 
                       <div className="mt-4 grid gap-2 sm:grid-cols-2 crafting_crafting_workbench_div_container_42">
                         <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-black/15 px-3 py-2 crafting_crafting_workbench_div_container_43">

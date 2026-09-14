@@ -7,39 +7,54 @@ export type ItemImageFrameBadgeSize =
 type ItemQualityVisual = {
   label: string;
   colour: string;
-  symbol: string;
+  icon: string;
+  frame: string;
 };
 
-const QUALITY_VISUALS: Record<string, ItemQualityVisual> = {
+const QUALITY_VISUALS: Record<
+  string,
+  ItemQualityVisual
+> = {
   poor: {
     label: "Poor",
     colour: "#777777",
-    symbol: "◇",
+    icon: "/icons/rarity/poor.png",
+    frame: "/icons/rarity/frames/poor.png",
   },
+
   average: {
     label: "Average",
     colour: "#c8c8c8",
-    symbol: "●",
+    icon: "/icons/rarity/average.png",
+    frame: "/icons/rarity/frames/average.png",
   },
+
   fine: {
     label: "Fine",
     colour: "#4fa76c",
-    symbol: "◆",
+    icon: "/icons/rarity/fine.png",
+    frame: "/icons/rarity/frames/fine.png",
   },
+
   superior: {
     label: "Superior",
     colour: "#4d82d6",
-    symbol: "✦",
+    icon: "/icons/rarity/superior.png",
+    frame: "/icons/rarity/frames/superior.png",
   },
+
   flawless: {
     label: "Flawless",
     colour: "#9b62cc",
-    symbol: "✧",
+    icon: "/icons/rarity/flawless.png",
+    frame: "/icons/rarity/frames/flawless.png",
   },
+
   peerless: {
     label: "Peerless",
     colour: "#d6a844",
-    symbol: "♛",
+    icon: "/icons/rarity/peerless.png",
+    frame: "/icons/rarity/frames/peerless.png",
   },
 };
 
@@ -47,17 +62,25 @@ function qualityVisual(
   quality: string | null | undefined,
 ) {
   const key =
-    quality?.trim().toLowerCase() ||
+    quality
+      ?.trim()
+      .toLowerCase() ||
     "average";
 
-  return QUALITY_VISUALS[key] ?? QUALITY_VISUALS.average;
+  return (
+    QUALITY_VISUALS[key] ??
+    QUALITY_VISUALS.average
+  );
 }
 
-const BADGE_CLASSES: Record<ItemImageFrameBadgeSize, string> = {
-  xs: "h-[14px] min-w-[14px] px-[2px] text-[7px]",
-  sm: "h-4 min-w-4 px-[3px] text-[8px]",
-  md: "h-5 min-w-5 px-1 text-[10px]",
-  lg: "h-8 min-w-8 px-1 text-[18px]",
+const BADGE_CLASSES: Record<
+  ItemImageFrameBadgeSize,
+  string
+> = {
+  xs: "h-[14px] w-[14px]",
+  sm: "h-4 w-4",
+  md: "h-5 w-5",
+  lg: "h-8 w-8",
 };
 
 export function ItemImageFrame({
@@ -65,7 +88,8 @@ export function ItemImageFrame({
   quality,
   alt = "",
   className = "h-14 w-14",
-  imageClassName = "h-full w-full object-cover",
+  imageClassName =
+    "h-full w-full object-cover",
   badgeSize = "sm",
   fallback = "◇",
   muted = false,
@@ -79,17 +103,20 @@ export function ItemImageFrame({
   fallback?: string;
   muted?: boolean;
 }) {
-  const visual = qualityVisual(quality);
+  const visual =
+    qualityVisual(quality);
 
   return (
     <div
-      className={[(([
-        "relative shrink-0 overflow-hidden border-2 bg-[rgb(var(--sep-colour-0d0907))]",
-        className,
-      ].join(" "))), "components_items_item_image_frame_div_container"].filter(Boolean).join(" ")}
-      style={{
-        borderColor: visual.colour,
-      }}
+      className={[
+        [
+          "relative shrink-0 overflow-hidden bg-[rgb(var(--sep-colour-0d0907))]",
+          className,
+        ].join(" "),
+        "components_items_item_image_frame_div_container",
+      ]
+        .filter(Boolean)
+        .join(" ")}
       title={`${visual.label} Item`}
       data-item-quality={visual.label.toLowerCase()}
     >
@@ -98,10 +125,17 @@ export function ItemImageFrame({
         <img
           src={src}
           alt={alt}
-          className={[(([
-            imageClassName,
-            muted ? "grayscale opacity-75" : "",
-          ].join(" "))), "components_items_item_image_frame_img_image"].filter(Boolean).join(" ")}
+          className={[
+            [
+              imageClassName,
+              muted
+                ? "grayscale opacity-75"
+                : "",
+            ].join(" "),
+            "components_items_item_image_frame_img_image",
+          ]
+            .filter(Boolean)
+            .join(" ")}
         />
       ) : (
         <div className="flex h-full w-full items-center justify-center font-serif text-[rgb(var(--sep-colour-756247))] components_items_item_image_frame_div_container_2">
@@ -109,29 +143,58 @@ export function ItemImageFrame({
         </div>
       )}
 
+      {/* Rarity glow */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 components_items_item_image_frame_div_container_3"
+        className="pointer-events-none absolute inset-0 z-[1]"
         style={{
           boxShadow: `
-  inset 0 0 0 1px ${visual.colour},
-  inset 0 0 5px 2px color-mix(in srgb, ${visual.colour} 55%, transparent),
-  inset 0 0 10px 4px color-mix(in srgb, ${visual.colour} 20%, transparent)
-`,
+            inset 0 0 5px 2px color-mix(
+              in srgb,
+              ${visual.colour} 40%,
+              transparent
+            ),
+            inset 0 0 10px 4px color-mix(
+              in srgb,
+              ${visual.colour} 15%,
+              transparent
+            )
+          `,
         }}
       />
 
+      {/* Custom rarity frame */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={visual.frame}
+        alt=""
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-[2] h-full w-full object-fill"
+      />
+
+      {/* Bottom-right rarity icon */}
       <span
         aria-label={`${visual.label} quality`}
-        className={[(([
-          "absolute -bottom-[2px] -right-[2px] z-10 flex items-center justify-center font-serif font-bold leading-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.95)]",
-          BADGE_CLASSES[badgeSize],
-        ].join(" "))), "components_items_item_image_frame_span_text"].filter(Boolean).join(" ")}
-        style={{
-          color: visual.colour,
-        }}
+        title={visual.label}
+        className={[
+          [
+            "absolute bottom-[1px] right-[1px] z-10 block shrink-0 overflow-visible",
+            BADGE_CLASSES[
+              badgeSize
+            ],
+          ].join(" "),
+          "components_items_item_image_frame_span_text",
+        ]
+          .filter(Boolean)
+          .join(" ")}
       >
-        {visual.symbol}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={visual.icon}
+          alt=""
+          aria-hidden="true"
+          className="block h-full w-full object-contain"
+        />
       </span>
     </div>
   );

@@ -23,6 +23,22 @@ type NamedRelation =
   | { name: string }[]
   | null;
 
+type ItemEffect = {
+  trigger_type: "owned" | "equipped" | "use";
+  effect_mode: "instant" | "temporary" | "passive";
+  duration_minutes: number | null;
+  health_delta: number;
+  muscles_modifier: number;
+  reflexes_modifier: number;
+  vigour_modifier: number;
+  shrewd_modifier: number;
+  brains_modifier: number;
+  presence_modifier: number;
+  max_health_modifier: number;
+  warping_affinity_modifier: number;
+  warps_per_day_modifier: number;
+};
+
 type ItemRow = {
   id: string;
   name: string;
@@ -36,6 +52,7 @@ type ItemRow = {
   stackable?: boolean;
   max_stack?: number | null;
   is_usable?: boolean;
+  effects?: ItemEffect[] | null;
   category?: NamedRelation;
   subcategory?: NamedRelation;
 };
@@ -165,6 +182,21 @@ export default async function CraftingPage() {
               stackable,
               max_stack,
               is_usable,
+              effects:item_effects(
+                trigger_type,
+                effect_mode,
+                duration_minutes,
+                health_delta,
+                muscles_modifier,
+                reflexes_modifier,
+                vigour_modifier,
+                shrewd_modifier,
+                brains_modifier,
+                presence_modifier,
+                max_health_modifier,
+                warping_affinity_modifier,
+                warps_per_day_modifier
+              ),
               category:item_categories(name),
               subcategory:item_subcategories(name)
             `)
@@ -275,6 +307,7 @@ export default async function CraftingPage() {
           stackable: result.stackable ?? false,
           max_stack: result.max_stack ?? null,
           is_usable: result.is_usable ?? false,
+          effects: result.effects ?? [],
         },
         ingredients: (ingredientsByRecipe.get(recipe.id) ?? []).sort(
           (a, b) => a.sort_order - b.sort_order,

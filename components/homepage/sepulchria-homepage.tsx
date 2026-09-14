@@ -275,13 +275,13 @@ export function SepulchriaHomepage({
     </video>
 
     <a
-      href="https://youtube.com/shorts/DKP4dsbnZtY"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="absolute left-1/2 top-2 z-30 -translate-x-1/2 rounded bg-black/55 px-1.5 py-0.5 text-[7px] uppercase tracking-[0.10em] text-white/80 transition hover:bg-black/75 hover:text-white"
-    >
-      Watch on YouTube ↗
-    </a>
+  href="https://youtube.com/shorts/DKP4dsbnZtY"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="absolute left-1/2 top-2 z-30 -translate-x-1/2 rounded bg-[rgb(var(--sep-colour-15100c))]/55 px-1.5 py-0.5 text-[7px] uppercase tracking-[0.10em] text-white/80 transition hover:bg-[rgb(var(--sep-colour-15100c))] hover:text-white"
+>
+  Watch on YouTube ↗
+</a>
   </div>
               </div>
             </div>
