@@ -93,6 +93,7 @@ export function ItemImageFrame({
   badgeSize = "sm",
   fallback = "◇",
   muted = false,
+  frameClassName = "",
 }: {
   src?: string | null;
   quality?: string | null;
@@ -102,6 +103,7 @@ export function ItemImageFrame({
   badgeSize?: ItemImageFrameBadgeSize;
   fallback?: string;
   muted?: boolean;
+  frameClassName?: string;
 }) {
   const visual =
     qualityVisual(quality);
@@ -169,7 +171,12 @@ export function ItemImageFrame({
         src={visual.frame}
         alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-[2] h-full w-full object-fill"
+        className={[
+          "pointer-events-none absolute inset-0 z-[2] h-full w-full origin-center object-fill",
+          frameClassName,
+        ]
+          .filter(Boolean)
+          .join(" ")}
       />
 
       {/* Bottom-right rarity icon */}

@@ -20899,7 +20899,7 @@ html[data-portal-skin] [data-homepage-nav-button="true"] [data-homepage-nav-role
   background-repeat: no-repeat !important;
 }
 
-.layout_main_main_2:has(.messages_components_messages_inbox_client_div_container),.messages_id_page_main_main {
+.layout_main_main_2:has(.messages_components_messages_inbox_client_div_container, .messages_new_page_main_main_2),.messages_id_page_main_main {
   background-image:
     linear-gradient(
       rgb(var(--sep-colour-100d0b) / 80%),
@@ -21103,7 +21103,8 @@ background-image:
 }
 
 
-.layout_main_main_2:has(.forum_page_main_main, .forum_sectionslug_page_main_main, .forum_sectionslug_topicslug_page_main_main) {
+.layout_main_main_2:has(.forum_page_main_main, .forum_sectionslug_page_main_main, .forum_sectionslug_topicslug_page_main_main), 
+.components_forum_forum_topic_flag_button_div_container_2 {
 background-image:
     linear-gradient(
       rgb(var(--sep-colour-100d0b) / 80%),
@@ -21195,7 +21196,8 @@ background-image:
 background: rgb(var(--sep-colour-100c09) / 80%) !important;
 }
 
-.sep-notification-read  {
+.sep-notification-read,
+.messages_new_page_section_new_message  {
 background: rgb(var(--sep-colour-100c09) / 50%) !important;
 }
 

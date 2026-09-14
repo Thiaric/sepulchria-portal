@@ -209,28 +209,25 @@ function ItemImage({
   size?: "sm" | "md" | "lg";
 }) {
   const dimensions =
-  size === "lg"
-    ? "h-14 w-14 sm:h-20 sm:w-20"
-    : size === "sm"
-      ? "h-10 w-10"
-      : "h-12 w-12";
+    size === "lg"
+      ? "h-14 w-14 sm:h-20 sm:w-20"
+      : size === "sm"
+        ? "h-10 w-10"
+        : "h-12 w-12";
 
-return (
-  <ItemImageFrame
-    src={src}
-    quality={quality}
-    fallback={fallback}
-    className={dimensions}
-    badgeSize={
-      size === "lg"
-        ? "lg"
-        : size === "sm"
+  return (
+    <ItemImageFrame
+      src={src}
+      quality={quality}
+      fallback={fallback}
+      className={dimensions}
+      badgeSize={
+        size === "sm"
           ? "xs"
           : "sm"
-    }
-    imageClassName="h-full w-full object-contain p-1 transition-transform duration-500 ease-out group-hover:scale-[1.045]"
-  />
-);
+      }
+    />
+  );
 }
 
 function ingredientPosition(
@@ -1006,8 +1003,7 @@ export function CraftingWorkbench({
     }
     fallback="✦"
     className="h-14 w-14"
-    badgeSize="sm"
-    imageClassName="h-full w-full object-contain p-0.5 transition-transform duration-500 ease-out group-hover:scale-[1.045]"
+    badgeSize="xs"
   />
 </div>
 
@@ -1318,11 +1314,7 @@ export function CraftingWorkbench({
 
                   <div className="relative grid gap-3 sm:grid-cols-[180px_1fr] sm:gap-5 crafting_crafting_workbench_div_container_36">
                     <div
-                      className="flex items-center justify-center sm:aspect-square sm:overflow-hidden sm:border sm:bg-black/25 sm:p-3 crafting_crafting_workbench_div_container_37"
-                      style={{
-                        borderColor: `color-mix(in srgb, ${craftingAccent} 40%, transparent)`,
-                        boxShadow: `inset 0 0 26px rgba(0,0,0,0.48), 0 0 18px color-mix(in srgb, ${craftingAccent} 8%, transparent)`,
-                      }}
+                      className="flex items-center justify-center sm:aspect-square sm:overflow-hidden crafting_crafting_workbench_div_container_37"
                     >
                       <div className="sm:hidden">
                         <ItemImageFrame
@@ -1330,7 +1322,6 @@ export function CraftingWorkbench({
                           quality={craftedReveal.item.quality}
                           className="h-20 w-20"
                           badgeSize="sm"
-                          imageClassName="h-full w-full object-contain p-1"
                         />
                       </div>
 
@@ -1338,9 +1329,8 @@ export function CraftingWorkbench({
                         <ItemImageFrame
                           src={craftedReveal.item.image_url}
                           quality={craftedReveal.item.quality}
-                          className="h-full w-full"
+                          className="h-[180px] w-[180px]"
                           badgeSize="lg"
-                          imageClassName="h-full w-full object-contain"
                         />
                       </div>
                     </div>
