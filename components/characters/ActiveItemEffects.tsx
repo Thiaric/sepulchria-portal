@@ -28,7 +28,7 @@ export async function ActiveItemEffects({
 
   return (
     <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/95 p-5 sm:p-6 components_characters_activeitemeffects_section_active_item_effects">
-      <h2 className="font-serif text-2xl text-[rgb(var(--sep-colour-dec89f))] components_characters_activeitemeffects_h2_active_item_effects">
+      <h2 className="font-serif text-[rgb(var(--sep-colour-dec89f))] components_characters_activeitemeffects_h2_active_item_effects">
         Active Item Effects
       </h2>
 

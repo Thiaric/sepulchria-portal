@@ -20775,6 +20775,15 @@ html[data-portal-skin] [data-homepage-nav-button="true"] [data-homepage-nav-role
     color: rgb(var(--sep-global-c1)) !important;
    }
 
+   .components_characters_activeitemeffects_h2_active_item_effects {
+
+    size: 0.9rem !important;
+   }
+
+   .game_components_roommessagelist_span_text_9 {
+    text-transform: uppercase !important;
+   }
+
 [data-portal-shell]
 button.components_characters_character_sheet_tabs_button_tab {
   border-radius: 20px 20px 0 0 !important;

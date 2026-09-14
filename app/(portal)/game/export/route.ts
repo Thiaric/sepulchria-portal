@@ -53,11 +53,17 @@ type ExportOrderIdentity = {
   colour: string | null;
 };
 
+type ExportPriceChatTag = {
+  label: string;
+  price_key: string;
+  expires_at: string;
+};
+
 type ExportChatTags = {
   buffs: string[];
   debuffs: string[];
   conditions: string[];
-  prices: string[];
+  prices: ExportPriceChatTag[];
 };
 
 type ExportRenderContext = {
@@ -1103,8 +1109,13 @@ function renderChatTagHeader(
   }
 
   if (tags?.prices.length) {
-    groups.push(tags.prices.join(" - "));
-  }
+  groups.push(
+    tags.prices
+      .map((price) => price.label)
+      .filter(Boolean)
+      .join(" - "),
+  );
+}
 
   if (!groups.length) return "";
 
