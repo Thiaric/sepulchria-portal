@@ -1453,6 +1453,443 @@ function addSpellingWordToDictionary() {
   setSpellingMenu(null);
 }
 
+
+type RichTextLibraryImage = {
+  id: string;
+  public_url: string;
+  original_name: string;
+  mime_type: string;
+  size_bytes: number;
+  sha256: string;
+  created_at: string;
+};
+
+const imageInsertRangeRef =
+  useRef<Range | null>(null);
+
+const [
+  canUseImageLibrary,
+  setCanUseImageLibrary,
+] = useState(false);
+
+const [
+  imageLibraryOpen,
+  setImageLibraryOpen,
+] = useState(false);
+
+const [
+  imageLibraryImages,
+  setImageLibraryImages,
+] = useState<
+  RichTextLibraryImage[]
+>([]);
+
+const [
+  imageLibraryLoading,
+  setImageLibraryLoading,
+] = useState(false);
+
+const [
+  imageLibrarySearch,
+  setImageLibrarySearch,
+] = useState("");
+
+const [
+  imageUploadBusy,
+  setImageUploadBusy,
+] = useState(false);
+
+const [
+  imageLibraryError,
+  setImageLibraryError,
+] = useState<string | null>(null);
+
+useEffect(() => {
+  let active = true;
+
+  void fetch(
+    "/api/editor/rich-text-images?probe=1",
+    {
+      cache: "no-store",
+    },
+  )
+    .then((response) => {
+      if (
+        active &&
+        response.ok
+      ) {
+        setCanUseImageLibrary(true);
+      }
+    })
+    .catch(() => {
+      // Ordinary users and unavailable endpoints simply keep URL-only images.
+    });
+
+  return () => {
+    active = false;
+  };
+}, []);
+
+function rememberImageInsertRange() {
+  const editor =
+    editorRef.current;
+
+  const selection =
+    window.getSelection();
+
+  if (
+    !editor ||
+    !selection ||
+    selection.rangeCount === 0
+  ) {
+    imageInsertRangeRef.current =
+      null;
+    return;
+  }
+
+  const range =
+    selection.getRangeAt(0);
+
+  if (
+    !editor.contains(
+      range.commonAncestorContainer,
+    )
+  ) {
+    imageInsertRangeRef.current =
+      null;
+    return;
+  }
+
+  imageInsertRangeRef.current =
+    range.cloneRange();
+}
+
+function insertLibraryImage(
+  url: string,
+  rangeOverride?: Range | null,
+) {
+  const editor =
+    editorRef.current;
+
+  if (
+    !editor ||
+    !url
+  ) {
+    return;
+  }
+
+  editor.focus();
+
+  const selection =
+    window.getSelection();
+
+  if (!selection) {
+    return;
+  }
+
+  let range =
+    rangeOverride ??
+    imageInsertRangeRef.current;
+
+  if (
+    !range ||
+    !editor.contains(
+      range.commonAncestorContainer,
+    )
+  ) {
+    range =
+      document.createRange();
+
+    range.selectNodeContents(
+      editor,
+    );
+
+    range.collapse(false);
+  }
+
+  const image =
+    document.createElement(
+      "img",
+    );
+
+  image.src = url;
+  image.alt = "";
+
+  range.deleteContents();
+  range.insertNode(image);
+
+  const trailingBreak =
+    document.createElement(
+      "br",
+    );
+
+  image.after(
+    trailingBreak,
+  );
+
+  const caret =
+    document.createRange();
+
+  caret.setStartAfter(
+    trailingBreak,
+  );
+
+  caret.collapse(true);
+
+  selection.removeAllRanges();
+  selection.addRange(caret);
+
+  imageInsertRangeRef.current =
+    caret.cloneRange();
+
+  syncFromEditor();
+}
+
+async function uploadRichTextImage(
+  file: File,
+  range?: Range | null,
+) {
+  if (
+    !canUseImageLibrary ||
+    imageUploadBusy
+  ) {
+    return null;
+  }
+
+  if (
+    file.size >
+    8 * 1024 * 1024
+  ) {
+    setImageLibraryError(
+      "Images cannot exceed 8 MB.",
+    );
+    return null;
+  }
+
+  const allowed =
+    new Set([
+      "image/png",
+      "image/jpeg",
+      "image/webp",
+      "image/gif",
+    ]);
+
+  if (!allowed.has(file.type)) {
+    setImageLibraryError(
+      "Images must be PNG, JPEG, WEBP or GIF.",
+    );
+    return null;
+  }
+
+  setImageUploadBusy(true);
+  setImageLibraryError(null);
+
+  try {
+    const formData =
+      new FormData();
+
+    formData.set(
+      "file",
+      file,
+    );
+
+    const response =
+      await fetch(
+        "/api/editor/rich-text-images",
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
+
+    const data =
+      await response.json() as {
+        error?: string;
+        image?: RichTextLibraryImage;
+      };
+
+    if (
+      !response.ok ||
+      !data.image
+    ) {
+      throw new Error(
+        data.error ??
+          "Unable to upload image.",
+      );
+    }
+
+    setImageLibraryImages(
+      (current) => [
+        data.image!,
+        ...current.filter(
+          (entry) =>
+            entry.id !==
+            data.image!.id,
+        ),
+      ],
+    );
+
+    insertLibraryImage(
+      data.image.public_url,
+      range,
+    );
+
+    return data.image;
+  } catch (error) {
+    setImageLibraryError(
+      error instanceof Error
+        ? error.message
+        : "Unable to upload image.",
+    );
+
+    return null;
+  } finally {
+    setImageUploadBusy(false);
+  }
+}
+
+async function loadImageLibrary(
+  search = imageLibrarySearch,
+) {
+  if (!canUseImageLibrary) {
+    return;
+  }
+
+  setImageLibraryLoading(true);
+  setImageLibraryError(null);
+
+  try {
+    const query =
+      new URLSearchParams();
+
+    query.set(
+      "limit",
+      "200",
+    );
+
+    if (search.trim()) {
+      query.set(
+        "q",
+        search.trim(),
+      );
+    }
+
+    const response =
+      await fetch(
+        `/api/editor/rich-text-images?${query.toString()}`,
+        {
+          cache: "no-store",
+        },
+      );
+
+    const data =
+      await response.json() as {
+        error?: string;
+        images?: RichTextLibraryImage[];
+      };
+
+    if (!response.ok) {
+      throw new Error(
+        data.error ??
+          "Unable to load image library.",
+      );
+    }
+
+    setImageLibraryImages(
+      data.images ?? [],
+    );
+  } catch (error) {
+    setImageLibraryError(
+      error instanceof Error
+        ? error.message
+        : "Unable to load image library.",
+    );
+  } finally {
+    setImageLibraryLoading(false);
+  }
+}
+
+function openImageLibrary() {
+  rememberImageInsertRange();
+  setImageLibraryOpen(true);
+  void loadImageLibrary("");
+}
+
+function handleRichTextPaste(
+  event: React.ClipboardEvent<HTMLDivElement>,
+) {
+  if (
+    disabled ||
+    sourceMode ||
+    !canUseImageLibrary
+  ) {
+    return;
+  }
+
+  const htmlClipboard =
+    event.clipboardData.getData(
+      "text/html",
+    );
+
+  /*
+   * If a website supplied normal HTML containing an http(s) image,
+   * leave the browser's existing web-image paste behaviour untouched.
+   * We only upload actual clipboard image blobs such as Snipping Tool.
+   */
+  if (
+    /<img\b[^>]*\bsrc\s*=\s*["']https?:\/\//i.test(
+      htmlClipboard,
+    )
+  ) {
+    return;
+  }
+
+  const imageItem =
+    Array.from(
+      event.clipboardData.items,
+    ).find(
+      (item) =>
+        item.kind === "file" &&
+        item.type.startsWith(
+          "image/",
+        ),
+    );
+
+  const imageFile =
+    imageItem?.getAsFile();
+
+  if (!imageFile) {
+    return;
+  }
+
+  event.preventDefault();
+
+  const selection =
+    window.getSelection();
+
+  const editor =
+    editorRef.current;
+
+  const range =
+    editor &&
+    selection &&
+    selection.rangeCount > 0 &&
+    editor.contains(
+      selection
+        .getRangeAt(0)
+        .commonAncestorContainer,
+    )
+      ? selection
+          .getRangeAt(0)
+          .cloneRange()
+      : null;
+
+  void uploadRichTextImage(
+    imageFile,
+    range,
+  );
+}
+
   const textLength = visibleLength(html);
   const fullToolbar = variant === "lore";
 
@@ -1541,6 +1978,15 @@ function addSpellingWordToDictionary() {
             disabled={disabled || sourceMode}
             wide
           />
+          {canUseImageLibrary ? (
+            <ToolbarButton
+              label="Library"
+              title="Open uploaded image library"
+              onClick={openImageLibrary}
+              disabled={disabled || sourceMode}
+              wide
+            />
+          ) : null}
 
           <button
             type="button"
@@ -2380,6 +2826,15 @@ function addSpellingWordToDictionary() {
           disabled={disabled || sourceMode}
           wide
         />
+        {canUseImageLibrary ? (
+          <ToolbarButton
+            label="Library"
+            title="Open uploaded image library"
+            onClick={openImageLibrary}
+            disabled={disabled || sourceMode}
+            wide
+          />
+        ) : null}
         <ToolbarButton
           label="—"
           title="Horizontal line"
@@ -2456,6 +2911,7 @@ function addSpellingWordToDictionary() {
       spellCheck
       autoCorrect="on"
       autoCapitalize="sentences"
+      onPaste={handleRichTextPaste}
       onInput={syncFromEditor}
       onBlur={syncFromEditor}
       onMouseDown={
@@ -2572,6 +3028,152 @@ function addSpellingWordToDictionary() {
     </>
 )}
 
+      {imageLibraryOpen ? (
+        <div
+          className="fixed inset-0 z-[10020] flex items-center justify-center bg-black/70 p-4"
+          data-sep-interaction-ignore="true"
+          data-sep-ui-ignore="true"
+        >
+          <div className="flex max-h-[85vh] w-full max-w-5xl flex-col border border-[rgb(var(--sep-colour-765937))]/70 bg-[rgb(var(--sep-colour-100c09))] shadow-[0_24px_70px_rgba(var(--sep-rgb-0-0-0),0.8)]">
+            <div className="flex items-center justify-between gap-4 border-b border-[rgb(var(--sep-colour-60482e))]/45 px-4 py-3">
+              <div>
+                <p className="font-serif text-lg text-[rgb(var(--sep-colour-dfc79c))]">
+                  Image Library
+                </p>
+                <p className="mt-1 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806c52))]">
+                  Uploaded rich-text images · exact duplicates are reused automatically
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setImageLibraryOpen(false);
+                  setImageLibraryError(null);
+                }}
+                className="border border-[rgb(var(--sep-colour-60482e))]/55 px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-cbb28a))]"
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2 border-b border-[rgb(var(--sep-colour-60482e))]/35 p-3">
+              <input
+                type="search"
+                value={imageLibrarySearch}
+                onChange={(event) =>
+                  setImageLibrarySearch(
+                    event.target.value,
+                  )
+                }
+                onKeyDown={(event) => {
+                  if (
+                    event.key === "Enter"
+                  ) {
+                    event.preventDefault();
+                    void loadImageLibrary(
+                      imageLibrarySearch,
+                    );
+                  }
+                }}
+                placeholder="Search file names..."
+                className="min-w-[220px] flex-1 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2 text-xs text-[rgb(var(--sep-colour-d7c4a5))] outline-none"
+              />
+
+              <button
+                type="button"
+                onClick={() =>
+                  void loadImageLibrary(
+                    imageLibrarySearch,
+                  )
+                }
+                disabled={imageLibraryLoading}
+                className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-21190f))] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-d6bb8d))] disabled:opacity-50"
+              >
+                Search
+              </button>
+
+              <label className="cursor-pointer border border-[rgb(var(--sep-colour-a17a49))]/70 bg-[rgb(var(--sep-colour-2a1c10))] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-efd09b))]">
+                {imageUploadBusy
+                  ? "Uploading..."
+                  : "Upload + Insert"}
+
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/gif"
+                  disabled={imageUploadBusy}
+                  className="sr-only"
+                  onChange={(event) => {
+                    const file =
+                      event.currentTarget.files?.[0] ??
+                      null;
+
+                    event.currentTarget.value =
+                      "";
+
+                    if (file) {
+                      void uploadRichTextImage(
+                        file,
+                        imageInsertRangeRef.current,
+                      );
+                    }
+                  }}
+                />
+              </label>
+            </div>
+
+            {imageLibraryError ? (
+              <p className="border-b border-[rgb(var(--sep-colour-754137))]/45 bg-[rgb(var(--sep-colour-2b1714))] px-4 py-2 text-xs text-[rgb(var(--sep-colour-d58d82))]">
+                {imageLibraryError}
+              </p>
+            ) : null}
+
+            <div className="min-h-0 flex-1 overflow-y-auto p-4">
+              {imageLibraryLoading ? (
+                <p className="py-8 text-center text-xs text-[rgb(var(--sep-colour-806c52))]">
+                  Loading images...
+                </p>
+              ) : imageLibraryImages.length ? (
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                  {imageLibraryImages.map(
+                    (image) => (
+                      <button
+                        key={image.id}
+                        type="button"
+                        title={image.original_name}
+                        onClick={() => {
+                          insertLibraryImage(
+                            image.public_url,
+                            imageInsertRangeRef.current,
+                          );
+                          setImageLibraryOpen(false);
+                        }}
+                        className="group overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0907))] text-left transition hover:border-[rgb(var(--sep-colour-a17a49))]"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={image.public_url}
+                          alt={image.original_name}
+                          className="aspect-square w-full object-contain bg-black/20"
+                        />
+
+                        <span className="block truncate border-t border-[rgb(var(--sep-colour-60482e))]/35 px-2 py-1.5 text-[8px] text-[rgb(var(--sep-colour-a99473))]">
+                          {image.original_name}
+                        </span>
+                      </button>
+                    ),
+                  )}
+                </div>
+              ) : (
+                <p className="py-8 text-center text-xs text-[rgb(var(--sep-colour-806c52))]">
+                  No uploaded rich-text images found.
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : null}
+
 {name ? (
   <input className="components_editor_rich_text_editor_input_field"
     type="hidden"
@@ -2581,7 +3183,7 @@ function addSpellingWordToDictionary() {
 ) : null}
 
 <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0b0806))] px-3 py-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-756958))] components_editor_rich_text_editor_div_container_20"><span className="components_editor_rich_text_editor_span_text_7">
-          Paste formatted content directly. Fonts, 8–24px text sizes, colours, links, lists and web images are retained. Misspellings are marked with a red wavy underline.
+          Paste formatted content directly. Fonts, 8–24px text sizes, colours, links, lists and web images are retained. Staff can also paste clipboard screenshots or reuse uploaded images from the Library. Misspellings are marked with a red wavy underline.
         </span>
         <span className="components_editor_rich_text_editor_span_text_8">
           {stripRichTextForPreview(html).trim().split(/\s+/).filter(Boolean).length.toLocaleString("en-GB")} words · {textLength.toLocaleString("en-GB")} / {maxTextLength.toLocaleString("en-GB")} characters
