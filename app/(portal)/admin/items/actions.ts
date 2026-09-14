@@ -762,8 +762,8 @@ export async function createItem(formData: FormData) {
       .from("items")
       .insert(values)
       .select(
-        "id, name, slug, description, image_url, is_active, sort_order",
-      )
+  "id, name, slug, description, image_url, quality, is_active, sort_order",
+            )
       .single();
 
     if (
@@ -871,7 +871,7 @@ export async function createItem(formData: FormData) {
           subcategory_id:
             null,
           quality:
-            "average",
+            createdItem.quality,
           transfer_policy:
             "free",
           is_quest_item:
@@ -968,6 +968,34 @@ export async function updateItem(formData: FormData) {
 
     const values = await itemValues(formData);
 
+    const recipeBundle =
+      await newRecipeBundleValues(
+        formData,
+      );
+
+    if (recipeBundle) {
+      const {
+        data: existingRecipe,
+        error: existingRecipeError,
+      } = await supabase
+        .from("crafting_recipes")
+        .select("id")
+        .eq("result_item_id", itemId)
+        .maybeSingle();
+
+      if (existingRecipeError) {
+        throw new Error(
+          existingRecipeError.message,
+        );
+      }
+
+      if (existingRecipe) {
+        throw new Error(
+          "This Item already has a crafting Recipe.",
+        );
+      }
+    }
+
     if (values.stackable) {
       const {
         data: existingItem,
@@ -991,8 +1019,150 @@ export async function updateItem(formData: FormData) {
       }
     }
 
-    const { error } = await supabase.from("items").update(values).eq("id", itemId);
-    if (error) throw new Error(error.message);
+    const {
+      data: updatedItem,
+      error,
+    } = await supabase
+      .from("items")
+      .update(values)
+      .eq("id", itemId)
+      .select(
+        "id, name, slug, description, image_url, quality, is_active, sort_order",
+      )
+      .single();
+
+    if (error || !updatedItem) {
+      throw new Error(
+        error?.message ??
+          "Unable to update Item.",
+      );
+    }
+
+    if (recipeBundle) {
+      let createdRecipeId:
+        string | null = null;
+
+      try {
+        const {
+          data: recipe,
+          error: recipeError,
+        } = await supabase
+          .from("crafting_recipes")
+          .insert({
+            name: updatedItem.name,
+            slug: `craft-${updatedItem.slug}`,
+            description:
+              updatedItem.description ?? "",
+            result_item_id:
+              updatedItem.id,
+            result_quantity:
+              recipeBundle.resultQuantity,
+            is_active:
+              updatedItem.is_active,
+            sort_order:
+              updatedItem.sort_order ?? 0,
+          })
+          .select("id")
+          .single();
+
+        if (
+          recipeError ||
+          !recipe
+        ) {
+          throw new Error(
+            recipeError?.message ??
+              "Unable to create crafting recipe.",
+          );
+        }
+
+        createdRecipeId =
+          recipe.id;
+
+        const {
+          error: ingredientsError,
+        } = await supabase
+          .from("crafting_recipe_ingredients")
+          .insert(
+            recipeBundle.ingredients.map(
+              (ingredient) => ({
+                recipe_id: recipe.id,
+                ingredient_item_id:
+                  ingredient.itemId,
+                quantity:
+                  ingredient.quantity,
+                sort_order:
+                  ingredient.sortOrder,
+              }),
+            ),
+          );
+
+        if (ingredientsError) {
+          throw new Error(
+            ingredientsError.message,
+          );
+        }
+
+        const {
+          error: recipeItemError,
+        } = await supabase
+          .from("items")
+          .insert({
+            name:
+              `Recipe: ${updatedItem.name}`,
+            slug:
+              `recipe-${updatedItem.slug}`,
+            description:
+              updatedItem.description ?? "",
+            image_url:
+              updatedItem.image_url,
+            category_id:
+              recipeBundle.bookCategoryId,
+            subcategory_id: null,
+            quality:
+              updatedItem.quality,
+            transfer_policy: "free",
+            is_quest_item: false,
+            is_active:
+              updatedItem.is_active,
+            stackable: true,
+            max_stack: 99,
+            reference_value:
+              recipeBundle.recipeDocumentReferenceValue,
+            is_usable: true,
+            use_behaviour: "consumable",
+            max_charges: null,
+            target_mode: "self",
+            cooldown_minutes: null,
+            success_die: null,
+            success_threshold: null,
+            success_attribute: null,
+            resolution_mode: "automatic",
+            counter_options: [],
+            damage_dice: null,
+            damage_type: null,
+            container_capacity: null,
+            teaches_recipe_id:
+              recipe.id,
+            sort_order:
+              updatedItem.sort_order ?? 0,
+          });
+
+        if (recipeItemError) {
+          throw new Error(
+            recipeItemError.message,
+          );
+        }
+      } catch (recipeError) {
+        if (createdRecipeId) {
+          await supabase
+            .from("crafting_recipes")
+            .delete()
+            .eq("id", createdRecipeId);
+        }
+
+        throw recipeError;
+      }
+    }
   } catch (error) {
     fail(error instanceof Error ? error.message : "Unable to update item.");
   }

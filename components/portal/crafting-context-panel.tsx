@@ -547,7 +547,7 @@ export function CraftingContextPanel() {
                     </span>
 
                     {!recipe.ready ? (
-                      <div className="pointer-events-none absolute right-2 top-full z-50 mt-1 hidden w-64 border border-[rgb(var(--sep-global-c1))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3 shadow-xl group-hover/recipe:block">
+                      <div className="pointer-events-none absolute inset-x-0 top-full z-[100] mt-1 hidden max-h-64 overflow-y-auto border border-[rgb(var(--sep-global-c1))]/45 bg-[rgb(var(--sep-colour-100c09))] p-3 shadow-xl group-hover/recipe:block">
                         <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-global-c1))]">
                           Missing for {recipe.name}
                         </p>

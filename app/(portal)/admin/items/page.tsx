@@ -48,6 +48,7 @@ type CraftingRecipeOption = {
   name: string;
   slug: string;
   is_active: boolean;
+  result_item_id: string;
 };
 
 type Effect = {
@@ -148,7 +149,7 @@ export default async function AdminItemsPage({ searchParams }: Props) {
 
     supabase
       .from("crafting_recipes")
-      .select("id, name, slug, is_active")
+      .select("id, name, slug, is_active, result_item_id")
       .order("sort_order", { ascending: true })
       .order("name", { ascending: true }),
 
@@ -225,6 +226,13 @@ export default async function AdminItemsPage({ searchParams }: Props) {
   const items = (itemsResult.data ?? []) as unknown as Item[];
   const selectedItem =
     items.find((item) => item.id === selectedItemId) ?? null;
+  const selectedItemRecipe =
+    selectedItem
+      ? recipes.find(
+          (recipe) =>
+            recipe.result_item_id === selectedItem.id,
+        ) ?? null
+      : null;
   const selectedEffects =
     [...(selectedItem?.effects ?? [])].sort(
       (a, b) => a.sort_order - b.sort_order,
@@ -242,17 +250,26 @@ export default async function AdminItemsPage({ searchParams }: Props) {
     )?.id ?? null;
 
   const ingredientItems =
-    items
-      .filter(
-        (item) =>
-          ingredientCategoryId &&
-          item.category_id === ingredientCategoryId,
-      )
-      .map((item) => ({
-        id: item.id,
-        name: item.name,
-        is_active: item.is_active,
-      }));
+  items
+    .filter(
+      (item) =>
+        ingredientCategoryId &&
+        item.category_id === ingredientCategoryId,
+    )
+    .map((item) => ({
+      id: item.id,
+      name: item.name,
+      is_active: item.is_active,
+    }))
+    .sort((a, b) =>
+      a.name.localeCompare(
+        b.name,
+        undefined,
+        {
+          sensitivity: "base",
+        },
+      ),
+    );
 
   return (
     <main className="p-5 sm:p-7 lg:p-9 admin_items_page_main_main">
@@ -506,6 +523,8 @@ export default async function AdminItemsPage({ searchParams }: Props) {
                     categories={categories}
                     subcategories={subcategories}
                     recipes={recipes}
+                    ingredientItems={ingredientItems}
+                    existingCraftingRecipe={selectedItemRecipe}
                   />
                 </div>
 
@@ -580,6 +599,7 @@ function ItemForm({
   subcategories,
   recipes,
   ingredientItems = [],
+  existingCraftingRecipe = null,
 }: {
   action: typeof createItem | typeof updateItem;
   item?: Item;
@@ -591,6 +611,7 @@ function ItemForm({
     name: string;
     is_active: boolean;
   }[];
+  existingCraftingRecipe?: CraftingRecipeOption | null;
 }) {
   return (
     <AdminActionForm action={action} className="mt-5">
@@ -923,11 +944,31 @@ function ItemForm({
           <Check name="isUsable" label="Usable" checked={item?.is_usable ?? false} />
         </div>
 
-        {!item ? (
+        {!item || !existingCraftingRecipe ? (
           <ItemCreateRecipeFields
             ingredientItems={ingredientItems}
           />
-        ) : null}
+        ) : (
+          <div className="mt-4 w-full border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-4">
+              <div>
+                <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+                  Crafting
+                </p>
+                <p className="mt-1 font-serif text-base text-[rgb(var(--sep-colour-d8bf91))]">
+                  This Item already has a crafting Recipe.
+                </p>
+              </div>
+
+              <a
+                href={`/admin/crafting-recipes#recipe-${existingCraftingRecipe.id}`}
+                className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-2.5 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:bg-[rgb(var(--sep-colour-4a321e))]"
+              >
+                Edit Recipe
+              </a>
+            </div>
+          </div>
+        )}
 
         <button
           type="submit"

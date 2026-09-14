@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-
+import {
+  PortalModalButton,
+} from "@/components/portal/portal-modal-button";
 import {
   requireAdminSection,
 } from "@/lib/auth/require-staff";
@@ -523,12 +525,20 @@ export default async function AdminCharactersPage({
                         Manage character
                       </Link>
 
-                      <Link
-                        href={`/characters/${character.public_slug}`}
-                        className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-center text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-ac9879))] transition hover:border-[rgb(var(--sep-colour-987344))] hover:text-[rgb(var(--sep-colour-e7cca0))]"
-                      >
-                        Public profile
-                      </Link>
+                      <PortalModalButton
+  payload={{
+    label: displayName,
+    title: `${displayName}'s character sheet`,
+    icon:
+      character.portrait_url ??
+      "/icons/characters.png",
+    href:
+      `/characters/${character.public_slug}?from=admin`,
+  }}
+  className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-center text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-ac9879))] transition hover:border-[rgb(var(--sep-colour-987344))] hover:text-[rgb(var(--sep-colour-e7cca0))]"
+>
+  Public profile
+</PortalModalButton>
                     </div>
                   </div>
                 </section>

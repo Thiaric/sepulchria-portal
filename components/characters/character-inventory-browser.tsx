@@ -2057,6 +2057,52 @@ export function CharacterInventoryBrowser({
     filtersActive,
   ]);
 
+  useEffect(() => {
+  if (filtersActive) {
+    setCollapsed(
+      new Set<string>(),
+    );
+    return;
+  }
+
+  const next =
+    new Set<string>(
+      rows.map(
+        (row) =>
+          row.category_name,
+      ),
+    );
+
+  if (
+    rows.some(
+      (row) =>
+        row.record_kind === "unique" &&
+        row.container_capacity !== null,
+    )
+  ) {
+    next.add(
+      "__containers__",
+    );
+  }
+
+  setCollapsed(next);
+}, [
+  filtersActive,
+  rows,
+]);
+
+  useEffect(() => {
+  if (filtersActive) {
+    setCollapsed(
+      new Set<string>(),
+    );
+  }
+}, [
+  filtersActive,
+]);
+
+
+
   const categories =
     useMemo(
       () =>

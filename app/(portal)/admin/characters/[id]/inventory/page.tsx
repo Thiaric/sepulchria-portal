@@ -4,6 +4,9 @@ import { notFound } from "next/navigation";
 import { AdminActionForm } from "@/components/admin/admin-action-form";
 import Link from "next/link";
 import {
+  PortalModalButton,
+} from "@/components/portal/portal-modal-button";
+import {
   requireStaffCapability,
 } from "@/lib/auth/require-staff";
 import {
@@ -246,12 +249,21 @@ export default async function AdminCharacterInventoryPage({
           </div>
 
           <div className="flex flex-wrap gap-2 admin_characters_id_inventory_page_div_container_4">
-            <Link
-              href={`/characters/${character.public_slug}`}
-              className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-ac9879))]"
-            >
-              Public profile
-            </Link>
+            <PortalModalButton
+  payload={{
+    label:
+      characterName(character),
+    title:
+      `${characterName(character)}'s character sheet`,
+    icon:
+      "/icons/characters.png",
+    href:
+      `/characters/${character.public_slug}?from=admin`,
+  }}
+  className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-ac9879))]"
+>
+  Public profile
+</PortalModalButton>
 
             <Link
               href="/admin/items/vault"
