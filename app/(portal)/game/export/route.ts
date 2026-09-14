@@ -62,7 +62,9 @@ type ExportChatTags = {
 
 type ExportRenderContext = {
   tagsByCharacterId: Map<string, ExportChatTags>;
+  conditionsByMessageId: Map<string, string[]>;
   ordersByCharacterId: Map<string, ExportOrderIdentity>;
+  viewerCharacterId: string;
 };
 
 
@@ -1023,14 +1025,17 @@ function renderIdentityIcons(
   characterId: string,
   origin: string,
   context: ExportRenderContext,
+  isNpc = false,
 ): string {
   const race = normaliseRelation(
     author?.race as ExportRaceIdentity | ExportRaceIdentity[] | null,
   );
 
   const order =
-    context.ordersByCharacterId.get(characterId) ??
-    null;
+    isNpc
+      ? null
+      : context.ordersByCharacterId.get(characterId) ??
+        null;
 
   const raceIcon = race?.icon_url
     ? `<img class="identity-icon" src="${escapeHtml(
@@ -1055,28 +1060,49 @@ function renderIdentityIcons(
 
 function renderChatTagHeader(
   characterId: string,
+  messageId: string,
+  conditionSnapshot:
+    | { label: string }[]
+    | null
+    | undefined,
   context: ExportRenderContext,
 ): string {
   const tags =
     context.tagsByCharacterId.get(characterId);
 
-  if (!tags) return "";
-
   const groups: string[] = [];
 
-  if (tags.buffs.length) {
+  if (tags?.buffs.length) {
     groups.push(tags.buffs.join(" - "));
   }
 
-  if (tags.debuffs.length) {
+  if (tags?.debuffs.length) {
     groups.push(tags.debuffs.join(" - "));
   }
 
-  if (tags.conditions.length) {
-    groups.push(tags.conditions.join(" - "));
+  const snapshotConditions =
+    (conditionSnapshot ?? [])
+      .map((entry) =>
+        String(entry?.label ?? "").trim(),
+      )
+      .filter(Boolean);
+
+  const historicalConditions =
+    context.conditionsByMessageId.get(messageId) ??
+    [];
+
+  const conditions = [
+    ...new Set([
+      ...snapshotConditions,
+      ...historicalConditions,
+    ]),
+  ];
+
+  if (conditions.length) {
+    groups.push(conditions.join(" - "));
   }
 
-  if (tags.prices.length) {
+  if (tags?.prices.length) {
     groups.push(tags.prices.join(" - "));
   }
 
@@ -1093,10 +1119,31 @@ function renderMessage(
   origin: string,
   context: ExportRenderContext,
 ): string {
-  const author =
+  const controllerAuthor =
     normaliseRelation(
       message.character,
     ) as any;
+
+  const isNpcMessage =
+    message.speaker_type === "npc" &&
+    Boolean(message.npc_snapshot);
+
+  const npcSnapshot =
+    isNpcMessage
+      ? message.npc_snapshot
+      : null;
+
+  const author =
+    npcSnapshot
+      ? {
+          id: npcSnapshot.id,
+          first_name: npcSnapshot.name,
+          display_name: npcSnapshot.name,
+          portrait_url: npcSnapshot.portrait_url,
+          public_slug: null,
+          race: npcSnapshot.race,
+        }
+      : controllerAuthor;
 
   const recipient =
     normaliseRelation(
@@ -1185,12 +1232,28 @@ function renderMessage(
     message.message_type ===
     "whisper";
 
+  const isSender =
+    !isNpcMessage &&
+    characterId ===
+      context.viewerCharacterId;
+
+  const isRecipient =
+    message.whisper_recipient_character_id ===
+    context.viewerCharacterId;
+
   const whisperLabel =
     isWhisper
-      ? `Whisper to ${
-          recipient?.display_name ??
-          "character"
-        }`
+      ? isSender
+        ? `Whisper to ${
+            recipient?.display_name ??
+            "character"
+          }`
+        : isRecipient
+          ? "Whisper to you"
+          : `Whisper to ${
+              recipient?.display_name ??
+              "character"
+            }`
       : "";
 
   const classes = [
@@ -1246,6 +1309,7 @@ function renderMessage(
             characterId,
             origin,
             context,
+            isNpcMessage,
           )}
         </div>
 
@@ -1298,8 +1362,14 @@ function renderMessage(
             title="${escapeHtml(authorName)}"
           >
             ${escapeHtml(shortAuthorName)}
-          </span>${renderChatTagHeader(
+          </span>${
+            isNpcMessage
+              ? `<span class="npc-label"> NPC</span>`
+              : ""
+          }${renderChatTagHeader(
             characterId,
+            message.id,
+            message.condition_snapshot,
             context,
           )}
         </div>
@@ -1414,6 +1484,10 @@ async function loadVisibleMessages(
         attribute_value,
         roll_total,
         whisper_recipient_character_id,
+        condition_snapshot,
+        speaker_type,
+        npc_id,
+        npc_snapshot,
         created_at,
         character_id,
 
@@ -1628,6 +1702,9 @@ export async function GET(
   const tagsByCharacterId =
     new Map<string, ExportChatTags>();
 
+  const conditionsByMessageId =
+    new Map<string, string[]>();
+
   const ordersByCharacterId =
     new Map<string, ExportOrderIdentity>();
 
@@ -1776,10 +1853,58 @@ export async function GET(
     }
   }
 
+  if (messages.length) {
+    const {
+      data: historicalConditionRows,
+      error: historicalConditionError,
+    } = await supabase.rpc(
+      "get_room_message_effect_conditions",
+      {
+        p_message_ids:
+          messages.map(
+            (message) => message.id,
+          ),
+      },
+    );
+
+    if (historicalConditionError) {
+      console.error(
+        "Unable to load historical message Conditions for export:",
+        historicalConditionError.message,
+      );
+    } else {
+      for (
+        const row of
+          historicalConditionRows ?? []
+      ) {
+        const messageId =
+          String(row.message_id ?? "");
+
+        if (!messageId) {
+          continue;
+        }
+
+        conditionsByMessageId.set(
+          messageId,
+          Array.isArray(row.conditions)
+            ? row.conditions
+                .map((value: unknown) =>
+                  String(value).trim(),
+                )
+                .filter(Boolean)
+            : [],
+        );
+      }
+    }
+  }
+
   const renderContext:
     ExportRenderContext = {
       tagsByCharacterId,
+      conditionsByMessageId,
       ordersByCharacterId,
+      viewerCharacterId:
+        character.id,
     };
 
   const participants =
@@ -1787,9 +1912,12 @@ export async function GET(
       new Set(
         messages
           .map((message) =>
-            normaliseRelation(
-              message.character,
-            )?.display_name?.trim(),
+            message.speaker_type === "npc" &&
+            message.npc_snapshot
+              ? message.npc_snapshot.name?.trim()
+              : normaliseRelation(
+                  message.character,
+                )?.display_name?.trim(),
           )
           .filter(
             (
@@ -2403,6 +2531,14 @@ export async function GET(
       color: #b99765;
       font-size: 9px;
       letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .npc-label {
+      margin-left: 5px;
+      color: #8f8170;
+      font-size: 7px;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
     }
 

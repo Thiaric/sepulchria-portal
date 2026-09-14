@@ -953,6 +953,16 @@ const [activeShapeTags,setActiveShapeTags]=useState<
   >
 >({});
 
+const [messageEffectConditions,setMessageEffectConditions]=useState<
+  Record<string,string[]>
+>({});
+
+const messageIdsKey =
+  liveMessages
+    .map((message) => message.id)
+    .sort()
+    .join(",");
+
   const scrollContainerRef =
     useRef<HTMLDivElement>(null);
 
@@ -1189,9 +1199,8 @@ const [activeShapeTags,setActiveShapeTags]=useState<
         return;
       }
 
-      const [shapeResult,itemResult,priceResult]=await Promise.all([
+      const [shapeResult,priceResult]=await Promise.all([
         supabase.rpc("get_active_shape_chat_tags",{p_character_ids:ids}),
-        supabase.rpc("get_active_item_chat_tags_v2",{p_character_ids:ids}),
         supabase.rpc("get_active_price_chat_tags",{p_character_ids:ids}),
       ]);
 
@@ -1199,14 +1208,7 @@ const [activeShapeTags,setActiveShapeTags]=useState<
         console.error("Unable to load Shape chat tags:",shapeResult.error.message);
         return;
       }
-
-      
-      if(itemResult.error){
-        console.error("Unable to load Item chat tags:",itemResult.error.message);
-        return;
-      }
-
-      if(priceResult.error){
+if(priceResult.error){
         console.error("Unable to load Price chat tags:",priceResult.error.message);
         return;
       }
@@ -1231,30 +1233,11 @@ const [activeShapeTags,setActiveShapeTags]=useState<
           next[id]={
             buffs:row.buffs??[],
             debuffs:row.debuffs??[],
-            conditions:row.conditions??[],
+            conditions:[],
             prices:next[id]?.prices??[],
           };
         }
-
-       
-
-        for(const row of itemResult.data??[]){
-          const id=String(row.character_id);
-          if(!next[id])next[id]={buffs:[],debuffs:[],conditions:[],prices:[]};
-
-          const mergedConditions=[
-            ...(next[id].conditions??[]),
-            ...(Array.isArray(row.conditions)
-              ? row.conditions
-              : []),
-          ];
-
-          next[id].conditions=[
-            ...new Set(mergedConditions),
-          ];
-        }
-
-        for(const row of priceResult.data??[]){
+for(const row of priceResult.data??[]){
           const id=String(row.character_id);
           if(!next[id])next[id]={buffs:[],debuffs:[],conditions:[],prices:[]};
           next[id].prices=row.prices??[];
@@ -1269,7 +1252,6 @@ const [activeShapeTags,setActiveShapeTags]=useState<
     const channel=supabase
       .channel(`shape-chat-effects-${crypto.randomUUID()}`)
       .on("postgres_changes",{event:"*",schema:"public",table:"character_shape_effects"},()=>void loadShapeTags())
-      .on("postgres_changes",{event:"*",schema:"public",table:"character_active_item_effects"},()=>void loadShapeTags())
       .on("postgres_changes",{event:"*",schema:"public",table:"character_price_effects"},()=>void loadShapeTags())
       .subscribe();
 
@@ -1281,6 +1263,74 @@ const [activeShapeTags,setActiveShapeTags]=useState<
       void supabase.removeChannel(channel);
     };
   },[liveMessages]);
+
+  useEffect(() => {
+    let active = true;
+    const supabase = createClient();
+
+    async function loadMessageEffectConditions() {
+      const messageIds =
+        liveMessages
+          .map((message) => message.id)
+          .filter(Boolean);
+
+      if (!messageIds.length) {
+        if (active) {
+          setMessageEffectConditions({});
+        }
+        return;
+      }
+
+      const { data, error } =
+        await supabase.rpc(
+          "get_room_message_effect_conditions",
+          {
+            p_message_ids:
+              messageIds,
+          },
+        );
+
+      if (error) {
+        console.error(
+          "Unable to load historical message Conditions:",
+          error.message,
+        );
+        return;
+      }
+
+      if (!active) {
+        return;
+      }
+
+      const next: Record<string,string[]> = {};
+
+      for (const row of data ?? []) {
+        const messageId =
+          String(row.message_id ?? "");
+
+        if (!messageId) {
+          continue;
+        }
+
+        next[messageId] =
+          Array.isArray(row.conditions)
+            ? row.conditions
+                .map((value: unknown) =>
+                  String(value).trim(),
+                )
+                .filter(Boolean)
+            : [];
+      }
+
+      setMessageEffectConditions(next);
+    }
+
+    void loadMessageEffectConditions();
+
+    return () => {
+      active = false;
+    };
+  }, [messageIdsKey, liveMessages]);
 
   function renderShapeTagGroups(
     characterId:string,
@@ -2093,7 +2143,12 @@ const [activeShapeTags,setActiveShapeTags]=useState<
                             : null}
 
                           {conditionSnapshotHeaderText(
-                            item.condition_snapshot,
+                            [
+                              ...(item.condition_snapshot ?? []),
+                              ...(messageEffectConditions[item.id] ?? []).map(
+                                (label) => ({ label }),
+                              ),
+                            ],
                             privateLocationTheme
                               ? privateLocationTheme.offgameTextColour
                               : "rgb(var(--sep-colour-d3c2aa))",
@@ -2301,7 +2356,12 @@ const [activeShapeTags,setActiveShapeTags]=useState<
 
                       {!isNpcMessage
                         ? conditionSnapshotHeaderText(
-                            item.condition_snapshot,
+                            [
+                              ...(item.condition_snapshot ?? []),
+                              ...(messageEffectConditions[item.id] ?? []).map(
+                                (label) => ({ label }),
+                              ),
+                            ],
                           )
                         : null}
 
