@@ -349,15 +349,11 @@ export function AdminRecordSearchContext({ mode }: { mode: Mode }) {
     let target: HTMLElement | null = null;
 
     if (mode === "items") {
-      target =
-        document.getElementById(`item-${entry.id}`) ??
-        document
-          .querySelector<HTMLInputElement>(
-            `input[name="itemId"][value="${CSS.escape(entry.id)}"]`,
-          )
-          ?.closest<HTMLElement>("details") ??
-        null;
-    }
+  target =
+    document.getElementById(
+      `item-card-${entry.id}`,
+    );
+}
 
     if (mode === "locations") {
       target =

@@ -2933,10 +2933,47 @@ function AdminRecordJumpContext({
     } else if (
       mode === "items"
     ) {
-      target =
+      const itemCard =
         document.getElementById(
           `item-card-${entry.id}`,
         );
+
+      const mainScroller =
+        document.querySelector<HTMLElement>(
+          'main[data-portal-column][data-portal-scroll]',
+        );
+
+      if (
+        !itemCard ||
+        !mainScroller
+      ) {
+        return;
+      }
+
+      const cardRect =
+        itemCard.getBoundingClientRect();
+
+      const scrollerRect =
+        mainScroller.getBoundingClientRect();
+
+      const targetTop =
+        mainScroller.scrollTop +
+        cardRect.top -
+        scrollerRect.top -
+        Math.max(
+          0,
+          (
+            mainScroller.clientHeight -
+            cardRect.height
+          ) / 2,
+        );
+
+      mainScroller.scrollTo({
+        top: targetTop,
+        behavior: "smooth",
+      });
+
+      return;
     } else if (
       mode === "users"
     ) {
