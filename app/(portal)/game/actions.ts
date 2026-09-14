@@ -887,6 +887,13 @@ export async function sendRoomMessage(
         "",
     ).trim();
 
+    const requestedFateImagePath =
+      String(
+        formData.get(
+          "fate_image_storage_path",
+        ) ?? "",
+      ).trim();
+
     if (!rawMessage) {
       return {
         ok: false,
@@ -1017,11 +1024,14 @@ export async function sendRoomMessage(
           .slice(1)
           .trim();
 
-      if (!storedMessage) {
+      if (
+        !storedMessage &&
+        !requestedFateImagePath
+      ) {
         return {
           ok: false,
           message:
-            "Write the Fate action after ^.",
+            "Write the Fate action after ^ or attach an image.",
         };
       }
 
@@ -1189,6 +1199,53 @@ export async function sendRoomMessage(
     }
       
 
+    let fateImageUrl:
+      | string
+      | null = null;
+
+    let fateImageStoragePath:
+      | string
+      | null = null;
+
+    if (
+      messageType === "fate" &&
+      requestedFateImagePath
+    ) {
+      const expectedPrefix =
+        `${character.current_room_id}/`;
+
+      const validPath =
+        requestedFateImagePath.startsWith(
+          expectedPrefix,
+        ) &&
+        /^[0-9a-f-]{36}\.(?:png|jpg|webp|gif)$/i.test(
+          requestedFateImagePath.slice(
+            expectedPrefix.length,
+          ),
+        );
+
+      if (!validPath) {
+        return {
+          ok: false,
+          message:
+            "Invalid Fate image.",
+        };
+      }
+
+      fateImageStoragePath =
+        requestedFateImagePath;
+
+      const admin =
+        createPrivilegedClient();
+
+      fateImageUrl =
+        admin.storage
+          .from("fate-images")
+          .getPublicUrl(
+            fateImageStoragePath,
+          ).data.publicUrl;
+    }
+
     const clientNonce =
       readValidNonce(formData);
 
@@ -1204,6 +1261,10 @@ export async function sendRoomMessage(
         message: storedMessage,
         message_type:
           messageType,
+        fate_image_url:
+          messageType === "fate"
+            ? fateImageUrl
+            : null,
         whisper_recipient_character_id:
           whisperRecipientId,
         client_nonce:
@@ -1214,6 +1275,17 @@ export async function sendRoomMessage(
       insertError?.code ===
       "23505"
     ) {
+      if (fateImageStoragePath) {
+        const admin =
+          createPrivilegedClient();
+
+        await admin.storage
+          .from("fate-images")
+          .remove([
+            fateImageStoragePath,
+          ]);
+      }
+
       return {
         ok: true,
         message:
@@ -1223,6 +1295,17 @@ export async function sendRoomMessage(
     }
 
     if (insertError) {
+      if (fateImageStoragePath) {
+        const admin =
+          createPrivilegedClient();
+
+        await admin.storage
+          .from("fate-images")
+          .remove([
+            fateImageStoragePath,
+          ]);
+      }
+
       return {
         ok: false,
         message:

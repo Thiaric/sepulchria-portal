@@ -84,6 +84,7 @@ export type RoomMessage = {
   id: string;
   message: string;
   message_type: RoomMessageType;
+  fate_image_url: string | null;
   roll_label: string | null;
   dice_sides: number | null;
   dice_result: number | null;

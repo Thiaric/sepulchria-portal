@@ -913,6 +913,53 @@ const visibleSpellingIssues =
   const nonceInputRef =
     useRef<HTMLInputElement>(null);
 
+  const fateImageInputRef =
+    useRef<HTMLInputElement>(null);
+
+  const [
+    fateImageFile,
+    setFateImageFile,
+  ] = useState<File | null>(null);
+
+  const [
+    fateImagePreviewUrl,
+    setFateImagePreviewUrl,
+  ] = useState<string | null>(null);
+
+  const [
+    fateImageStoragePath,
+    setFateImageStoragePath,
+  ] = useState<string | null>(null);
+
+  const [
+    fateImageUploading,
+    setFateImageUploading,
+  ] = useState(false);
+
+  const [
+    fateImageUploadError,
+    setFateImageUploadError,
+  ] = useState<string | null>(null);
+
+  const fateComposerActive =
+    canUseFate &&
+    value.trimStart().startsWith("^");
+
+  useEffect(() => {
+    if (fateComposerActive) {
+      return;
+    }
+
+    setFateImageFile(null);
+    setFateImagePreviewUrl(null);
+    setFateImageStoragePath(null);
+    setFateImageUploadError(null);
+
+    if (fateImageInputRef.current) {
+      fateImageInputRef.current.value = "";
+    }
+  }, [fateComposerActive]);
+
   const [messageNonce, setMessageNonce] =
     useState(
       () => crypto.randomUUID(),
@@ -1063,6 +1110,14 @@ const visibleSpellingIssues =
     setValue("");
     setWhisperRecipientId("");
     setSpellingMenu(null);
+    setFateImageFile(null);
+    setFateImagePreviewUrl(null);
+    setFateImageStoragePath(null);
+    setFateImageUploadError(null);
+
+    if (fateImageInputRef.current) {
+      fateImageInputRef.current.value = "";
+    }
     setTextareaScrollTop(0);
 
     if (wasWhisper) {
@@ -1594,6 +1649,13 @@ function ignoreSpellingWord() {
             readOnly
           />
 
+          <input
+            type="hidden"
+            name="fate_image_storage_path"
+            value={fateImageStoragePath ?? ""}
+            readOnly
+          />
+
           <div
             className="relative overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0f0c09))] transition focus-within:border-[rgb(var(--sep-colour-927047))] game_components_roomchatform_div_container_4"
             style={{ height: `${textareaHeight}px` }}
@@ -1617,7 +1679,14 @@ function ignoreSpellingWord() {
 
                 event.preventDefault();
 
-                if (!value.trim()) {
+                if (
+                  !value.trim() ||
+                  fateImageUploading ||
+                  (
+                    value.trim() === "^" &&
+                    !fateImageStoragePath
+                  )
+                ) {
                   return;
                 }
 
@@ -1642,6 +1711,178 @@ function ignoreSpellingWord() {
               scrollTop={textareaScrollTop}
             />
           </div>
+
+          {fateComposerActive ? (
+            <div className="mt-2 border border-[rgb(var(--sep-colour-7f603c))]/45 bg-[rgb(var(--sep-colour-18110c))] p-2.5 game_components_roomchatform_div_fate_image">
+              <div className="flex flex-wrap items-center gap-2">
+                <label className="cursor-pointer border border-[rgb(var(--sep-colour-8a663f))] bg-[rgb(var(--sep-colour-24190f))] px-2.5 py-1.5 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-d5b985))] transition hover:border-[rgb(var(--sep-colour-b1854e))] hover:text-[rgb(var(--sep-colour-f0d6a7))]">
+                  Add Fate image
+                  <input
+                    ref={fateImageInputRef}
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp,image/gif"
+                    className="sr-only"
+                    disabled={fateImageUploading}
+                    onChange={(event) => {
+                      const input =
+                        event.currentTarget;
+
+                      const file =
+                        input.files?.[0] ??
+                        null;
+
+                      if (!file) {
+                        return;
+                      }
+
+                      if (
+                        file.size >
+                        5 * 1024 * 1024
+                      ) {
+                        input.value = "";
+                        setFateImageFile(null);
+                        setFateImageUploadError(
+                          "Fate images cannot exceed 5 MB.",
+                        );
+                        return;
+                      }
+
+                      setFateImageFile(file);
+                      setFateImageUploadError(null);
+                      setFateImageUploading(true);
+
+                      const upload =
+                        new FormData();
+
+                      upload.set(
+                        "file",
+                        file,
+                      );
+
+                      upload.set(
+                        "room_id",
+                        roomId,
+                      );
+
+                      void fetch(
+                        "/api/game/fate-image",
+                        {
+                          method: "POST",
+                          body: upload,
+                        },
+                      )
+                        .then(async (response) => {
+                          const data =
+                            await response.json() as {
+                              error?: string;
+                              path?: string;
+                              publicUrl?: string;
+                            };
+
+                          if (!response.ok) {
+                            throw new Error(
+                              data.error ??
+                                "Unable to upload Fate image.",
+                            );
+                          }
+
+                          setFateImageStoragePath(
+                            data.path ?? null,
+                          );
+
+                          setFateImagePreviewUrl(
+                            data.publicUrl ?? null,
+                          );
+                        })
+                        .catch((error) => {
+                          input.value = "";
+                          setFateImageFile(null);
+                          setFateImageStoragePath(null);
+                          setFateImagePreviewUrl(null);
+                          setFateImageUploadError(
+                            error instanceof Error
+                              ? error.message
+                              : "Unable to upload Fate image.",
+                          );
+                        })
+                        .finally(() => {
+                          setFateImageUploading(false);
+                        });
+                    }}
+                  />
+                </label>
+
+                {fateImageFile ? (
+                  <>
+                    <span className="min-w-0 max-w-[280px] truncate text-[9px] text-[rgb(var(--sep-colour-bba17a))]">
+                      {fateImageUploading
+                        ? `Uploading ${fateImageFile.name}...`
+                        : fateImageFile.name}
+                    </span>
+
+                    <button
+                      type="button"
+                      disabled={fateImageUploading}
+                      onClick={() => {
+                        const path =
+                          fateImageStoragePath;
+
+                        setFateImageFile(null);
+                        setFateImagePreviewUrl(null);
+                        setFateImageStoragePath(null);
+                        setFateImageUploadError(null);
+
+                        if (
+                          fateImageInputRef.current
+                        ) {
+                          fateImageInputRef.current.value =
+                            "";
+                        }
+
+                        if (path) {
+                          void fetch(
+                            "/api/game/fate-image",
+                            {
+                              method: "DELETE",
+                              headers: {
+                                "Content-Type":
+                                  "application/json",
+                              },
+                              body: JSON.stringify({
+                                path,
+                              }),
+                            },
+                          );
+                        }
+                      }}
+                      className="border border-[rgb(var(--sep-colour-65472f))] px-2 py-1 text-[8px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-a58d70))] transition hover:text-[rgb(var(--sep-colour-e0c49a))]"
+                    >
+                      Remove
+                    </button>
+                  </>
+                ) : (
+                  <span className="text-[8px] text-[rgb(var(--sep-colour-6f6254))]">
+                    PNG, JPEG, WEBP or GIF · max 5 MB
+                  </span>
+                )}
+              </div>
+
+              {fateImageUploadError ? (
+                <p className="mt-2 text-[9px] text-[rgb(var(--sep-colour-d58d82))]">
+                  {fateImageUploadError}
+                </p>
+              ) : null}
+
+              {fateImagePreviewUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={fateImagePreviewUrl}
+                  alt="Selected Fate preview"
+                  className="mt-2 max-h-40 max-w-full border border-[rgb(var(--sep-colour-60482e))]/45 object-contain"
+                />
+              ) : null}
+            </div>
+          ) : null}
 
           {spellingMenu ? (
             <div
@@ -1758,7 +1999,14 @@ function ignoreSpellingWord() {
 
                         <div className="relative -top-1.5 game_components_roomchatform_div_container_10">
               <SubmitButton
-                disabled={!value.trim()}
+                disabled={
+                  !value.trim() ||
+                  fateImageUploading ||
+                  (
+                    value.trim() === "^" &&
+                    !fateImageStoragePath
+                  )
+                }
                 onPrepare={() => {
                   if (nonceInputRef.current) {
                     nonceInputRef.current.value =
@@ -2985,14 +3233,14 @@ if (
         {headquartersManageControl}
 
         {exportEnabled ? (
-          <Link
-            href="/game/export"
-            title="Download current game session"
-            aria-label="Download current game session"
-            className="flex h-6 w-6 items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-21190f))] text-[11px] text-[rgb(var(--sep-colour-d6bb8d))] transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:text-[rgb(var(--sep-colour-f0d6a7))]"
-          >
+  <a
+    href="/game/export"
+    title="Download current game session"
+    aria-label="Download current game session"
+    className="flex h-6 w-6 items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-21190f))] text-[11px] text-[rgb(var(--sep-colour-d6bb8d))] transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:text-[rgb(var(--sep-colour-f0d6a7))]"
+  >
             <span className="game_components_roomchatform_span_text_15" aria-hidden="true">⇩</span>
-          </Link>
+          </a>
         ) : null}
 
         {backHref ? (

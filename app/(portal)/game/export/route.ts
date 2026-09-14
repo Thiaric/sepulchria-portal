@@ -1191,12 +1191,31 @@ function renderMessage(
           </div>
 
           <div class="fate-body">
-            ${escapeHtml(
-              message.message,
-            ).replaceAll(
-              "\n",
-              "<br />",
-            )}
+            ${
+              message.message
+                ? renderActionSpeech(
+                    message.message,
+                  )
+                : ""
+            }
+
+            ${
+              message.fate_image_url
+                ? `
+                  <img
+                    class="fate-image"
+                    src="${escapeHtml(
+                      toAbsoluteAssetUrl(
+                        message.fate_image_url,
+                        origin,
+                      ) ??
+                        message.fate_image_url,
+                    )}"
+                    alt="Fate"
+                  />
+                `
+                : ""
+            }
           </div>
         </div>
       </article>
@@ -1477,6 +1496,7 @@ async function loadVisibleMessages(
         id,
         message,
         message_type,
+        fate_image_url,
         roll_label,
         dice_sides,
         dice_result,
@@ -2977,6 +2997,15 @@ export async function GET(
         anywhere;
     }
 
+    .fate-image {
+      display: block;
+      max-width: 100%;
+      max-height: 480px;
+      margin-top: 10px;
+      border: 1px solid rgba(var(--sep-rgb-138-102-55),0.45);
+      object-fit: contain;
+    }
+
 
     /*
      * EMPTY
@@ -3205,13 +3234,14 @@ export async function GET(
             <div class="location-image">
 
               <img
-                src="${escapeHtml(
-                  roomImage,
-                )}"
-                alt="${escapeHtml(
-                  room.name,
-                )}"
-              />
+  src="${escapeHtml(
+    roomImage,
+  )}"
+  alt="${escapeHtml(
+    room.name,
+  )}"
+  style="opacity: 0.2;"
+/>
 
               <div class="location-image-title">
 
@@ -3249,18 +3279,7 @@ export async function GET(
             : ""
         }
 
-        ${
-          room.description
-            ? `
-              <div class="room-description">
-                ${renderRichText(
-                  room.description,
-                  origin,
-                )}
-              </div>
-            `
-            : ""
-        }
+        
 
         <div class="metadata">
 

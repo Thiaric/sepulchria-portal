@@ -335,6 +335,7 @@ async function GameContent() {
     id,
     message,
     message_type,
+    fate_image_url,
     roll_label,
     dice_sides,
     dice_result,

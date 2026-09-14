@@ -53,6 +53,7 @@ type InsertedRoomMessage = {
   character_id: string;
   message: string;
   message_type: RoomMessageType;
+  fate_image_url: string | null;
   roll_label: string | null;
   dice_sides: number | null;
   dice_result: number | null;
@@ -1672,6 +1673,9 @@ for(const row of priceResult.data??[]){
                 inserted.message,
               message_type:
                 inserted.message_type,
+              fate_image_url:
+                inserted.fate_image_url ??
+                null,
               roll_label:
                 inserted.roll_label,
               dice_sides:
@@ -1913,9 +1917,32 @@ for(const row of priceResult.data??[]){
 
                       </div>
 
-                      <p className="mt-1.5 whitespace-pre-wrap break-words font-serif text-[13px] leading-5 text-[rgb(var(--sep-colour-d6c09a))] game_components_roommessagelist_p_text">
-                        {item.message}
-                      </p>
+                      {item.message ? (
+                        <div className="mt-1.5 font-serif game_components_roommessagelist_div_fate_text">
+                          <ActionSpeechText
+                            content={item.message}
+                            speechColour={
+                              privateLocationTheme
+                                ? privateLocationTheme.speechColour
+                                : "rgb(var(--sep-colour-d6c09a))"
+                            }
+                            actionColour={
+                              privateLocationTheme
+                                ? privateLocationTheme.actionColour
+                                : "rgb(var(--sep-colour-a98a60))"
+                            }
+                          />
+                        </div>
+                      ) : null}
+
+                      {item.fate_image_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={item.fate_image_url}
+                          alt="Fate"
+                          className="mt-3 block max-h-[480px] max-w-full border border-[rgb(var(--sep-colour-8a6637))]/40 object-contain shadow-[0_8px_24px_rgba(var(--sep-rgb-0-0-0),0.28)] game_components_roommessagelist_img_fate_image"
+                        />
+                      ) : null}
                     </article>
                   );
                 }
