@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 import Link from "next/link";
+import { openPortalModal } from "@/components/portal/portal-modal-button";
 import { CharacterOrderIdentity } from "@/components/characters/character-order-identity";
 import { CharacterLifeIcon } from "@/components/characters/character-life-state";
 import { ReportButton } from "@/components/reports/report-button";
@@ -885,13 +886,27 @@ function CharacterPortrait({
     return portrait;
   }
 
+  const displayName =
+    author.first_name ??
+    author.display_name ??
+    "Character";
+
   return (
-    <Link
-      href={characterHref}
-      className="shrink-0"
+    <button
+      type="button"
+      className="shrink-0 cursor-pointer"
+      title={`Open ${displayName}'s character sheet`}
+      onClick={() =>
+        openPortalModal({
+          label: displayName,
+          title: `${displayName}'s Character Sheet`,
+          icon: "/icons/characters.png",
+          href: characterHref,
+        })
+      }
     >
       {portrait}
-    </Link>
+    </button>
   );
 }
 
@@ -2127,22 +2142,26 @@ for(const row of priceResult.data??[]){
                           }}
                         >
                           {author?.public_slug ? (
-                            <Link
-                              href={characterHref}
-                              className="inline font-serif text-sm leading-[18px] text-[rgb(var(--sep-colour-d8bf91))] transition hover:text-[rgb(var(--sep-colour-ecd29e))]"
-                              style={
-                                {
-                                  color:
-                                    privateLocationTheme
-                                      ? privateLocationTheme.offgameTextColour
-                                      : "rgb(var(--sep-colour-d3c2aa))",
-                                }
-                              }
-                            >
-                              {author.first_name ??
-                                author.display_name}
-                            </Link>
-                          ) : (
+  <button
+    type="button"
+    className="inline cursor-pointer font-serif text-sm text-[rgb(var(--sep-colour-d8bf91))] transition hover:text-[rgb(var(--sep-colour-ecd29e))]"
+    onClick={() => {
+      window.dispatchEvent(
+        new CustomEvent(
+          "sepulchria:room-whisper-character",
+          {
+            detail: {
+              characterId: author.id,
+            },
+          },
+        ),
+      );
+    }}
+  >
+    {author.first_name ??
+      author.display_name}
+  </button>
+) : (
                             <span
                               className="inline font-serif text-sm leading-[18px] text-[rgb(var(--sep-colour-d8bf91))] game_components_roommessagelist_span_text_13"
                               style={
@@ -2336,23 +2355,26 @@ for(const row of priceResult.data??[]){
                       }
                     >
                       {author?.public_slug ? (
-                        <Link
-                          href={characterHref}
-                          className="inline font-serif text-sm text-[rgb(var(--sep-colour-d8bf91))] transition hover:text-[rgb(var(--sep-colour-ecd29e))]"
-                          style={
-                            privateLocationTheme &&
-                            isMechanicalOutput
-                              ? {
-                                  color:
-                                    privateLocationTheme.systemColour,
-                                }
-                              : undefined
-                          }
-                        >
-                          {author.first_name ??
-                            author.display_name}
-                        </Link>
-                      ) : (
+  <button
+    type="button"
+    className="inline cursor-pointer font-serif text-sm text-[rgb(var(--sep-colour-d8bf91))] transition hover:text-[rgb(var(--sep-colour-ecd29e))]"
+    onClick={() => {
+  window.dispatchEvent(
+    new CustomEvent(
+      "sepulchria:room-whisper-character",
+      {
+        detail: {
+          characterId: author.id,
+        },
+      },
+    ),
+  );
+}}
+  >
+    {author.first_name ??
+      author.display_name}
+  </button>
+) : (
                         <span
                           className="inline font-serif text-sm text-[rgb(var(--sep-colour-d8bf91))] game_components_roommessagelist_span_text_14"
                           style={

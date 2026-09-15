@@ -5,12 +5,14 @@ import {
   useMemo,
   useState,
 } from "react";
+import { featBackgroundFromNames, featBackgroundStyle } from "@/lib/gifts/feat-background";
 
 export type AdminAncestryGiftOption = {
   id: string;
   name: string;
   description: string;
   raceIds: string[];
+  raceNames?: string[];
   choiceGroup: string | null;
 };
 
@@ -226,11 +228,18 @@ export function AdminAncestryGiftSelector({
                 !checked &&
                 selected.length >= 2;
 
+              const backgroundImage =
+                featBackgroundFromNames({
+                  ancestryNames: gift.raceNames ?? [],
+                });
+
               return (
                 <button
                   key={gift.id}
                   type="button"
                   data-sep-ui-ignore="true"
+                  data-feat-background={backgroundImage}
+                  style={featBackgroundStyle(backgroundImage)}
                   disabled={disabled}
                   onClick={() =>
                     toggle(gift.id)

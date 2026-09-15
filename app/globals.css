@@ -20813,7 +20813,6 @@ button.components_characters_character_sheet_tabs_button_tab {
   background-repeat: no-repeat !important;
 }
 
-
 .components_portal_portal_responsive_right_sidebar_aside_context_sidebar {
   background-image:
     linear-gradient(
@@ -21217,10 +21216,20 @@ background-image:
 }
 
 
-.components_portal_portal_responsive_right_sidebar_section_context_sidebar {
+.components_portal_portal_responsive_right_sidebar_section_context_sidebar,
+.components_characters_character_trophies_display_section_section_2,
+.components_characters_character_trophies_display_div_container_4,
+.components_characters_character_trophies_display_section_section,
+.components_characters_character_inventory_browser_section_section_3,
+.components_characters_character_inventory_browser_section_section,
+.components_characters_character_inventory_browser_section_section_4,
+.components_characters_character_audit_trail_section_section {
   background: rgb(var(--sep-colour-100c09) / 10%) !important;
 }
 
+.components_characters_character_trophies_display_article_article {
+border: 1px solid rgb(var(--sep-global-c2) / 50%) !important;
+}
 
 
 .friends_page_div_container_2,
@@ -21228,8 +21237,11 @@ background-image:
 background: rgb(var(--sep-colour-100c09) / 80%) !important;
 }
 
+
 .sep-notification-read,
-.messages_new_page_section_new_message  {
+.messages_new_page_section_new_message,
+.components_characters_character_ledger_section_sectionm
+ {
 background: rgb(var(--sep-colour-100c09) / 50%) !important;
 }
 

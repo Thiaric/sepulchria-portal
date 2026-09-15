@@ -6,6 +6,7 @@ import {
   requireAdminSection,
 } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
+import { featBackgroundFromNames, featBackgroundStyle } from "@/lib/gifts/feat-background";
 
 import {
   assignGiftToCharacter,
@@ -16,6 +17,10 @@ import {
 } from "./actions";
 
 type Race = { id: string; name: string };
+type GiftRaceLink = {
+  race_id: string;
+  race: { id: string; name: string } | { id: string; name: string }[] | null;
+};
 type Character = { id: string; display_name: string };
 
 type Gift = {
@@ -51,7 +56,7 @@ type Gift = {
   warping_affinity_modifier: number;
   warps_per_day_modifier: number;
   sort_order: number;
-  races: { race_id: string }[] | null;
+  races: GiftRaceLink[] | null;
   roles: { order_job_id: string }[] | null;
   assignments: {
     id: string;
@@ -86,6 +91,13 @@ const ADMIN_SUCCESS_ATTRIBUTE_LABELS: Record<
   shrewd: "Shrewd",
   presence_score: "Presence",
 };
+
+function adminGiftBackground(gift: Gift) {
+  const ancestryNames = (gift.races ?? [])
+    .map((entry) => one(entry.race)?.name ?? null)
+    .filter((name): name is string => Boolean(name));
+  return featBackgroundFromNames({ ancestryNames, hasOrder: Boolean(gift.roles?.length) });
+}
 
 function adminTargetLabel(gift: Gift) {
   if (gift.target_mode === "other") return "Other";
@@ -158,7 +170,10 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
           muscles_modifier, reflexes_modifier,
           vigour_modifier, shrewd_modifier, brains_modifier,
           presence_modifier, warping_affinity_modifier, warps_per_day_modifier, sort_order,
-          races:gift_races(race_id),
+          races:gift_races(
+            race_id,
+            race:races(id, name)
+          ),
           roles:gift_order_jobs(order_job_id),
           assignments:character_gifts(
             id, character_id, acquisition_source, expires_at
@@ -280,14 +295,16 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
               key={gift.id}
               id={`gift-card-${gift.id}`}
               href={`/admin/gifts?gift=${gift.id}#gift-editor`}
+              data-feat-background={adminGiftBackground(gift)}
+              style={featBackgroundStyle(adminGiftBackground(gift))}
               className={[
-                "scroll-mt-6 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-4 py-4 transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-17110d))]",
+                "relative overflow-hidden scroll-mt-6 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-4 py-4 transition hover:border-[rgb(var(--sep-colour-8d693e))]",
                 selectedGiftId === gift.id
                   ? "ring-1 ring-[rgb(var(--sep-colour-a17a49))]/70"
                   : "",
               ].filter(Boolean).join(" ")}
             >
-              <div className="flex items-start justify-between gap-3 admin_gifts_page_div_container_5">
+              <div className="relative z-[1] flex items-start justify-between gap-3 admin_gifts_page_div_container_5">
                 <div className="min-w-0 admin_gifts_page_div_container_6">
                   <p className="truncate font-serif text-lg text-[rgb(var(--sep-colour-d8bf91))] admin_gifts_page_p_text">
                     {gift.name}
@@ -305,7 +322,7 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                 </span>
               </div>
 
-              <div className="mt-3 grid grid-cols-2 gap-1.5 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-3 admin_gifts_page_div_container_7">
+              <div className="relative z-[1] mt-3 grid grid-cols-2 gap-1.5 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-3 admin_gifts_page_div_container_7">
                 <AdminRecapBox
                   label="Use"
                   value={`${gift.effect_mode === "passive" ? "Passive" : "Activated"} · ${adminTargetLabel(gift)}`}

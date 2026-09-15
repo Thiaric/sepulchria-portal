@@ -720,21 +720,13 @@ async function GameContent() {
     }
     className="h-full min-h-0 overflow-hidden game_page_div_container_2"
     style={
-      ownedLocationAtmosphereUrl
-        ? ({
-            backgroundImage:
-              `linear-gradient(rgba(4,7,13,.58), rgba(4,7,13,.66)), url(${JSON.stringify(
-                ownedLocationAtmosphereUrl,
-              )})`,
-            backgroundSize:
-              "cover",
-            backgroundPosition:
-              "center",
-            backgroundRepeat:
-              "no-repeat",
-          } as CSSProperties)
-        : undefined
-    }
+  ownedLocationAtmosphereUrl
+    ? ({
+        "--sep-location-owned-atmosphere":
+          `url(${JSON.stringify(ownedLocationAtmosphereUrl)})`,
+      } as CSSProperties)
+    : undefined
+}
   >
     <RoomRealtime
       roomId={room.id}

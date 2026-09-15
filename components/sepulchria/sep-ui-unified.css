@@ -5462,3 +5462,58 @@ input:autofill {
   border-color:
     rgb(var(--sep-skin-c1) / 0.55) !important;
 }
+
+[data-portal-shell-inner][data-has-cosmetic-location-atmosphere="true"]
+  [data-game-location-surface]
+  .game_page_article_article {
+  background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 85%),
+      rgb(var(--sep-colour-100d0b) / 85%)
+    ),
+    var(--sep-cosmetic-location-atmosphere) !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+/* ============================================================
+   LOCATION CHAT — NO LOCATION ATMOSPHERE
+   Standard portal background, but more transparent
+   ============================================================ */
+
+[data-portal-shell-inner][data-has-cosmetic-location-atmosphere="false"]
+  [data-game-location-surface]
+  .game_page_article_article {
+  background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 85%),
+      rgb(var(--sep-colour-100d0b) / 85%)
+    ),
+    url("/backgrounds/portal_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+/* ============================================================
+   LOCATION CHAT — LOCATION-SPECIFIC BACKGROUND
+   HIGHEST PRIORITY
+   ============================================================ */
+
+[data-portal-shell-inner]
+  [data-game-location-surface][data-owned-location-atmosphere="true"]
+  .game_page_article_article {
+  background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 85%),
+      rgb(var(--sep-colour-100d0b) / 85%)
+    ),
+    var(--sep-location-owned-atmosphere) !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}

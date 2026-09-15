@@ -348,7 +348,8 @@ export default async function AdminCharacterPage({
         description,
         ancestry_choice_group,
         eligibility:gift_races(
-          race_id
+          race_id,
+          race:races(id, name)
         )
       `)
       .eq("is_active", true)
@@ -387,6 +388,17 @@ export default async function AdminCharacterPage({
       raceIds: (gift.eligibility ?? []).map(
         (entry) => entry.race_id,
       ),
+      raceNames: (gift.eligibility ?? [])
+        .map((entry: any) => {
+          const race = Array.isArray(entry.race)
+            ? entry.race[0] ?? null
+            : entry.race;
+          return race?.name ?? null;
+        })
+        .filter(
+          (name: string | null): name is string =>
+            Boolean(name),
+        ),
     })) satisfies AdminAncestryGiftOption[];
 
   const ownedGiftIds = new Set(

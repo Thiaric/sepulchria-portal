@@ -126,6 +126,53 @@ function modifierLabels(gift: GiftCard) {
     .map(([label, value]) => `${label} ${signed(Number(value))}`);
 }
 
+const FEAT_ANCESTRY_BACKGROUND_SLUGS: Record<string, string> = {
+  "Aelari": "aelari",
+  "Birdfolk": "birdfolk",
+  "Cambions": "cambions",
+  "Dwarves": "dwarves",
+  "Fair Folk": "fair-folk",
+  "Gharuk": "gharuk",
+  "Littlings": "littlings",
+  "Humans": "humans",
+  "Karesh": "karesh",
+  "Reptilian Folk": "reptilian-folk",
+  "Siranthi": "siranthi",
+  "Vampires": "vampires",
+  "Vaskari": "vaskari",
+  "Werewolves": "werewolves",
+};
+
+function featBackgroundSlug(name: string) {
+  return (
+    FEAT_ANCESTRY_BACKGROUND_SLUGS[name] ??
+    name
+      .trim()
+      .toLowerCase()
+      .replace(/[\'’]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+  );
+}
+
+function featBackgroundImage(gift: GiftCard) {
+  if (gift.ancestries.length === 1) {
+    return `/backgrounds/feats/ancestries/${featBackgroundSlug(
+      gift.ancestries[0].name,
+    )}.png`;
+  }
+
+  if (gift.ancestries.length > 1) {
+    return "/backgrounds/feats/ancestry.png";
+  }
+
+  if (gift.roles.length > 0) {
+    return "/backgrounds/feats/order.png";
+  }
+
+  return "/backgrounds/feats/general.png";
+}
+
 function RecapBox({
   label,
   value,
@@ -157,6 +204,9 @@ function FeatCard({
   const types =
     typeLabels(gift);
 
+  const backgroundImage =
+    featBackgroundImage(gift);
+
   const ancestryText =
     gift.ancestries
       .map((ancestry) => ancestry.name)
@@ -173,11 +223,24 @@ function FeatCard({
 
   return (
     <article
-  id={`gift-${gift.id}`}
-  data-sep-interactive-surface="card"
-  className="min-h-[430px] scroll-mt-4 border border-[rgb(var(--sep-colour-8d6d3e))]/65 bg-[rgb(var(--sep-colour-18110c))] p-4 components_gifts_gifts_catalogue_article_article"
->
-      <div className="flex gap-3 components_gifts_gifts_catalogue_div_container_2">
+      id={`gift-${gift.id}`}
+      data-sep-interactive-surface="card"
+      data-feat-background={backgroundImage}
+      style={{
+        backgroundImage: `
+          linear-gradient(
+            rgb(var(--sep-colour-100d0b) / 88%),
+            rgb(var(--sep-colour-100d0b) / 88%)
+          ),
+          url("${backgroundImage}")
+        `,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+      className="relative min-h-[430px] scroll-mt-4 overflow-hidden border border-[rgb(var(--sep-colour-8d6d3e))]/65 bg-[rgb(var(--sep-colour-18110c))] p-4 components_gifts_gifts_catalogue_article_article"
+    >
+      <div className="relative z-[1] flex gap-3 components_gifts_gifts_catalogue_div_container_2">
         
 
         <div className="min-w-0 flex-1 components_gifts_gifts_catalogue_div_container_3">

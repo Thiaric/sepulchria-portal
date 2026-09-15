@@ -1219,6 +1219,51 @@ const visibleSpellingIssues =
     });
   }
 
+  useEffect(() => {
+  function handleWhisperCharacter(
+    event: Event,
+  ) {
+    const detail = (
+      event as CustomEvent<{
+        characterId?: string;
+      }>
+    ).detail;
+
+    if (!detail?.characterId) {
+      return;
+    }
+
+    const characterIsPresent =
+      presentCharacters.some(
+        (character) =>
+          character.id ===
+          detail.characterId,
+      );
+
+    if (!characterIsPresent) {
+      return;
+    }
+
+    setUtilityMode(null);
+
+    selectWhisperRecipient(
+      detail.characterId,
+    );
+  }
+
+  window.addEventListener(
+    "sepulchria:room-whisper-character",
+    handleWhisperCharacter,
+  );
+
+  return () => {
+    window.removeEventListener(
+      "sepulchria:room-whisper-character",
+      handleWhisperCharacter,
+    );
+  };
+}, [presentCharacters, value]);
+
   const utilityMessage =
     itemState.message ||
     giftUseState.message ||
