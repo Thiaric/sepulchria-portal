@@ -3529,10 +3529,10 @@ body[data-portal-skin="pioneers-land"],
    * dark surfaces = neutral charcoal
    */
   --sep-skin-c1: 214 173 91;
-  --sep-skin-c2: 196 90 56;
+  --sep-skin-c2: 159 209 171;
   --sep-global-c1: 214 173 91;
-  --sep-global-c2: 196 90 56;
-  --sep-skin-nav-link: 196 90 56;
+  --sep-global-c2: 159 209 171;
+  --sep-skin-nav-link: 159 209 171;
   --sep-skin-nav-icon-filter:
     brightness(0)
     saturate(100%)

@@ -588,9 +588,8 @@ export function MessagesContextNavigator({
             ) : null}
           </div>
         ) : (
-          <p className="mt-3 text-xs leading-6 text-[rgb(var(--sep-colour-938673))] components_messages_messages_context_navigator_p_text_2">
-            Switch quickly between your
-            most recent conversations.
+          <p className=" text-xs leading-6 text-[rgb(var(--sep-colour-938673))] components_messages_messages_context_navigator_p_text_2">
+            
           </p>
         )}
       </header>
