@@ -374,7 +374,7 @@ export default async function OrderPage({
                     alt=""
                     fill
                     sizes="100vw"
-                    className="object-cover opacity-45"
+                    className="object-fill opacity-90"
                     unoptimized
                     priority
                   />
@@ -388,8 +388,7 @@ export default async function OrderPage({
                     name={order.name}
                   />
 
-                  <div className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--sep-colour-100c09))] via-[rgb(var(--sep-colour-100c09))]/90 to-[rgb(var(--sep-colour-100c09))]/35 orders_slug_page_div_container_3" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--sep-colour-100c09))] via-transparent to-black/30 orders_slug_page_div_container_4" />
+                  <div className="absolute inset-0 bg-[linear-gradient(to_top,rgb(var(--sep-colour-100c09))_0%,rgb(var(--sep-colour-100c09)/50%)_76%,transparent_100%)] orders_slug_page_div_container_4" />
                 </>
               ) : (
                 <div

@@ -35,6 +35,33 @@ export function CodexEntryHero({
   const accentColour = colour ?? "#8a6840";
   const heroImage = bannerUrl ?? imageUrl;
 
+  const heroImageFit =
+    heroImage?.includes("/associations/")
+    ? "object-fill"
+    : heroImage?.includes("littlings.png")
+    ? "object-cover object-[center_-110px]"
+    : heroImage?.includes("aelari.png")
+    ? "object-cover object-[center_-70px]"
+    : heroImage?.includes("birdfolk.png")
+    ? "object-cover object-[center_-90px]"
+    : heroImage?.includes("cambions.png")
+    ? "object-cover object-[center_-90px]"
+    : heroImage?.includes("dwarves.png")
+    ? "object-cover object-[center_-100px]"
+    : heroImage?.includes("fair-folk.png")
+    ? "object-cover object-[center_-100px]"
+    : heroImage?.includes("gharuk.png")
+    ? "object-cover object-[center_-20px]"
+    : heroImage?.includes("humans.png")
+    ? "object-cover object-[center_-50px]"
+    : heroImage?.includes("vampires.png")
+    ? "object-cover object-[center_-60px]"
+    : heroImage?.includes("vaskari.png")
+    ? "object-cover object-[center_-55px]"
+    : heroImage?.includes("siranthi.png")
+    ? "object-cover object-[center_-70px]"
+    : "object-cover object-[center_-30px]";
+
   return (
     <article data-sep-interaction-ignore="true" className="space-y-5 components_codex_codex_entry_hero_article_article">
       <Link
@@ -49,35 +76,35 @@ export function CodexEntryHero({
         data-sep-interaction-ignore="true"
         className="relative overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-110d0a))] components_codex_codex_entry_hero_section_section"
         style={{
-          boxShadow: `inset 0 4px 0 ${accentColour}`,
-        }}
+  borderTopColor: accentColour,
+  borderTopWidth: "4px",
+}}
       >
         <div className="relative min-h-[360px] overflow-hidden components_codex_codex_entry_hero_div_container">
           {heroImage ? (
-            <>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={heroImage}
-                alt=""
-                className="absolute inset-0 h-full w-full object-cover opacity-45 components_codex_codex_entry_hero_img_image"
-              />
+  <>
+    {/* eslint-disable-next-line @next/next/no-img-element */}
+    <img
+  src={heroImage}
+  alt=""
+  className={`absolute inset-0 h-full w-full opacity-90 components_codex_codex_entry_hero_img_image ${heroImageFit}`}
+/>
 
-              <ImagePreviewButton
-                src={heroImage}
-                name={name}
-              />
+    <ImagePreviewButton
+      src={heroImage}
+      name={name}
+    />
 
-              <div className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--sep-colour-100c09))] via-[rgb(var(--sep-colour-100c09))]/90 to-[rgb(var(--sep-colour-100c09))]/35 components_codex_codex_entry_hero_div_container_2" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--sep-colour-100c09))] via-transparent to-black/30 components_codex_codex_entry_hero_div_container_3" />
-            </>
-          ) : (
-            <div
-              className="absolute inset-0 components_codex_codex_entry_hero_div_container_4"
-              style={{
-                background: `radial-gradient(circle at top right, ${accentColour}55 0%, #17100c 42%, #0d0907 100%)`,
-              }}
-            />
-          )}
+    <div className="absolute inset-0 bg-[linear-gradient(to_top,rgb(var(--sep-colour-100c09))_0%,rgb(var(--sep-colour-100c09)/50%)_76%,transparent_100%)] components_codex_codex_entry_hero_div_container_3" />
+  </>
+) : (
+  <div
+    className="absolute inset-0 components_codex_codex_entry_hero_div_container_4"
+    style={{
+      background: `radial-gradient(circle at top right, ${accentColour}55 0%, #17100c 42%, #0d0907 100%)`,
+    }}
+  />
+)}
 
           <div className="relative flex min-h-[360px] items-end p-6 sm:p-8 lg:p-10 components_codex_codex_entry_hero_div_container_5">
             <div className="w-full components_codex_codex_entry_hero_div_container_6">

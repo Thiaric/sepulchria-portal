@@ -724,7 +724,7 @@ const room =
           </span>
 
           <span data-skin-role="primary" className="hidden text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-81725f))] lg:inline components_portal_active_city_counter_span_text_3">
-            People in Sepulchria
+            in Sepulchria
           </span>
         </div>
 

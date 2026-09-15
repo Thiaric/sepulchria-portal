@@ -84,36 +84,63 @@ export function PublicRules({
     query.trim().toLowerCase();
 
   const visibleRules = useMemo(() => {
-    return data.rules.filter((rule) => {
-      if (
-        selectedCategoryId !== "all" &&
-        rule.category_id !==
-          selectedCategoryId
-      ) {
-        return false;
+  const filtered = data.rules.filter((rule) => {
+    if (
+      selectedCategoryId !== "all" &&
+      rule.category_id !== selectedCategoryId
+    ) {
+      return false;
+    }
+
+    if (!normalizedQuery) {
+      return true;
+    }
+
+    const searchable = [
+      rule.title,
+      rule.summary ?? "",
+      stripHtml(rule.body),
+    ]
+      .join(" ")
+      .toLowerCase();
+
+    return searchable.includes(normalizedQuery);
+  });
+
+  return [...filtered].sort((a, b) => {
+    if (selectedCategoryId === "all") {
+      const categoryA =
+  data.categories.find(
+    (category) =>
+      category.id === a.category_id,
+  );
+
+const categoryB =
+  data.categories.find(
+    (category) =>
+      category.id === b.category_id,
+  );
+
+const categoryComparison =
+  (categoryA?.sort_order ?? 0) -
+  (categoryB?.sort_order ?? 0);
+
+      if (categoryComparison !== 0) {
+        return categoryComparison;
       }
+    }
 
-      if (!normalizedQuery) {
-        return true;
-      }
-
-      const searchable = [
-        rule.title,
-        rule.summary ?? "",
-        stripHtml(rule.body),
-      ]
-        .join(" ")
-        .toLowerCase();
-
-      return searchable.includes(
-        normalizedQuery,
-      );
-    });
-  }, [
-    data.rules,
-    normalizedQuery,
-    selectedCategoryId,
-  ]);
+    return (
+  (a.sort_order ?? 0) -
+  (b.sort_order ?? 0)
+);
+  });
+}, [
+  data.rules,
+  data.categories,
+  normalizedQuery,
+  selectedCategoryId,
+]);
 
   const relatedRules = useMemo(() => {
     if (!selectedRule) {
@@ -310,35 +337,68 @@ export function PublicRules({
                 </p>
               ) : (
                 <div className="space-y-1 components_rules_public_rules_div_container_7">
-                  {visibleRules.map(
-                    (rule) => (
-                      <button
-                        key={rule.id}
-                        type="button"
-                        onClick={() =>
-                          selectRule(rule)
-                        }
-                        className={[((`w-full border px-3 py-2.5 text-left transition ${
-                          selectedRule?.id ===
-                          rule.id
-                            ? "border-[rgb(var(--sep-colour-8d693e))] bg-[rgb(var(--sep-colour-2a1d12))]"
-                            : "border-transparent bg-[rgb(var(--sep-colour-100c09))]/55 hover:border-[rgb(var(--sep-colour-59432c))]/55 hover:bg-[rgb(var(--sep-colour-19120d))]"
-                        }`)), "components_rules_public_rules_button_action"].filter(Boolean).join(" ")}
-                      >
-                        <span className="block font-serif text-sm text-[rgb(var(--sep-colour-d0b78e))] components_rules_public_rules_span_text_2">
-                          {rule.title}
-                        </span>
+                  {visibleRules.map((rule, index) => {
+  const category =
+    data.categories.find(
+      (candidate) =>
+        candidate.id === rule.category_id,
+    );
 
-                        {rule.summary ? (
-                          <span className="mt-1 line-clamp-2 block text-[10px] leading-4 text-[rgb(var(--sep-colour-817565))] components_rules_public_rules_span_text_3">
-                            {stripHtml(
-                              rule.summary,
-                            )}
-                          </span>
-                        ) : null}
-                      </button>
-                    ),
-                  )}
+  const previousRule =
+    index > 0
+      ? visibleRules[index - 1]
+      : null;
+
+  const showCategoryHeading =
+    selectedCategoryId === "all" &&
+    (
+      !previousRule ||
+      previousRule.category_id !==
+        rule.category_id
+    );
+
+  return (
+    <div key={rule.id}>
+      {showCategoryHeading ? (
+        <div className="mb-1 mt-3 first:mt-0 border-b border-[rgb(var(--sep-colour-60482e))]/35 px-2 pb-1.5">
+          <span className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-9a7547))]">
+            {category?.name ??
+              "Uncategorised"}
+          </span>
+        </div>
+      ) : null}
+
+      <button
+        type="button"
+        onClick={() =>
+          selectRule(rule)
+        }
+        className={[
+          `w-full border px-3 py-2.5 text-left transition ${
+            selectedRule?.id === rule.id
+              ? "border-[rgb(var(--sep-colour-8d693e))] bg-[rgb(var(--sep-colour-2a1d12))]"
+              : "border-transparent bg-[rgb(var(--sep-colour-100c09))]/55 hover:border-[rgb(var(--sep-colour-59432c))]/55 hover:bg-[rgb(var(--sep-colour-19120d))]"
+          }`,
+          "components_rules_public_rules_button_action",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+      >
+        <span className="block font-serif text-sm text-[rgb(var(--sep-colour-d0b78e))] components_rules_public_rules_span_text_2">
+          {rule.title}
+        </span>
+
+        {rule.summary ? (
+          <span className="mt-1 line-clamp-2 block text-[10px] leading-4 text-[rgb(var(--sep-colour-817565))] components_rules_public_rules_span_text_3">
+            {stripHtml(
+              rule.summary,
+            )}
+          </span>
+        ) : null}
+      </button>
+    </div>
+  );
+})}
                 </div>
               )}
             </div>
