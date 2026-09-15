@@ -326,7 +326,7 @@ export default async function AdminShapesPage({searchParams}:Props){
                   </p>
 
                   <div className="mt-1 flex items-center justify-between gap-3">
-                    <h2 className="truncate font-serif text-lg text-[rgb(var(--sep-colour-dfc99f))]">
+                    <h2 className="truncate font-serif text-lg text-[rgb(var(--sep-colour-dfc99f))] admin_shapes_page_h2_text">
                       {shape.name}
                     </h2>
 

@@ -20771,9 +20771,18 @@ html[data-portal-skin] [data-homepage-nav-button="true"] [data-homepage-nav-role
    .character_page_p_text_7,
    .components_characters_character_order_summary_p_text_2,
    .components_characters_public_character_order_p_text_2,
-   .components_characters_public_character_profile_p_text_7 {
+   .components_characters_public_character_profile_p_text_7
+    {
     text-transform: none !important;
     color: rgb(var(--sep-global-c1)) !important;
+   }
+
+   .admin_gifts_page_p_text,
+   .admin_items_page_p_text,
+   .admin_shapes_page_h2_text {
+    text-transform: none !important;
+    color: rgb(var(--sep-global-c1)) !important;
+    letter-spacing: 0 !important;
    }
 
    .components_characters_activeitemeffects_h2_active_item_effects {
@@ -21184,7 +21193,8 @@ background-image:
 
 .components_portal_game_context_panel_div_container,
 .admin_layout_div_container_2,
-.admin_layout_div_container_5 {
+.admin_layout_div_container_5,
+.components_portal_portal_responsive_right_sidebar_div_context_sidebar_3 {
   background: rgb(var(--sep-colour-100c09) / 0%) !important;
 }
 
@@ -21208,7 +21218,7 @@ background-image:
 
 
 .components_portal_portal_responsive_right_sidebar_section_context_sidebar {
-  background: rgb(var(--sep-colour-100c09) / 20%) !important;
+  background: rgb(var(--sep-colour-100c09) / 10%) !important;
 }
 
 

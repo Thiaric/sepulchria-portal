@@ -25,6 +25,27 @@ const ROMAN_NUMERALS = [
   "VIII",
   "IX",
   "X",
+  "XI",
+  "XII",
+  "XIII",
+
+];
+
+const NUMBER_WORDS = [
+  "",
+  "One",
+  "Two",
+  "Three",
+  "Four",
+  "Five",
+  "Six",
+  "Seven",
+  "Eight",
+  "Nine",
+  "Ten",
+  "Eleven",
+  "Twelve",
+  "Thirteen",
 ];
 
 export function PublicCodex({
@@ -217,11 +238,12 @@ export function PublicCodex({
               </h1>
             </div>
 
-            <p className="max-w-xl text-[10px] leading-4 text-[rgb(var(--sep-colour-8f8271))] sm:text-right sm:text-xs sm:leading-5 components_codex_public_codex_p_text">
-              Ten chapters preserving
-              the known history and lore
-              of Aureth.
-            </p>
+           <p className="max-w-xl text-[10px] leading-4 text-[rgb(var(--sep-colour-8f8271))] sm:text-right sm:text-xs sm:leading-5 components_codex_public_codex_p_text">
+  {NUMBER_WORDS[orderedChapters.length]}{" "}
+  {orderedChapters.length === 1 ? "chapter" : "chapters"} preserving
+  the known history and lore
+  of Aureth.
+</p>
           </div>
         </div>
       </header>
@@ -242,9 +264,9 @@ export function PublicCodex({
           .join(" ")}
       >
         <nav
-          aria-label="Codex chapters"
-          className="mx-auto grid max-w-7xl grid-cols-10 px-2 sm:px-5 components_codex_public_codex_nav_codex_chapters"
-        >
+  aria-label="Codex chapters"
+  className="mx-auto flex max-w-7xl justify-center px-2 sm:px-5 components_codex_public_codex_nav_codex_chapters"
+>
           {orderedChapters.map(
             (chapter) => {
               const active =
@@ -263,7 +285,7 @@ export function PublicCodex({
                   }
                   title={`Chapter ${chapter.chapter_number}: ${chapter.title}`}
                   className={[
-                    `h-8 border-x border-[rgb(var(--sep-colour-4c3926))]/25 px-0.5 font-serif text-[11px] transition sm:h-10 sm:px-1 sm:text-sm ${
+                    `h-8 flex-1 border-x border-[rgb(var(--sep-colour-4c3926))]/25 px-0.5 font-serif text-[11px] transition sm:h-10 sm:px-1 sm:text-sm ${
                       active
                         ? "bg-[rgb(var(--sep-colour-2b1f14))] text-[rgb(var(--sep-colour-e6c68f))]"
                         : "text-[rgb(var(--sep-colour-796342))] hover:bg-[rgb(var(--sep-colour-19120d))] hover:text-[rgb(var(--sep-colour-c9ad7c))]"

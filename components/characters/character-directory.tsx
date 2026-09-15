@@ -432,7 +432,7 @@ export function CharacterDirectory({
       </section>
 
       {filteredCharacters.length > 0 ? (
-        <section className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3 components_characters_character_directory_section_section_2">
+        <section className="grid gap-4 md:grid-cols-3 2xl:grid-cols-3 components_characters_character_directory_section_section_2">
         {filteredCharacters.map(
   (character) => (
     <div

@@ -31,7 +31,7 @@ export function CodexEntryGrid({
   }
 
   return (
-    <section className="grid gap-5 md:grid-cols-2 2xl:grid-cols-3 components_codex_codex_entry_grid_section_section_2">
+    <section className="grid gap-5 md:grid-cols-3 2xl:grid-cols-3 components_codex_codex_entry_grid_section_section_2">
       {children}
     </section>
   );
