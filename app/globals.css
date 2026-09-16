@@ -20856,6 +20856,22 @@ button.components_characters_character_sheet_tabs_button_tab {
   background-repeat: no-repeat !important;
 }
 
+
+.components_homepage_sepulchria_homepage_main_main {
+  width: 100% !important;
+
+  background-image:
+    linear-gradient(
+      rgb(var(--sep-colour-100d0b) / 85%),
+      rgb(var(--sep-colour-100d0b) / 85%)
+    ),
+    url("/backgrounds/portal_background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
 .components_notifications_notification_bell_div_container_2 {
 
   background-image:

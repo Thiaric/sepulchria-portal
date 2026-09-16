@@ -188,12 +188,12 @@ const categoryComparison =
       className={[(([
         "bg-[rgb(var(--sep-colour-090705))] text-[rgb(var(--sep-colour-d7c5a7))]",
         embedded
-          ? "flex h-full min-h-0 flex-col overflow-hidden"
-          : "min-h-screen",
+  ? "flex h-dvh min-h-0 max-h-dvh flex-col overflow-hidden"
+  : "min-h-screen",
       ].join(" "))), "components_rules_public_rules_main_main"].filter(Boolean).join(" ")}
     >
       <header className="shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-0f0b09))] components_rules_public_rules_header_header">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:gap-5 components_rules_public_rules_div_container">
+        <div className="mx-auto flex max-w-8xl flex-col gap-3 px-4 py-4 sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:gap-5 components_rules_public_rules_div_container">
           <div className="components_rules_public_rules_div_rules">
             <p className="text-[7px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8f714a))] components_rules_public_rules_p_rules">
               Sepulchria · Offgame
@@ -296,7 +296,7 @@ const categoryComparison =
 
       <div
         className={[(([
-          "mx-auto grid w-full max-w-7xl grid-cols-1 gap-4 px-4 py-4 sm:px-6",
+          "mx-auto grid w-full max-w-8xl grid-cols-1 gap-4 px-4 py-4 sm:px-6",
           glossaryOpen
             ? ""
             : "lg:grid-cols-[280px_minmax(0,1fr)]",
@@ -557,8 +557,8 @@ function RulePanel({
       <div className="px-5 py-5 sm:px-7 components_rules_public_rules_div_container_9">
         <RichTextContentClient
           body={rule.body}
-          className="mx-auto max-w-5xl text-sm leading-7 text-[rgb(var(--sep-colour-b9a991))] [&_h1]:mt-7 [&_h1]:text-3xl [&_h2]:mt-6 [&_h2]:text-2xl [&_h3]:mt-5 [&_h3]:text-xl [&_p]:mb-4"
-        />
+          className="mx-auto w-[calc(100%-20px)] max-w-6xl text-sm leading-7 text-[rgb(var(--sep-colour-b9a991))] [&_h1]:mt-7 [&_h1]:text-3xl [&_h2]:mt-6 [&_h2]:text-2xl [&_h3]:mt-5 [&_h3]:text-xl [&_p]:mb-4"
+          />
 
         {relatedRules.length >
         0 ? (

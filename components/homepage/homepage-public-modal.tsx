@@ -78,27 +78,64 @@ export function HomepagePublicModal({
         className="absolute inset-0 bg-[rgb(var(--sep-colour-050403))]/85 backdrop-blur-[2px] components_homepage_homepage_public_modal_button_close"
       />
 
-      <section className="relative z-10 flex h-[92dvh] w-[96vw] max-w-[1280px] flex-col overflow-hidden border border-[rgb(var(--sep-colour-795a34))]/70 bg-[rgb(var(--sep-colour-0d0907))] shadow-[0_30px_100px_rgba(var(--sep-rgb-0-0-0),0.88)] sm:h-[88dvh] sm:w-[92vw] components_homepage_homepage_public_modal_section_section">
-        <div className="flex shrink-0 items-center justify-between gap-4 border-b border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-120d0a))] px-4 py-3 sm:px-5 components_homepage_homepage_public_modal_div_container">
-          <div className="min-w-0 components_homepage_homepage_public_modal_div_container_2">
-            <p className="text-[7px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-80684c))] components_homepage_homepage_public_modal_p_text">
-              Sepulchria
-            </p>
+      <section
+  className={
+    modal.href === "/rules" || modal.href === "/codex"
+      ? "fixed left-2 top-2 z-10 flex h-[calc(100dvh-16px)] w-[calc(100vw-16px)] flex-col overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-090705))] shadow-[0_20px_80px_rgba(var(--sep-rgb-0-0-0),0.65)]"
+      : "relative z-10 flex h-[92dvh] w-[96vw] max-w-[1280px] flex-col overflow-hidden border border-[rgb(var(--sep-colour-795a34))]/70 bg-[rgb(var(--sep-colour-0d0907))] shadow-[0_30px_100px_rgba(var(--sep-rgb-0-0-0),0.88)] sm:h-[88dvh] sm:w-[92vw] components_homepage_homepage_public_modal_section_section"
+  }
+>
+    {modal.href === "/rules" || modal.href === "/codex" ? (
+  <div className="flex h-10 shrink-0 items-center justify-between border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3">
+    <div className="flex min-w-0 items-center gap-3">
+      <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
+        <img
+          src="/icons/rules.png"
+          alt=""
+          aria-hidden="true"
+          className="h-full w-full object-contain"
+        />
+      </span>
 
-            <h2 className="truncate font-serif text-lg text-[rgb(var(--sep-colour-e0c99e))] sm:text-xl components_homepage_homepage_public_modal_h2_heading">
-              {modal.title}
-            </h2>
-          </div>
+      <span className="truncate font-serif text-sm text-[rgb(var(--sep-colour-d8c096))]">
+        {modal.title}
+      </span>
+    </div>
 
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label={`Close ${modal.title}`}
-            className="flex h-9 w-9 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-17110d))] text-lg text-[rgb(var(--sep-colour-bda57f))] transition hover:border-[rgb(var(--sep-colour-9b7443))] hover:text-[rgb(var(--sep-colour-f1d7a5))] components_homepage_homepage_public_modal_button_close_2"
-          >
-            ×
-          </button>
-        </div>
+    <div className="flex items-center gap-1">
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label={`Close ${modal.title}`}
+        title={`Close ${modal.title}`}
+        className="flex h-7 w-7 cursor-pointer items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-17110d))] text-base leading-none text-[rgb(var(--sep-colour-aa9675))] transition hover:border-[rgb(var(--sep-colour-967342))] hover:text-[rgb(var(--sep-colour-f1d7a5))]"
+      >
+        ×
+      </button>
+    </div>
+  </div>
+) : (
+  <div className="flex shrink-0 items-center justify-between gap-4 border-b border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-120d0a))] px-4 py-3 sm:px-5 components_homepage_homepage_public_modal_div_container">
+    <div className="min-w-0 components_homepage_homepage_public_modal_div_container_2">
+      <p className="text-[7px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-80684c))] components_homepage_homepage_public_modal_p_text">
+        Sepulchria
+      </p>
+
+      <h2 className="truncate font-serif text-lg text-[rgb(var(--sep-colour-e0c99e))] sm:text-xl components_homepage_homepage_public_modal_h2_heading">
+        {modal.title}
+      </h2>
+    </div>
+
+    <button
+      type="button"
+      onClick={onClose}
+      aria-label={`Close ${modal.title}`}
+      className="flex h-9 w-9 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-17110d))] text-lg text-[rgb(var(--sep-colour-bda57f))] transition hover:border-[rgb(var(--sep-colour-9b7443))] hover:text-[rgb(var(--sep-colour-f1d7a5))] components_homepage_homepage_public_modal_button_close_2"
+    >
+      ×
+    </button>
+  </div>
+)}
 
         <iframe
           key={iframeSrc}
