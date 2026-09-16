@@ -398,11 +398,20 @@ function ProfileCard({
   );
 }
 
+function shapeBackgroundImage(
+  level: number,
+) {
+  return `/backgrounds/shapes/${level}.png`;
+}
+
 function ShapeArticle({
   shape,
 }: {
   shape: ShapeCard;
 }) {
+  const backgroundImage =
+    shapeBackgroundImage(shape.level);
+
   const requirements =
     attributeRequirements(shape);
 
@@ -418,7 +427,21 @@ function ShapeArticle({
     <article
   id={`shape-${shape.id}`}
   data-sep-interactive-surface="card"
-  className={[((`min-h-[430px] scroll-mt-4 border bg-[rgb(var(--sep-colour-18110c))] p-4 transition-[border-color,box-shadow] duration-200 ${shapeSchoolBorderClass(
+  data-shape-level={shape.level}
+  data-shape-background={backgroundImage}
+  style={{
+    backgroundImage: `
+      linear-gradient(
+        rgb(var(--sep-colour-100d0b) / 88%),
+        rgb(var(--sep-colour-100d0b) / 88%)
+      ),
+      url("${backgroundImage}")
+    `,
+    backgroundSize: "cover",
+    backgroundPosition: "center calc(100% - 2px)",
+    backgroundRepeat: "no-repeat",
+  }}
+  className={[((`relative min-h-[430px] scroll-mt-4 overflow-hidden border bg-[rgb(var(--sep-colour-18110c))] p-4 transition-[border-color,box-shadow] duration-200 ${shapeSchoolBorderClass(
     shape.school,
   )}`)), "components_warping_shapes_catalogue_article_article"].filter(Boolean).join(" ")}
 >
@@ -438,9 +461,7 @@ function ShapeArticle({
                 {pretty(shape.school)}
                 {" · "}
                 {shape.word_of_power}
-              </p>
-
-              <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-9b815d))] components_warping_shapes_catalogue_p_text_12">
+                {" · "}
                 {pretty(shape.movement)}
                 {" · "}
                 {durationLabel(shape)}

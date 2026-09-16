@@ -935,20 +935,382 @@ function FriendListContext() {
   );
 }
 
-type PublicShapeContextEntry={
-  id:string;
-  name:string;
-  school:string;
+type PublicShapeContextEntry = {
+  id: string;
+  name: string;
+  school: string;
+  level: number;
+  nature: string;
 };
-function PublicShapesContext(){const [entries,setEntries]=useState<PublicShapeContextEntry[]>([]);const [search,setSearch]=useState("");const [visible,setVisible]=useState<Set<string>|null>(null);useEffect(()=>{const apply=(ids:unknown)=>{if(Array.isArray(ids))setVisible(new Set(ids.map(String)))};const stored=sessionStorage.getItem("sepulchria:shapes-visible-ids");if(stored)try{apply(JSON.parse(stored))}catch{};const h=(e:Event)=>apply((e as CustomEvent<{ids?:string[]}>).detail?.ids);window.addEventListener("sepulchria:shapes-filter-change",h);return()=>window.removeEventListener("sepulchria:shapes-filter-change",h)},[]);useEffect(()=>{let c=false;(async()=>{const db=createClient();const {data}=await db.from("shapes").select("id,name,school").eq("is_active",true).order("level").order("name");if(!c)setEntries((data??[]).map(x=>({
-  id:String(x.id),
-  name:String(x.name),
-  school:String(x.school??""),
-})))})();return()=>{c=true}},[]);const q=search.trim().toLowerCase();const page=visible===null?entries:entries.filter(x=>visible.has(x.id));const filtered=page.filter(x=>!q||x.name.toLowerCase().includes(q));const jump=(id:string)=>{window.history.replaceState(null,"",`#shape-${id}`);const el=document.getElementById(`shape-${id}`);if(el){el.scrollIntoView({behavior:"smooth",block:"start"});return;}window.dispatchEvent(new CustomEvent("sepulchria:shape-jump",{detail:{id}}));};return <div className="flex h-full min-h-0 flex-col components_portal_portal_context_panel_div_container_10"><ContextHeading eyebrow="Codex" title="Warping"/><p className="text-xs leading-6 text-[rgb(var(--sep-colour-938673))] components_portal_portal_context_panel_p_text_11">Search Shapes and jump directly to a definition.</p><input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search Shapes..." className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none components_portal_portal_context_panel_input_search_shapes"/><div className="my-4 h-px bg-[rgb(var(--sep-colour-59432c))]/35 components_portal_portal_context_panel_div_container_11"/><p className="mb-2 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))] components_portal_portal_context_panel_p_text_12">Jump to Shape · {filtered.length}</p><div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1 components_portal_portal_context_panel_div_container_12">{filtered.map(x=><button key={x.id} type="button" onClick={()=>jump(x.id)} className={[((`flex w-full items-center justify-between border bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition-[border-color,box-shadow] duration-200 ${shapeSchoolBorderClass(x.school)}`)), "components_portal_portal_context_panel_button_action_3"].filter(Boolean).join(" ")}><span className="truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] components_portal_portal_context_panel_span_text_7">{x.name}</span><span className="text-[rgb(var(--sep-colour-725a3d))] components_portal_portal_context_panel_span_text_8">→</span></button>)}</div></div>}
+
+function PublicShapesContext() {
+  const [entries, setEntries] =
+    useState<PublicShapeContextEntry[]>([]);
+
+  const [search, setSearch] =
+    useState("");
+
+  const [visible, setVisible] =
+    useState<Set<string> | null>(null);
+
+  useEffect(() => {
+    const apply = (ids: unknown) => {
+      if (Array.isArray(ids)) {
+        setVisible(
+          new Set(
+            ids.map(String),
+          ),
+        );
+      }
+    };
+
+    const stored =
+      sessionStorage.getItem(
+        "sepulchria:shapes-visible-ids",
+      );
+
+    if (stored) {
+      try {
+        apply(
+          JSON.parse(stored),
+        );
+      } catch {}
+    }
+
+    const handleFilterChange = (
+      event: Event,
+    ) => {
+      apply(
+        (
+          event as CustomEvent<{
+            ids?: string[];
+          }>
+        ).detail?.ids,
+      );
+    };
+
+    window.addEventListener(
+      "sepulchria:shapes-filter-change",
+      handleFilterChange,
+    );
+
+    return () =>
+      window.removeEventListener(
+        "sepulchria:shapes-filter-change",
+        handleFilterChange,
+      );
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      const db =
+        createClient();
+
+      const { data } =
+        await db
+          .from("shapes")
+          .select(
+            "id,name,school,level,effect_nature",
+          )
+          .eq(
+            "is_active",
+            true,
+          )
+          .order("level")
+          .order("name");
+
+      if (cancelled) {
+        return;
+      }
+
+      setEntries(
+        (data ?? []).map(
+          (shape) => ({
+            id: String(
+              shape.id,
+            ),
+            name: String(
+              shape.name,
+            ),
+            school: String(
+              shape.school ??
+                "",
+            ),
+            level: Number(
+              shape.level ??
+                0,
+            ),
+            nature: String(
+              shape.effect_nature ??
+                "",
+            ),
+          }),
+        ),
+      );
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const query =
+    search
+      .trim()
+      .toLowerCase();
+
+  const pageEntries =
+    visible === null
+      ? entries
+      : entries.filter(
+          (entry) =>
+            visible.has(
+              entry.id,
+            ),
+        );
+
+  const filtered =
+    pageEntries.filter(
+      (entry) => {
+        if (!query) {
+          return true;
+        }
+
+        const searchable =
+          [
+            entry.name,
+            entry.school,
+            entry.nature,
+            String(
+              entry.level,
+            ),
+            `level ${entry.level}`,
+          ]
+            .join(" ")
+            .toLowerCase();
+
+        return searchable.includes(
+          query,
+        );
+      },
+    );
+
+  const grouped =
+    filtered.reduce<
+      Record<
+        number,
+        PublicShapeContextEntry[]
+      >
+    >(
+      (
+        groups,
+        entry,
+      ) => {
+        if (
+          !groups[
+            entry.level
+          ]
+        ) {
+          groups[
+            entry.level
+          ] = [];
+        }
+
+        groups[
+          entry.level
+        ].push(
+          entry,
+        );
+
+        return groups;
+      },
+      {},
+    );
+
+  const levels =
+    Object.keys(grouped)
+      .map(Number)
+      .sort(
+        (a, b) =>
+          a - b,
+      );
+
+  const pretty = (
+    value: string,
+  ) =>
+    value
+      .replace(
+        /[_-]+/g,
+        " ",
+      )
+      .replace(
+        /\b\w/g,
+        (character) =>
+          character.toUpperCase(),
+      );
+
+  const jump = (
+    id: string,
+  ) => {
+    window.history.replaceState(
+      null,
+      "",
+      `#shape-${id}`,
+    );
+
+    const element =
+      document.getElementById(
+        `shape-${id}`,
+      );
+
+    if (element) {
+      element.scrollIntoView({
+        behavior:
+          "smooth",
+        block:
+          "start",
+      });
+
+      return;
+    }
+
+    window.dispatchEvent(
+      new CustomEvent(
+        "sepulchria:shape-jump",
+        {
+          detail: {
+            id,
+          },
+        },
+      ),
+    );
+  };
+
+  return (
+    <div className="flex h-full min-h-0 flex-col components_portal_portal_context_panel_div_container_10">
+      <ContextHeading
+        eyebrow="Codex"
+        title="Warping"
+      />
+
+      <p className="text-xs leading-6 text-[rgb(var(--sep-colour-938673))] components_portal_portal_context_panel_p_text_11">
+        Search Shapes and jump
+        directly to a definition.
+      </p>
+
+      <input
+        type="search"
+        value={search}
+        onChange={(event) =>
+          setSearch(
+            event.target.value,
+          )
+        }
+        placeholder="Name, level, school or nature..."
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-655c50))] focus:border-[rgb(var(--sep-colour-8a673f))] components_portal_portal_context_panel_input_search_shapes"
+      />
+
+      <div className="my-4 h-px bg-[rgb(var(--sep-colour-59432c))]/35 components_portal_portal_context_panel_div_container_11" />
+
+      <p className="mb-2 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))] components_portal_portal_context_panel_p_text_12">
+        Jump to Shape ·{" "}
+        {filtered.length}
+      </p>
+
+      <div className="min-h-0 flex-1 overflow-y-auto pr-1 components_portal_portal_context_panel_div_container_12">
+        {levels.map(
+          (level) => (
+            <div
+              key={level}
+              className="mb-4 last:mb-0"
+            >
+              <div className="sticky top-0 z-10 mb-1.5 border-y border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2">
+                <span className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-a88658))]">
+                  Level {level}
+                </span>
+              </div>
+
+              <div className="space-y-1.5">
+                {grouped[
+                  level
+                ].map(
+                  (shape) => (
+                    <button
+                      key={
+                        shape.id
+                      }
+                      type="button"
+                      onClick={() =>
+                        jump(
+                          shape.id,
+                        )
+                      }
+                      className={[
+                        `group flex w-full items-center justify-between gap-3 border bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition-[border-color,background-color,box-shadow] duration-200 ${shapeSchoolBorderClass(
+                          shape.school,
+                        )}`,
+                        "components_portal_portal_context_panel_button_action_3",
+                      ]
+                        .filter(
+                          Boolean,
+                        )
+                        .join(
+                          " ",
+                        )}
+                    >
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] transition group-hover:text-[rgb(var(--sep-colour-ead0a0))] components_portal_portal_context_panel_span_text_7">
+                          {
+                            shape.name
+                          }
+                        </span>
+
+                        <span className="mt-0.5 block text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756550))]">
+                          Level{" "}
+                          {
+                            shape.level
+                          }
+                        </span>
+                      </span>
+
+                      <span
+                        aria-hidden="true"
+                        className="shrink-0 text-[rgb(var(--sep-colour-725a3d))] transition group-hover:translate-x-0.5 group-hover:text-[rgb(var(--sep-colour-b88a52))] components_portal_portal_context_panel_span_text_8"
+                      >
+                        →
+                      </span>
+                    </button>
+                  ),
+                )}
+              </div>
+            </div>
+          ),
+        )}
+
+        {filtered.length ===
+        0 ? (
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">
+            No Shapes match this
+            search.
+          </p>
+        ) : null}
+      </div>
+    </div>
+  );
+}
 
 type PublicGiftContextEntry = {
   id: string;
   name: string;
+  effectMode: string;
+  isGeneral: boolean;
+  ancestries: {
+    id: string;
+    name: string;
+  }[];
+  orders: string[];
 };
 
 function PublicGiftsContext() {
@@ -1035,39 +1397,175 @@ function PublicGiftsContext() {
     let cancelled = false;
 
     async function loadGifts() {
-      const supabase = createClient();
+      const supabase =
+        createClient();
 
       const { data, error } =
         await supabase
           .from("gifts")
-          .select(
-            "id, name, sort_order",
+          .select(`
+            id,
+            name,
+            is_general,
+            effect_mode,
+            sort_order,
+            races:gift_races(
+              race:races(
+                id,
+                name
+              )
+            ),
+            roles:gift_order_jobs(
+              role:order_jobs(
+                id,
+                name,
+                level:order_levels(
+                  order:orders(
+                    id,
+                    name
+                  )
+                )
+              )
+            )
+          `)
+          .eq(
+            "is_active",
+            true,
           )
-          .eq("is_active", true)
-          .order("sort_order", {
-            ascending: true,
-          })
-          .order("name", {
-            ascending: true,
-          });
+          .order(
+            "sort_order",
+            {
+              ascending: true,
+            },
+          )
+          .order(
+            "name",
+            {
+              ascending: true,
+            },
+          );
 
       if (cancelled) {
         return;
       }
 
       if (error) {
-        setError(error.message);
+        setError(
+          error.message,
+        );
         setLoading(false);
         return;
       }
 
-      setEntries(
-        (data ?? []).map((gift) => ({
-          id: String(gift.id),
-          name: String(gift.name),
-        })),
-      );
+      const mapped =
+        (data ?? []).map(
+          (gift) => {
+            const ancestries =
+              (
+                gift.races ??
+                []
+              )
+                .map(
+                  (entry: any) => {
+                    const race =
+                      Array.isArray(
+                        entry.race,
+                      )
+                        ? entry
+                            .race[0]
+                        : entry.race;
 
+                    if (!race) {
+                      return null;
+                    }
+
+                    return {
+                      id: String(
+                        race.id,
+                      ),
+                      name: String(
+                        race.name,
+                      ),
+                    };
+                  },
+                )
+                .filter(
+                  Boolean,
+                ) as {
+                  id: string;
+                  name: string;
+                }[];
+
+            const orders =
+              (
+                gift.roles ??
+                []
+              )
+                .map(
+                  (entry: any) => {
+                    const role =
+                      Array.isArray(
+                        entry.role,
+                      )
+                        ? entry
+                            .role[0]
+                        : entry.role;
+
+                    const level =
+                      Array.isArray(
+                        role?.level,
+                      )
+                        ? role
+                            ?.level[0]
+                        : role?.level;
+
+                    const order =
+                      Array.isArray(
+                        level?.order,
+                      )
+                        ? level
+                            ?.order[0]
+                        : level
+                            ?.order;
+
+                    return order?.name
+                      ? String(
+                          order.name,
+                        )
+                      : null;
+                  },
+                )
+                .filter(
+                  Boolean,
+                ) as string[];
+
+            return {
+              id: String(
+                gift.id,
+              ),
+              name: String(
+                gift.name,
+              ),
+              effectMode:
+                String(
+                  gift.effect_mode ??
+                    "none",
+                ),
+              isGeneral:
+                Boolean(
+                  gift.is_general,
+                ),
+              ancestries,
+              orders: Array.from(
+                new Set(
+                  orders,
+                ),
+              ),
+            };
+          },
+        );
+
+      setEntries(mapped);
       setError(null);
       setLoading(false);
     }
@@ -1079,26 +1577,217 @@ function PublicGiftsContext() {
     };
   }, []);
 
+  function effectLabel(
+    value: string,
+  ) {
+    if (
+      value === "passive"
+    ) {
+      return "Passive";
+    }
+
+    return "Activated";
+  }
+
+  function typeLabels(
+    entry: PublicGiftContextEntry,
+  ) {
+    const labels: string[] =
+      [];
+
+    if (
+      entry.ancestries.length
+    ) {
+      labels.push(
+        "Ancestry",
+      );
+    }
+
+    if (
+      entry.orders.length
+    ) {
+      labels.push(
+        "Order",
+      );
+    }
+
+    if (
+      entry.isGeneral
+    ) {
+      labels.push(
+        "General",
+      );
+    }
+
+    return labels;
+  }
+
   const query =
-    search.trim().toLowerCase();
+    search
+      .trim()
+      .toLowerCase();
 
   const pageFilteredEntries =
     visibleGiftIds === null
       ? entries
-      : entries.filter((entry) =>
-          visibleGiftIds.has(
-            entry.id,
-          ),
+      : entries.filter(
+          (entry) =>
+            visibleGiftIds.has(
+              entry.id,
+            ),
         );
 
   const filteredEntries =
     pageFilteredEntries.filter(
-      (entry) =>
-        !query ||
-        entry.name
-          .toLowerCase()
-          .includes(query),
+      (entry) => {
+        if (!query) {
+          return true;
+        }
+
+        const searchable =
+          [
+            entry.name,
+            effectLabel(
+              entry.effectMode,
+            ),
+            entry.effectMode,
+            ...typeLabels(
+              entry,
+            ),
+            ...entry.ancestries.map(
+              (ancestry) =>
+                ancestry.name,
+            ),
+            ...entry.orders,
+          ]
+            .join(" ")
+            .toLowerCase();
+
+        return searchable.includes(
+          query,
+        );
+      },
     );
+
+  type GiftGroup = {
+    key: string;
+    type: string;
+    ancestry: string | null;
+    entries: PublicGiftContextEntry[];
+  };
+
+  const groups: GiftGroup[] =
+    [];
+
+  function addGroup(
+    key: string,
+    type: string,
+    ancestry: string | null,
+    entry: PublicGiftContextEntry,
+  ) {
+    let group =
+      groups.find(
+        (item) =>
+          item.key === key,
+      );
+
+    if (!group) {
+      group = {
+        key,
+        type,
+        ancestry,
+        entries: [],
+      };
+
+      groups.push(group);
+    }
+
+    if (
+      !group.entries.some(
+        (item) =>
+          item.id ===
+          entry.id,
+      )
+    ) {
+      group.entries.push(
+        entry,
+      );
+    }
+  }
+
+  for (
+    const entry of
+    filteredEntries
+  ) {
+    if (
+      entry.ancestries.length
+    ) {
+      for (
+        const ancestry of
+        entry.ancestries
+      ) {
+        addGroup(
+          `ancestry-${ancestry.id}`,
+          "Ancestry",
+          ancestry.name,
+          entry,
+        );
+      }
+    }
+
+    if (
+      entry.orders.length
+    ) {
+      addGroup(
+        "order",
+        "Order",
+        null,
+        entry,
+      );
+    }
+
+    if (
+      entry.isGeneral
+    ) {
+      addGroup(
+        "general",
+        "General",
+        null,
+        entry,
+      );
+    }
+  }
+
+  const typeOrder:
+    Record<string, number> =
+    {
+      Ancestry: 0,
+      Order: 1,
+      General: 2,
+    };
+
+  groups.sort(
+    (a, b) => {
+      const typeDifference =
+        (typeOrder[a.type] ??
+          99) -
+        (typeOrder[b.type] ??
+          99);
+
+      if (
+        typeDifference !== 0
+      ) {
+        return typeDifference;
+      }
+
+      return (
+        a.ancestry ??
+        ""
+      ).localeCompare(
+        b.ancestry ?? "",
+      );
+    },
+  );
 
   function jumpToGift(
     giftId: string,
@@ -1125,6 +1814,7 @@ function PublicGiftsContext() {
           },
         ),
       );
+
       return;
     }
 
@@ -1142,97 +1832,147 @@ function PublicGiftsContext() {
       />
 
       <p className="text-xs leading-6 text-[rgb(var(--sep-colour-938673))] components_portal_portal_context_panel_p_text_13">
-        Search the active Feats and
-        jump directly to a definition.
+        Search Feats and jump
+        directly to a definition.
       </p>
 
-      <label className="mt-4 block components_portal_portal_context_panel_label_label">
-        <span className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-806b50))] components_portal_portal_context_panel_span_text_9">
-          Search Feats
-        </span>
-
-        <input
-          type="search"
-          value={search}
-          onChange={(event) =>
-            setSearch(
-              event.target.value,
-            )
-          }
-          placeholder="Name..."
-          className="mt-2 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))] components_portal_portal_context_panel_input_name"
-        />
-      </label>
+      <input
+        type="search"
+        value={search}
+        onChange={(
+          event,
+        ) =>
+          setSearch(
+            event.target
+              .value,
+          )
+        }
+        placeholder="Name, type, effect or ancestry..."
+        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-655c50))] focus:border-[rgb(var(--sep-colour-8a673f))] components_portal_portal_context_panel_input_search_gifts"
+      />
 
       <div className="my-4 h-px bg-[rgb(var(--sep-colour-59432c))]/35 components_portal_portal_context_panel_div_container_14" />
 
-      <div className="mb-2 flex items-center justify-between gap-3 components_portal_portal_context_panel_div_container_15">
-        <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_portal_portal_context_panel_p_text_14">
-          Jump to Feat
-        </p>
+      <p className="mb-2 text-[8px] uppercase tracking-[.18em] text-[rgb(var(--sep-colour-806b50))] components_portal_portal_context_panel_p_text_14">
+        Jump to Feat ·{" "}
+        {
+          filteredEntries.length
+        }
+      </p>
 
-        <span className="text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6353))] components_portal_portal_context_panel_span_text_10">
-          {filteredEntries.length}
-          {(query ||
-            pageFilteredEntries.length !==
-              entries.length)
-            ? ` / ${entries.length}`
-            : ""}
-        </span>
-      </div>
-
-      {error ? (
-        <p className="mb-3 border border-[rgb(var(--sep-colour-743d35))] bg-[rgb(var(--sep-colour-2a1512))] p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-d8a49a))] components_portal_portal_context_panel_p_text_15">
-          The Feat list could not
-          be loaded.
-        </p>
-      ) : null}
-
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1 components_portal_portal_context_panel_div_container_16">
+      <div className="min-h-0 flex-1 overflow-y-auto pr-1 components_portal_portal_context_panel_div_container_15">
         {loading ? (
-          <div className="space-y-2 components_portal_portal_context_panel_div_container_17">
-            {Array.from({
-              length: 8,
-            }).map((_, index) => (
-              <div
-                key={index}
-                className="h-10 animate-pulse border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-19120d))] components_portal_portal_context_panel_div_container_18"
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="space-y-1.5 components_portal_portal_context_panel_div_container_19">
-            {filteredEntries.map(
-              (entry) => (
-                <button
-                  key={entry.id}
-                  type="button"
-                  onClick={() =>
-                    jumpToGift(
-                      entry.id,
-                    )
-                  }
-                  className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1d150f))] components_portal_portal_context_panel_button_action_4"
-                >
-                  <span className="min-w-0 truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] transition group-hover:text-[rgb(var(--sep-colour-ead0a0))] components_portal_portal_context_panel_span_text_11">
-                    {entry.name}
-                  </span>
+          <p className="px-2 py-3 text-xs text-[rgb(var(--sep-colour-8f8271))]">
+            Loading Feats...
+          </p>
+        ) : null}
 
-                  <span
-                    aria-hidden="true"
-                    className="text-[9px] text-[rgb(var(--sep-colour-725a3d))] transition group-hover:translate-x-0.5 group-hover:text-[rgb(var(--sep-colour-b88a52))] components_portal_portal_context_panel_span_text_12"
-                  >
-                    →
-                  </span>
-                </button>
+        {error ? (
+          <p className="border border-red-900/40 bg-red-950/20 p-3 text-[11px] leading-5 text-red-300">
+            {error}
+          </p>
+        ) : null}
+
+        {!loading &&
+        !error
+          ? groups.map(
+              (group) => (
+                <div
+                  key={
+                    group.key
+                  }
+                  className="mb-5 last:mb-0"
+                >
+                  <div className="sticky top-0 z-10 mb-1.5 border-y border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] px-2 py-2">
+                    <span className="block text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-a88658))]">
+                      {
+                        group.type
+                      }
+                    </span>
+
+                    {group.ancestry ? (
+                      <span className="mt-0.5 block font-serif text-[11px] text-[rgb(var(--sep-colour-cbb28a))]">
+                        {
+                          group.ancestry
+                        }
+                      </span>
+                    ) : null}
+                  </div>
+
+                  <div className="space-y-1.5">
+                    {group.entries.map(
+                      (
+                        entry,
+                      ) => {
+                        const types =
+                          typeLabels(
+                            entry,
+                          );
+
+                        const ancestryNames =
+                          entry.ancestries
+                            .map(
+                              (
+                                ancestry,
+                              ) =>
+                                ancestry.name,
+                            )
+                            .join(
+                              ", ",
+                            );
+
+                        return (
+                          <button
+                            key={`${group.key}-${entry.id}`}
+                            type="button"
+                            onClick={() =>
+                              jumpToGift(
+                                entry.id,
+                              )
+                            }
+                            className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8d693e))] hover:bg-[rgb(var(--sep-colour-1d150f))] components_portal_portal_context_panel_button_action_4"
+                          >
+                            <span className="min-w-0 flex-1">
+                              <span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] transition group-hover:text-[rgb(var(--sep-colour-ead0a0))] components_portal_portal_context_panel_span_text_11">
+                                {
+                                  entry.name
+                                }
+                              </span>
+
+                              <span className="mt-0.5 block truncate text-[7px] uppercase tracking-[0.11em] text-[rgb(var(--sep-colour-756550))]">
+                                {types.join(
+                                  " · ",
+                                )}
+                                {" · "}
+                                {effectLabel(
+                                  entry.effectMode,
+                                )}
+                                {ancestryNames
+                                  ? ` · ${ancestryNames}`
+                                  : ""}
+                              </span>
+                            </span>
+
+                            <span
+                              aria-hidden="true"
+                              className="shrink-0 text-[9px] text-[rgb(var(--sep-colour-725a3d))] transition group-hover:translate-x-0.5 group-hover:text-[rgb(var(--sep-colour-b88a52))] components_portal_portal_context_panel_span_text_12"
+                            >
+                              →
+                            </span>
+                          </button>
+                        );
+                      },
+                    )}
+                  </div>
+                </div>
               ),
-            )}
-          </div>
-        )}
+            )
+          : null}
 
         {!loading &&
         !error &&
-        filteredEntries.length === 0 ? (
+        filteredEntries.length ===
+          0 ? (
           <p className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-100c09))]/60 p-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_portal_context_panel_p_text_16">
             No Feats match this
             search.
