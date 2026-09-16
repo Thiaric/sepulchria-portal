@@ -1488,7 +1488,7 @@ const selectedAncestryGiftIds =
 
                   <button
                     type="submit"
-                    className="mt-3 w-full border border-[rgb(var(--sep-colour-a44c42))] bg-[rgb(var(--sep-colour-481d19))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-f1beb6))] transition hover:border-[rgb(var(--sep-colour-d66b5f))] hover:bg-[rgb(var(--sep-colour-622720))] admin_characters_id_page_button_delete_character_permanently"
+                    className="border border-red-900/60 bg-red-950/20 px-5 py-3 text-[9px] uppercase tracking-[0.18em] text-red-500 transition hover:border-red-700 hover:bg-red-950/40 admin_characters_id_page_button_delete_character_permanently"
                   >
                     Delete character
                     permanently
