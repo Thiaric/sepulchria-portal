@@ -599,13 +599,13 @@ function Calendar({
                 className={[(([
   "relative flex h-10 flex-col items-center justify-center gap-0.5 bg-[rgb(var(--sep-colour-15100d))] text-[9px] transition sm:h-11",
                   eventCount > 0
-                    ? "cursor-pointer bg-[rgb(var(--sep-colour-2b1d12))] ring-2 ring-inset ring-[rgb(var(--sep-colour-9f7744))]/75 shadow-[inset_0_0_14px_rgba(176,128,67,0.22)] hover:bg-[rgb(var(--sep-colour-362418))] hover:ring-[rgb(var(--sep-colour-c19152))]/90"
-                    : "cursor-default",
+  ? "cursor-pointer sep-calendar-event-day"
+  : "cursor-default",
                   isToday
-                    ? "font-semibold text-[rgb(var(--sep-colour-f0d39f))] shadow-[inset_0_0_0_1px_#a67b45]"
-                    : "text-[rgb(var(--sep-colour-a99a85))]",
+  ? "font-semibold text-[rgb(var(--sep-colour-f0d39f))] shadow-[inset_0_0_0_1px_rgb(var(--sep-skin-c2))]"
+  : "text-[rgb(var(--sep-colour-a99a85))]",
                   isSelected
-                    ? "bg-[rgb(var(--sep-colour-2a1d12))] shadow-[inset_0_0_0_1px_#c08b4a]"
+                    ? "bg-[rgb(var(--sep-colour-2a1d12))] shadow-[inset_0_0_0_1px_rgb(var(--sep-skin-c1))]"
                     : "",
                 ].join(
                   " ",
@@ -715,18 +715,18 @@ function CalendarEventList({
               className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-15100d))] p-3 components_world_world_indicator_article_article"
             >
               <div className="flex flex-wrap items-start justify-between gap-2 components_world_world_indicator_div_container_12">
-                <h4 className="font-serif text-sm text-[rgb(var(--sep-colour-e0c79b))] components_world_world_indicator_h4_heading">
+                <h4 className="font-serif text-sm text-[rgb(var(--sep-skin-c1))] components_world_world_indicator_h4_heading">
                   {event.title}
                 </h4>
 
                 {event.start_time ? (
                   <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-a58c68))] components_world_world_indicator_span_text_3">
-                    {event.start_time.slice(
+                    <span className="text-[rgb(var(--sep-skin-c2))]">Starts:</span> {event.start_time.slice(
                       0,
                       5,
                     )}
-                    {event.end_time
-                      ? `–${event.end_time.slice(
+                    <span className="text-[rgb(var(--sep-skin-c2))]"> Ends:</span> {event.end_time
+                      ? `${event.end_time.slice(
                           0,
                           5,
                         )}`
@@ -738,7 +738,7 @@ function CalendarEventList({
               {event.room?.name ||
               event.location_name ? (
                 <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-9d896d))] components_world_world_indicator_p_text_4">
-                  {event.room?.name ??
+                  <span className="text-[rgb(var(--sep-skin-c1))]">Location:</span> {event.room?.name ??
                     event.location_name}
                 </p>
               ) : null}

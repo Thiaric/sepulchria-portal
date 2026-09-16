@@ -5517,3 +5517,21 @@ input:autofill {
   background-position: center !important;
   background-repeat: no-repeat !important;
 }
+
+/* CALENDAR — DAYS CONTAINING EVENTS */
+
+.sep-calendar-event-day {
+  background-color: color-mix(
+    in srgb,
+    rgb(var(--sep-colour-15100d)) 65%,
+    rgb(var(--sep-skin-c2, 211 194 170)) 45%
+  ) !important;
+}
+
+.sep-calendar-event-day:hover {
+  background-color: color-mix(
+    in srgb,
+    rgb(var(--sep-colour-15100d)) 45%,
+    rgb(var(--sep-skin-c2, 211 194 170)) 35%
+  ) !important;
+}
