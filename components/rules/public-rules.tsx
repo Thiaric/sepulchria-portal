@@ -259,7 +259,7 @@ const categoryComparison =
 
       {!glossaryOpen ? (
         <nav className="shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] components_rules_public_rules_nav_navigation">
-          <div className="mx-auto flex max-w-7xl flex-wrap gap-1 px-4 py-2 sm:px-6 components_rules_public_rules_div_container_3">
+          <div className="mx-auto flex max-w-7xl flex-nowrap gap-1 overflow-x-auto px-4 py-2 sm:flex-wrap sm:px-6 components_rules_public_rules_div_container_3">
             <CategoryButton
               active={
                 selectedCategoryId ===
@@ -307,13 +307,13 @@ const categoryComparison =
       >
         {!glossaryOpen ? (
           <aside
-            className={[(([
-              "min-w-0 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-120e0b))]",
-              embedded
-                ? "flex min-h-0 flex-col overflow-hidden"
-                : "",
-            ].join(" "))), "components_rules_public_rules_aside_sidebar"].filter(Boolean).join(" ")}
-          >
+  className={[(([
+    "hidden min-w-0 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-120e0b))] lg:flex lg:flex-col",
+    embedded
+      ? "min-h-0 overflow-hidden"
+      : "",
+  ].join(" "))), "components_rules_public_rules_aside_sidebar"].filter(Boolean).join(" ")}
+>
             <div className="flex h-9 items-center justify-between border-b border-[rgb(var(--sep-colour-60482e))]/35 px-3 components_rules_public_rules_div_container_5">
               <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-816a4d))] components_rules_public_rules_p_text">
                 Rule index
@@ -404,7 +404,61 @@ const categoryComparison =
             </div>
           </aside>
         ) : null}
+{!glossaryOpen ? (
+  <div className="min-w-0 lg:hidden">
+    <label
+      htmlFor="mobile-rule-select"
+      className="mb-1.5 block text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-816a4d))]"
+    >
+      Choose Rule
+    </label>
 
+    <select
+      id="mobile-rule-select"
+      value={selectedRule?.id ?? ""}
+      onChange={(event) => {
+        const rule = data.rules.find(
+          (candidate) =>
+            candidate.id === event.target.value,
+        );
+
+        if (rule) {
+          selectRule(rule);
+        }
+      }}
+      className="h-11 w-full border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-3 font-serif text-sm text-[rgb(var(--sep-colour-d0b78e))] outline-none focus:border-[rgb(var(--sep-colour-9a7445))]"
+    >
+      {data.categories.map((category) => {
+        const categoryRules =
+          visibleRules.filter(
+            (rule) =>
+              rule.category_id ===
+              category.id,
+          );
+
+        if (categoryRules.length === 0) {
+          return null;
+        }
+
+        return (
+          <optgroup
+            key={category.id}
+            label={category.name}
+          >
+            {categoryRules.map((rule) => (
+              <option
+                key={rule.id}
+                value={rule.id}
+              >
+                {rule.title}
+              </option>
+            ))}
+          </optgroup>
+        );
+      })}
+    </select>
+  </div>
+) : null}
         <section
           className={[(([
             "min-w-0 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-120e0b))]",
