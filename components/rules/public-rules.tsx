@@ -2,6 +2,7 @@
 
 import {
   useMemo,
+  useRef,
   useState,
 } from "react";
 
@@ -176,12 +177,29 @@ const categoryComparison =
     selectedRule,
   ]);
 
-  function selectRule(
-    rule: PublicRuleEntry,
-  ) {
-    setSelectedRuleId(rule.id);
-    setGlossaryOpen(false);
-  }
+  const ruleContentRef =
+  useRef<HTMLElement | null>(null);
+
+function selectRule(
+  rule: PublicRuleEntry,
+) {
+  setSelectedRuleId(rule.id);
+  setGlossaryOpen(false);
+
+  requestAnimationFrame(() => {
+    if (embedded) {
+      ruleContentRef.current?.scrollTo({
+        top: 0,
+        behavior: "auto",
+      });
+    } else {
+      window.scrollTo({
+        top: 0,
+        behavior: "auto",
+      });
+    }
+  });
+}
 
   return (
     <main
@@ -459,7 +477,8 @@ const categoryComparison =
     </select>
   </div>
 ) : null}
-        <section
+                <section
+          ref={ruleContentRef}
           className={[(([
             "min-w-0 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-120e0b))]",
             embedded
