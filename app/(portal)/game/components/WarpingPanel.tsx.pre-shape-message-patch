@@ -89,15 +89,6 @@ const ATTR_LABEL: Record<
 const signed = (n: number) =>
   n > 0 ? `+${n}` : String(n);
 
-const capitalise = (value: unknown) => {
-  const text = String(value ?? "").trim();
-
-  return text
-    ? text.charAt(0).toUpperCase() +
-        text.slice(1)
-    : "";
-};
-
 function profileBits(
   s: S,
   p: "self" | "other",
@@ -997,11 +988,18 @@ export function WarpingPanel({
           ? "Self"
           : targets
               .map(id => {
-                if (id === me.data.id) return "Self";
+                if (
+                  id ===
+                  me.data.id
+                ) {
+                  return "Self";
+                }
 
                 const entry =
                   presentCharacters.find(
-                    c => c.id === id,
+                    c =>
+                      c.id ===
+                      id,
                   );
 
                 return (
@@ -1010,250 +1008,122 @@ export function WarpingPanel({
                   "Unknown"
                 );
               })
-              .join(" / ");
+              .join(", ");
 
-      const profileForTarget = (
-        id: string,
-      ): "self" | "other" | "other_alt" => {
-        if (id === me.data.id) return "self";
-
-        if (
-          s.other_alternative_enabled &&
-          (targetEffectChoices[id] ?? "beneficial") === "harmful"
-        ) {
-          return "other_alt";
-        }
-
-        return "other";
-      };
-
-      const activeProfiles: Array<
-        "self" | "other" | "other_alt"
-      > = wt
-        ? []
-        : self
-          ? ["self"]
-          : [
-              ...new Set(
-                targets.map(profileForTarget),
-              ),
-            ];
-
-      const resolutionForProfile = (
-        profile:
-          | "self"
-          | "other"
-          | "other_alt",
-      ) =>
-        String(
-          s[
-            `${profile}_resolution_mode`
-          ] ??
-            s.resolution_mode ??
-            "save",
-        );
-
-      const attributeLabel = (
-        value: unknown,
-      ) => {
-        const key =
-          String(value ?? "").trim();
-
-        return key
-          ? ATTR_LABEL[key] ?? key
-          : "";
-      };
-
-      const parts: string[] = [];
-
-      parts.push(
-        `◆ Warp [${s.name}]`,
-      );
-
-      const wordAndMovement = [
-  s.word_of_power
-    ? `Word of Power: [${capitalise(s.word_of_power)}]`
-    : "",
-  s.movement
-    ? `Movement: [${capitalise(s.movement)}]`
-    : "",
-]
-  .filter(Boolean)
-  .join(" - ");
-
-if (wordAndMovement) {
-  parts.push(wordAndMovement);
-}
-
-      if (
-        s.level !== null &&
-        s.level !== undefined
-      ) {
-        parts.push(
-  `Level: [${s.level}]`,
-);
-      }
-
-      if (s.school) {
-  parts.push(
-    `School [${capitalise(s.school)}]`,
-  );
-}
-
-      parts.push(
-        `${
-          !wt &&
-          !self &&
-          targets.length > 1
-            ? "Targets"
-            : "Target"
-        } [${targetNames}]`,
-      );
-
-      if (s.effect_nature) {
-        const rawNature =
-          String(s.effect_nature).trim();
-
-        const nature =
-          rawNature
-            ? rawNature.charAt(0).toUpperCase() +
-              rawNature.slice(1)
-            : "";
-
-        if (nature) {
-          parts.push(
-            `Nature [${nature}]`,
-          );
-        }
-      }
+      const parts: string[] =
+        [
+          `◆ Warp ${s.name}`,
+          s.word_of_power
+            ? `${s.word_of_power}`
+            : "",
+          s.level
+            ? `Level ${s.level}`
+            : "",
+          s.school
+            ? `${s.school}`
+            : "",
+          `Target${
+            !wt &&
+            !self &&
+            targets.length > 1
+              ? "s"
+              : ""
+          }: ${targetNames}`,
+        ];
 
       if (wt) {
         parts.push(
-          "Save Required [Fate]",
+          "Fate resolves the result",
         );
       } else {
-        const saveProfiles =
-          activeProfiles.filter(
-            profile =>
-              resolutionForProfile(
-                profile,
-              ) === "save",
-          );
+        const profileForTarget = (
+          id: string,
+        ) =>
+          id === me.data.id
+            ? "self"
+            : s.other_alternative_enabled &&
+                (targetEffectChoices[
+                  id
+                ] ??
+                  "beneficial") ===
+                  "harmful"
+              ? "other_alt"
+              : "other";
 
-        if (saveProfiles.length) {
-          const dcAttributes = [
-            ...new Set(
-              saveProfiles
-                .map(
-                  profile =>
-                    s[
-                      `${profile}_dc_attribute`
-                    ] ??
-                    s.dc_attribute,
-                )
-                .filter(Boolean)
-                .map(String),
-            ),
-          ];
-
-          const dcParts =
-            dcAttributes.map(
-              attribute => {
-                const runtimeKey =
-                  attribute === "vigour"
-                    ? "vigor"
-                    : attribute === "presence"
-                      ? "presence_score"
-                      : attribute;
-
-                const casterValue =
-                  Number(
-                    r?.[runtimeKey],
-                  );
-
-                return Number.isFinite(
-                  casterValue,
-                )
-                  ? String(
-                      11 + casterValue,
-                    )
-                  : `11 + ${attributeLabel(
-                      attribute,
-                    )}`;
-              },
+        const resolutionForProfile =
+          (p: string) =>
+            String(
+              s[
+                `${p}_resolution_mode`
+              ] ??
+                s.resolution_mode ??
+                "save",
             );
 
-          const saveOptions = [
-            ...new Set(
-              saveProfiles.flatMap(
-                profile => {
-                  const profileOptions =
-                    s[
-                      `${profile}_save_options`
-                    ];
+        const resolutionTargets =
+          self
+            ? [me.data.id]
+            : targets;
 
-                  return Array.isArray(
-                    profileOptions,
-                  )
-                    ? profileOptions
-                    : Array.isArray(
-                          s.save_options,
-                        )
-                      ? s.save_options
-                      : [];
-                },
+        const automaticNames: string[] =
+          [];
+
+        const saveNames: string[] =
+          [];
+
+        for (const id of resolutionTargets) {
+          const name =
+            id === me.data.id
+              ? "Self"
+              : presentCharacters.find(
+                    c =>
+                      c.id === id,
+                  )?.display_name ??
+                presentCharacters.find(
+                  c =>
+                    c.id === id,
+                )?.displayName ??
+                "Target";
+
+          if (
+            id === me.data.id ||
+            resolutionForProfile(
+              profileForTarget(
+                id,
               ),
-            ),
-          ];
+            ) === "automatic"
+          ) {
+            automaticNames.push(
+              name,
+            );
+          } else {
+            saveNames.push(
+              name,
+            );
+          }
+        }
 
-          const saveAttributes = [
-            ...new Set(
-              saveOptions
-                .map(option => {
-                  switch (
-                    String(option)
-                  ) {
-                    case "dodge":
-                      return "Reflexes";
-                    case "defend":
-                      return "Vigour";
-                    case "resist_vigour":
-                    case "resist_vigor":
-                      return "Vigour";
-                    case "resist_shrewd":
-                      return "Shrewd";
-                    case "resist_brains":
-                      return "Brains";
-                    case "resist_presence":
-                      return "Presence";
-                    default:
-                      return "";
-                  }
-                })
-                .filter(Boolean),
-            ),
-          ];
-
-          const dcText =
-            dcParts.length
-              ? dcParts.join(" / ")
-              : "—";
-
-          const saveAttributeText =
-            saveAttributes.length
-              ? saveAttributes.join(
-                  " / ",
-                )
-              : "—";
-
+        if (
+          automaticNames.length
+        ) {
           parts.push(
-            `Save Required [DC ${dcText} - ${saveAttributeText}]`,
-          );
-        } else {
-          parts.push(
-            "Save Required [None]",
+            `Automatic: ${automaticNames.join(", ")}`,
           );
         }
+
+        if (
+          saveNames.length
+        ) {
+          parts.push(
+            `Save required: ${saveNames.join(", ")}`,
+          );
+        }
+      }
+
+      if (s.movement) {
+        parts.push(
+          `Movement: ${s.movement}`,
+        );
       }
 
       const components = [
@@ -1267,259 +1137,208 @@ if (wordAndMovement) {
         .filter(Boolean)
         .join(" + ");
 
-      parts.push(
-        `Components [${components || "None"}]`,
-      );
+      if (components) {
+        parts.push(
+          `Components: ${components}`,
+        );
+      }
 
       if (s.description) {
-        const effect =
-          String(s.description)
-            .replace(/\s+/g, " ")
-            .trim();
+        parts.push(
+          `Effect: ${String(
+            s.description,
+          )
+            .replace(
+              /\s+/g,
+              " ",
+            )
+            .trim()}`,
+        );
+      }
 
-        if (effect) {
+      /*
+       * Written/Fate targets do not
+       * use character effect profiles.
+       */
+      const castProfiles =
+        wt
+          ? []
+          : self
+            ? [
+                "Self → Self Effect",
+              ]
+            : targets.map(
+                id => {
+                  if (
+                    id ===
+                    me.data.id
+                  ) {
+                    return "Self → Self Effect";
+                  }
+
+                  const entry =
+                    presentCharacters.find(
+                      c =>
+                        c.id ===
+                        id,
+                    );
+
+                  const name =
+                    entry?.display_name ??
+                    entry?.displayName ??
+                    "Target";
+
+                  if (
+                    !s.other_alternative_enabled
+                  ) {
+                    return `${name} → Other Effect`;
+                  }
+
+                  return `${name} → ${
+                    (
+                      targetEffectChoices[
+                        id
+                      ] ??
+                      "beneficial"
+                    ) ===
+                    "harmful"
+                      ? "Harmful"
+                      : "Beneficial"
+                  } Other`;
+                },
+              );
+
+      if (
+        castProfiles.length
+      ) {
+        parts.push(
+          `Profiles: ${castProfiles.join("; ")}`,
+        );
+      }
+
+      /*
+       * DAMAGE FORMULA
+       *
+       * Adds e.g.
+       * Damage: 1d6 + Vigour Fire
+       * to the Location Chat Warp
+       * announcement.
+       */
+      if (!wt) {
+        const effectProfiles =
+          self
+            ? ["self"]
+            : targets.map(
+                id => {
+                  if (
+                    id ===
+                    me.data.id
+                  ) {
+                    return "self";
+                  }
+
+                  return s.other_alternative_enabled &&
+                    (
+                      targetEffectChoices[
+                        id
+                      ] ??
+                      "beneficial"
+                    ) ===
+                      "harmful"
+                    ? "other_alt"
+                    : "other";
+                },
+              );
+
+        const uniqueEffectProfiles =
+          [
+            ...new Set(
+              effectProfiles,
+            ),
+          ];
+
+        for (const profile of uniqueEffectProfiles) {
+          const damageDice =
+            s[
+              `${profile}_damage_dice`
+            ];
+
+          const damageAttribute =
+            s[
+              `${profile}_damage_attribute`
+            ];
+
+          if (
+            !damageDice &&
+            !damageAttribute
+          ) {
+            continue;
+          }
+
+          const damage = [
+            damageDice
+              ? String(
+                  damageDice,
+                )
+              : "",
+            damageAttribute
+              ? `+ ${
+                  ATTR_LABEL[
+                    String(
+                      damageAttribute,
+                    )
+                  ] ??
+                  String(
+                    damageAttribute,
+                  )
+                }`
+              : "",
+          ]
+            .filter(Boolean)
+            .join(" ");
+
+          const profileLabel =
+            profile === "self"
+              ? "Self"
+              : profile ===
+                  "other_alt"
+                ? "Harmful Other"
+                : "Other";
+
           parts.push(
-            `Effect: [${effect}]`,
+            `Damage${
+              uniqueEffectProfiles.length >
+              1
+                ? ` (${profileLabel})`
+                : ""
+            }: ${damage}${
+              s.damage_type
+                ? ` ${s.damage_type}`
+                : ""
+            }`,
           );
         }
       }
 
-      const uniqueValues = (
-        values: string[],
-      ) => [
-        ...new Set(
-          values.filter(Boolean),
-        ),
-      ];
-
-      const damageValues =
-        uniqueValues(
-          activeProfiles.map(
-            profile => {
-              const dice =
-                String(
-                  s[
-                    `${profile}_damage_dice`
-                  ] ?? "",
-                ).trim();
-
-              const attribute =
-                String(
-                  s[
-                    `${profile}_damage_attribute`
-                  ] ?? "",
-                ).trim();
-
-              if (!dice && !attribute) {
-                return "";
-              }
-
-              const damageBase = [
-  dice,
-  attribute
-    ? `+ ${attributeLabel(
-        attribute,
-      )}`
-    : "",
-]
-  .filter(Boolean)
-  .join(" ");
-
-const damageType =
-  s.damage_type
-    ? String(s.damage_type)
-    : "";
-
-return [
-  damageBase,
-  damageType,
-]
-  .filter(Boolean)
-  .join(" - ");
-            },
-          ),
-        );
-
-      if (damageValues.length) {
-        parts.push(
-          `Damage [${damageValues.join(
-            " / ",
-          )}]`,
-        );
-      }
-
-      const healingValues =
-        uniqueValues(
-          activeProfiles.map(
-            profile => {
-              const dice =
-                String(
-                  s[
-                    `${profile}_heal_dice`
-                  ] ?? "",
-                ).trim();
-
-              const attribute =
-                String(
-                  s[
-                    `${profile}_heal_attribute`
-                  ] ?? "",
-                ).trim();
-
-              if (!dice && !attribute) {
-                return "";
-              }
-
-              return [
-                dice,
-                attribute
-                  ? `+ ${attributeLabel(
-                      attribute,
-                    )}`
-                  : "",
-              ]
-                .filter(Boolean)
-                .join(" ");
-            },
-          ),
-        );
-
-      if (healingValues.length) {
-        parts.push(
-          `Healing [${healingValues.join(
-            " / ",
-          )}]`,
-        );
-      }
-
-      const maxHealthValues =
-        uniqueValues(
-          activeProfiles.map(
-            profile => {
-              const raw =
-                String(
-                  s[
-                    `${profile}_max_hp_change`
-                  ] ?? "",
-                ).trim();
-
-              if (!raw || raw === "0") {
-                return "";
-              }
-
-              const numeric =
-                Number(raw);
-
-              return (
-                Number.isFinite(numeric) &&
-                numeric > 0 &&
-                !raw.startsWith("+")
-                  ? `+${raw}`
-                  : raw
-              );
-            },
-          ),
-        );
-
-      if (maxHealthValues.length) {
-        parts.push(
-          `Max Health [${maxHealthValues.join(
-            " / ",
-          )}]`,
-        );
-      }
-
-      const conditions =
-        uniqueValues(
-          activeProfiles.flatMap(
-            profile => {
-              const value =
-                s[
-                  `${profile}_conditions`
-                ];
-
-              return Array.isArray(value)
-                ? value.map(String)
-                : [];
-            },
-          ),
-        );
-
-      if (conditions.length) {
-        parts.push(
-          `Applies [${conditions.join(
-            " / ",
-          )}]`,
-        );
-      }
-
-      let duration = "";
-
-      if (s.is_instantaneous) {
-        duration =
-          "Instantaneous";
-      } else if (
-        s.duration_unit ===
-        "until_dispelled"
+      if (
+        s.is_instantaneous
       ) {
-        duration =
-          "Until Dispelled";
+        parts.push(
+          "Duration: Instantaneous",
+        );
       } else if (
         s.duration_amount &&
         s.duration_unit
       ) {
-        duration =
-          `${s.duration_amount} ${s.duration_unit}`;
-      }
-
-      if (duration) {
         parts.push(
-          `Duration [${duration}]`,
+          `Duration: ${s.duration_amount} ${s.duration_unit}`,
         );
-      }
-
-      const prerequisites = [
-        ["muscles", "Muscles"],
-        ["reflexes", "Reflexes"],
-        ["vigour", "Vigour"],
-        ["brains", "Brains"],
-        ["shrewd", "Shrewd"],
-        ["presence", "Presence"],
-      ]
-        .map(([key, label]) => {
-          const minimum =
-            s[`min_${key}`];
-
-          if (
-            minimum === null ||
-            minimum === undefined ||
-            minimum === "" ||
-            Number(minimum) === 0
-          ) {
-            return "";
-          }
-
-          return `${label} ${minimum}+`;
-        })
-        .filter(Boolean);
-
-      if (prerequisites.length) {
-        parts.push(
-          `Prerequisites [${prerequisites.join(
-            " / ",
-          )}]`,
-        );
-      }
-
-      if (
-        s.price_key &&
-        PM[String(s.price_key)]
+      } else if (
+        s.duration_unit ===
+        "until_dispelled"
       ) {
-        const [, , label] =
-          PM[String(s.price_key)];
-
         parts.push(
-          `Price [${label}]`,
+          "Duration: Until Dispelled",
         );
       }
 
@@ -1531,11 +1350,43 @@ return [
               selectedDispelEffect,
           );
 
+        parts.push(
+          `Dispel Level ${s.level}`,
+        );
+
         if (de) {
           parts.push(
-            `Dispels [${de.shape_name} - Level ${de.shape_level}]`,
+            `Effect: ${de.shape_name} · Level ${de.shape_level}`,
           );
         }
+      }
+
+      if (
+        s.price_key &&
+        PM[String(s.price_key)]
+      ) {
+        const [
+          stage,
+          days,
+          label,
+        ] =
+          PM[
+            String(
+              s.price_key,
+            )
+          ];
+
+        parts.push(
+          `Price: ${label} · Stage ${stage} · ${days} days`,
+        );
+      }
+
+      if (
+        immediateResolutionMessage
+      ) {
+        parts.push(
+          immediateResolutionMessage,
+        );
       }
 
       const castText =

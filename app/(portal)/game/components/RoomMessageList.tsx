@@ -663,12 +663,23 @@ function formatMechanicalDisplayText(
 function renderMechanicalText(
   item: RoomMessage,
   actionColour?: string,
+  shapeIdsByName: Record<string, string> = {},
 ): ReactNode {
   const text =
     formatMechanicalDisplayText(item);
 
+  const isWarp =
+    /^warps\s+\[/i.test(
+      text.trim(),
+    );
+
+  let foundShape = false;
+
   return (
-    <span className="game_components_roommessagelist_span_text" data-room-mechanical-action="true">
+    <span
+      className="game_components_roommessagelist_span_text"
+      data-room-mechanical-action="true"
+    >
       {text
         .split(/(\[[^\]]+\])/g)
         .filter(Boolean)
@@ -676,6 +687,47 @@ function renderMechanicalText(
           const highlighted =
             segment.startsWith("[") &&
             segment.endsWith("]");
+
+          const isShape =
+            isWarp &&
+            highlighted &&
+            !foundShape;
+
+          if (isShape) {
+            foundShape = true;
+          }
+
+          if (isShape) {
+            const shapeName =
+              segment.slice(1, -1).trim();
+
+            const shapeId =
+              shapeIdsByName[
+                shapeName.toLowerCase()
+              ];
+
+            if (shapeId) {
+              return (
+                <button
+                  key={index}
+                  type="button"
+                  data-mechanical-highlight="true"
+                  className="cursor-pointer font-bold underline decoration-dotted underline-offset-2 game_components_roommessagelist_span_text_2"
+                  title={`Open ${shapeName} in Warping`}
+                  onClick={() =>
+                    openPortalModal({
+                      label: shapeName,
+                      title: "Warping",
+                      icon: "/icons/warping.png",
+                      href: `/warping#shape-${shapeId}`,
+                    })
+                  }
+                >
+                  {segment}
+                </button>
+              );
+            }
+          }
 
           return (
             <span
@@ -685,10 +737,14 @@ function renderMechanicalText(
                   ? "true"
                   : undefined
               }
-              className={[((highlighted
+              className={[
+                highlighted
                   ? "font-bold"
-                  : undefined)), "game_components_roommessagelist_span_text_2"].filter(Boolean).join(" ")}
-
+                  : undefined,
+                "game_components_roommessagelist_span_text_2",
+              ]
+                .filter(Boolean)
+                .join(" ")}
             >
               {segment}
             </span>
@@ -701,14 +757,16 @@ function renderMechanicalText(
 function renderRollText(
   item: RoomMessage,
   actionColour?: string,
+  shapeIdsByName: Record<string, string> = {},
 ): ReactNode {
   if (
     isMechanicalActionMessage(item)
   ) {
     return renderMechanicalText(
-      item,
-      actionColour,
-    );
+  item,
+  actionColour,
+  shapeIdsByName,
+);
   }
 
   const text = formatRollText(item);
@@ -972,6 +1030,53 @@ const [activeShapeTags,setActiveShapeTags]=useState<
 const [messageEffectConditions,setMessageEffectConditions]=useState<
   Record<string,string[]>
 >({});
+
+const [shapeIdsByName, setShapeIdsByName] =
+  useState<Record<string, string>>({});
+
+  useEffect(() => {
+  let active = true;
+
+  async function loadShapeIds() {
+    const supabase = createClient();
+
+    const { data, error } =
+      await supabase
+        .from("shapes")
+        .select("id,name")
+        .eq("is_active", true);
+
+    if (error) {
+      console.error(
+        "Unable to load Shape links:",
+        error.message,
+      );
+      return;
+    }
+
+    if (!active) {
+      return;
+    }
+
+    const next: Record<string, string> = {};
+
+    for (const shape of data ?? []) {
+      next[
+        String(shape.name)
+          .trim()
+          .toLowerCase()
+      ] = String(shape.id);
+    }
+
+    setShapeIdsByName(next);
+  }
+
+  void loadShapeIds();
+
+  return () => {
+    active = false;
+  };
+}, []);
 
 const messageIdsKey =
   liveMessages
@@ -2417,11 +2522,12 @@ for(const row of priceResult.data??[]){
                       <br />
 
                       {isMechanicalOutput ? (
-                        renderRollText(
-                          item,
-                          privateLocationTheme?.actionColour,
-                        )
-                      ) : (
+  renderRollText(
+    item,
+    privateLocationTheme?.actionColour,
+    shapeIdsByName,
+  )
+) : (
                         <ActionSpeechText
                           content={item.message}
                           speechColour={
