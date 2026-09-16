@@ -154,7 +154,7 @@ export default async function AdminRulesPage() {
             rel="noreferrer"
             className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-a78d68))] hover:border-[rgb(var(--sep-colour-8d693e))] hover:text-[rgb(var(--sep-colour-d8bb8a))] admin_rules_page_a_view_public_rules"
           >
-            View public Rules ↗
+            View Player's Handbook ↗
           </a>
         </header>
 

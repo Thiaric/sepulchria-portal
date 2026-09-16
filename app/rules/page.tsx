@@ -6,7 +6,7 @@ import { PublicRules } from "@/components/rules/public-rules";
 import { getPublicRules } from "@/lib/rules/get-public-rules";
 
 export const metadata: Metadata = {
-  title: "Rules | Sepulchria",
+  title: "Player's Handbook | Sepulchria",
   description:
     "Official offgame rules and gameplay documentation for Sepulchria.",
 };

@@ -772,10 +772,10 @@ const moreDragging =
 
   const ruleEntry: LinkEntry = {
     href: "/rules",
-    label: "Rules",
+    label: "Player's Handbook",
     icon: "/icons/rules.png",
     modal: {
-      label: "Rules",
+      label: "Player's Handbook",
       title:
         "Read the official game rules and off-game documentation.",
       icon: "/icons/rules.png",
@@ -1335,7 +1335,7 @@ const moreDragging =
                           src="/icons/rules.png"
                         />
                         <span className="min-w-0 flex-1 truncate text-[10px] uppercase tracking-[0.16em] !text-[rgb(var(--sep-colour-b6a894))] components_portal_mobile_portal_navigation_span_text_4">
-                          Rules
+                          Player's Handbook
                         </span>
                       </button>
 

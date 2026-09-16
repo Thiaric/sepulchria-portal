@@ -23,7 +23,7 @@ const PRIMARY_LINKS = [
     icon: "/icons/homepage/codex.png",
   },
   {
-    label: "Rules",
+    label: "Player's Handbook",
     eyebrow: "Understand",
     href: "/rules",
     icon: "/icons/homepage/rules.png",
@@ -810,7 +810,7 @@ export function SepulchriaHomepage({
   onClick={() => {
     setAboutOpen(false);
     setPublicModal({
-      title: "Rules",
+      title: "Player's Handbook",
       href: "/rules",
     });
   }}

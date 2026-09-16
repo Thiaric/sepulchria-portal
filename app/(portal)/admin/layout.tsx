@@ -250,7 +250,7 @@ export default async function AdminLayout({
 
             {can("rules") ? (
               <AdminNavigationLink href="/admin/rules">
-                Rules
+                Player's Handbook
               </AdminNavigationLink>
             ) : null}
 

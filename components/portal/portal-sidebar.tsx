@@ -96,7 +96,7 @@ const codexItem: NavigationItem = {
 };
 
 const rulesItem: NavigationItem = {
-  label: "Rules",
+  label: "Player's Handbook",
   title:
     "Read the official game rules and off-game documentation.",
   icon: "/icons/rules.png",

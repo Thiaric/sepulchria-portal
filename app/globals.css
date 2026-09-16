@@ -21238,6 +21238,13 @@ background: rgb(var(--sep-colour-100c09) / 80%) !important;
 }
 
 
+.components_rules_public_rules_section_section,
+.components_rules_public_rules_aside_sidebar,
+.components_codex_public_codex_div_codex_chapter_3 {
+background: rgb(var(--sep-colour-100c09) / 60%) !important;
+}
+
+
 .sep-notification-read,
 .messages_new_page_section_new_message,
 .components_characters_character_ledger_section_sectionm

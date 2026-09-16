@@ -200,7 +200,7 @@ const categoryComparison =
             </p>
 
             <h1 className="mt-1 font-serif text-3xl leading-none text-[rgb(var(--sep-colour-ead5ac))] components_rules_public_rules_h1_rules">
-              Rules
+              Player's Handbook
             </h1>
           </div>
 
@@ -215,7 +215,7 @@ const categoryComparison =
               placeholder={
                 glossaryOpen
                   ? "Search glossary..."
-                  : "Search rules..."
+                  : "Search entry..."
               }
               className="h-9 min-w-0 flex-1 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-3 text-xs text-[rgb(var(--sep-colour-d6c3a3))] outline-none placeholder:text-[rgb(var(--sep-colour-655c50))] focus:border-[rgb(var(--sep-colour-9a7445))] components_rules_public_rules_input_field"
             />
@@ -250,7 +250,7 @@ const categoryComparison =
     .join(" ")}
 >
   {glossaryOpen
-    ? "← Back to Rules"
+    ? "← Back to Player's Handbook"
     : "Glossary"}
 </button>
           </div>
@@ -316,7 +316,7 @@ const categoryComparison =
 >
             <div className="flex h-9 items-center justify-between border-b border-[rgb(var(--sep-colour-60482e))]/35 px-3 components_rules_public_rules_div_container_5">
               <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-816a4d))] components_rules_public_rules_p_text">
-                Rule index
+                Index
               </p>
 
               <span className="text-[9px] text-[rgb(var(--sep-colour-756958))] components_rules_public_rules_span_text">
@@ -333,7 +333,7 @@ const categoryComparison =
               0 ? (
                 <p className="p-3 text-xs leading-5 text-[rgb(var(--sep-colour-766b5d))] components_rules_public_rules_p_text_2">
                   No matching published
-                  rules.
+                  entry.
                 </p>
               ) : (
                 <div className="space-y-1 components_rules_public_rules_div_container_7">
@@ -410,7 +410,7 @@ const categoryComparison =
       htmlFor="mobile-rule-select"
       className="mb-1.5 block text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-816a4d))]"
     >
-      Choose Rule
+      Choose Entry
     </label>
 
     <select
@@ -487,7 +487,7 @@ const categoryComparison =
             />
           ) : (
             <div className="p-8 text-center text-sm text-[rgb(var(--sep-colour-7d7161))] components_rules_public_rules_div_container_8">
-              Select a rule from the
+              Select an entry from the
               index.
             </div>
           )}
@@ -539,7 +539,7 @@ function RulePanel({
     <>
       <header className="border-b border-[rgb(var(--sep-colour-60482e))]/35 px-5 py-4 sm:px-7 components_rules_public_rules_header_header_2">
         <p className="text-[7px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8d6f48))] components_rules_public_rules_p_text_3">
-          Official rule
+          Official entry
         </p>
 
         <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-e2c99c))] components_rules_public_rules_h2_heading">
@@ -564,7 +564,7 @@ function RulePanel({
         0 ? (
           <div className="mt-6 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-4 components_rules_public_rules_div_container_10">
             <p className="mb-2 text-[8px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-79664c))] components_rules_public_rules_p_text_4">
-              Related rules
+              Related Entry
             </p>
 
             <div className="flex flex-wrap gap-2 components_rules_public_rules_div_container_11">
@@ -692,7 +692,7 @@ function GlossaryPanel({
                     }
                     className="mt-3 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9a7547))] hover:text-[rgb(var(--sep-colour-dfbd84))] components_rules_public_rules_button_related_rule"
                   >
-                    Related rule →
+                    Related entry →
                   </button>
                 ) : null}
               </article>

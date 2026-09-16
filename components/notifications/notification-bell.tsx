@@ -70,7 +70,7 @@ const MODAL_ROUTES: ModalRouteDefinition[] = [
   },
   {
     prefix: "/rules",
-    label: "Rules",
+    label: "Players' Handbook",
     title: "Read the official game rules and documentation.",
     icon: "/icons/rules.png",
   },
