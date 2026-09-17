@@ -196,6 +196,36 @@
   border-radius: 0 !important;
 }
 
+/* ---------------------------------------------------------------
+   PRIVATE MESSAGES — SELECTED MESSAGE
+   Selected state must override the generic unified frame styling.
+   --------------------------------------------------------------- */
+
+[data-portal-shell]
+  article.messages_id_components_conversationmessagelist_article_article:has(
+    input.messages_id_components_conversationmessagelist_input_select_message:checked
+  ) {
+  border-color: rgb(var(--sep-skin-c1)) !important;
+  box-shadow:
+    0 0 0 1px rgb(var(--sep-skin-c1)),
+    inset 0 0 0 1px rgb(var(--sep-skin-c1) / 0.35) !important;
+}
+
+/* Selected checkbox frame */
+[data-portal-shell]
+  .messages_id_components_conversationmessagelist_label_select_message:has(
+    input:checked
+  ) {
+  border-color: rgb(var(--sep-skin-c1)) !important;
+  background-color: rgb(var(--sep-skin-c1) / 0.18) !important;
+}
+
+/* Native checkbox/tick follows the active skin accent */
+[data-portal-shell]
+  input.messages_id_components_conversationmessagelist_input_select_message {
+  accent-color: rgb(var(--sep-skin-c1)) !important;
+}
+
 /* Nested frames use the slightly stronger field/frame line. */
 [data-portal-shell]
   :is(section, article, fieldset, div)[class~="border"]

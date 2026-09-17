@@ -702,8 +702,8 @@ export function ConversationMessageList({
                       : "border-[rgb(var(--sep-colour-5c6372))] bg-[rgb(var(--sep-colour-191b21))]"
                 } ${
                   selected
-                    ? "ring-1 ring-[rgb(var(--sep-colour-c18b4d))]"
-                    : ""
+  ? "ring-2 ring-[rgb(var(--sep-skin-c1))]"
+  : ""
                 }`)), "messages_id_components_conversationmessagelist_article_article"].filter(Boolean).join(" ")}
               >
                 <div className="flex items-start gap-2 messages_id_components_conversationmessagelist_div_container_7">
@@ -899,11 +899,11 @@ export function ConversationMessageList({
 
                 {/* MESSAGE SELECTION */}
                 <label
-                  className={[((`mt-1.5 ml-auto flex h-5 w-5 cursor-pointer items-center justify-center border transition ${
-                    selected
-                      ? "border-[rgb(var(--sep-colour-b8874d))] bg-[rgb(var(--sep-colour-382516))]"
-                      : "border-[rgb(var(--sep-colour-6a5135))] bg-[rgb(var(--sep-colour-0d0907))] hover:border-[rgb(var(--sep-colour-9b7446))]"
-                  }`)), "messages_id_components_conversationmessagelist_label_select_message"].filter(Boolean).join(" ")}
+                  className={[((`mt-1.5 ml-auto flex h-5 w-5 cursor-pointer items-center justify-center border-2 transition ${
+  selected
+    ? "border-[rgb(var(--sep-skin-c1))] bg-[rgb(var(--sep-skin-c1))]/20"
+    : "border-[rgb(var(--sep-colour-6a5135))] bg-[rgb(var(--sep-colour-0d0907))] hover:border-[rgb(var(--sep-skin-c1))]"
+}`)), "messages_id_components_conversationmessagelist_label_select_message"].filter(Boolean).join(" ")}
                   title="Select this message"
                 >
                   <input
@@ -914,7 +914,7 @@ export function ConversationMessageList({
                         message.id,
                       )
                     }
-                    className="h-3.5 w-3.5 accent-[rgb(var(--sep-colour-b8874d))] messages_id_components_conversationmessagelist_input_select_message"
+                    className="h-3.5 w-3.5 accent-[rgb(var(--sep-skin-c1))] messages_id_components_conversationmessagelist_input_select_message"
                     aria-label="Select message"
                   />
                 </label>
