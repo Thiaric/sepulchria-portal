@@ -457,81 +457,6 @@ export default function RoomChatForm({
 
   const gameChatRestriction=useSanctionCapability("game_chat");
 
-  const exchangeSupabase =
-    useMemo(
-      () => createClient(),
-      [],
-    );
-
-  const searchParams =
-    useSearchParams();
-
-  const [
-    messageState,
-    messageAction,
-  ] = useActionState(
-    sendRoomMessage,
-    initialState,
-  );
-
-  const [diceState, diceAction] =
-    useActionState(
-      sendRoomDiceRoll,
-      initialState,
-    );
-
-  const [checkState, checkAction] =
-    useActionState(
-      sendRoomAttributeCheck,
-      initialState,
-    );
-
-  const [opposedAttributeState, opposedAttributeAction] =
-    useActionState(
-      startAttributeOpposedAction,
-      initialState,
-    );
-
-  const [unarmedState, unarmedAction] =
-    useActionState(
-      startUnarmedAttack,
-      initialState,
-    );
-
-  const [weaponState, weaponAction] =
-    useActionState(
-      startWeaponOpposedAttack,
-      initialState,
-    );
-
-  const [giftState, giftAction] =
-    useActionState(
-      activateRoomGift,
-      initialState,
-    );
-
-  const [
-    giftUseState,
-    giftUseAction,
-  ] = useActionState(
-    useRoomGift,
-    initialState,
-  );
-
-  const [utilityMode, setUtilityMode] =
-    useState<
-      | "whisper"
-      | "dice"
-      | "attributes"
-      | "feat"
-      | "items"
-      | "exchange"
-      | "warping"
-      | "conditions"
-      | "npc"
-      | null
-    >(null);
-
   const [viewerDead, setViewerDead] = useState(false);
   const [ghostChatAllowed, setGhostChatAllowed] = useState(false);
 
@@ -613,6 +538,81 @@ export default function RoomChatForm({
       setUtilityMode(null);
     }
   }, [viewerDead, utilityMode]);
+
+  const exchangeSupabase =
+    useMemo(
+      () => createClient(),
+      [],
+    );
+
+  const searchParams =
+    useSearchParams();
+
+  const [
+    messageState,
+    messageAction,
+  ] = useActionState(
+    sendRoomMessage,
+    initialState,
+  );
+
+  const [diceState, diceAction] =
+    useActionState(
+      sendRoomDiceRoll,
+      initialState,
+    );
+
+  const [checkState, checkAction] =
+    useActionState(
+      sendRoomAttributeCheck,
+      initialState,
+    );
+
+  const [opposedAttributeState, opposedAttributeAction] =
+    useActionState(
+      startAttributeOpposedAction,
+      initialState,
+    );
+
+  const [unarmedState, unarmedAction] =
+    useActionState(
+      startUnarmedAttack,
+      initialState,
+    );
+
+  const [weaponState, weaponAction] =
+    useActionState(
+      startWeaponOpposedAttack,
+      initialState,
+    );
+
+  const [giftState, giftAction] =
+    useActionState(
+      activateRoomGift,
+      initialState,
+    );
+
+  const [
+    giftUseState,
+    giftUseAction,
+  ] = useActionState(
+    useRoomGift,
+    initialState,
+  );
+
+  const [utilityMode, setUtilityMode] =
+    useState<
+      | "whisper"
+      | "dice"
+      | "attributes"
+      | "feat"
+      | "items"
+      | "exchange"
+      | "warping"
+      | "conditions"
+      | "npc"
+      | null
+    >(null);
 
   const requestedExchangeId =
     searchParams.get("exchange");

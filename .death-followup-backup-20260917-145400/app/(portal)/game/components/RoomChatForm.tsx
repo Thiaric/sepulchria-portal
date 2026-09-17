@@ -532,88 +532,6 @@ export default function RoomChatForm({
       | null
     >(null);
 
-  const [viewerDead, setViewerDead] = useState(false);
-  const [ghostChatAllowed, setGhostChatAllowed] = useState(false);
-
-  useEffect(() => {
-    let active = true;
-    const supabase = createClient();
-
-    async function refreshDeathUi() {
-      const [characterResult, roomResult] = await Promise.all([
-        supabase
-          .from("characters")
-          .select("life_state")
-          .eq("id", viewerCharacterId)
-          .maybeSingle(),
-        supabase
-          .from("rooms")
-          .select("allow_dead_ghosts")
-          .eq("id", roomId)
-          .maybeSingle(),
-      ]);
-
-      if (!active) return;
-
-      if (!characterResult.error) {
-        setViewerDead(
-          characterResult.data?.life_state === "dead",
-        );
-      }
-
-      if (!roomResult.error) {
-        setGhostChatAllowed(
-          roomResult.data?.allow_dead_ghosts === true,
-        );
-      }
-    }
-
-    void refreshDeathUi();
-
-    const channel = supabase
-      .channel(`death-ui-${viewerCharacterId}-${roomId}-${crypto.randomUUID()}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "characters",
-          filter: `id=eq.${viewerCharacterId}`,
-        },
-        () => void refreshDeathUi(),
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "rooms",
-          filter: `id=eq.${roomId}`,
-        },
-        () => void refreshDeathUi(),
-      )
-      .subscribe();
-
-    return () => {
-      active = false;
-      void supabase.removeChannel(channel);
-    };
-  }, [viewerCharacterId, roomId]);
-
-  useEffect(() => {
-    if (!viewerDead) return;
-
-    if (
-      utilityMode === "whisper" ||
-      utilityMode === "attributes" ||
-      utilityMode === "feat" ||
-      utilityMode === "items" ||
-      utilityMode === "warping"
-    ) {
-      setUtilityMode(null);
-    }
-  }, [viewerDead, utilityMode]);
-
   const requestedExchangeId =
     searchParams.get("exchange");
 
@@ -1670,19 +1588,6 @@ function ignoreSpellingWord() {
   ) {
     if (utilityLoadingMode) return;
 
-    if (
-      viewerDead &&
-      (
-        mode === "whisper" ||
-        mode === "attributes" ||
-        mode === "feat" ||
-        mode === "items" ||
-        mode === "warping"
-      )
-    ) {
-      return;
-    }
-
     if (utilityMode === mode) {
       setUtilityMode(null);
       return;
@@ -1765,13 +1670,6 @@ function ignoreSpellingWord() {
       <PendingOpposedActions />
       <PendingShapeResponses />
       <CharacterDeathGate characterId={viewerCharacterId} />
-      {viewerDead ? (
-        <div className="mb-2 border border-[rgb(var(--sep-colour-754137))]/45 bg-[rgb(var(--sep-colour-2b1714))]/55 px-3 py-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-bc9d91))]">
-          {ghostChatAllowed
-            ? "Ghost state: Location chat is available here. Mechanical actions, Whispers, Feats, Warping and Items remain disabled."
-            : "Ghost state: this Location does not permit Ghost chat. You may move elsewhere, but mechanical actions remain disabled."}
-        </div>
-      ) : null}
       <div className="mb-2 flex justify-end game_components_roomchatform_div_container_3">
         
       </div>
@@ -1811,7 +1709,6 @@ function ignoreSpellingWord() {
               ref={textareaRef}
               name="message"
               required
-              disabled={viewerDead && !ghostChatAllowed}
               maxLength={CHAT_MAX_LENGTH}
               value={value}
               lang="en-GB"
@@ -2148,7 +2045,6 @@ function ignoreSpellingWord() {
                         <div className="relative -top-1.5 game_components_roomchatform_div_container_10">
               <SubmitButton
                 disabled={
-                  (viewerDead && !ghostChatAllowed) ||
                   !value.trim() ||
                   fateImageUploading ||
                   (
@@ -3296,10 +3192,8 @@ if (
             toggleUtility("whisper")
           }
           disabled={
-            viewerDead ||
             presentCharacters.length === 0
           }
-          title={viewerDead ? "Unavailable while dead." : undefined}
           className={[((utilityMode === "whisper"
               ? utilityButtonActiveClass
               : utilityButtonClass)), "game_components_roomchatform_button_whisper"].filter(Boolean).join(" ")}
@@ -3321,8 +3215,6 @@ if (
 
         <button
           type="button"
-          disabled={viewerDead}
-          title={viewerDead ? "Unavailable while dead." : undefined}
           onClick={() =>
             toggleUtility("attributes")
           }
@@ -3335,8 +3227,6 @@ if (
 
         <button
           type="button"
-          disabled={viewerDead}
-          title={viewerDead ? "Unavailable while dead." : undefined}
           onClick={() =>
             toggleUtility("feat")
           }
@@ -3349,8 +3239,6 @@ if (
 
         <button
           type="button"
-          disabled={viewerDead}
-          title={viewerDead ? "Unavailable while dead." : undefined}
           onClick={() => toggleUtility("warping")}
           className={[((utilityMode === "warping"
               ? utilityButtonActiveClass
@@ -3361,8 +3249,6 @@ if (
 
         <button
           type="button"
-          disabled={viewerDead}
-          title={viewerDead ? "Unavailable while dead." : undefined}
           onClick={() =>
             toggleUtility("items")
           }

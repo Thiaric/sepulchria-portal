@@ -51,7 +51,7 @@ type RoomMessageListProps = {
 type InsertedRoomMessage = {
   id: string;
   room_id: string;
-  character_id: string | null;
+  character_id: string;
   message: string;
   message_type: RoomMessageType;
   fate_image_url: string | null;
@@ -69,7 +69,7 @@ type InsertedRoomMessage = {
   condition_snapshot: {
     label: string;
   }[];
-  speaker_type: "character" | "npc" | "system";
+  speaker_type: "character" | "npc";
   npc_id: string | null;
   npc_snapshot: {
     id: string;
@@ -1031,10 +1031,6 @@ const [messageEffectConditions,setMessageEffectConditions]=useState<
   Record<string,string[]>
 >({});
 
-const [resurrectionMaluses,setResurrectionMaluses]=useState<
-  Record<string,{name:string;description:string}>
->({});
-
 const [shapeIdsByName, setShapeIdsByName] =
   useState<Record<string, string>>({});
 
@@ -1393,84 +1389,6 @@ for(const row of priceResult.data??[]){
     let active = true;
     const supabase = createClient();
 
-    async function loadResurrectionMaluses() {
-      const ids = Array.from(
-        new Set(
-          liveMessages
-            .map((message) => message.character_id)
-            .filter(Boolean),
-        ),
-      ) as string[];
-
-      if (!ids.length) {
-        if (active) setResurrectionMaluses({});
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from("character_resurrection_maluses")
-        .select(`
-          character_id,
-          narrative_text,
-          malus:death_resurrection_maluses(name,description)
-        `)
-        .in("character_id", ids)
-        .is("cleared_at", null)
-        .order("applied_at", { ascending: false });
-
-      if (error) {
-        console.error(
-          "Unable to load Resurrection Maluses:",
-          error.message,
-        );
-        return;
-      }
-
-      if (!active) return;
-
-      const next: Record<string,{name:string;description:string}> = {};
-
-      for (const row of data ?? []) {
-        const id = String(row.character_id ?? "");
-        if (!id || next[id]) continue;
-
-        const relation = Array.isArray(row.malus)
-          ? row.malus[0] ?? null
-          : row.malus;
-
-        next[id] = {
-          name: String(relation?.name ?? "Resurrection Scar"),
-          description: String(
-            row.narrative_text ??
-            relation?.description ??
-            "",
-          ),
-        };
-      }
-
-      setResurrectionMaluses(next);
-    }
-
-    void loadResurrectionMaluses();
-
-    const malusChannel = supabase
-      .channel(`resurrection-maluses-${crypto.randomUUID()}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "character_resurrection_maluses",
-        },
-        () => void loadResurrectionMaluses(),
-      )
-      .subscribe();
-
-    const malusTimer = window.setInterval(
-      () => void loadResurrectionMaluses(),
-      30000,
-    );
-
     async function loadMessageEffectConditions() {
       const messageIds =
         liveMessages
@@ -1532,8 +1450,6 @@ for(const row of priceResult.data??[]){
 
     return () => {
       active = false;
-      window.clearInterval(malusTimer);
-      void supabase.removeChannel(malusChannel);
     };
   }, [messageIdsKey, liveMessages]);
 
@@ -1596,25 +1512,6 @@ for(const row of priceResult.data??[]){
       characterId,
       false,
       metadataColour,
-    );
-  }
-
-  function resurrectionMalusHeaderText(
-    characterId: string,
-    metadataColour?: string,
-  ) {
-    const malus = resurrectionMaluses[characterId];
-    if (!malus) return null;
-
-    return (
-      <span
-        title={malus.description}
-        className="text-[9px] tracking-[.04em] text-[rgb(var(--sep-colour-c98b71))] underline decoration-dotted underline-offset-2"
-        style={metadataColour ? { color: metadataColour } : undefined}
-      >
-        {" | "}
-        {malus.name}
-      </span>
     );
   }
 
@@ -1819,8 +1716,7 @@ for(const row of priceResult.data??[]){
             authorResult,
             recipientResult,
           ] = await Promise.all([
-            inserted.character_id
-              ? supabase
+            supabase
               .from("characters")
               .select(`
                 id,
@@ -1843,11 +1739,7 @@ for(const row of priceResult.data??[]){
                 "id",
                 inserted.character_id,
               )
-              .maybeSingle()
-              : Promise.resolve({
-                  data: null,
-                  error: null,
-                }),
+              .maybeSingle(),
 
             inserted
               .whisper_recipient_character_id
@@ -2108,34 +2000,6 @@ for(const row of priceResult.data??[]){
                   getCharacterHref(
                     author,
                   );
-
-                if (
-                  item.speaker_type ===
-                  "system"
-                ) {
-                  return (
-                    <article
-                      key={item.id}
-                      data-room-message-kind="system"
-                      className="border-y border-[rgb(var(--sep-colour-8a6637))]/45 bg-[rgb(var(--sep-colour-21170f))]/75 px-5 py-3 sm:px-7"
-                    >
-                      <div className="flex items-center justify-between gap-4">
-                        <span className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-c99b58))]">
-                          The Current
-                        </span>
-                        <time
-                          dateTime={item.created_at}
-                          className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-776b5b))]"
-                        >
-                          {time}
-                        </time>
-                      </div>
-                      <p className="mt-1.5 whitespace-pre-wrap break-words font-serif text-[13px] leading-5 text-[rgb(var(--sep-colour-d9c39a))]">
-                        {item.message.replace(/^◆\s*/, "")}
-                      </p>
-                    </article>
-                  );
-                }
 
                 if (
                   item.message_type ===
@@ -2429,15 +2293,6 @@ for(const row of priceResult.data??[]){
                               )
                             : null}
 
-                          {!isNpcMessage && author
-                            ? resurrectionMalusHeaderText(
-                                author.id,
-                                privateLocationTheme
-                                  ? privateLocationTheme.offgameTextColour
-                                  : "rgb(var(--sep-colour-d3c2aa))",
-                              )
-                            : null}
-
                           {conditionSnapshotHeaderText(
                             [
                               ...(item.condition_snapshot ?? []),
@@ -2484,8 +2339,7 @@ for(const row of priceResult.data??[]){
 
                 const chatFrameUrl =
                   !isMechanicalOutput &&
-                  !isNpcMessage &&
-                  item.character_id
+                  !isNpcMessage
                     ? chatFrames[
                         item.character_id
                       ] ?? null
@@ -2652,10 +2506,6 @@ for(const row of priceResult.data??[]){
 
                       {!isNpcMessage && author
                         ? shapeTagHeaderText(author.id)
-                        : null}
-
-                      {!isNpcMessage && author
-                        ? resurrectionMalusHeaderText(author.id)
                         : null}
 
                       {!isNpcMessage

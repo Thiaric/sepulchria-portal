@@ -171,7 +171,7 @@ async function announceSystemMessage({
     .from("room_messages")
     .insert({
       room_id: roomId,
-      character_id: null,
+      character_id: characterId,
       message,
       message_type: "action",
       speaker_type: "system",
@@ -235,83 +235,6 @@ export async function finaliseCharacterDeath({
       `Unable to resolve Death event: ${eventError.message}`,
     );
   }
-
-  // Death ends all unresolved mechanics involving this Character.
-  const opposedCancel = await admin
-    .from("opposed_actions")
-    .update({
-      status: "expired",
-      resolved_at: nowIso,
-    })
-    .eq("status", "pending")
-    .or(
-      `attacker_character_id.eq.${characterId},target_character_id.eq.${characterId}`,
-    );
-
-  if (opposedCancel.error) {
-    throw new Error(
-      `Unable to cancel pending opposed Actions: ${opposedCancel.error.message}`,
-    );
-  }
-
-  const incomingShapeCancel = await admin
-    .from("shape_cast_targets")
-    .update({
-      response: "death_cancelled",
-      outcome: "saved",
-      resolved_at: nowIso,
-    })
-    .eq("target_character_id", characterId)
-    .eq("outcome", "pending");
-
-  if (incomingShapeCancel.error) {
-    throw new Error(
-      `Unable to cancel pending Shape responses: ${incomingShapeCancel.error.message}`,
-    );
-  }
-
-  const castRows = await admin
-    .from("shape_casts")
-    .select("id")
-    .eq("caster_character_id", characterId);
-
-  if (castRows.error) {
-    throw new Error(
-      `Unable to load pending Shape casts: ${castRows.error.message}`,
-    );
-  }
-
-  const castIds = (castRows.data ?? []).map((row) => row.id);
-
-  if (castIds.length) {
-    const outgoingShapeCancel = await admin
-      .from("shape_cast_targets")
-      .update({
-        response: "death_cancelled",
-        outcome: "saved",
-        resolved_at: nowIso,
-      })
-      .in("cast_id", castIds)
-      .eq("outcome", "pending");
-
-    if (outgoingShapeCancel.error) {
-      throw new Error(
-        `Unable to cancel pending Shape targets: ${outgoingShapeCancel.error.message}`,
-      );
-    }
-
-    await admin
-      .from("shape_casts")
-      .update({ dispel_effect_id: null })
-      .in("id", castIds)
-      .not("dispel_effect_id", "is", null);
-  }
-
-  await admin
-    .from("shape_casts")
-    .update({ dispel_effect_id: null })
-    .eq("dispel_target_character_id", characterId)
-    .not("dispel_effect_id", "is", null);
 
   const announcement =
     rules.deathAnnouncementTemplate
@@ -499,39 +422,6 @@ export async function reviveDeadCharacter({
     }
   }
 
-  const { error: auditError } = await admin
-    .from("character_audit_log")
-    .insert({
-      character_id: characterId,
-      event_type: "character_resurrected",
-      entity_type: "character",
-      entity_id: characterId,
-      operation: "event",
-      actor_user_id: null,
-      actor_type: "system",
-      actor_staff_role: null,
-      actor_label: "The Current",
-      source: "death_system",
-      changed_fields: [],
-      old_values: null,
-      new_values: {
-        summary: `${character.display_name} was resurrected.`,
-        revival_source: source,
-        delayed_resurrection: delayed,
-        health_after_resurrection: revivedHealth,
-        resurrection_malus: malus?.name ?? null,
-      },
-      metadata: {
-        death_event_id: deathEvent?.id ?? null,
-      },
-    });
-
-  if (auditError) {
-    throw new Error(
-      `Unable to write Resurrection Character Log: ${auditError.message}`,
-    );
-  }
-
   const malusText = malus
     ? ` The journey beyond their lingering essence has left its mark: ${malus.name} — ${malus.description}`
     : "";
@@ -636,7 +526,21 @@ export async function assertGhostMovementAllowed(
     );
   }
 
-  // Ghost-enabled Locations control chat only.
-  // Movement follows normal Location/private-access rules.
-  void destinationRoomId;
+  const admin = createAdminClient();
+  const { data: room, error } = await admin
+    .from("rooms")
+    .select("allow_dead_ghosts,is_active")
+    .eq("id", destinationRoomId)
+    .maybeSingle();
+
+  if (
+    error ||
+    !room ||
+    !room.is_active ||
+    !room.allow_dead_ghosts
+  ) {
+    throw new Error(
+      "Ghosts cannot enter this Location.",
+    );
+  }
 }

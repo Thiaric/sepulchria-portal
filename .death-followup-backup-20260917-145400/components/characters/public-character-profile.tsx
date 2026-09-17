@@ -12,7 +12,6 @@ import { CharacterTrophiesDisplay } from "@/components/characters/character-trop
 import { CharacterDisplayTrophies } from "@/components/characters/character-display-trophies";
 import { CharacterConditionsDisplay } from "@/components/characters/character-conditions-display";
 import { CharacterMasterNotes } from "@/components/characters/character-master-notes";
-import { CharacterResurrectionMalus } from "@/components/characters/character-resurrection-malus";
 import { CharacterLifeStateBadge } from "@/components/characters/character-life-state";
 import { AutoFitCharacterName } from "@/components/characters/auto-fit-character-name";
 import { CharacterExpertiseTotal } from "@/components/characters/character-expertise-total";
@@ -443,10 +442,6 @@ export function PublicCharacterProfileView({
                 expiresAt={
                   character.master_notes_expires_at
                 }
-              />
-
-              <CharacterResurrectionMalus
-                characterId={character.id}
               />
             </div>
           </section>

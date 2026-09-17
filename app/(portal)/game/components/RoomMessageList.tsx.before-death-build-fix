@@ -2484,8 +2484,7 @@ for(const row of priceResult.data??[]){
 
                 const chatFrameUrl =
                   !isMechanicalOutput &&
-                  !isNpcMessage &&
-                  item.character_id
+                  !isNpcMessage
                     ? chatFrames[
                         item.character_id
                       ] ?? null

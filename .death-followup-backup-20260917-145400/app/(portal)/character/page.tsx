@@ -26,7 +26,6 @@ import { CharacterConditionsDisplay } from "@/components/characters/character-co
 import { CharacterLifeStateBadge } from "@/components/characters/character-life-state";
 import { CharacterConditionsEditor } from "@/components/characters/character-conditions-editor";
 import { CharacterMasterNotes } from "@/components/characters/character-master-notes";
-import { CharacterResurrectionMalus } from "@/components/characters/character-resurrection-malus";
 import { AutoFitCharacterName } from "@/components/characters/auto-fit-character-name";
 import { DisplayTrophySelector } from "@/components/characters/display-trophy-selector";
 import { LiveCharacterSheetRefresh } from "@/components/characters/live-character-sheet-refresh";
@@ -602,10 +601,6 @@ export function Profile({
                   expiresAt={
                     character.master_notes_expires_at
                   }
-                />
-
-                <CharacterResurrectionMalus
-                  characterId={character.id!}
                 />
               </div>
             </section>

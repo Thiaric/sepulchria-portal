@@ -403,7 +403,7 @@ export default async function DeathAdminPage() {
             Ghost Locations
           </h2>
           <p className="mt-1 text-[9px] opacity-70">
-            These flags control Ghost Location chat only. Ghosts may move normally anywhere they otherwise have access to.
+            A dead Character may enter and write in Location chat only where Ghosts are allowed.
           </p>
 
           <div className="mt-4 grid gap-2 md:grid-cols-2 lg:grid-cols-3">
@@ -441,7 +441,7 @@ export default async function DeathAdminPage() {
             Resurrection Maluses
           </h2>
           <p className="mt-1 text-[9px] opacity-70">
-            One active malus is chosen randomly only when resurrection occurs after the Essence Window. These effects are narrative only and remain indefinitely until staff changes or clears them.
+            One active malus is chosen randomly only when resurrection occurs after the Essence Window. These effects are narrative only.
           </p>
 
           <form

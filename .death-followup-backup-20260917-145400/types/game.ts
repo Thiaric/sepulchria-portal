@@ -97,9 +97,9 @@ export type RoomMessage = {
     | string
     | null;
   created_at: string;
-  character_id: string | null;
+  character_id: string;
   condition_snapshot: RoomConditionSnapshot[];
-  speaker_type: "character" | "npc" | "system";
+  speaker_type: "character" | "npc";
   npc_id: string | null;
   npc_snapshot: NpcMessageSnapshot | null;
   character:
