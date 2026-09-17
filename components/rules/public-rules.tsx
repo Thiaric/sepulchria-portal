@@ -292,22 +292,41 @@ function selectRule(
             />
 
             {data.categories.map(
-              (category) => (
-                <CategoryButton
-                  key={category.id}
-                  active={
-                    selectedCategoryId ===
-                    category.id
-                  }
-                  label={category.name}
-                  onClick={() =>
-                    setSelectedCategoryId(
-                      category.id,
-                    )
-                  }
-                />
-              ),
-            )}
+  (category) => (
+    <CategoryButton
+      key={category.id}
+      active={
+        selectedCategoryId ===
+        category.id
+      }
+      label={category.name}
+      onClick={() => {
+        setSelectedCategoryId(
+          category.id,
+        );
+
+        const firstCategoryRule =
+          data.rules
+            .filter(
+              rule =>
+                rule.category_id ===
+                category.id,
+            )
+            .sort(
+              (a, b) =>
+                (a.sort_order ?? 0) -
+                (b.sort_order ?? 0),
+            )[0];
+
+        if (firstCategoryRule) {
+          selectRule(
+            firstCategoryRule,
+          );
+        }
+      }}
+    />
+  ),
+)}
           </div>
         </nav>
       ) : null}
