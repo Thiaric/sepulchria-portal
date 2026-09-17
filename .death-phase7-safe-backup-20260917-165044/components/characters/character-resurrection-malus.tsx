@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 type Malus = {
   name: string;
   description: string;
-  expiresAt: string | null;
 };
 
 export function CharacterResurrectionMalus({
@@ -63,16 +62,6 @@ export function CharacterResurrectionMalus({
 
   if (!malus) return null;
 
-  const expiryLabel = malus.expiresAt
-    ? `Expires ${new Intl.DateTimeFormat("en-GB", {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      }).format(new Date(malus.expiresAt))}`
-    : "No expiry set";
-
   return (
     <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/80 p-4 components_characters_character_resurrection_malus_section">
       <div className="flex flex-wrap items-start justify-between gap-2">
@@ -81,7 +70,7 @@ export function CharacterResurrectionMalus({
         </p>
 
         <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8f8271))]">
-          {expiryLabel}
+          Permanent · until cleared by staff
         </p>
       </div>
 

@@ -59,13 +59,17 @@ export default async function AdminLayout({
             className="flex flex-wrap items-center gap-2 admin_layout_nav_administration"
           >
 
+            {can("overview") ? (
+              <AdminNavigationLink href="/admin">
+                Overview
+              </AdminNavigationLink>
+            ) : null}
+
             {can("races") ? (
               <AdminNavigationLink href="/admin/races">
                 Ancestries
               </AdminNavigationLink>
             ) : null}
-
-
 
             {can("areas") ? (
               <AdminNavigationLink href="/admin/areas">
@@ -73,23 +77,17 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
-
-
             {can("associations") ? (
               <AdminNavigationLink href="/admin/associations">
                 Associations
               </AdminNavigationLink>
             ) : null}
 
-
-
             {can("character_logs") ? (
               <AdminNavigationLink href="/admin/character-audit">
                 Character Log
               </AdminNavigationLink>
             ) : null}
-
-
 
             {can("characters") ? (
               <AdminNavigationLink href="/admin/characters">
@@ -100,7 +98,11 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
-
+            {can("death") ? (
+              <AdminNavigationLink href="/admin/death">
+                Death
+              </AdminNavigationLink>
+            ) : null}
 
             {can("codex") ? (
               <AdminNavigationLink href="/admin/codex">
@@ -108,15 +110,11 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
-
-
             {can("cosmetics") ? (
               <AdminNavigationLink href="/admin/cosmetics">
                 Cosmetics
               </AdminNavigationLink>
             ) : null}
-
-
 
             {can("items") ? (
               <AdminNavigationLink href="/admin/crafting-recipes">
@@ -124,23 +122,11 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
-
-
             {can("missions") ? (
               <AdminNavigationLink href="/admin/missions">
                 Daily Missions
               </AdminNavigationLink>
             ) : null}
-
-
-
-            {can("death") ? (
-              <AdminNavigationLink href="/admin/death">
-                Death
-              </AdminNavigationLink>
-            ) : null}
-
-
 
             {can("events") ? (
               <AdminNavigationLink href="/admin/events">
@@ -148,15 +134,11 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
-
-
             {can("experience") ? (
               <AdminNavigationLink href="/admin/experience">
                 Experience
               </AdminNavigationLink>
             ) : null}
-
-
 
             {can("expertise") ? (
               <AdminNavigationLink href="/admin/expertise">
@@ -164,15 +146,11 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
-
-
             {can("gifts") ? (
               <AdminNavigationLink href="/admin/gifts">
                 Feats
               </AdminNavigationLink>
             ) : null}
-
-
 
             {can("forum") ? (
               <AdminNavigationLink href="/admin/forum">
@@ -180,15 +158,11 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
-
-
             {can("gathering") ? (
               <AdminNavigationLink href="/admin/gathering">
                 Gathering
               </AdminNavigationLink>
             ) : null}
-
-
 
             {can("house_of_chances") ? (
               <AdminNavigationLink href="/admin/house-of-chances">
@@ -196,15 +170,11 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
-
-
             {can("items") ? (
               <AdminNavigationLink href="/admin/items/vault">
                 Item Vault
               </AdminNavigationLink>
             ) : null}
-
-
 
             {can("items") ? (
               <AdminNavigationLink href="/admin/items">
@@ -212,15 +182,11 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
-
-
             {can("jobs") ? (
               <AdminNavigationLink href="/admin/jobs">
                 Jobs
               </AdminNavigationLink>
             ) : null}
-
-
 
             {can("rooms") ? (
               <AdminNavigationLink href="/admin/rooms">
@@ -228,15 +194,11 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
-
-
             {can("communication_logs") ? (
               <AdminNavigationLink href="/admin/communication-logs">
                 Logs
               </AdminNavigationLink>
             ) : null}
-
-
 
             {can("market") ? (
               <AdminNavigationLink href="/admin/market">
@@ -244,15 +206,11 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
-
-
             {can("media") ? (
               <AdminNavigationLink href="/admin/media">
                 Media
               </AdminNavigationLink>
             ) : null}
-
-
 
             {can("music") ? (
               <AdminNavigationLink href="/admin/music">
@@ -260,15 +218,11 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
-
-
             {can("notifications") ? (
               <AdminNavigationLink href="/admin/notifications">
                 Notifications
               </AdminNavigationLink>
             ) : null}
-
-
 
             {can("orders") ? (
               <AdminNavigationLink href="/admin/order-submissions">
@@ -279,39 +233,17 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
-
-
             {can("orders") ? (
               <AdminNavigationLink href="/admin/orders">
                 Orders
               </AdminNavigationLink>
             ) : null}
 
-
-
-            {can("overview") ? (
-              <AdminNavigationLink href="/admin">
-                Overview
-              </AdminNavigationLink>
-            ) : null}
-
-
-
-            {can("rules") ? (
-              <AdminNavigationLink href="/admin/rules">
-                Player's Handbook
-              </AdminNavigationLink>
-            ) : null}
-
-
-
             {can("polls") ? (
               <AdminNavigationLink href="/admin/polls">
                 Polls
               </AdminNavigationLink>
             ) : null}
-
-
 
             {can("new_register") ? (
               <AdminNavigationLink href="/admin/registrations">
@@ -322,15 +254,17 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
-
+            {can("rules") ? (
+              <AdminNavigationLink href="/admin/rules">
+                Player's Handbook
+              </AdminNavigationLink>
+            ) : null}
 
             {can("safety") ? (
               <AdminNavigationLink href="/admin/safety">
                 Safety
               </AdminNavigationLink>
             ) : null}
-
-
 
             {can("sanctions") ? (
               <AdminNavigationLink href="/admin/sanctions">
@@ -341,23 +275,17 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
-
-
             {can("shapes") ? (
               <AdminNavigationLink href="/admin/shapes">
                 Shapes
               </AdminNavigationLink>
             ) : null}
 
-
-
             {can("store") ? (
               <AdminNavigationLink href="/admin/store">
                 Store
               </AdminNavigationLink>
             ) : null}
-
-
 
             {can("tickets") ? (
               <AdminNavigationLink href="/admin/tickets">
@@ -371,15 +299,11 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
-
-
             {can("tidings") ? (
               <AdminNavigationLink href="/admin/tidings">
                 Tidings
               </AdminNavigationLink>
             ) : null}
-
-
 
             {can("trophies") ? (
               <AdminNavigationLink href="/admin/trophies">
@@ -387,15 +311,11 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
-
-
             {can("users") ? (
               <AdminNavigationLink href="/admin/users">
                 Users
               </AdminNavigationLink>
             ) : null}
-
-
 
             {can("world") ? (
               <AdminNavigationLink href="/admin/world">

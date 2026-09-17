@@ -131,7 +131,9 @@ export async function assertDeadTargetAllowed({
   }
 }
 
-async function chooseRandomMalus() {
+async function chooseRandomMalus(
+  excludeMalusId: string | null = null,
+) {
   const admin = createAdminClient();
 
   const { data, error } = await admin
@@ -151,7 +153,17 @@ async function chooseRandomMalus() {
     return null;
   }
 
-  return data[randomInt(0, data.length)];
+  const alternatives =
+    excludeMalusId && data.length > 1
+      ? data.filter((entry) => entry.id !== excludeMalusId)
+      : data;
+
+  const pool =
+    alternatives.length > 0
+      ? alternatives
+      : data;
+
+  return pool[randomInt(0, pool.length)];
 }
 
 async function announceSystemMessage({
@@ -467,7 +479,25 @@ export async function reviveDeadCharacter({
     | null = null;
 
   if (delayed) {
-    malus = await chooseRandomMalus();
+    const { data: currentMalus, error: currentMalusError } =
+      await admin
+        .from("character_resurrection_maluses")
+        .select("malus_id")
+        .eq("character_id", characterId)
+        .is("cleared_at", null)
+        .order("applied_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+    if (currentMalusError) {
+      throw new Error(
+        `Unable to load current Resurrection Malus: ${currentMalusError.message}`,
+      );
+    }
+
+    malus = await chooseRandomMalus(
+      currentMalus?.malus_id ?? null,
+    );
 
     if (malus) {
       await admin

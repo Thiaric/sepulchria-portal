@@ -101,12 +101,9 @@ export default async function DeathAdminPage() {
     admin
       .from("character_resurrection_maluses")
       .select(
-        "id,character_id,malus_id,narrative_text,applied_at,cleared_at,expires_at",
+        "id,character_id,malus_id,narrative_text,applied_at,cleared_at",
       )
       .is("cleared_at", null)
-      .or(
-        `expires_at.is.null,expires_at.gt.${new Date().toISOString()}`,
-      )
       .order("applied_at", { ascending: false }),
     admin
       .from("characters")
@@ -131,7 +128,6 @@ export default async function DeathAdminPage() {
     death_duration_hours: 24,
     essence_window_minutes: 60,
     auto_revive_health: 1,
-    resurrection_malus_duration_days: 7,
     ghost_chat_enabled: true,
     ghost_movement_enabled: true,
     death_announcement_template:
@@ -184,7 +180,7 @@ export default async function DeathAdminPage() {
 
           <form
             action={updateDeathRules}
-            className="mt-4 grid gap-4 md:grid-cols-4"
+            className="mt-4 grid gap-4 md:grid-cols-3"
           >
             <label>
               <span className="mb-1 block text-[8px] uppercase tracking-[0.15em]">
@@ -228,19 +224,6 @@ export default async function DeathAdminPage() {
                 defaultValue={
                   rules.auto_revive_health
                 }
-              />
-            </label>
-
-            <label>
-              <span className="mb-1 block text-[8px] uppercase tracking-[0.15em]">
-                Resurrection Malus Duration (days)
-              </span>
-              <input
-                className={input}
-                type="number"
-                min={1}
-                name="resurrection_malus_duration_days"
-                defaultValue={rules.resurrection_malus_duration_days ?? 7}
               />
             </label>
 
@@ -323,11 +306,7 @@ export default async function DeathAdminPage() {
                 return (
                   <article
                     key={character.id}
-                    id={`death-character-${character.id}`}
-                    data-admin-death-context-kind="character"
-                    data-admin-death-context-label={character.display_name ?? "Unnamed Character"}
-                    data-admin-death-context-secondary={`Dead · ${formatDate(diedAt)} · Return ${formatDate(character.dead_until)}`}
-                    className="scroll-mt-24 border border-[rgb(var(--sep-colour-60482e))]/35 p-4"
+                    className="border border-[rgb(var(--sep-colour-60482e))]/35 p-4"
                   >
                     <div className="grid gap-4 lg:grid-cols-[1fr_auto]">
                       <div>
@@ -419,11 +398,11 @@ export default async function DeathAdminPage() {
           </div>
         </section>
 
-        <details className={panel}>
-          <summary className="cursor-pointer select-none font-serif text-xl text-[rgb(var(--sep-colour-dfc99f))]">
+        <section className={panel}>
+          <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-dfc99f))]">
             Ghost Locations
-          </summary>
-          <p className="mt-2 text-[9px] opacity-70">
+          </h2>
+          <p className="mt-1 text-[9px] opacity-70">
             These flags control Ghost Location chat only. Ghosts may move normally anywhere they otherwise have access to.
           </p>
 
@@ -455,14 +434,14 @@ export default async function DeathAdminPage() {
               </form>
             ))}
           </div>
-        </details>
+        </section>
 
-        <section id="death-maluses" className={panel}>
+        <section className={panel}>
           <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-dfc99f))]">
             Resurrection Maluses
           </h2>
           <p className="mt-1 text-[9px] opacity-70">
-            One active malus is chosen randomly only when resurrection occurs after the Essence Window. These effects are narrative only and expire automatically after {rules.resurrection_malus_duration_days ?? 7} days unless staff changes the expiry.
+            One active malus is chosen randomly only when resurrection occurs after the Essence Window. These effects are narrative only and remain indefinitely until staff changes or clears them.
           </p>
 
           <form
@@ -489,11 +468,7 @@ export default async function DeathAdminPage() {
               <form
                 action={updateResurrectionMalus}
                 key={malus.id}
-                id={`death-malus-${malus.id}`}
-                data-admin-death-context-kind="malus"
-                data-admin-death-context-label={malus.name}
-                data-admin-death-context-secondary={malus.description}
-                className="scroll-mt-24 grid gap-2 border border-[rgb(var(--sep-colour-60482e))]/30 p-3 md:grid-cols-[200px_1fr_80px_auto_auto]"
+                className="grid gap-2 border border-[rgb(var(--sep-colour-60482e))]/30 p-3 md:grid-cols-[200px_1fr_80px_auto_auto]"
               >
                 <input
                   type="hidden"
@@ -534,7 +509,7 @@ export default async function DeathAdminPage() {
           </div>
         </section>
 
-        <section id="death-character-maluses" className={panel}>
+        <section className={panel}>
           <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-dfc99f))]">
             Character Resurrection Maluses
           </h2>
@@ -548,21 +523,12 @@ export default async function DeathAdminPage() {
                 <form
                   action={setCharacterResurrectionMalus}
                   key={entry.id}
-                  id={`death-assignment-${entry.id}`}
-                  data-admin-death-context-kind="assignment"
-                  data-admin-death-context-label={characterName.get(entry.character_id) ?? entry.character_id}
-                  data-admin-death-context-secondary={`${malusName.get(entry.malus_id) ?? "Custom / unknown"} · expires ${formatDate(entry.expires_at)}`}
-                  className="scroll-mt-24 grid gap-2 border border-[rgb(var(--sep-colour-60482e))]/30 p-3 md:grid-cols-[220px_1fr_220px_auto]"
+                  className="grid gap-2 border border-[rgb(var(--sep-colour-60482e))]/30 p-3 md:grid-cols-[220px_1fr_auto]"
                 >
                   <input
                     type="hidden"
                     name="character_id"
                     value={entry.character_id}
-                  />
-                  <input
-                    type="hidden"
-                    name="assignment_id"
-                    value={entry.id}
                   />
                   <div>
                     <p className="font-serif text-sm">
@@ -601,15 +567,6 @@ export default async function DeathAdminPage() {
                         </option>
                       ))}
                   </select>
-                  <label>
-                    <span className="mb-1 block text-[7px] uppercase tracking-[0.12em] opacity-70">Expires</span>
-                    <input
-                      className={input}
-                      type="datetime-local"
-                      name="expires_at"
-                      defaultValue={entry.expires_at ? new Date(entry.expires_at).toISOString().slice(0, 16) : ""}
-                    />
-                  </label>
                   <button className="border px-3 py-2 text-[8px] uppercase">
                     Apply
                   </button>

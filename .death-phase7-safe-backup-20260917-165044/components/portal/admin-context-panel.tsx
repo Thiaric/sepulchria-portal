@@ -23,7 +23,6 @@ import { MusicContextPanel } from "@/components/admin/music-context-panel";
 import { CosmeticsContextPanel } from "@/components/admin/cosmetics-context-panel";
 import { StoreContextPanel } from "@/components/admin/store-context-panel";
 import { AdminCharacterPremiumFeaturesContext } from "@/components/admin/admin-character-premium-features-context";
-import { DeathContextPanel } from "@/components/admin/death-context-panel";
 import {
   canAccessAdminSection,
   type AdminSection,
@@ -51,7 +50,6 @@ type ContextMode =
   | "shapes"
   | "users"
   | "characters"
-  | "death"
   | "character_audit"
   | "character_detail"
   | "character_premium_features"
@@ -132,10 +130,6 @@ function getMode(
     "/admin/characters"
   ) {
     return "characters";
-  }
-
-  if (pathname === "/admin/death") {
-    return "death";
   }
 
   if (pathname === "/admin/character-audit") {
@@ -319,10 +313,6 @@ export function AdminContextPanel({
     return (
       <AdminWorldGuideContext />
     );
-  }
-
-  if (mode === "death") {
-    return <DeathContextPanel />;
   }
 
   if (mode === "character_audit") {
@@ -1914,7 +1904,6 @@ const ADMIN_NAVIGATION_ENTRIES: AdminNavigationEntry[] = [
   { section: "cosmetics", label: "Cosmetics", href: "/admin/cosmetics", aliases: ["frames", "appearance"] },
   { section: "items", label: "Crafting Recipes", href: "/admin/crafting-recipes", aliases: ["recipes", "crafting"] },
   { section: "missions", label: "Daily Missions", href: "/admin/missions", aliases: ["missions", "daily"] },
-  { section: "death", label: "Death", href: "/admin/death", aliases: ["ghost", "resurrection", "malus"] },
   { section: "events", label: "Events", href: "/admin/events" },
   { section: "experience", label: "Experience", href: "/admin/experience", aliases: ["feedback", "satisfaction"] },
   { section: "expertise", label: "Expertise", href: "/admin/expertise" },
@@ -1937,7 +1926,7 @@ const ADMIN_NAVIGATION_ENTRIES: AdminNavigationEntry[] = [
   { section: "orders", label: "Order Submissions", href: "/admin/order-submissions", aliases: ["submissions"] },
   { section: "overview", label: "Overview", href: "/admin" },
   { section: "new_register", label: "Registrations", href: "/admin/registrations", aliases: ["registration"] },
-  { section: "rules", label: "Player's Handbook", href: "/admin/rules" },
+  { section: "rules", label: "Rules", href: "/admin/rules" },
   { section: "safety", label: "Safety", href: "/admin/safety" },
   { section: "sanctions", label: "Sanctions", href: "/admin/sanctions" },
   { section: "shapes", label: "Shapes", href: "/admin/shapes" },
@@ -2036,13 +2025,6 @@ function AdminNavigationContext() {
           .toLocaleLowerCase()
           .includes(query);
       })
-      .sort((left, right) =>
-        left.label.localeCompare(
-          right.label,
-          "en-GB",
-          { sensitivity: "base" },
-        ),
-      )
     : [];
 
   return (

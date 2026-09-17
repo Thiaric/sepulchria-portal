@@ -63,10 +63,6 @@ export async function updateDeathRules(
     1,
     integer(formData, "auto_revive_health", 1),
   );
-  const resurrectionMalusDurationDays = Math.max(
-    1,
-    integer(formData, "resurrection_malus_duration_days", 7),
-  );
 
   const template =
     text(formData, "death_announcement_template");
@@ -79,7 +75,6 @@ export async function updateDeathRules(
         death_duration_hours: deathDurationHours,
         essence_window_minutes: essenceWindowMinutes,
         auto_revive_health: autoReviveHealth,
-        resurrection_malus_duration_days: resurrectionMalusDurationDays,
         ghost_chat_enabled:
           checked(formData, "ghost_chat_enabled"),
         ghost_movement_enabled:
@@ -283,62 +278,13 @@ export async function setCharacterResurrectionMalus(
     text(formData, "character_id");
   const malusId =
     text(formData, "malus_id");
-  const assignmentId =
-    text(formData, "assignment_id");
-  const expiresAtRaw =
-    text(formData, "expires_at");
 
   if (!characterId) {
     throw new Error("Missing Character.");
   }
 
   const admin = createAdminClient();
-  const nowDate = new Date();
-  const now = nowDate.toISOString();
-
-  let expiresAt: string | null = null;
-
-  if (malusId) {
-    if (expiresAtRaw) {
-      const parsed = new Date(expiresAtRaw);
-      if (Number.isNaN(parsed.getTime()) || parsed.getTime() <= nowDate.getTime()) {
-        throw new Error("Resurrection Malus expiry must be a future date/time.");
-      }
-      expiresAt = parsed.toISOString();
-    } else {
-      const { data: rules, error: rulesError } = await admin
-        .from("character_death_rules")
-        .select("resurrection_malus_duration_days")
-        .eq("singleton", true)
-        .maybeSingle();
-      if (rulesError) throw new Error(rulesError.message);
-      const days = Math.max(1, Number(rules?.resurrection_malus_duration_days ?? 7));
-      expiresAt = new Date(nowDate.getTime() + days * 24 * 60 * 60 * 1000).toISOString();
-    }
-  }
-
-  if (assignmentId && malusId) {
-    const { data: existing, error: existingError } = await admin
-      .from("character_resurrection_maluses")
-      .select("id,malus_id")
-      .eq("id", assignmentId)
-      .eq("character_id", characterId)
-      .is("cleared_at", null)
-      .maybeSingle();
-    if (existingError) throw new Error(existingError.message);
-
-    if (existing?.malus_id === malusId) {
-      const { error: expiryError } = await admin
-        .from("character_resurrection_maluses")
-        .update({ expires_at: expiresAt, changed_by_user_id: session.userId })
-        .eq("id", assignmentId);
-      if (expiryError) throw new Error(expiryError.message);
-      revalidatePath("/admin/death");
-      revalidatePath("/character");
-      revalidatePath("/characters");
-      return;
-    }
-  }
+  const now = new Date().toISOString();
 
   await admin
     .from("character_resurrection_maluses")
@@ -384,7 +330,6 @@ export async function setCharacterResurrectionMalus(
       death_event_id: deathEvent?.id ?? null,
       malus_id: malus.id,
       narrative_text: malus.description,
-      expires_at: expiresAt,
       changed_by_user_id: session.userId,
     });
 

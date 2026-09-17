@@ -8,6 +8,7 @@ export type DeathRules = {
   deathDurationHours: number;
   essenceWindowMinutes: number;
   autoReviveHealth: number;
+  resurrectionMalusDurationDays: number;
   ghostChatEnabled: boolean;
   ghostMovementEnabled: boolean;
   deathAnnouncementTemplate: string;
@@ -22,7 +23,7 @@ export async function getDeathRules(): Promise<DeathRules> {
   const { data, error } = await admin
     .from("character_death_rules")
     .select(
-      "death_duration_hours,essence_window_minutes,auto_revive_health,ghost_chat_enabled,ghost_movement_enabled,death_announcement_template",
+      "death_duration_hours,essence_window_minutes,auto_revive_health,resurrection_malus_duration_days,ghost_chat_enabled,ghost_movement_enabled,death_announcement_template",
     )
     .eq("singleton", true)
     .maybeSingle();
@@ -43,6 +44,10 @@ export async function getDeathRules(): Promise<DeathRules> {
     autoReviveHealth: Math.max(
       1,
       Math.floor(Number(data?.auto_revive_health ?? 1)),
+    ),
+    resurrectionMalusDurationDays: Math.max(
+      1,
+      Math.floor(Number(data?.resurrection_malus_duration_days ?? 7)),
     ),
     ghostChatEnabled:
       data?.ghost_chat_enabled !== false,
@@ -485,6 +490,7 @@ export async function reviveDeadCharacter({
         .select("malus_id")
         .eq("character_id", characterId)
         .is("cleared_at", null)
+        .or(`expires_at.is.null,expires_at.gt.${now}`)
         .order("applied_at", { ascending: false })
         .limit(1)
         .maybeSingle();
@@ -500,6 +506,10 @@ export async function reviveDeadCharacter({
     );
 
     if (malus) {
+      const malusExpiresAt = new Date(
+        Date.parse(now) + rules.resurrectionMalusDurationDays * 24 * 60 * 60 * 1000,
+      ).toISOString();
+
       await admin
         .from("character_resurrection_maluses")
         .update({
@@ -516,6 +526,7 @@ export async function reviveDeadCharacter({
           death_event_id: deathEvent?.id ?? null,
           malus_id: malus.id,
           narrative_text: malus.description,
+          expires_at: malusExpiresAt,
           changed_by_user_id: actorUserId,
         });
 

@@ -273,21 +273,7 @@ export function GameContextPanel({
           (presence) =>
             viewerIsStaff ||
             presence.appear_offline !== true,
-        )
-        .sort((left, right) => {
-          const leftName =
-            normaliseRelation(left.character)
-              ?.display_name?.trim() ?? "";
-          const rightName =
-            normaliseRelation(right.character)
-              ?.display_name?.trim() ?? "";
-
-          return leftName.localeCompare(
-            rightName,
-            "en-GB",
-            { sensitivity: "base" },
-          );
-        }),
+        ),
       );
 
       setExits([

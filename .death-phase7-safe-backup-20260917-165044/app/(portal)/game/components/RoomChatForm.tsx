@@ -1776,14 +1776,10 @@ function ignoreSpellingWord() {
 >
       <PendingOpposedActions />
       <PendingShapeResponses />
-      <CharacterDeathGate characterId={viewerCharacterId} />
-      {viewerDead ? (
-        <div className="mb-2 border border-[rgb(var(--sep-colour-754137))]/45 bg-[rgb(var(--sep-colour-2b1714))]/55 px-3 py-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-bc9d91))]">
-          {ghostChatAllowed
-            ? "Ghost state: Location chat is available here. Mechanical actions, Whispers, Feats, Warping and Items remain disabled."
-            : "Ghost state: this Location does not permit Ghost chat. You may move elsewhere, but mechanical actions remain disabled."}
-        </div>
-      ) : null}
+      <CharacterDeathGate
+        characterId={viewerCharacterId}
+        ghostChatAllowed={ghostChatAllowed}
+      />
       <div className="mb-2 flex justify-end game_components_roomchatform_div_container_3">
         
       </div>
@@ -3255,6 +3251,25 @@ if (
           )}
         </form>
       )}
+      {utilityMode === null ? (
+      <div
+        data-room-chat-controls
+        className={
+          viewerDead && !ghostChatAllowed
+            ? "mt-2 flex flex-wrap justify-center gap-1 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-2 game_components_roomchatform_div_container_27"
+            : "-mt-8 mx-[92px] flex flex-wrap justify-center gap-1 border-0 pt-0 max-lg:mx-0 max-lg:mt-2 max-lg:border-t max-lg:border-[rgb(var(--sep-colour-59432c))]/30 max-lg:pt-2 game_components_roomchatform_div_container_27"
+        }
+      >
+        {canUseFate ? (
+          <button
+            type="button"
+            onClick={() => toggleUtility("npc")}
+            className={[((utilityMode === "npc" ? utilityButtonActiveClass : utilityButtonClass)), "game_components_roomchatform_button_npcs"].filter(Boolean).join(" ")}
+          >
+            NPCs
+          </button>
+        ) : null}
+
       {utilityMode === null &&
       (
         transientStatusMessage ||
@@ -3291,20 +3306,7 @@ if (
         </div>
       ) : null}
 
-      {utilityMode === null ? (
-      <div
-        data-room-chat-controls
-        className="mt-2 flex flex-wrap justify-center gap-1 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-2 game_components_roomchatform_div_container_27"
-      >
-        {canUseFate ? (
-          <button
-            type="button"
-            onClick={() => toggleUtility("npc")}
-            className={[((utilityMode === "npc" ? utilityButtonActiveClass : utilityButtonClass)), "game_components_roomchatform_button_npcs"].filter(Boolean).join(" ")}
-          >
-            NPCs
-          </button>
-        ) : null}
+
 
         {!viewerDead ? (
 <button

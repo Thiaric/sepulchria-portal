@@ -1780,6 +1780,36 @@ function ignoreSpellingWord() {
         characterId={viewerCharacterId}
         ghostChatAllowed={ghostChatAllowed}
       />
+      {utilityMode === null &&
+      (
+        transientStatusMessage ||
+        utilityLoadingMode ||
+        utilityLoadError
+      ) ? (
+        <div
+          aria-live="polite"
+          className="mb-2 min-h-7 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))]/75 px-3 py-2 text-center text-[9px]"
+        >
+          {utilityLoadError ? (
+            <span className="text-[rgb(var(--sep-colour-d58d82))]">
+              {utilityLoadError}
+            </span>
+          ) : utilityLoadingMode ? (
+            <span className="text-[rgb(var(--sep-colour-a98b61))]">
+              {utilityLoadingMode === "attributes"
+                ? "Loading combat data..."
+                : utilityLoadingMode === "feat"
+                  ? "Loading Feats..."
+                  : "Loading Items..."}
+            </span>
+          ) : transientStatusMessage ? (
+            <span className={transientStatusOk ? "text-[rgb(var(--sep-colour-9bb58c))]" : "text-[rgb(var(--sep-colour-d58d82))]"}>
+              {transientStatusMessage}
+            </span>
+          ) : null}
+        </div>
+      ) : null}
+
       <div className="mb-2 flex justify-end game_components_roomchatform_div_container_3">
         
       </div>
@@ -3269,43 +3299,6 @@ if (
             NPCs
           </button>
         ) : null}
-
-      {utilityMode === null &&
-      (
-        transientStatusMessage ||
-        utilityLoadingMode ||
-        utilityLoadError
-      ) ? (
-        <div
-          aria-live="polite"
-          className="mt-2 min-h-5 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-2 text-center text-[9px]"
-        >
-          {utilityLoadError ? (
-            <span className="text-[rgb(var(--sep-colour-d58d82))]">
-              {utilityLoadError}
-            </span>
-          ) : utilityLoadingMode ? (
-            <span className="text-[rgb(var(--sep-colour-a98b61))]">
-              {utilityLoadingMode === "attributes"
-                ? "Loading combat data..."
-                : utilityLoadingMode === "feat"
-                  ? "Loading Feats..."
-                  : "Loading Items..."}
-            </span>
-          ) : transientStatusMessage ? (
-            <span
-              className={
-                transientStatusOk
-                  ? "text-[rgb(var(--sep-colour-9bb58c))]"
-                  : "text-[rgb(var(--sep-colour-d58d82))]"
-              }
-            >
-              {transientStatusMessage}
-            </span>
-          ) : null}
-        </div>
-      ) : null}
-
 
 
         {!viewerDead ? (

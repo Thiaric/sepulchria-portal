@@ -28,12 +28,10 @@ export async function GET(request: Request) {
       character_id,
       narrative_text,
       applied_at,
-      expires_at,
       malus:death_resurrection_maluses(name,description)
     `)
     .in("character_id", ids)
     .is("cleared_at", null)
-    .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
     .order("applied_at", { ascending: false });
 
   if (error) {
@@ -45,7 +43,7 @@ export async function GET(request: Request) {
 
   const maluses: Record<
     string,
-    { name: string; description: string; expiresAt: string | null }
+    { name: string; description: string }
   > = {};
 
   for (const row of data ?? []) {
@@ -66,7 +64,6 @@ export async function GET(request: Request) {
         relation?.description ??
         "",
       ),
-      expiresAt: row.expires_at ? String(row.expires_at) : null,
     };
   }
 
