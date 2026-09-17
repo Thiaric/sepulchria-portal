@@ -1,43 +1,222 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { CSSProperties, useEffect, useMemo, useRef, useState } from "react";
 
 type PortalSkinAtmosphereProps = {
   skin: string;
 };
 
-const FLOATERS = [
-  { left: 4, delay: 0.2, duration: 14, size: 2, drift: -14 },
-  { left: 11, delay: 4.8, duration: 17, size: 3, drift: 16 },
-  { left: 19, delay: 8.1, duration: 18, size: 2, drift: -10 },
-  { left: 28, delay: 2.6, duration: 20, size: 2, drift: 12 },
-  { left: 38, delay: 11.3, duration: 21, size: 3, drift: -17 },
-  { left: 49, delay: 6.2, duration: 16, size: 2, drift: 9 },
-  { left: 60, delay: 1.7, duration: 22, size: 2, drift: -11 },
-  { left: 70, delay: 9.6, duration: 19, size: 3, drift: 15 },
-  { left: 81, delay: 4.0, duration: 20, size: 2, drift: -9 },
-  { left: 92, delay: 12.4, duration: 18, size: 2, drift: 11 },
-] as const;
+type AtmosphereKind =
+  | "sepulchria"
+  | "starfall"
+  | "vellum"
+  | "rose"
+  | "bird-sky"
+  | "water"
+  | "ember"
+  | "amethyst"
+  | "verdant"
+  | "blood"
+  | "ivory"
+  | "kareshi-night"
+  | "aelari-dawn"
+  | "dwarven-forge"
+  | "mortal-hearth"
+  | "pioneers-land"
+  | "wolf-moon";
 
-const STARS = [
-  { left: 7, top: 15, delay: 0.3, duration: 5.5, size: 1 },
-  { left: 16, top: 38, delay: 2.1, duration: 7.4, size: 2 },
-  { left: 26, top: 21, delay: 4.9, duration: 6.2, size: 1 },
-  { left: 39, top: 63, delay: 1.6, duration: 8.1, size: 1 },
-  { left: 53, top: 18, delay: 5.8, duration: 6.7, size: 2 },
-  { left: 64, top: 48, delay: 3.3, duration: 7.8, size: 1 },
-  { left: 77, top: 28, delay: 6.4, duration: 5.9, size: 1 },
-  { left: 89, top: 69, delay: 2.8, duration: 8.5, size: 2 },
-  { left: 95, top: 11, delay: 7.2, duration: 6.4, size: 1 },
-] as const;
+type VideoAtmosphereConfig = {
+  type: "video";
+  webm: string;
+  mp4?: string;
+  opacity: number;
+  blendMode?: CSSProperties["mixBlendMode"];
+  vignette?: "dark" | "light" | "none";
+  scale?: number;
+  playbackRate?: number;
+};
 
-const WRITING = [
-  { text: "Sepulchria", top: 13, side: "left", delay: 1 },
-  { text: "The First", top: 47, side: "right", delay: 8 },
-  { text: "Aureth", top: 73, side: "left", delay: 15 },
-] as const;
+type CanvasAtmosphereConfig = {
+  type: "canvas";
+  opacity: number;
+  vignette?: "dark" | "light" | "none";
+};
 
-function kindForSkin(skin: string) {
+type AtmosphereConfig = VideoAtmosphereConfig | CanvasAtmosphereConfig;
+
+const ATMOSPHERES: Record<AtmosphereKind, AtmosphereConfig> = {
+  sepulchria: {
+    type: "video",
+    webm: "/skins/atmospheres/sepulchria.webm",
+    mp4: "/skins/atmospheres/sepulchria.mp4",
+    opacity: 0.03,
+    blendMode: "screen",
+    vignette: "dark",
+    scale: 1.03,
+  },
+  starfall: {
+  type: "video",
+  webm: "/skins/atmospheres/starfall.webm",
+  mp4: "/skins/atmospheres/starfall.mp4",
+  opacity: 0.07,
+  blendMode: "screen",
+  vignette: "dark",
+  scale: 1.03,
+  playbackRate: 0.9,
+},
+  vellum: {
+    type: "video",
+    webm: "/skins/atmospheres/vellum.webm",
+    mp4: "/skins/atmospheres/vellum.mp4",
+    opacity: 0.04,
+    blendMode: "normal",
+    vignette: "light",
+    scale: 1.02,
+  playbackRate: 0.4,
+  },
+  rose: {
+    type: "video",
+    webm: "/skins/atmospheres/rose-nocturne.webm",
+    mp4: "/skins/atmospheres/rose-nocturne.mp4",
+    opacity: 0.018,
+    blendMode: "screen",
+    vignette: "dark",
+    scale: 1.03,
+  playbackRate: 0.45,
+  },
+  "bird-sky": {
+  type: "video",
+  webm: "/skins/atmospheres/ashen.webm",
+  mp4: "/skins/atmospheres/ashen.mp4",
+  opacity: 0.12,
+  blendMode: "screen",
+  vignette: "light",
+  scale: 1.04,
+  playbackRate: 0.4,
+},
+  water: {
+    type: "video",
+    webm: "/skins/atmospheres/deepwater.webm",
+    mp4: "/skins/atmospheres/deepwater.mp4",
+    opacity: 0.03,
+    blendMode: "screen",
+    vignette: "dark",
+    scale: 1.03,
+  playbackRate: 0.5,
+  },
+  ember: {
+    type: "video",
+    webm: "/skins/atmospheres/emberforge.webm",
+    mp4: "/skins/atmospheres/emberforge.mp4",
+    opacity: 0.05,
+    blendMode: "screen",
+    vignette: "dark",
+    scale: 1.03,
+  playbackRate: 0.5,
+  },
+  amethyst: {
+    type: "video",
+    webm: "/skins/atmospheres/amethyst-veil.webm",
+    mp4: "/skins/atmospheres/amethyst-veil.mp4",
+    opacity: 0.05,
+    blendMode: "screen",
+    vignette: "dark",
+    scale: 1.04,
+  playbackRate: 0.5,
+  },
+  verdant: {
+    type: "video",
+    webm: "/skins/atmospheres/verdant-reliquary.webm",
+    mp4: "/skins/atmospheres/verdant-reliquary.mp4",
+    opacity: 0.03,
+    blendMode: "screen",
+    vignette: "dark",
+    scale: 1.04,
+  playbackRate: 0.8,
+  },
+  blood: {
+    type: "video",
+    webm: "/skins/atmospheres/blood-court.webm",
+    mp4: "/skins/atmospheres/blood-court.mp4",
+    opacity: 0.021,
+    blendMode: "screen",
+    vignette: "dark",
+    scale: 1.04,
+  playbackRate: 0.45,
+  },
+  ivory: {
+    type: "video",
+    webm: "/skins/atmospheres/ivory-archive.webm",
+    mp4: "/skins/atmospheres/ivory-archive.mp4",
+    opacity: 0.05,
+    blendMode: "screen",
+    vignette: "dark",
+    scale: 1.04,
+  playbackRate: 0.8,
+  },
+  "kareshi-night": {
+    type: "video",
+    webm: "/skins/atmospheres/moonlit.webm",
+    mp4: "/skins/atmospheres/moonlit.mp4",
+    opacity: 0.07,
+    blendMode: "screen",
+    vignette: "dark",
+    scale: 1.04,
+  playbackRate: 0.5,
+  },
+  "aelari-dawn": {
+    type: "video",
+    webm: "/skins/atmospheres/aelari-dawn.webm",
+    mp4: "/skins/atmospheres/aelari-dawn.mp4",
+    opacity: 0.2,
+    blendMode: "screen",
+    vignette: "light",
+    scale: 1.03,
+  playbackRate: 1,
+  },
+  "dwarven-forge": {
+  type: "video",
+  webm: "/skins/atmospheres/dwarven-deep.webm",
+  mp4: "/skins/atmospheres/dwarven-deep.mp4",
+  opacity: 0.03,
+  blendMode: "screen",
+  vignette: "dark",
+  scale: 1.03,
+  playbackRate: 0.5,
+},
+  "mortal-hearth": {
+    type: "video",
+    webm: "/skins/atmospheres/mortal-hearth.webm",
+    mp4: "/skins/atmospheres/mortal-hearth.mp4",
+    opacity: 0.05,
+    blendMode: "screen",
+    vignette: "light",
+    scale: 1.03,
+  playbackRate: 0.5,
+  },
+  "wolf-moon": {
+    type: "video",
+    webm: "/skins/atmospheres/wolfs-moon.webm",
+    mp4: "/skins/atmospheres/wolfs-moon.mp4",
+    opacity: 0.06,
+    blendMode: "screen",
+    vignette: "light",
+    scale: 1.03,
+  playbackRate: 0.8,
+  },
+
+  "pioneers-land": {
+  type: "video",
+  webm: "/skins/atmospheres/pioneers-land.webm",
+  mp4: "/skins/atmospheres/pioneers-land.mp4",
+  opacity: 0.06,
+  blendMode: "screen",
+  vignette: "dark",
+  scale: 1.03,
+},
+};
+
+function kindForSkin(skin: string): AtmosphereKind {
   const value = skin.toLowerCase().trim();
 
   if (value === "starfall") return "starfall";
@@ -54,9 +233,236 @@ function kindForSkin(skin: string) {
   if (value === "aelari-dawn") return "aelari-dawn";
   if (value === "dwarven-deep") return "dwarven-forge";
   if (value === "mortal-hearth") return "mortal-hearth";
+  if (value === "pioneers-land") return "pioneers-land";
   if (value === "wolfs-moon") return "wolf-moon";
 
   return "sepulchria";
+}
+
+function rgba(hex: string, alpha: number) {
+  const value = hex.replace("#", "");
+  const r = Number.parseInt(value.slice(0, 2), 16);
+  const g = Number.parseInt(value.slice(2, 4), 16);
+  const b = Number.parseInt(value.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+type Star = {
+  x: number;
+  y: number;
+  radius: number;
+  alpha: number;
+  speed: number;
+  phase: number;
+};
+
+function createStars(count: number): Star[] {
+  return Array.from({ length: count }, (_, index) => ({
+    x: ((index * 53.71) % 100) / 100,
+    y: ((index * 29.43 + 17) % 100) / 100,
+    radius: 0.7 + ((index * 13) % 25) / 10,
+    alpha: 0.18 + ((index * 17) % 50) / 100,
+    speed: 0.35 + ((index * 19) % 30) / 30,
+    phase: ((index * 47) % 360) * (Math.PI / 180),
+  }));
+}
+
+function softGlow(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  radius: number,
+  colour: string,
+  alpha: number,
+) {
+  const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+  gradient.addColorStop(0, rgba(colour, alpha));
+  gradient.addColorStop(0.45, rgba(colour, alpha * 0.38));
+  gradient.addColorStop(1, rgba(colour, 0));
+  ctx.fillStyle = gradient;
+  ctx.fillRect(x - radius, y - radius, radius * 2, radius * 2);
+}
+
+function StarfallCanvas({ opacity }: { opacity: number }) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReducedMotion(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    if (reducedMotion) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const stars = createStars(96);
+
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let frame = 0;
+    let startedAt = performance.now();
+    let mouseX = 0.5;
+    let mouseY = 0.5;
+    let targetMouseX = 0.5;
+    let targetMouseY = 0.5;
+
+    const resize = () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+      canvas.width = Math.max(1, Math.floor(width * dpr));
+      canvas.height = Math.max(1, Math.floor(height * dpr));
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    const pointer = (event: PointerEvent) => {
+      targetMouseX = Math.max(0, Math.min(1, event.clientX / Math.max(width, 1)));
+      targetMouseY = Math.max(0, Math.min(1, event.clientY / Math.max(height, 1)));
+    };
+
+    const render = (now: number) => {
+      mouseX += (targetMouseX - mouseX) * 0.035;
+      mouseY += (targetMouseY - mouseY) * 0.035;
+
+      const t = (now - startedAt) / 1000;
+      ctx.clearRect(0, 0, width, height);
+
+      ctx.save();
+      ctx.translate(
+        width * (0.82 + (mouseX - 0.5) * 0.025),
+        height * (0.19 + (mouseY - 0.5) * 0.02),
+      );
+      ctx.rotate(t * 0.006);
+
+      for (let ring = 0; ring < 3; ring += 1) {
+        const radius = Math.min(width, height) * (0.115 + ring * 0.055);
+        ctx.strokeStyle = rgba("#d9b86e", 0.08 + ring * 0.025);
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      for (let i = 0; i < 12; i += 1) {
+        const angle = (Math.PI * 2 * i) / 12 + t * 0.003;
+        const radius = Math.min(width, height) * (0.12 + (i % 3) * 0.032);
+        const x = Math.cos(angle) * radius;
+        const y = Math.sin(angle) * radius;
+        ctx.fillStyle = rgba("#fff2bd", 0.26);
+        ctx.beginPath();
+        ctx.arc(x, y, i % 3 === 0 ? 1.8 : 1.1, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.restore();
+
+      for (let i = 0; i < stars.length; i += 1) {
+        const star = stars[i];
+        const x = star.x * width + (mouseX - 0.5) * star.radius * 10;
+        const y = star.y * height + (mouseY - 0.5) * star.radius * 5;
+        const twinkle =
+          0.5 + Math.sin(t * (0.8 + star.speed) + star.phase) * 0.5;
+        const alpha = star.alpha * twinkle;
+
+        ctx.shadowBlur = star.radius * 5;
+        ctx.shadowColor = rgba("#fff2bd", alpha);
+        ctx.fillStyle = rgba(i % 5 === 0 ? "#fff2bd" : "#d9b86e", alpha);
+        ctx.beginPath();
+        ctx.arc(x, y, star.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      const cycle = t % 22;
+      if (cycle > 17.8 && cycle < 19.7) {
+        const progress = (cycle - 17.8) / 1.9;
+        const x = width * (0.92 - progress * 0.58);
+        const y = height * (0.11 + progress * 0.28);
+        const gradient = ctx.createLinearGradient(x, y, x + 180, y - 85);
+        gradient.addColorStop(0, rgba("#fff2bd", 0.75 * (1 - progress)));
+        gradient.addColorStop(1, rgba("#fff2bd", 0));
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + 180, y - 85);
+        ctx.stroke();
+        softGlow(ctx, x, y, 22, "#fff2bd", 0.32 * (1 - progress));
+      }
+
+      frame = window.requestAnimationFrame(render);
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+    window.addEventListener("pointermove", pointer, { passive: true });
+    frame = window.requestAnimationFrame(render);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", resize);
+      window.removeEventListener("pointermove", pointer);
+    };
+  }, [reducedMotion]);
+
+  if (reducedMotion) return null;
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="portal-atmosphere-canvas"
+      style={{ opacity }}
+    />
+  );
+}
+
+function PortalVideoAtmosphere({
+  kind,
+  config,
+}: {
+  kind: AtmosphereKind;
+  config: VideoAtmosphereConfig;
+}) {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.playbackRate = config.playbackRate ?? 1;
+    }
+  }, [config.playbackRate]);
+
+  return (
+    <video
+      ref={videoRef}
+      key={kind}
+      className="portal-atmosphere-video"
+      style={
+        {
+          opacity: config.opacity,
+          mixBlendMode: config.blendMode ?? "screen",
+          transform: `scale(${config.scale ?? 1})`,
+        } as CSSProperties
+      }
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="auto"
+      src={config.mp4 ?? config.webm}
+    />
+  );
 }
 
 export function PortalSkinAtmosphere({
@@ -64,6 +470,7 @@ export function PortalSkinAtmosphere({
 }: PortalSkinAtmosphereProps) {
   const [reducedMotion, setReducedMotion] = useState(false);
   const kind = useMemo(() => kindForSkin(skin), [skin]);
+  const config = ATMOSPHERES[kind];
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -75,696 +482,84 @@ export function PortalSkinAtmosphere({
 
   if (reducedMotion) return null;
 
+  const vignette = config.vignette ?? "dark";
+
   return (
-    <>
-      <div
-        aria-hidden="true"
-        className="portal-skin-atmosphere components_portal_portal_skin_atmosphere_div_container"
-        data-atmosphere={kind}
-      >
-        {(kind === "sepulchria" ||
-          kind === "ember" ||
-          kind === "blood") &&
-          FLOATERS.map((particle, index) => (
-            <span
-              key={`${kind}-${index}`}
-              className="portal-skin-float components_portal_portal_skin_atmosphere_span_text"
-              style={{
-                left: `${particle.left}%`,
-                width: particle.size,
-                height: particle.size,
-                animationDelay: `${particle.delay}s`,
-                animationDuration: `${particle.duration}s`,
-                ["--portal-drift" as string]: `${particle.drift}px`,
-              }}
-            />
-          ))}
+    <div
+      aria-hidden="true"
+      className="portal-atmosphere-engine"
+      data-atmosphere={kind}
+      data-vignette={vignette}
+    >
+      {config.type === "canvas" ? (
+        <StarfallCanvas opacity={config.opacity} />
+      ) : (
+        <PortalVideoAtmosphere kind={kind} config={config} />
+      )}
 
-        {(kind === "starfall" || kind === "aelari-dawn") &&
-          STARS.map((star, index) => (
-            <span
-              key={index}
-              className="portal-star components_portal_portal_skin_atmosphere_span_text_2"
-              style={{
-                left: `${star.left}%`,
-                top: `${star.top}%`,
-                width: star.size,
-                height: star.size,
-                animationDelay: `${star.delay}s`,
-                animationDuration: `${star.duration}s`,
-              }}
-            />
-          ))}
-
-        {(kind === "starfall" || kind === "aelari-dawn") ? (
-          <span className="portal-shooting-star components_portal_portal_skin_atmosphere_span_text_3" />
-        ) : null}
-
-        {kind === "vellum" &&
-          WRITING.map((item, index) => (
-            <span
-              key={index}
-              className={[((`portal-ink-writing portal-ink-${item.side}`)), "components_portal_portal_skin_atmosphere_span_text_4"].filter(Boolean).join(" ")}
-              style={{
-                top: `${item.top}%`,
-                animationDelay: `${item.delay}s`,
-              }}
-            >
-              {item.text}
-            </span>
-          ))}
-
-        {kind === "rose" ? (
-          <>
-            <span className="portal-vine portal-vine-left components_portal_portal_skin_atmosphere_span_text_5" />
-            <span className="portal-vine portal-vine-right components_portal_portal_skin_atmosphere_span_text_6" />
-            <span className="portal-petal portal-petal-one components_portal_portal_skin_atmosphere_span_text_7" />
-            <span className="portal-petal portal-petal-two components_portal_portal_skin_atmosphere_span_text_8" />
-            <span className="portal-petal portal-petal-three components_portal_portal_skin_atmosphere_span_text_9" />
-          </>
-        ) : null}
-
-        {kind === "water" ? (
-          <>
-            <span className="portal-water-reflection portal-water-a components_portal_portal_skin_atmosphere_span_text_10" />
-            <span className="portal-water-reflection portal-water-b components_portal_portal_skin_atmosphere_span_text_11" />
-          </>
-        ) : null}
-
-        {kind === "amethyst" ? (
-          <>
-            <span className="portal-amethyst portal-amethyst-one components_portal_portal_skin_atmosphere_span_text_12" />
-            <span className="portal-amethyst portal-amethyst-two components_portal_portal_skin_atmosphere_span_text_13" />
-            <span className="portal-amethyst portal-amethyst-three components_portal_portal_skin_atmosphere_span_text_14" />
-          </>
-        ) : null}
-
-        {kind === "verdant" &&
-          STARS.map((star, index) => (
-            <span
-              key={index}
-              className="portal-emerald-speck components_portal_portal_skin_atmosphere_span_text_15"
-              style={{
-                left: `${star.left}%`,
-                top: `${star.top}%`,
-                animationDelay: `${star.delay}s`,
-                animationDuration: `${star.duration + 2}s`,
-              }}
-            />
-          ))}
-
-        {kind === "ivory" ? (
-          <>
-            <span className="portal-ivory-shimmer portal-ivory-top components_portal_portal_skin_atmosphere_span_text_16" />
-            <span className="portal-ivory-shimmer portal-ivory-side components_portal_portal_skin_atmosphere_span_text_17" />
-          </>
-        ) : null}
-
-        {kind === "kareshi-night" ? (
-          <>
-            <span className="portal-kareshi-haze portal-kareshi-haze-a components_portal_portal_skin_atmosphere_span_text_18" />
-            <span className="portal-kareshi-haze portal-kareshi-haze-b components_portal_portal_skin_atmosphere_span_text_19" />
-            <span className="portal-kareshi-shadow-band portal-kareshi-shadow-one components_portal_portal_skin_atmosphere_span_text_20" />
-            <span className="portal-kareshi-shadow-band portal-kareshi-shadow-two components_portal_portal_skin_atmosphere_span_text_21" />
-          </>
-        ) : null}
-
-        {kind === "wolf-moon" ? (
-          <>
-            <span className="portal-moon-glow portal-moon-glow-a components_portal_portal_skin_atmosphere_span_text_22" />
-            <span className="portal-moon-glow portal-moon-glow-b components_portal_portal_skin_atmosphere_span_text_23" />
-            <span className="portal-wolf-mist components_portal_portal_skin_atmosphere_span_text_24" />
-          </>
-        ) : null}
-
-        {kind === "bird-sky" ? (
-          <>
-            <span className="portal-bird-sky portal-bird-sky-a components_portal_portal_skin_atmosphere_span_text_25" />
-            <span className="portal-bird-sky portal-bird-sky-b components_portal_portal_skin_atmosphere_span_text_26" />
-          </>
-        ) : null}
-
-        {kind === "dwarven-forge" ? (
-          <>
-            {FLOATERS.slice(0, 7).map((particle, index) => (
-              <span
-                key={`dwarven-${index}`}
-                className="portal-dwarven-spark components_portal_portal_skin_atmosphere_span_text_27"
-                style={{
-                  left: `${particle.left}%`,
-                  animationDelay: `${particle.delay}s`,
-                  animationDuration: `${Math.max(9, particle.duration - 5)}s`,
-                  ["--portal-drift" as string]: `${particle.drift}px`,
-                }}
-              />
-            ))}
-            <span className="portal-dwarven-heat components_portal_portal_skin_atmosphere_span_text_28" />
-          </>
-        ) : null}
-
-        {kind === "mortal-hearth" &&
-          FLOATERS.slice(0, 5).map((particle, index) => (
-            <span
-              key={`mortal-${index}`}
-              className="portal-mortal-ember components_portal_portal_skin_atmosphere_span_text_29"
-              style={{
-                left: `${particle.left}%`,
-                animationDelay: `${particle.delay + 2}s`,
-                animationDuration: `${particle.duration + 5}s`,
-                ["--portal-drift" as string]: `${particle.drift * 0.45}px`,
-              }}
-            />
-          ))}
-      </div>
+      <div className="portal-atmosphere-vignette" />
 
       <style jsx global>{`
-        .portal-skin-atmosphere {
-          position: fixed;
+        .portal-atmosphere-engine {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+        .portal-atmosphere-video,
+        .portal-atmosphere-canvas,
+        .portal-atmosphere-vignette {
+          position: absolute;
           inset: 0;
-          z-index: 32;
-          overflow: hidden;
+          width: 100%;
+          height: 100%;
           pointer-events: none;
         }
 
-        .portal-skin-float {
-          position: absolute;
-          bottom: -12px;
-          display: block;
-          border-radius: 999px;
-          animation-name: portal-rise;
-          animation-timing-function: linear;
-          animation-iteration-count: infinite;
+        .portal-atmosphere-video {
+          object-fit: cover;
+          object-position: center;
+          filter: saturate(1.05);
+          will-change: transform, opacity;
         }
 
-        .portal-skin-atmosphere[data-atmosphere="sepulchria"] .portal-skin-float,
-        .portal-skin-atmosphere[data-atmosphere="ember"] .portal-skin-float {
-          background: rgb(224 137 56);
-          box-shadow: 0 0 7px rgb(224 137 56 / 0.52);
+        .portal-atmosphere-canvas {
+          opacity: 0.96;
         }
 
-        .portal-skin-atmosphere[data-atmosphere="ashen"] .portal-skin-float {
-          border-radius: 40% 60% 55% 45%;
-          background: rgb(153 147 139);
-          box-shadow: none;
-          animation-name: portal-ash-rise;
-        }
-
-        .portal-skin-atmosphere[data-atmosphere="blood"] .portal-skin-float {
-          top: -12px;
-          bottom: auto;
-          background: rgb(118 24 30);
-          box-shadow: 0 0 5px rgb(84 10 16 / 0.3);
-          animation-name: portal-blood-fall;
-        }
-
-        .portal-star {
-          position: absolute;
-          display: block;
-          border-radius: 999px;
-          background: rgb(240 245 255);
-          box-shadow: 0 0 5px rgb(205 220 255 / 0.7), 0 0 12px rgb(160 188 255 / 0.28);
-          animation: portal-twinkle ease-in-out infinite;
-        }
-
-        .portal-shooting-star {
-          position: absolute;
-          top: 13%;
-          left: 78%;
-          width: 70px;
-          height: 1px;
-          transform: rotate(-28deg);
-          transform-origin: right center;
-          background: linear-gradient(to left, rgb(235 243 255 / 0.9), transparent);
-          opacity: 0;
-          animation: portal-shoot 34s ease-in-out infinite;
-        }
-
-        .portal-kareshi-haze {
-          position: absolute;
-          left: -12%;
-          width: 124%;
-          height: 150px;
-          pointer-events: none;
-          opacity: 0.11;
-          filter: blur(24px);
-          background:
-            linear-gradient(
-              90deg,
-              transparent,
-              rgb(171 124 67 / 0.23) 30%,
-              rgb(105 76 43 / 0.16) 58%,
-              transparent
-            );
-          animation:
-            portal-kareshi-haze-drift
-            28s ease-in-out infinite alternate;
-        }
-
-        .portal-kareshi-haze-a {
-          top: 4%;
-        }
-
-        .portal-kareshi-haze-b {
-          bottom: 7%;
-          opacity: 0.075;
-          transform: scaleX(-1);
-          animation-delay: -11s;
-        }
-
-        .portal-kareshi-shadow-band {
-          position: absolute;
-          left: -20%;
-          width: 140%;
-          height: 32vh;
-          min-height: 180px;
-          pointer-events: none;
-          opacity: 0.12;
-          filter: blur(36px);
+        .portal-atmosphere-vignette {
           background:
             radial-gradient(
-              ellipse at center,
-              rgb(0 0 0 / 0.78) 0%,
-              rgb(20 15 11 / 0.46) 42%,
-              transparent 72%
+              circle at 50% 38%,
+              transparent 34%,
+              rgb(0 0 0 / 0.035) 76%,
+              rgb(0 0 0 / 0.1) 100%
             );
-          animation:
-            portal-kareshi-shadow-drift
-            34s ease-in-out infinite alternate;
+          mix-blend-mode: multiply;
         }
 
-        .portal-kareshi-shadow-one {
-          top: 18%;
-          transform: translateX(-7%) rotate(-3deg);
-        }
-
-        .portal-kareshi-shadow-two {
-          bottom: 10%;
-          transform: translateX(8%) rotate(2deg);
-          animation-delay: -17s;
-        }
-
-        @keyframes portal-kareshi-haze-drift {
-          from {
-            transform: translate3d(-3%, 0, 0);
-          }
-
-          to {
-            transform: translate3d(4%, 8px, 0);
-          }
-        }
-
-        @keyframes portal-kareshi-shadow-drift {
-          from {
-            margin-left: -4%;
-            opacity: 0.09;
-          }
-
-          to {
-            margin-left: 5%;
-            opacity: 0.15;
-          }
-        }
-
-        .portal-ink-writing {
-          position: absolute;
-          max-width: 150px;
-          overflow: hidden;
-          white-space: nowrap;
-          color: rgb(66 49 35 / 0.34);
-          font-family: "Times New Roman", Georgia, serif;
-          font-size: 17px;
-          font-style: italic;
-          letter-spacing: 0.05em;
-          clip-path: inset(0 100% 0 0);
-          opacity: 0;
-          animation: portal-write 22s ease-in-out infinite;
-        }
-
-        .portal-ink-left { left: 18px; transform: rotate(-4deg); }
-        .portal-ink-right { right: 18px; transform: rotate(3deg); }
-
-        .portal-vine {
-          position: absolute;
-          top: 6%;
-          bottom: 6%;
-          width: 34px;
-          opacity: 0.25;
+        .portal-atmosphere-engine[data-vignette="light"] .portal-atmosphere-vignette {
           background:
-            radial-gradient(circle at 50% 11%, rgb(111 62 77 / 0.75) 0 3px, transparent 4px),
-            radial-gradient(circle at 30% 26%, rgb(80 93 57 / 0.8) 0 4px, transparent 5px),
-            radial-gradient(circle at 70% 42%, rgb(111 62 77 / 0.6) 0 3px, transparent 4px),
-            radial-gradient(circle at 30% 62%, rgb(80 93 57 / 0.8) 0 4px, transparent 5px),
-            radial-gradient(circle at 68% 79%, rgb(111 62 77 / 0.65) 0 3px, transparent 4px),
-            linear-gradient(90deg, transparent 47%, rgb(75 89 51 / 0.65) 48% 52%, transparent 53%);
-          background-size: 34px 150px;
-          animation: portal-vine-breathe 18s ease-in-out infinite alternate;
+            radial-gradient(
+              circle at 50% 34%,
+              rgb(255 255 255 / 0.025),
+              transparent 62%
+            );
+          mix-blend-mode: normal;
         }
 
-        .portal-vine-left { left: 0; }
-        .portal-vine-right { right: 0; transform: scaleX(-1); }
-
-        .portal-petal {
-          position: absolute;
-          top: -20px;
-          width: 6px;
-          height: 9px;
-          border-radius: 70% 30% 70% 30%;
-          background: rgb(157 79 102 / 0.42);
-          animation: portal-petal-fall 24s linear infinite;
-        }
-
-        .portal-petal-one { left: 8%; animation-delay: 2s; }
-        .portal-petal-two { left: 91%; animation-delay: 10s; }
-        .portal-petal-three { left: 4%; animation-delay: 17s; }
-
-        .portal-water-reflection {
-          position: absolute;
-          left: -15%;
-          width: 130%;
-          height: 90px;
-          opacity: 0.12;
-          filter: blur(10px);
-          background: repeating-linear-gradient(
-            100deg,
-            transparent 0 28px,
-            rgb(194 231 239 / 0.52) 32px 35px,
-            transparent 39px 70px
-          );
-          animation: portal-water-shift 18s ease-in-out infinite alternate;
-        }
-
-        .portal-water-a { top: 0; }
-        .portal-water-b { bottom: 0; transform: scaleY(-1); animation-delay: -8s; }
-
-        .portal-amethyst {
-          position: absolute;
-          width: 28px;
-          height: 28px;
-          opacity: 0;
-          clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
-          background: linear-gradient(135deg, rgb(240 221 255 / 0.14), rgb(172 94 230 / 0.42), rgb(91 44 132 / 0.12));
-          filter: drop-shadow(0 0 7px rgb(183 111 235 / 0.25));
-          animation: portal-amethyst-glint 17s ease-in-out infinite;
-        }
-
-        .portal-amethyst-one { left: 5%; top: 18%; }
-        .portal-amethyst-two { right: 6%; top: 52%; animation-delay: 6s; }
-        .portal-amethyst-three { left: 47%; bottom: 3%; animation-delay: 11s; }
-
-        .portal-emerald-speck {
-          position: absolute;
-          width: 2px;
-          height: 2px;
-          border-radius: 999px;
-          background: rgb(72 202 131);
-          box-shadow: 0 0 7px rgb(72 202 131 / 0.48);
-          animation: portal-emerald-pulse ease-in-out infinite;
-        }
-
-        .portal-ivory-shimmer {
-          position: absolute;
-          opacity: 0;
-          background: linear-gradient(90deg, transparent, rgb(255 249 226 / 0.5), transparent);
-          filter: blur(2px);
-          animation: portal-ivory-sweep 20s ease-in-out infinite;
-        }
-
-        .portal-ivory-top { top: 0; left: -30%; width: 30%; height: 2px; }
-        .portal-ivory-side {
-          top: -30%;
-          right: 0;
-          width: 2px;
-          height: 30%;
-          background: linear-gradient(to bottom, transparent, rgb(255 249 226 / 0.45), transparent);
-          animation-delay: 9s;
-        }
-
-        .portal-moon-glow {
-          position: absolute;
-          width: 36vw;
-          height: 36vw;
-          max-width: 520px;
-          max-height: 520px;
-          border-radius: 999px;
-          filter: blur(58px);
-          background: radial-gradient(circle, rgb(185 208 237 / 0.12), rgb(185 208 237 / 0.04) 45%, transparent 72%);
-          animation: portal-moon-breathe 16s ease-in-out infinite alternate;
-        }
-
-        .portal-moon-glow-a { top: -18%; left: -12%; }
-        .portal-moon-glow-b { right: -14%; bottom: -22%; animation-delay: -8s; }
-
-        .portal-bird-sky {
-          position: absolute;
-          left: -18%;
-          width: 136%;
-          height: 115px;
-          opacity: .09;
-          filter: blur(18px);
-          background: repeating-linear-gradient(
-            98deg,
-            transparent 0 52px,
-            rgb(209 235 249 / .38) 64px 83px,
-            transparent 95px 150px
-          );
-          animation: portal-bird-sky-drift 32s linear infinite;
-        }
-        .portal-bird-sky-a { top: 8%; }
-        .portal-bird-sky-b {
-          bottom: 11%;
-          opacity: .055;
-          animation-delay: -16s;
-          animation-direction: reverse;
-        }
-        .portal-dwarven-spark {
-          position: absolute;
-          bottom: -10px;
-          width: 3px;
-          height: 3px;
-          border-radius: 999px;
-          background: rgb(221 132 59);
-          box-shadow: 0 0 5px rgb(221 132 59 / .72);
-          animation: portal-dwarven-spark-rise linear infinite;
-        }
-        .portal-dwarven-heat {
-          position: absolute;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          height: 50px;
-          opacity: .08;
-          filter: blur(17px);
-          background: linear-gradient(to top, rgb(147 69 29 / .45), transparent);
-          animation: portal-dwarven-heat 8s ease-in-out infinite alternate;
-        }
-        .portal-mortal-ember {
-          position: absolute;
-          bottom: -8px;
-          width: 2px;
-          height: 2px;
-          border-radius: 999px;
-          background: rgb(184 155 111);
-          box-shadow: 0 0 4px rgb(184 155 111 / .28);
-          animation: portal-mortal-ember-rise linear infinite;
-        }
-
-        @keyframes portal-rise {
-          0% { transform: translate3d(0, 0, 0); opacity: 0; }
-          15% { opacity: 0.27; }
-          82% { opacity: 0.16; }
-          100% { transform: translate3d(var(--portal-drift, 0px), -108vh, 0); opacity: 0; }
-        }
-
-        @keyframes portal-ash-rise {
-          0% { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 0; }
-          15% { opacity: 0.22; }
-          55% { transform: translate3d(calc(var(--portal-drift, 0px) * -0.6), -55vh, 0) rotate(190deg); }
-          100% { transform: translate3d(var(--portal-drift, 0px), -108vh, 0) rotate(420deg); opacity: 0; }
-        }
-
-        @keyframes portal-blood-fall {
-          0% { transform: translate3d(0, -8px, 0); opacity: 0; }
-          15% { opacity: 0.24; }
-          84% { opacity: 0.13; }
-          100% { transform: translate3d(var(--portal-drift, 0px), 108vh, 0); opacity: 0; }
-        }
-
-        @keyframes portal-twinkle {
-          0%, 100% { opacity: 0.08; transform: scale(0.75); }
-          48% { opacity: 0.42; transform: scale(1.25); }
-          54% { opacity: 0.2; transform: scale(0.9); }
-          62% { opacity: 0.48; transform: scale(1.15); }
-        }
-
-        @keyframes portal-shoot {
-          0%, 91%, 100% { opacity: 0; transform: translate3d(0, 0, 0) rotate(-28deg); }
-          93% { opacity: 0.45; }
-          96% { opacity: 0; transform: translate3d(-170px, 95px, 0) rotate(-28deg); }
-        }
-
-        @keyframes portal-write {
-          0%, 6% { clip-path: inset(0 100% 0 0); opacity: 0; }
-          14% { opacity: 0.28; }
-          22%, 42% { clip-path: inset(0 0 0 0); opacity: 0.28; }
-          58%, 100% { clip-path: inset(0 0 0 0); opacity: 0; }
-        }
-
-        @keyframes portal-vine-breathe {
-          from { opacity: 0.16; transform: translateY(0); }
-          to { opacity: 0.28; transform: translateY(8px); }
-        }
-
-        @keyframes portal-petal-fall {
-          0% { transform: translate3d(0, -15px, 0) rotate(0deg); opacity: 0; }
-          15% { opacity: 0.24; }
-          100% { transform: translate3d(24px, 105vh, 0) rotate(320deg); opacity: 0; }
-        }
-
-        @keyframes portal-water-shift {
-          from { transform: translate3d(-2%, 0, 0) skewX(-5deg); }
-          to { transform: translate3d(4%, 0, 0) skewX(6deg); }
-        }
-
-        @keyframes portal-amethyst-glint {
-          0%, 70%, 100% { opacity: 0; transform: rotate(0deg) scale(0.75); }
-          77% { opacity: 0.18; transform: rotate(18deg) scale(1); }
-          84% { opacity: 0.38; transform: rotate(36deg) scale(1.16); }
-          91% { opacity: 0.1; transform: rotate(54deg) scale(0.9); }
-        }
-
-        @keyframes portal-emerald-pulse {
-          0%, 100% { opacity: 0.05; transform: scale(0.75); }
-          50% { opacity: 0.4; transform: scale(1.25); }
-        }
-
-        @keyframes portal-ivory-sweep {
-          0%, 70%, 100% { opacity: 0; }
-          77% { opacity: 0.26; }
-          88% { opacity: 0.12; transform: translate3d(430%, 0, 0); }
-        }
-
-        @keyframes portal-moon-breathe {
-          from { opacity: 0.45; transform: scale(0.94); }
-          to { opacity: 0.8; transform: scale(1.06); }
-        }
-
-        @keyframes portal-bird-sky-drift {
-          from { transform: translate3d(-4%, 0, 0); }
-          to { transform: translate3d(9%, 0, 0); }
-        }
-        @keyframes portal-dwarven-spark-rise {
-          0% { transform: translate3d(0,0,0) scale(.7); opacity: 0; }
-          15% { opacity: .5; }
-          72% { opacity: .2; }
-          100% {
-            transform: translate3d(var(--portal-drift,0px),-66vh,0) scale(1.1);
-            opacity: 0;
-          }
-        }
-        @keyframes portal-dwarven-heat {
-          from { opacity: .045; transform: scaleY(.9); }
-          to { opacity: .11; transform: scaleY(1.08); }
-        }
-        @keyframes portal-mortal-ember-rise {
-          0% { transform: translate3d(0,0,0); opacity: 0; }
-          18% { opacity: .18; }
-          80% { opacity: .07; }
-          100% {
-            transform: translate3d(var(--portal-drift,0px),-72vh,0);
-            opacity: 0;
-          }
-        }
-
-
-        /* Visibility pass for ancestry atmospheres. */
-
-        .portal-skin-atmosphere[data-atmosphere="ivory"] .portal-ivory-shimmer {
-          opacity: 0.22;
-          filter: blur(1px);
-          animation-duration: 12s;
-        }
-
-        .portal-skin-atmosphere[data-atmosphere="amethyst"] .portal-amethyst {
-          width: 34px;
-          height: 34px;
-          filter: drop-shadow(0 0 10px rgb(183 111 235 / 0.42));
-          animation-duration: 11s;
-        }
-
-        .portal-skin-atmosphere[data-atmosphere="bird-sky"] .portal-bird-sky {
-          opacity: 0.16;
-          filter: blur(14px);
-        }
-
-        .portal-skin-atmosphere[data-atmosphere="aelari-dawn"] .portal-star {
-          width: 2px !important;
-          height: 2px !important;
-          opacity: 0.38;
-          box-shadow:
-            0 0 6px rgb(236 244 255 / 0.82),
-            0 0 14px rgb(214 191 123 / 0.34);
-        }
-
-        .portal-skin-atmosphere[data-atmosphere="aelari-dawn"] .portal-shooting-star {
-          opacity: 0;
-          width: 92px;
-          background: linear-gradient(
-            to left,
-            rgb(255 244 206 / 0.92),
-            rgb(196 225 248 / 0.32),
-            transparent
-          );
-          animation-duration: 24s;
-        }
-
-        .portal-skin-atmosphere[data-atmosphere="dwarven-forge"] .portal-dwarven-spark {
-          width: 4px;
-          height: 4px;
-          box-shadow:
-            0 0 6px rgb(225 137 65 / 0.8),
-            0 0 13px rgb(157 74 31 / 0.38);
-        }
-
-        .portal-skin-atmosphere[data-atmosphere="dwarven-forge"] .portal-dwarven-heat {
-          opacity: 0.15;
-        }
-
-        .portal-skin-atmosphere[data-atmosphere="mortal-hearth"] .portal-mortal-ember {
-          width: 3px;
-          height: 3px;
-          box-shadow: 0 0 7px rgb(184 155 111 / 0.42);
-        }
-
-        .portal-skin-atmosphere[data-atmosphere="wolf-moon"] .portal-moon-glow {
-          opacity: 0.7;
-        }
-
-        .portal-wolf-mist {
-          position: absolute;
-          left: -15%;
-          right: -15%;
-          bottom: 7%;
-          height: 120px;
-          opacity: 0.11;
-          filter: blur(18px);
-          background: repeating-linear-gradient(
-            96deg,
-            transparent 0 48px,
-            rgb(204 215 220 / 0.28) 60px 80px,
-            transparent 92px 145px
-          );
-          animation: portal-wolf-mist-drift 26s linear infinite;
-        }
-
-        @keyframes portal-wolf-mist-drift {
-          from { transform: translate3d(-4%, 0, 0); }
-          to { transform: translate3d(8%, 0, 0); }
+        .portal-atmosphere-engine[data-vignette="none"] .portal-atmosphere-vignette {
+          display: none;
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .portal-skin-atmosphere { display: none !important; }
+          .portal-atmosphere-engine {
+            display: none !important;
+          }
         }
       `}</style>
-    </>
+    </div>
   );
 }
