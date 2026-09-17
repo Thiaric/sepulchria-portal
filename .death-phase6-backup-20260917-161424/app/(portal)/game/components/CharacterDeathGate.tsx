@@ -19,13 +19,7 @@ const ALIVE: MyDeathState = {
   rescueFeats: [],
 };
 
-export function CharacterDeathGate({
-  characterId,
-  ghostChatAllowed,
-}: {
-  characterId: string;
-  ghostChatAllowed: boolean;
-}) {
+export function CharacterDeathGate({ characterId }: { characterId: string }) {
   const [state, setState] = useState<MyDeathState>(ALIVE);
   const [status, setStatus] = useState("");
   const [pending, startTransition] = useTransition();
@@ -80,29 +74,23 @@ export function CharacterDeathGate({
         }).format(new Date(state.deadUntil))
       : null;
 
-    const essenceActive =
-      Boolean(state.essenceEndsAt) &&
-      Date.parse(state.essenceEndsAt!) > Date.now();
-
-    const essenceLabel =
-      essenceActive && state.essenceEndsAt
-        ? `Essence clings until ${new Intl.DateTimeFormat("en-GB", {
-            hour: "2-digit",
-            minute: "2-digit",
-          }).format(new Date(state.essenceEndsAt))}; healing Items, Shapes and Feats that affect Others may still return them.`
-        : "Essence has faded; only a Level IX Resurrection Shape, staff intervention, or the Current's natural return can restore them.";
-
     return (
-      <div className="mb-2 border border-[rgb(var(--sep-colour-754137))]/45 bg-[rgb(var(--sep-colour-2b1714))]/55 px-3 py-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-bc9d91))]">
-        <strong className="font-semibold text-[rgb(var(--sep-colour-d7b28d))]">
-          Ghost state:
-        </strong>{" "}
-        {ghostChatAllowed
-          ? "Location chat is available here."
-          : "This Location does not permit Ghost chat; you may move elsewhere."}{" "}
-        {until ? `Dead until ${until}. ` : "This Character is dead. "}
-        {essenceLabel}{" "}
-        Mechanical actions, Whispers, Feats, Warping, Items, Conditions and Dice remain unavailable.
+      <div className="mb-2 border border-[rgb(var(--sep-colour-754137))]/55 bg-[rgb(var(--sep-colour-2b1714))] px-3 py-2.5">
+        <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-d28e82))]">
+          Character Dead
+        </p>
+        <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-bc9d91))]">
+          {until ? `This Character remains dead until ${until}.` : "This Character is dead."}
+        </p>
+        <p className="mt-1 text-[9px] leading-4 text-[rgb(var(--sep-colour-a98d85))]">
+          {state.essenceEndsAt &&
+          Date.parse(state.essenceEndsAt) > Date.now()
+            ? `Their essence still clings to the body until ${new Intl.DateTimeFormat("en-GB", {
+                hour: "2-digit",
+                minute: "2-digit",
+              }).format(new Date(state.essenceEndsAt))}. Healing Items, Shapes and Feats that can affect Others may still return them.`
+            : "Their essence has faded. Ordinary healing can no longer return them; only a Level IX Resurrection Shape, staff intervention, or the Current's natural return can do so."}
+        </p>
       </div>
     );
   }
