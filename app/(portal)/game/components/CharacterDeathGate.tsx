@@ -49,9 +49,11 @@ export function CharacterDeathGate({ characterId }: { characterId: string }) {
       })
       .subscribe();
 
+    // Realtime updates the gate immediately. This slower fallback is
+    // retained for natural-return reconciliation and websocket recovery.
     const timer = window.setInterval(() => {
       if (active) void refresh();
-    }, 1000);
+    }, 20_000);
 
     return () => {
       active = false;

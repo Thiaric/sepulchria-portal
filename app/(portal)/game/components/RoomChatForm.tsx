@@ -594,9 +594,11 @@ export default function RoomChatForm({
       )
       .subscribe();
 
+    // Realtime is the primary update path. This is only a recovery
+    // fallback in case the websocket misses an update.
     const deathUiTimer = window.setInterval(
       () => void refreshDeathUi(),
-      1000,
+      20_000,
     );
 
     return () => {
@@ -2145,19 +2147,8 @@ function ignoreSpellingWord() {
                 )}
               </p>
 
-              {transientStatusMessage ? (
-                <p
-                  aria-live="polite"
-                  className={[((`min-w-0 truncate text-xs ${
-                    transientStatusOk
-                      ? "text-[rgb(var(--sep-colour-9bb58c))]"
-                      : "text-[rgb(var(--sep-colour-d58d82))]"
-                  }`)), "game_components_roomchatform_p_text_4"].filter(Boolean).join(" ")}
-                  title={transientStatusMessage}
-                >
-                  {transientStatusMessage}
-                </p>
-              ) : null}
+              {/* Status feedback is rendered below the composer in its
+                  own row so utility buttons can never cover it. */}
             </div>
 
                         <div className="relative -top-1.5 game_components_roomchatform_div_container_10">
@@ -3264,26 +3255,47 @@ if (
           )}
         </form>
       )}
-      {utilityMode === null && (utilityLoadingMode || utilityLoadError) ? (
-        <p
+      {utilityMode === null &&
+      (
+        transientStatusMessage ||
+        utilityLoadingMode ||
+        utilityLoadError
+      ) ? (
+        <div
           aria-live="polite"
-          className={[((`mb-1 text-center text-[8px] ${
-            utilityLoadError
-              ? "text-[rgb(var(--sep-colour-d58d82))]"
-              : "text-[rgb(var(--sep-colour-a98b61))]"
-          }`)), "game_components_roomchatform_p_text_29"].filter(Boolean).join(" ")}
+          className="mt-2 min-h-5 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-2 text-center text-[9px]"
         >
-          {utilityLoadError
-            ? utilityLoadError
-            : utilityLoadingMode === "attributes"
-              ? "Loading combat data..."
-              : utilityLoadingMode === "feat"
-                ? "Loading Feats..."
-                : "Loading Items..."}
-        </p>
+          {utilityLoadError ? (
+            <span className="text-[rgb(var(--sep-colour-d58d82))]">
+              {utilityLoadError}
+            </span>
+          ) : utilityLoadingMode ? (
+            <span className="text-[rgb(var(--sep-colour-a98b61))]">
+              {utilityLoadingMode === "attributes"
+                ? "Loading combat data..."
+                : utilityLoadingMode === "feat"
+                  ? "Loading Feats..."
+                  : "Loading Items..."}
+            </span>
+          ) : transientStatusMessage ? (
+            <span
+              className={
+                transientStatusOk
+                  ? "text-[rgb(var(--sep-colour-9bb58c))]"
+                  : "text-[rgb(var(--sep-colour-d58d82))]"
+              }
+            >
+              {transientStatusMessage}
+            </span>
+          ) : null}
+        </div>
       ) : null}
+
       {utilityMode === null ? (
-      <div className="-mt-8 mx-[92px] flex flex-wrap justify-center gap-1 border-0 pt-0 max-lg:mx-0 max-lg:mt-2 max-lg:border-t max-lg:border-[rgb(var(--sep-colour-59432c))]/30 max-lg:pt-2 game_components_roomchatform_div_container_27">
+      <div
+        data-room-chat-controls
+        className="mt-2 flex flex-wrap justify-center gap-1 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-2 game_components_roomchatform_div_container_27"
+      >
         {canUseFate ? (
           <button
             type="button"

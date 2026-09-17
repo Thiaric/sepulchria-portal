@@ -1106,6 +1106,35 @@ const messageIdsKey =
 
   useEffect(() => {
     let active = true;
+    const supabase = createClient();
+
+    function systemEventToMessage(event: {
+      id: string;
+      message: string;
+      created_at: string;
+    }): RoomMessage {
+      return {
+        id: `death-system-${event.id}`,
+        message: event.message,
+        message_type: "action",
+        fate_image_url: null,
+        roll_label: null,
+        dice_sides: null,
+        dice_result: null,
+        attribute_key: null,
+        attribute_value: null,
+        roll_total: null,
+        whisper_recipient_character_id: null,
+        created_at: event.created_at,
+        character_id: null,
+        condition_snapshot: [],
+        speaker_type: "system",
+        npc_id: null,
+        npc_snapshot: null,
+        character: null,
+        whisperRecipient: null,
+      };
+    }
 
     async function loadSystemEvents() {
       try {
@@ -1132,27 +1161,7 @@ const messageIdsKey =
         if (!active) return;
 
         const synthetic: RoomMessage[] =
-          (payload.events ?? []).map((event) => ({
-            id: `death-system-${event.id}`,
-            message: event.message,
-            message_type: "action",
-            fate_image_url: null,
-            roll_label: null,
-            dice_sides: null,
-            dice_result: null,
-            attribute_key: null,
-            attribute_value: null,
-            roll_total: null,
-            whisper_recipient_character_id: null,
-            created_at: event.created_at,
-            character_id: null,
-            condition_snapshot: [],
-            speaker_type: "system",
-            npc_id: null,
-            npc_snapshot: null,
-            character: null,
-            whisperRecipient: null,
-          }));
+          (payload.events ?? []).map(systemEventToMessage);
 
         setLiveMessages((currentMessages) =>
           mergeMessages(currentMessages, synthetic),
@@ -1167,14 +1176,59 @@ const messageIdsKey =
 
     void loadSystemEvents();
 
+    const channel = supabase
+      .channel(`room-system-events-${roomId}-${crypto.randomUUID()}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "room_system_events",
+          filter: `room_id=eq.${roomId}`,
+        },
+        (payload) => {
+          if (!active) return;
+
+          const row = payload.new as {
+            id?: string;
+            message?: string;
+            created_at?: string;
+          };
+
+          const eventId = row.id;
+          const eventMessage = row.message;
+          const eventCreatedAt = row.created_at;
+
+          if (!eventId || !eventMessage || !eventCreatedAt) {
+            return;
+          }
+
+          setLiveMessages((currentMessages) =>
+            mergeMessages(
+              currentMessages,
+              [
+                systemEventToMessage({
+                  id: eventId,
+                  message: eventMessage,
+                  created_at: eventCreatedAt,
+                }),
+              ],
+            ),
+          );
+        },
+      )
+      .subscribe();
+
+    // Recovery only. Normal announcements arrive over Realtime.
     const timer = window.setInterval(
       () => void loadSystemEvents(),
-      1500,
+      60_000,
     );
 
     return () => {
       active = false;
       window.clearInterval(timer);
+      void supabase.removeChannel(channel);
     };
   }, [roomId]);
 
@@ -1468,13 +1522,9 @@ for(const row of priceResult.data??[]){
     const supabase = createClient();
 
     async function loadResurrectionMaluses() {
-      const ids = Array.from(
-        new Set(
-          liveMessages
-            .map((message) => message.character_id)
-            .filter(Boolean),
-        ),
-      ) as string[];
+      const ids = chatCharacterIdsKey
+        ? chatCharacterIdsKey.split(",").filter(Boolean)
+        : [];
 
       if (!ids.length) {
         if (active) setResurrectionMaluses({});
@@ -1513,14 +1563,19 @@ for(const row of priceResult.data??[]){
 
     const malusTimer = window.setInterval(
       () => void loadResurrectionMaluses(),
-      1500,
+      20_000,
     );
 
     async function loadMessageEffectConditions() {
+      // Only real room_messages IDs are UUIDs. Synthetic system events use
+      // the death-system-<uuid> prefix and must never be sent to this RPC.
+      const uuidPattern =
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
       const messageIds =
-        liveMessages
-          .map((message) => message.id)
-          .filter(Boolean);
+        messageIdsKey
+          .split(",")
+          .filter((id) => uuidPattern.test(id));
 
       if (!messageIds.length) {
         if (active) {
@@ -1579,7 +1634,7 @@ for(const row of priceResult.data??[]){
       active = false;
       window.clearInterval(malusTimer);
     };
-  }, [messageIdsKey, liveMessages]);
+  }, [messageIdsKey, chatCharacterIdsKey]);
 
   function renderShapeTagGroups(
     characterId:string,

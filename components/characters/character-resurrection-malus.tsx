@@ -47,7 +47,7 @@ export function CharacterResurrectionMalus({
 
     const timer = window.setInterval(
       () => void load(),
-      1500,
+      20_000,
     );
 
     const onFocus = () => void load();
@@ -63,18 +63,23 @@ export function CharacterResurrectionMalus({
   if (!malus) return null;
 
   return (
-    <section className="mt-4 border border-[rgb(var(--sep-colour-754137))]/45 bg-[rgb(var(--sep-colour-2b1714))]/55 p-4">
-      <p className="text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-d28e82))]">
-        Resurrection Malus
-      </p>
-      <h3 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-e0c39a))]">
+    <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]/80 p-4 components_characters_character_resurrection_malus_section">
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-8c704b))]">
+          Resurrection Malus
+        </p>
+
+        <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8f8271))]">
+          Permanent · until cleared by staff
+        </p>
+      </div>
+
+      <p className="mt-3 font-serif text-sm text-[rgb(var(--sep-colour-d7bf94))]">
         {malus.name}
-      </h3>
-      <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-bc9d91))]">
-        {malus.description}
       </p>
-      <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-88756c))]">
-        Lasting narrative scar · remains until changed or cleared by staff
+
+      <p className="mt-2 whitespace-pre-wrap text-[11px] leading-5 text-[rgb(var(--sep-colour-c9b99d))]">
+        {malus.description}
       </p>
     </section>
   );
