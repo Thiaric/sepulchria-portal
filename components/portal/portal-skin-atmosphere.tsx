@@ -503,7 +503,7 @@ export function PortalSkinAtmosphere({
         .portal-atmosphere-engine {
   position: fixed;
   inset: 0;
-  z-index: 32;
+  z-index: 60;
   overflow: hidden;
   pointer-events: none;
 }
