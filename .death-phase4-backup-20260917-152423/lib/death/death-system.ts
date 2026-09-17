@@ -168,12 +168,14 @@ async function announceSystemMessage({
   const admin = createAdminClient();
 
   const { error } = await admin
-    .from("room_system_events")
+    .from("room_messages")
     .insert({
       room_id: roomId,
-      character_id: characterId,
+      character_id: null,
       message,
-      event_kind: "death_system",
+      message_type: "action",
+      speaker_type: "system",
+      client_nonce: crypto.randomUUID(),
     });
 
   if (error) {

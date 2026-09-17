@@ -594,14 +594,8 @@ export default function RoomChatForm({
       )
       .subscribe();
 
-    const deathUiTimer = window.setInterval(
-      () => void refreshDeathUi(),
-      1000,
-    );
-
     return () => {
       active = false;
-      window.clearInterval(deathUiTimer);
       void supabase.removeChannel(channel);
     };
   }, [viewerCharacterId, roomId]);
@@ -611,12 +605,10 @@ export default function RoomChatForm({
 
     if (
       utilityMode === "whisper" ||
-      utilityMode === "dice" ||
       utilityMode === "attributes" ||
       utilityMode === "feat" ||
       utilityMode === "items" ||
-      utilityMode === "warping" ||
-      utilityMode === "conditions"
+      utilityMode === "warping"
     ) {
       setUtilityMode(null);
     }
@@ -1682,12 +1674,10 @@ function ignoreSpellingWord() {
       viewerDead &&
       (
         mode === "whisper" ||
-        mode === "dice" ||
         mode === "attributes" ||
         mode === "feat" ||
         mode === "items" ||
-        mode === "warping" ||
-        mode === "conditions"
+        mode === "warping"
       )
     ) {
       return;
@@ -1786,12 +1776,7 @@ function ignoreSpellingWord() {
         
       </div>
       {utilityMode === null ? (
-        <form
-          className={
-            viewerDead && !ghostChatAllowed
-              ? "hidden"
-              : "game_components_roomchatform_form_message_action"
-          }
+        <form className="game_components_roomchatform_form_message_action"
           action={messageAction}
           ref={messageFormRef}
           onSubmit={clearMessageComposerAfterSubmit}
@@ -2971,7 +2956,6 @@ function ignoreSpellingWord() {
       ) : utilityMode === "exchange" ? (
         <ItemExchangePanel
           presentCharacters={presentCharacters}
-          limitedToGiving={viewerDead}
           onClose={() => setUtilityMode(null)}
         />
       ) : (
@@ -3294,8 +3278,7 @@ if (
           </button>
         ) : null}
 
-        {!viewerDead ? (
-<button
+        <button
   type="button"
   onClick={() =>
     toggleUtility("conditions")
@@ -3306,7 +3289,6 @@ if (
 >
   Conditions
 </button>
-) : null}
 
 <button
           type="button"
@@ -3325,19 +3307,17 @@ if (
           Whisper
         </button>
 
-        {!viewerDead ? (
-          <button
-            type="button"
-            onClick={() =>
-              toggleUtility("dice")
-            }
-            className={[((utilityMode === "dice"
-                ? utilityButtonActiveClass
-                : utilityButtonClass)), "game_components_roomchatform_button_roll_dice"].filter(Boolean).join(" ")}
-          >
-            Roll Dice
-          </button>
-        ) : null}
+        <button
+          type="button"
+          onClick={() =>
+            toggleUtility("dice")
+          }
+          className={[((utilityMode === "dice"
+              ? utilityButtonActiveClass
+              : utilityButtonClass)), "game_components_roomchatform_button_roll_dice"].filter(Boolean).join(" ")}
+        >
+          Roll Dice
+        </button>
 
         <button
           type="button"

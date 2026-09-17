@@ -55,11 +55,9 @@ function decode(value: string) {
 
 export function ItemExchangePanel({
   presentCharacters,
-  limitedToGiving = false,
   onClose,
 }: {
   presentCharacters: PresentRoomCharacter[];
-  limitedToGiving?: boolean;
   onClose: () => void;
 }) {
   const supabase = useMemo(() => createClient(), []);
@@ -729,7 +727,7 @@ export function ItemExchangePanel({
       </div>
 
       <div className="grid gap-3 lg:grid-cols-2 game_components_itemexchangepanel_div_container_11">
-        {!trade || limitedToGiving ? (
+        {!trade ? (
           <>
         <section className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3 game_components_itemexchangepanel_section_section">
           <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))] game_components_itemexchangepanel_p_text_3">Give Item as a Gift</p>
@@ -851,7 +849,6 @@ export function ItemExchangePanel({
           </>
         ) : null}
 
-        {!limitedToGiving ? (
         <section className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3 lg:col-span-2 game_components_itemexchangepanel_section_section_3">
           <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))] game_components_itemexchangepanel_p_text_9">Exchange Items</p>
           {!trade ? (
@@ -872,10 +869,9 @@ export function ItemExchangePanel({
             </p>
           )}
         </section>
-        ) : null}
       </div>
 
-      {trade && !limitedToGiving ? (
+      {trade ? (
         <section className="mt-3 border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3 game_components_itemexchangepanel_section_section_4">
           <div className="grid gap-3 lg:grid-cols-2 game_components_itemexchangepanel_div_container_18">
             {offerBox(`${myName}'s Offer`, mine, mineRemnants, mineConfirmed, true)}

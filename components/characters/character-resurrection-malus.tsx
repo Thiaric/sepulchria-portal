@@ -1,85 +1,64 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { useEffect, useState } from "react";
+
+type Malus = {
+  name: string;
+  description: string;
+};
 
 export function CharacterResurrectionMalus({
   characterId,
 }: {
   characterId: string;
 }) {
-  const supabase = useMemo(() => createClient(), []);
-  const [malus, setMalus] = useState<{
-    name: string;
-    description: string;
-  } | null>(null);
+  const [malus, setMalus] = useState<Malus | null>(null);
 
   useEffect(() => {
     let active = true;
 
     async function load() {
-      const { data, error } = await supabase
-        .from("character_resurrection_maluses")
-        .select(`
-          narrative_text,
-          malus:death_resurrection_maluses(name,description)
-        `)
-        .eq("character_id", characterId)
-        .is("cleared_at", null)
-        .order("applied_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      if (error) {
-        console.error(
-          "Unable to load Resurrection Malus:",
-          error.message,
+      try {
+        const response = await fetch(
+          `/api/death/maluses?ids=${encodeURIComponent(characterId)}`,
+          { cache: "no-store" },
         );
-        return;
+
+        const payload = (await response.json()) as {
+          maluses?: Record<string, Malus>;
+          error?: string;
+        };
+
+        if (!response.ok) {
+          throw new Error(
+            payload.error ?? "Unable to load Resurrection Malus.",
+          );
+        }
+
+        if (active) {
+          setMalus(payload.maluses?.[characterId] ?? null);
+        }
+      } catch (error) {
+        console.error("Unable to load Resurrection Malus:", error);
       }
-
-      if (!active) return;
-
-      if (!data) {
-        setMalus(null);
-        return;
-      }
-
-      const relation = Array.isArray(data.malus)
-        ? data.malus[0] ?? null
-        : data.malus;
-
-      setMalus({
-        name: String(relation?.name ?? "Resurrection Scar"),
-        description: String(
-          data.narrative_text ??
-          relation?.description ??
-          "",
-        ),
-      });
     }
 
     void load();
 
-    const channel = supabase
-      .channel(`character-resurrection-malus-${characterId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "character_resurrection_maluses",
-          filter: `character_id=eq.${characterId}`,
-        },
-        () => void load(),
-      )
-      .subscribe();
+    const timer = window.setInterval(
+      () => void load(),
+      1500,
+    );
+
+    const onFocus = () => void load();
+    window.addEventListener("focus", onFocus);
 
     return () => {
       active = false;
-      void supabase.removeChannel(channel);
+      window.clearInterval(timer);
+      window.removeEventListener("focus", onFocus);
     };
-  }, [characterId, supabase]);
+  }, [characterId]);
 
   if (!malus) return null;
 

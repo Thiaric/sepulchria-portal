@@ -1105,80 +1105,6 @@ const messageIdsKey =
   }, [messages]);
 
   useEffect(() => {
-    let active = true;
-
-    async function loadSystemEvents() {
-      try {
-        const response = await fetch(
-          `/api/game/system-events?roomId=${encodeURIComponent(roomId)}`,
-          { cache: "no-store" },
-        );
-
-        const payload = (await response.json()) as {
-          events?: Array<{
-            id: string;
-            message: string;
-            created_at: string;
-          }>;
-          error?: string;
-        };
-
-        if (!response.ok) {
-          throw new Error(
-            payload.error ?? "Unable to load Location system events.",
-          );
-        }
-
-        if (!active) return;
-
-        const synthetic: RoomMessage[] =
-          (payload.events ?? []).map((event) => ({
-            id: `death-system-${event.id}`,
-            message: event.message,
-            message_type: "action",
-            fate_image_url: null,
-            roll_label: null,
-            dice_sides: null,
-            dice_result: null,
-            attribute_key: null,
-            attribute_value: null,
-            roll_total: null,
-            whisper_recipient_character_id: null,
-            created_at: event.created_at,
-            character_id: null,
-            condition_snapshot: [],
-            speaker_type: "system",
-            npc_id: null,
-            npc_snapshot: null,
-            character: null,
-            whisperRecipient: null,
-          }));
-
-        setLiveMessages((currentMessages) =>
-          mergeMessages(currentMessages, synthetic),
-        );
-      } catch (error) {
-        console.error(
-          "Unable to load Location system events:",
-          error,
-        );
-      }
-    }
-
-    void loadSystemEvents();
-
-    const timer = window.setInterval(
-      () => void loadSystemEvents(),
-      1500,
-    );
-
-    return () => {
-      active = false;
-      window.clearInterval(timer);
-    };
-  }, [roomId]);
-
-  useEffect(() => {
     const characterIds =
       Array.from(
         new Set(
@@ -1481,39 +1407,68 @@ for(const row of priceResult.data??[]){
         return;
       }
 
-      try {
-        const response = await fetch(
-          `/api/death/maluses?ids=${encodeURIComponent(ids.join(","))}`,
-          { cache: "no-store" },
-        );
+      const { data, error } = await supabase
+        .from("character_resurrection_maluses")
+        .select(`
+          character_id,
+          narrative_text,
+          malus:death_resurrection_maluses(name,description)
+        `)
+        .in("character_id", ids)
+        .is("cleared_at", null)
+        .order("applied_at", { ascending: false });
 
-        const payload = (await response.json()) as {
-          maluses?: Record<string,{name:string;description:string}>;
-          error?: string;
-        };
-
-        if (!response.ok) {
-          throw new Error(
-            payload.error ?? "Unable to load Resurrection Maluses.",
-          );
-        }
-
-        if (active) {
-          setResurrectionMaluses(payload.maluses ?? {});
-        }
-      } catch (error) {
+      if (error) {
         console.error(
           "Unable to load Resurrection Maluses:",
-          error,
+          error.message,
         );
+        return;
       }
+
+      if (!active) return;
+
+      const next: Record<string,{name:string;description:string}> = {};
+
+      for (const row of data ?? []) {
+        const id = String(row.character_id ?? "");
+        if (!id || next[id]) continue;
+
+        const relation = Array.isArray(row.malus)
+          ? row.malus[0] ?? null
+          : row.malus;
+
+        next[id] = {
+          name: String(relation?.name ?? "Resurrection Scar"),
+          description: String(
+            row.narrative_text ??
+            relation?.description ??
+            "",
+          ),
+        };
+      }
+
+      setResurrectionMaluses(next);
     }
 
     void loadResurrectionMaluses();
 
+    const malusChannel = supabase
+      .channel(`resurrection-maluses-${crypto.randomUUID()}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "character_resurrection_maluses",
+        },
+        () => void loadResurrectionMaluses(),
+      )
+      .subscribe();
+
     const malusTimer = window.setInterval(
       () => void loadResurrectionMaluses(),
-      1500,
+      30000,
     );
 
     async function loadMessageEffectConditions() {
@@ -1578,6 +1533,7 @@ for(const row of priceResult.data??[]){
     return () => {
       active = false;
       window.clearInterval(malusTimer);
+      void supabase.removeChannel(malusChannel);
     };
   }, [messageIdsKey, liveMessages]);
 

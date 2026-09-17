@@ -51,7 +51,7 @@ export function CharacterDeathGate({ characterId }: { characterId: string }) {
 
     const timer = window.setInterval(() => {
       if (active) void refresh();
-    }, 1000);
+    }, 30_000);
 
     return () => {
       active = false;
