@@ -36,12 +36,10 @@ function nameOf(
 export async function GroupConversationView({
   conversationId,
   viewerCharacterId,
-  isDead,
   title,
 }: {
   conversationId: string;
   viewerCharacterId: string;
-  isDead: boolean;
   title: string | null;
 }) {
   const supabase =
@@ -319,7 +317,6 @@ export async function GroupConversationView({
             conversationId={
               conversationId
             }
-            isDead={isDead}
           />
         </section>
       </div>

@@ -1443,8 +1443,6 @@ export async function useRoomGift(
         id: character.id,
         displayName: character.display_name,
         isSelf: true,
-        lifeState: character.life_state,
-        diedAt: character.died_at,
       };
 
       await insertGiftUseMessage({

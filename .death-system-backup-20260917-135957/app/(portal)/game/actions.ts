@@ -15,12 +15,6 @@ import {
 import { getStaffSession } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 import {
-  assertDeadTargetAllowed,
-  assertGhostChatAllowed,
-  assertGhostMovementAllowed,
-  reconcileExpiredCharacterDeath,
-} from "@/lib/death/death-system";
-import {
   getSanctionEnforcement,
 } from "@/lib/sanctions/enforcement";
 import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
@@ -57,7 +51,6 @@ type OwnedCharacter = {
   current_health: number | null;
   life_state: "alive" | "death_save_pending" | "dead";
   dead_until: string | null;
-  died_at: string | null;
 };
 
 function createPrivilegedClient() {
@@ -107,8 +100,6 @@ type ResolvedGiftTarget = {
   id: string;
   displayName: string;
   isSelf: boolean;
-  lifeState: "alive" | "death_save_pending" | "dead";
-  diedAt: string | null;
 };
 
 type GiftSuccessAttribute =
@@ -240,8 +231,6 @@ async function resolveGiftTarget({
       id: character.id,
       displayName: character.display_name,
       isSelf: true,
-      lifeState: character.life_state,
-      diedAt: character.died_at,
     };
   }
 
@@ -258,8 +247,6 @@ async function resolveGiftTarget({
       id: character.id,
       displayName: character.display_name,
       isSelf: true,
-      lifeState: character.life_state,
-      diedAt: character.died_at,
     };
   }
 
@@ -291,7 +278,7 @@ async function resolveGiftTarget({
   const { data: target, error: targetError } =
     await supabase
       .from("characters")
-      .select("id, display_name, current_room_id, status, is_system, life_state, died_at")
+      .select("id, display_name, current_room_id, status, is_system")
       .eq("id", requestedTargetId)
       .maybeSingle();
 
@@ -312,8 +299,6 @@ async function resolveGiftTarget({
     id: target.id,
     displayName: target.display_name,
     isSelf: false,
-    lifeState: target.life_state,
-    diedAt: target.died_at,
   };
 }
 
@@ -384,7 +369,6 @@ function isPresenceStatus(value: unknown): value is PresenceStatus {
 async function getOwnedCharacter(
   options?: {
     skipCurrentAccessCheck?: boolean;
-    allowDeadGhost?: boolean;
   },
 ): Promise<{
   supabase: SupabaseClient;
@@ -416,8 +400,7 @@ async function getOwnedCharacter(
       presence_score,
       current_health,
       life_state,
-      dead_until,
-      died_at
+      dead_until
     `)
     .eq("user_id", user.id)
     .maybeSingle();
@@ -442,18 +425,40 @@ async function getOwnedCharacter(
     character as unknown as OwnedCharacter;
 
   if (ownedCharacter.life_state === "dead") {
-    const reconciled =
-      await reconcileExpiredCharacterDeath(
-        ownedCharacter.id,
-      );
+    const expiry = ownedCharacter.dead_until
+      ? Date.parse(ownedCharacter.dead_until)
+      : Number.POSITIVE_INFINITY;
 
-    if (reconciled.revived) {
+    if (Number.isFinite(expiry) && expiry <= Date.now()) {
+      const admin = createPrivilegedClient();
+      const { error: reviveError } = await admin
+        .from("characters")
+        .update({
+          current_health: 1,
+          life_state: "alive",
+          zero_hp_at: null,
+          dead_until: null,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", ownedCharacter.id);
+
+      if (reviveError) {
+        throw new Error(`Unable to restore Character after death: ${reviveError.message}`);
+      }
+
+      await admin
+        .from("character_death_events")
+        .update({
+          status: "revived",
+          resolved_at: new Date().toISOString(),
+        })
+        .eq("character_id", ownedCharacter.id)
+        .eq("status", "dead");
+
       ownedCharacter.life_state = "alive";
-      ownedCharacter.current_health =
-        reconciled.currentHealth;
+      ownedCharacter.current_health = 1;
       ownedCharacter.dead_until = null;
-      ownedCharacter.died_at = null;
-    } else if (!options?.allowDeadGhost) {
+    } else {
       throw new Error(
         ownedCharacter.dead_until
           ? `This Character is dead until ${new Date(ownedCharacter.dead_until).toLocaleString("en-GB")}.`
@@ -558,7 +563,7 @@ export async function moveCharacter(formData: FormData): Promise<void> {
     throw new Error("Invalid destination room.");
   }
 
-  const { supabase, character } = await getOwnedCharacter({ allowDeadGhost: true });
+  const { supabase, character } = await getOwnedCharacter();
 
   if (!character.current_room_id) {
     throw new Error("The character has no current room.");
@@ -594,13 +599,6 @@ export async function moveCharacter(formData: FormData): Promise<void> {
 
   if (!directResult.data && !reverseResult.data) {
     throw new Error("This room is not connected to the current location.");
-  }
-
-  if (character.life_state === "dead") {
-    await assertGhostMovementAllowed(
-      character.id,
-      roomId,
-    );
   }
 
   const destinationAccess =
@@ -647,7 +645,6 @@ async function enterRoomById(
   const { supabase, character } =
     await getOwnedCharacter({
       skipCurrentAccessCheck: true,
-      allowDeadGhost: true,
     });
 
   const [
@@ -681,13 +678,6 @@ async function enterRoomById(
   if (!destinationRoom) {
     throw new Error(
       "This location is not available.",
-    );
-  }
-
-  if (character.life_state === "dead") {
-    await assertGhostMovementAllowed(
-      character.id,
-      cleanRoomId,
     );
   }
 
@@ -928,19 +918,7 @@ export async function sendRoomMessage(
     const {
       supabase,
       character,
-    } = await getOwnedCharacter({
-      allowDeadGhost: true,
-    });
-
-    if (
-      character.life_state === "dead" &&
-      character.current_room_id
-    ) {
-      await assertGhostChatAllowed(
-        character.id,
-        character.current_room_id,
-      );
-    }
+    } = await getOwnedCharacter();
 
     const chatEnforcement =
       await getSanctionEnforcement(
@@ -1443,8 +1421,6 @@ export async function useRoomGift(
         id: character.id,
         displayName: character.display_name,
         isSelf: true,
-        lifeState: character.life_state,
-        diedAt: character.died_at,
       };
 
       await insertGiftUseMessage({
@@ -1480,17 +1456,6 @@ export async function useRoomGift(
       roomId,
       targetMode: (gift.target_mode ?? "self") as GiftTargetMode,
       requestedTargetId,
-    });
-
-    await assertDeadTargetAllowed({
-      targetCharacterId: target.id,
-      healingCapable:
-        Number(gift.health_delta ?? 0) > 0 &&
-        ["other", "either"].includes(
-          gift.target_mode ?? "self",
-        ),
-      resurrection: false,
-      effectLabel: "Feat",
     });
 
     const successRoll = await rollGiftSuccess({
@@ -1693,17 +1658,6 @@ export async function activateRoomGift(
       roomId,
       targetMode: (gift.target_mode ?? "self") as GiftTargetMode,
       requestedTargetId,
-    });
-
-    await assertDeadTargetAllowed({
-      targetCharacterId: target.id,
-      healingCapable:
-        Number(gift.health_delta ?? 0) > 0 &&
-        ["other", "either"].includes(
-          gift.target_mode ?? "self",
-        ),
-      resurrection: false,
-      effectLabel: "Feat",
     });
 
     const now = new Date().toISOString();
@@ -1979,7 +1933,7 @@ export async function updatePresence(
   }
 
   try {
-    const { supabase, character } = await getOwnedCharacter({ allowDeadGhost: true });
+    const { supabase, character } = await getOwnedCharacter();
 
     if (!character.current_room_id) {
       return {
@@ -2035,7 +1989,7 @@ export async function updatePresence(
  */
 export async function setAutomaticAway(): Promise<PresenceActionResult> {
   try {
-    const { supabase, character } = await getOwnedCharacter({ allowDeadGhost: true });
+    const { supabase, character } = await getOwnedCharacter();
 
     const { error } = await supabase
       .from("character_presence")
@@ -2079,7 +2033,7 @@ export async function setAutomaticAway(): Promise<PresenceActionResult> {
  */
 export async function restoreManualPresence(): Promise<PresenceActionResult> {
   try {
-    const { supabase, character } = await getOwnedCharacter({ allowDeadGhost: true });
+    const { supabase, character } = await getOwnedCharacter();
 
     const { data: presence, error: readError } = await supabase
       .from("character_presence")
@@ -2291,7 +2245,7 @@ export async function heartbeatPresence(): Promise<PresenceActionResult> {
     const {
       supabase,
       character,
-    } = await getOwnedCharacter({ allowDeadGhost: true });
+    } = await getOwnedCharacter();
 
     await touchPresence(
       supabase,
@@ -2321,7 +2275,7 @@ export async function leaveCurrentRoom(): Promise<void> {
   const {
     supabase,
     character,
-  } = await getOwnedCharacter({ allowDeadGhost: true });
+  } = await getOwnedCharacter();
 
   const { error: presenceError } =
     await supabase

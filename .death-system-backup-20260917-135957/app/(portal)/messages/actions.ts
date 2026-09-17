@@ -17,7 +17,7 @@ import type { MessageActionState } from "@/types/messages";
 
 const MAX_BODY_HTML_LENGTH = 100_000;
 
-type OwnedCharacter = { id: string; life_state: "alive" | "death_save_pending" | "dead" };
+type OwnedCharacter = { id: string };
 
 async function getContext() {
   const supabase = await createClient();
@@ -26,7 +26,7 @@ async function getContext() {
 
   const { data: character, error } = await supabase
     .from("characters")
-    .select("id, life_state")
+    .select("id")
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -98,14 +98,6 @@ export async function sendPrivateMessage(
     }
 
     const { supabase, character } = await getContext();
-
-    if (character.life_state === "dead") {
-      return {
-        ok: false,
-        message:
-          "Dead Characters may only send Off-game private messages. Use the normal message composer and select Off-game.",
-      };
-    }
 
     const { data: participant, error: participantError } = await supabase
       .from("direct_conversation_participants")

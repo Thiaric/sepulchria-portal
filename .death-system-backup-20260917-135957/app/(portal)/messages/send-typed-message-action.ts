@@ -109,31 +109,6 @@ export async function sendTypedPrivateMessage(
       "communication",
     );
 
-    const { data: senderCharacter, error: senderCharacterError } =
-      await supabase
-        .from("characters")
-        .select("life_state")
-        .eq("user_id", user.id)
-        .maybeSingle();
-
-    if (senderCharacterError) {
-      return {
-        ok: false,
-        message: senderCharacterError.message,
-      };
-    }
-
-    if (
-      senderCharacter?.life_state === "dead" &&
-      messageMode !== "offgame"
-    ) {
-      return {
-        ok: false,
-        message:
-          "Dead Characters may only send Off-game private messages.",
-      };
-    }
-
     const messageRateLimit =
       await consumeSecurityRateLimit({
         scope: "private_message_user",

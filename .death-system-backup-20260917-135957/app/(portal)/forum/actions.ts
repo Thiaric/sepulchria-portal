@@ -56,7 +56,6 @@ type ForumSectionRecord = {
   id: string;
   slug: string;
   name: string;
-  section_type: "ongame" | "offgame" | "organisation";
   association_id: string | null;
   order_id: string | null;
   visibility: string;
@@ -580,7 +579,6 @@ export async function createForumTopicAction(
         id,
         slug,
         name,
-        section_type,
         association_id,
         order_id,
         visibility,
@@ -1095,7 +1093,6 @@ export async function createForumReplyAction(
         id,
         slug,
         name,
-        section_type,
         association_id,
         visibility,
         staff_read_roles,

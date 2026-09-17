@@ -79,7 +79,7 @@ export default async function ConversationPage({
     error: characterError,
   } = await supabase
     .from("characters")
-    .select("id, display_name, portrait_url, life_state")
+    .select("id, display_name, portrait_url")
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -161,9 +161,6 @@ export default async function ConversationPage({
         conversationId={id}
         viewerCharacterId={
           character.id
-        }
-        isDead={
-          character.life_state === "dead"
         }
         title={
           conversationMeta.title
@@ -502,9 +499,6 @@ export default async function ConversationPage({
           ) : (
             <MessageComposer
               conversationId={id}
-              isDead={
-                character.life_state === "dead"
-              }
             />
           )}
         </section>

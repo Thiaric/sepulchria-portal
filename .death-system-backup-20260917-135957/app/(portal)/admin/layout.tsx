@@ -98,12 +98,6 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
-            {can("death") ? (
-              <AdminNavigationLink href="/admin/death">
-                Death
-              </AdminNavigationLink>
-            ) : null}
-
             {can("codex") ? (
               <AdminNavigationLink href="/admin/codex">
                 Codex

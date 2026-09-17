@@ -34,10 +34,8 @@ const PRIVATE_MESSAGE_SEND_RESULT_EVENT =
 
 export default function MessageComposer({
   conversationId,
-  isDead = false,
 }: {
   conversationId: string;
-  isDead?: boolean;
 }) {
   const [state, action, pending] =
     useActionState(
@@ -55,7 +53,7 @@ export default function MessageComposer({
 
   const [messageMode, setMessageMode] =
     useState<PrivateMessageMode>(
-      isDead ? "offgame" : "ongame",
+      "ongame",
     );
 
   const [nonce, setNonce] =
@@ -211,17 +209,9 @@ export default function MessageComposer({
         <div className="mt-1.5 grid grid-cols-2 gap-2 messages_components_messagecomposer_div_container_2">
           <button
             type="button"
-            disabled={isDead}
-            title={
-              isDead
-                ? "Dead Characters may only send Off-game private messages."
-                : undefined
+            onClick={() =>
+              setMessageMode("ongame")
             }
-            onClick={() => {
-              if (!isDead) {
-                setMessageMode("ongame");
-              }
-            }}
             aria-pressed={isOnGame}
             className={[((`border px-3 py-2 text-left transition ${
               isOnGame
@@ -270,11 +260,9 @@ export default function MessageComposer({
             : "border-[rgb(var(--sep-colour-6d7488))] bg-[rgb(var(--sep-colour-191b21))] text-[rgb(var(--sep-colour-aeb4c2))]"
         }`)), "messages_components_messagecomposer_div_container_3"].filter(Boolean).join(" ")}
       >
-        {isDead
-          ? "Your Character is dead. Private messages are restricted to Off-game communication."
-          : isOnGame
-            ? "This message belongs to the story and is visible as character correspondence."
-            : "This message is out of character and should only contain player communication."}
+        {isOnGame
+          ? "This message belongs to the story and is visible as character correspondence."
+          : "This message is out of character and should only contain player communication."}
       </div>
 
       <div className="mt-2 messages_components_messagecomposer_div_container_4">

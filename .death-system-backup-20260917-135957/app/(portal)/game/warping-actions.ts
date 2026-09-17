@@ -6,10 +6,6 @@ import { revalidatePath } from "next/cache";
 import { getCharacterAttributeBreakdown, getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
 import { applyGiftCurrentHealthDelta } from "@/lib/gifts/gift-health-effects";
 import { createClient } from "@/lib/supabase/server";
-import {
-  assertDeadTargetAllowed,
-  reviveDeadCharacter,
-} from "@/lib/death/death-system";
 
 export type WarpingActionState={ok:boolean;message:string;submittedAt?:number};
 const ATTR:Record<string,string>={muscles:"muscles",reflexes:"reflexes",vigor:"vigor",vigour:"vigor",brains:"brains",shrewd:"shrewd",presence:"presence_score",presence_score:"presence_score"};
@@ -28,7 +24,7 @@ function dice(x:string|null){
  let t=0;for(let i=0;i<n;i++)t+=randomInt(1,d+1);return t*sign
 }
 function expiry(s:any){if(s.is_instantaneous)return new Date().toISOString();if(s.duration_unit==="until_dispelled")return null;const n=Math.max(1,Number(s.duration_amount??1));const m=s.duration_unit==="minutes"?60000:s.duration_unit==="hours"?3600000:86400000;return new Date(Date.now()+n*m).toISOString()}
-async function mine(){const db=await createClient(),au=await db.auth.getUser();if(!au.data.user)throw Error("Authentication required.");const q=await db.from("characters").select("id,display_name,current_room_id,muscles,reflexes,vigor,brains,shrewd,presence_score,life_state").eq("user_id",au.data.user.id).maybeSingle();if(q.error||!q.data)throw Error("Character not found.");if(q.data.life_state!=="alive")throw Error(q.data.life_state==="dead"?"Dead Characters cannot Warp Shapes or respond with Saves.":"Characters at Death's Threshold cannot Warp Shapes or respond with Saves.");return q.data}
+async function mine(){const db=await createClient(),au=await db.auth.getUser();if(!au.data.user)throw Error("Authentication required.");const q=await db.from("characters").select("id,display_name,current_room_id,muscles,reflexes,vigor,brains,shrewd,presence_score").eq("user_id",au.data.user.id).maybeSingle();if(q.error||!q.data)throw Error("Character not found.");return q.data}
 async function eff(c:any,k:string){const key=ATTR[k]??k;const e=await getEffectiveCharacterAttributes(c.id,{muscles:c.muscles,reflexes:c.reflexes,vigor:c.vigor,brains:c.brains,shrewd:c.shrewd,presence_score:c.presence_score});return Number((e as any)[key]??0)}
 async function message(room:string,cid:string,text:string){const db=await createClient();const q=await db.from("room_messages").insert({room_id:room,character_id:cid,message:text,message_type:"action",client_nonce:crypto.randomUUID()});if(q.error)throw Error(q.error.message)}
 async function healthSnapshot(characterId:string){
@@ -59,27 +55,7 @@ async function apply(t:any,half=false){
  const cast=one(t.cast),s=one(cast?.shape),caster=one(cast?.caster);if(!cast||!s||!caster)throw Error("Shape data unavailable.");
  const self=t.target_character_id===caster.id,p=effectProfile(s,t,caster.id),before=await healthSnapshot(t.target_character_id);
  let dmg=dice(s[`${p}_damage_dice`])+(s[`${p}_damage_attribute`]?await eff(caster,s[`${p}_damage_attribute`]):0);if(half)dmg=Math.floor(dmg/2);
- const heal=half?0:(dice(s[`${p}_heal_dice`])+(s[`${p}_heal_attribute`]?await eff(caster,s[`${p}_heal_attribute`]):0));
- const netHealth=heal-dmg;
- if(netHealth){
-  let resurrectionHandled=false;
-  const isResurrectionShape=
-   Number(s.level)===9&&
-   p==="other"&&
-   netHealth>0;
-  if(isResurrectionShape){
-   const revived=await reviveDeadCharacter({
-    characterId:t.target_character_id,
-    source:"resurrection_shape",
-    forceBeyondEssence:true,
-    healthAfterRevival:Math.max(1,netHealth),
-   });
-   resurrectionHandled=revived.revived;
-  }
-  if(!resurrectionHandled){
-   await applyGiftCurrentHealthDelta({characterId:t.target_character_id,healthDelta:netHealth});
-  }
- }
+ const heal=half?0:(dice(s[`${p}_heal_dice`])+(s[`${p}_heal_attribute`]?await eff(caster,s[`${p}_heal_attribute`]):0));if(heal-dmg)await applyGiftCurrentHealthDelta({characterId:t.target_character_id,healthDelta:heal-dmg});
  const conditions=half?[]:(Array.isArray(s[`${p}_conditions`])?s[`${p}_conditions`]:[]);
  const mods=half?{muscles:0,reflexes:0,vigour:0,brains:0,shrewd:0,presence:0}:{muscles:Number(s[`${p}_muscles_modifier`]??0),reflexes:Number(s[`${p}_reflexes_modifier`]??0),vigour:Number(s[`${p}_vigour_modifier`]??0),brains:Number(s[`${p}_brains_modifier`]??0),shrewd:Number(s[`${p}_shrewd_modifier`]??0),presence:Number(s[`${p}_presence_modifier`]??0)};
  const raw=half?"":String(s[`${p}_max_hp_change`]??"").trim(),maxhp=raw?dice(raw):0,hasPersistent=!s.is_instantaneous&&(conditions.length||Object.values(mods).some(Boolean)||maxhp!==0);
@@ -203,35 +179,6 @@ export async function resolveImmediateShapeCast(
       );
     }
 
-    const pendingCharacterIds = [
-      ...new Set(
-        (targetRows ?? [])
-          .map((row) => row.target_character_id)
-          .filter(Boolean),
-      ),
-    ] as string[];
-
-    const deadTargetIds =
-      new Set<string>();
-
-    if (pendingCharacterIds.length) {
-      const deadRows =
-        await a
-          .from("characters")
-          .select("id,life_state")
-          .in("id", pendingCharacterIds);
-
-      if (deadRows.error) {
-        throw Error(deadRows.error.message);
-      }
-
-      for (const deadRow of deadRows.data ?? []) {
-        if (deadRow.life_state === "dead") {
-          deadTargetIds.add(deadRow.id);
-        }
-      }
-    }
-
     const immediateRows =
       (targetRows ?? []).filter(
         (row) =>
@@ -241,9 +188,6 @@ export async function resolveImmediateShapeCast(
           (
             row.target_character_id ===
               caster.id ||
-            deadTargetIds.has(
-              row.target_character_id,
-            ) ||
             profileResolution(
               shape,
               effectProfile(
@@ -485,12 +429,6 @@ export async function resolveIncomingShape(_p:WarpingActionState,f:FormData):Pro
 
 export async function prepareDispelEffect(_p:WarpingActionState,f:FormData):Promise<WarpingActionState>{try{
  const caster=await mine(),castId=field(f,"cast_id"),effectId=field(f,"effect_id"),targetId=field(f,"target_character_id"),a=admin();
- await assertDeadTargetAllowed({
-  targetCharacterId:targetId,
-  healingCapable:false,
-  resurrection:false,
-  effectLabel:"Dispel",
- });
  const cq=await a.from("shape_casts").select("id,room_id,shape:shapes!shape_casts_shape_id_fkey(id,name,level,is_dispel,other_resolution_mode,other_dc_attribute,other_save_options,other_save_success_damage,self_resolution_mode,self_dc_attribute,self_save_options,self_save_success_damage,resolution_mode,dc_attribute,save_options,save_success_damage)").eq("id",castId).eq("caster_character_id",caster.id).maybeSingle();
  const cast:any=cq.data,shape=one(cast?.shape);if(cq.error||!cast||!shape?.is_dispel)throw Error("Invalid Dispel cast.");
  const eq=await a.from("character_shape_effects").select("id,shape_level,effect_nature,shape:shapes!character_shape_effects_shape_id_fkey(name)").eq("id",effectId).eq("target_character_id",targetId).is("dispelled_at",null).maybeSingle();if(eq.error||!eq.data)throw Error("Active effect not found.");

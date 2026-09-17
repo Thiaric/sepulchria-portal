@@ -44,7 +44,6 @@ type OwnedCharacter = {
   brains: number | null;
   shrewd: number | null;
   presence_score: number | null;
-  life_state: "alive" | "death_save_pending" | "dead";
 };
 
 function privilegedClient() {
@@ -100,19 +99,12 @@ async function ownedCharacter() {
   const { data, error } = await supabase
     .from("characters")
     .select(
-      "id, display_name, current_room_id, muscles, reflexes, vigor, brains, shrewd, presence_score, life_state",
+      "id, display_name, current_room_id, muscles, reflexes, vigor, brains, shrewd, presence_score",
     )
     .eq("user_id", user.id)
     .maybeSingle();
 
   if (error || !data) throw new Error("Character not found.");
-  if (data.life_state !== "alive") {
-    throw new Error(
-      data.life_state === "dead"
-        ? "Dead Characters cannot attack, use Attributes, or respond to opposed Actions."
-        : "Characters at Death's Threshold cannot perform normal Actions.",
-    );
-  }
   if (!data.current_room_id) throw new Error("Character not at a Location.");
 
   return {
@@ -141,17 +133,13 @@ async function roomTarget(roomId: string, targetId: string) {
   const admin = privilegedClient();
   const { data, error } = await admin
     .from("characters")
-    .select("id, display_name, current_room_id, status, life_state")
+    .select("id, display_name, current_room_id, status")
     .eq("id", targetId)
     .eq("status", "approved")
     .maybeSingle();
 
   if (error || !data || data.current_room_id !== roomId) {
     throw new Error("That Character is not available at this Location.");
-  }
-
-  if (data.life_state === "dead") {
-    throw new Error("Dead Characters cannot be targeted by attacks or opposed Attribute Actions.");
   }
 
   return data;

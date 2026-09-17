@@ -80,15 +80,6 @@ export function CharacterDeathGate({ characterId }: { characterId: string }) {
         <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-bc9d91))]">
           {until ? `This Character remains dead until ${until}.` : "This Character is dead."}
         </p>
-        <p className="mt-1 text-[9px] leading-4 text-[rgb(var(--sep-colour-a98d85))]">
-          {state.essenceEndsAt &&
-          Date.parse(state.essenceEndsAt) > Date.now()
-            ? `Their essence still clings to the body until ${new Intl.DateTimeFormat("en-GB", {
-                hour: "2-digit",
-                minute: "2-digit",
-              }).format(new Date(state.essenceEndsAt))}. Healing Items, Shapes and Feats that can affect Others may still return them.`
-            : "Their essence has faded. Ordinary healing can no longer return them; only a Level IX Resurrection Shape, staff intervention, or the Current's natural return can do so."}
-        </p>
       </div>
     );
   }

@@ -19,14 +19,12 @@ export type ForumViewerContext = {
   isStaff: boolean;
   staffRole: StaffRole | null;
   characterId: string | null;
-  lifeState: "alive" | "death_save_pending" | "dead" | null;
   membership: ForumOrderMembership | null;
 };
 
 type CharacterRow = {
   id: string;
   status: string;
-  life_state: "alive" | "death_save_pending" | "dead";
 };
 
 type MembershipRow = {
@@ -146,7 +144,6 @@ export async function getForumViewerContext(
       isStaff: false,
       staffRole: null,
       characterId: null,
-      lifeState: null,
       membership: null,
     };
   }
@@ -170,7 +167,7 @@ export async function getForumViewerContext(
 
   const { data: characterData } = await supabase
     .from("characters")
-    .select("id, status, life_state")
+    .select("id, status")
     .eq("user_id", user.id)
     .maybeSingle<CharacterRow>();
 
@@ -180,7 +177,6 @@ export async function getForumViewerContext(
       isStaff,
       staffRole,
       characterId: null,
-      lifeState: null,
       membership: null,
     };
   }
@@ -212,7 +208,6 @@ export async function getForumViewerContext(
     isStaff,
     staffRole,
     characterId: characterData.id,
-    lifeState: characterData.life_state,
     membership:
       membershipData && level !== null
         ? {
@@ -310,7 +305,6 @@ export type ForumStaffSectionRole =
 
 export type ForumSectionAccessRecord = {
   visibility: string;
-  section_type?: string | null;
   order_id: string | null;
   staff_read_roles?: string[] | null;
   staff_write_roles?: string[] | null;
@@ -366,13 +360,6 @@ export function canReadForumSection(
   viewer: ForumViewerContext,
   section: ForumSectionAccessRecord,
 ): boolean {
-  if (
-    viewer.lifeState === "dead" &&
-    section.section_type !== "offgame"
-  ) {
-    return false;
-  }
-
   if (section.visibility === "staff") {
     return staffRoleAllowed(
       viewer,
@@ -390,13 +377,6 @@ export function canWriteForumSection(
   viewer: ForumViewerContext,
   section: ForumSectionAccessRecord,
 ): boolean {
-  if (
-    viewer.lifeState === "dead" &&
-    section.section_type !== "offgame"
-  ) {
-    return false;
-  }
-
   if (section.visibility === "staff") {
     return (
       staffRoleAllowed(

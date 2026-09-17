@@ -38,7 +38,6 @@ type ForumSectionRecord = {
   slug: string;
   description: string | null;
   visibility: string;
-  section_type: "ongame" | "offgame" | "organisation";
   order_id: string | null;
   staff_read_roles: string[] | null;
   staff_write_roles: string[] | null;
@@ -253,7 +252,6 @@ export default async function TopicPage({
         name,
         slug,
         description,
-        section_type,
         visibility,
         order_id,
         staff_read_roles,

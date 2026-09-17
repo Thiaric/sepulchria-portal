@@ -10,9 +10,6 @@ import {
 import {
   getCharacterAttributeBreakdown,
 } from "@/lib/characters/get-effective-character-attributes";
-import {
-  reviveDeadCharacter,
-} from "@/lib/death/death-system";
 
 function adminClient() {
   const url =
@@ -362,7 +359,7 @@ export async function applyGiftCurrentHealthDelta({
   } = await admin
     .from("characters")
     .select(
-      "muscles, reflexes, vigor, brains, shrewd, presence_score, current_health, life_state, died_at",
+      "muscles, reflexes, vigor, brains, shrewd, presence_score, current_health",
     )
     .eq("id", characterId)
     .single();
@@ -372,21 +369,6 @@ export async function applyGiftCurrentHealthDelta({
       error?.message ??
         "Unable to load character Health.",
     );
-  }
-
-  if (character.life_state === "dead") {
-    if (healthDelta <= 0) {
-      throw new Error("Dead Characters cannot receive damaging or non-healing Health effects.");
-    }
-
-    await reviveDeadCharacter({
-      characterId,
-      source: "healing_effect",
-      forceBeyondEssence: false,
-      healthAfterRevival: healthDelta,
-    });
-
-    return;
   }
 
   const breakdown =

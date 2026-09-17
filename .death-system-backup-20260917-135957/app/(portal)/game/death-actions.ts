@@ -6,11 +6,6 @@ import { revalidatePath } from "next/cache";
 import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
 import { applyGiftCurrentHealthDelta } from "@/lib/gifts/gift-health-effects";
 import { createClient } from "@/lib/supabase/server";
-import {
-  finaliseCharacterDeath,
-  getDeathRules,
-  reconcileExpiredCharacterDeath,
-} from "@/lib/death/death-system";
 
 type LifeState = "alive" | "death_save_pending" | "dead";
 type AttributeKey = "muscles" | "reflexes" | "vigor" | "brains" | "shrewd" | "presence_score";
@@ -30,8 +25,6 @@ export type MyDeathState = {
   currentHealth: number | null;
   zeroHpAt: string | null;
   deadUntil: string | null;
-  diedAt?: string | null;
-  essenceEndsAt?: string | null;
   eventId: string | null;
   rescueAttempted: boolean;
   rescueFeats: DeathRescueFeat[];
@@ -45,7 +38,6 @@ type CharacterRow = {
   life_state: LifeState;
   zero_hp_at: string | null;
   dead_until: string | null;
-  died_at: string | null;
   muscles: number | null;
   reflexes: number | null;
   vigor: number | null;
@@ -94,7 +86,7 @@ async function ownedCharacter(): Promise<CharacterRow> {
   const admin = adminClient();
   const result = await admin
     .from("characters")
-    .select("id,display_name,current_room_id,current_health,life_state,zero_hp_at,dead_until,died_at,muscles,reflexes,vigor,brains,shrewd,presence_score")
+    .select("id,display_name,current_room_id,current_health,life_state,zero_hp_at,dead_until,muscles,reflexes,vigor,brains,shrewd,presence_score")
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -106,24 +98,38 @@ async function ownedCharacter(): Promise<CharacterRow> {
 
 async function reconcileExpiredDeath(character: CharacterRow): Promise<CharacterRow> {
   if (character.life_state !== "dead" || !character.dead_until) return character;
-
   const expiry = Date.parse(character.dead_until);
   if (Number.isNaN(expiry) || expiry > Date.now()) return character;
 
-  await reconcileExpiredCharacterDeath(character.id);
-
   const admin = adminClient();
-  const refreshed = await admin
+  const now = new Date().toISOString();
+  const result = await admin
     .from("characters")
-    .select("id,display_name,current_room_id,current_health,life_state,zero_hp_at,dead_until,died_at,muscles,reflexes,vigor,brains,shrewd,presence_score")
+    .update({
+      current_health: 1,
+      life_state: "alive",
+      zero_hp_at: null,
+      dead_until: null,
+      updated_at: now,
+    })
     .eq("id", character.id)
+    .select("id,display_name,current_room_id,current_health,life_state,zero_hp_at,dead_until,muscles,reflexes,vigor,brains,shrewd,presence_score")
     .single();
 
-  if (refreshed.error || !refreshed.data) {
-    throw new Error(refreshed.error?.message ?? "Unable to reload Character after resurrection.");
+  if (result.error || !result.data) {
+    throw new Error(result.error?.message ?? "Unable to restore Character after death.");
   }
 
-  return refreshed.data as CharacterRow;
+  await admin
+    .from("character_death_events")
+    .update({ status: "revived", resolved_at: now })
+    .eq("character_id", character.id)
+    .eq("status", "dead");
+
+  revalidatePath("/game");
+  revalidatePath("/character");
+  revalidatePath("/characters");
+  return result.data as CharacterRow;
 }
 
 async function currentPendingEvent(characterId: string): Promise<EventRow | null> {
@@ -192,39 +198,69 @@ export async function getMyDeathState(): Promise<MyDeathState> {
       ? await eligibleRescueFeats(character.id)
       : [];
 
-  const rules = await getDeathRules();
-  const essenceEndsAt =
-    character.life_state === "dead" && character.died_at
-      ? new Date(
-          Date.parse(character.died_at) +
-            rules.essenceWindowMinutes * 60_000,
-        ).toISOString()
-      : null;
-
   return {
     lifeState: character.life_state,
     currentHealth: character.current_health,
     zeroHpAt: character.zero_hp_at,
     deadUntil: character.dead_until,
-    diedAt: character.died_at,
-    essenceEndsAt,
     eventId: event?.id ?? null,
     rescueAttempted: Boolean(event?.rescue_attempted_at),
     rescueFeats,
   };
 }
 
+async function deathDurationHours(): Promise<number> {
+  const admin = adminClient();
+  const result = await admin
+    .from("character_death_rules")
+    .select("death_duration_hours")
+    .eq("singleton", true)
+    .maybeSingle();
+
+  if (result.error) throw new Error(`Unable to load Death rules: ${result.error.message}`);
+  const value = Number(result.data?.death_duration_hours ?? 24);
+  return Number.isFinite(value) && value >= 1 ? Math.floor(value) : 24;
+}
+
 async function finaliseDeath(character: CharacterRow, eventId: string) {
-  const result = await finaliseCharacterDeath({
-    characterId: character.id,
-    deathEventId: eventId,
-  });
+  const admin = adminClient();
+  const hours = await deathDurationHours();
+  const now = new Date();
+  const nowIso = now.toISOString();
+  const deadUntil = new Date(now.getTime() + hours * 60 * 60 * 1000).toISOString();
+
+  const characterResult = await admin
+    .from("characters")
+    .update({
+      current_health: 0,
+      life_state: "dead",
+      dead_until: deadUntil,
+      updated_at: nowIso,
+    })
+    .eq("id", character.id);
+
+  if (characterResult.error) {
+    throw new Error(`Unable to mark Character dead: ${characterResult.error.message}`);
+  }
+
+  const eventResult = await admin
+    .from("character_death_events")
+    .update({
+      status: "dead",
+      dead_until: deadUntil,
+      resolved_at: nowIso,
+    })
+    .eq("id", eventId)
+    .eq("character_id", character.id);
+
+  if (eventResult.error) {
+    throw new Error(`Unable to resolve Death event: ${eventResult.error.message}`);
+  }
 
   revalidatePath("/game");
   revalidatePath("/character");
   revalidatePath("/characters");
-
-  return result.deadUntil;
+  return deadUntil;
 }
 
 export async function acceptCharacterDeath() {

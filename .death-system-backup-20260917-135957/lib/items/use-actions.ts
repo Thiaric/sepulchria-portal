@@ -5,10 +5,6 @@ import { createClient as createAdminClient } from "@supabase/supabase-js";
 
 import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
 import { createClient } from "@/lib/supabase/server";
-import {
-  assertDeadTargetAllowed,
-  reviveDeadCharacter,
-} from "@/lib/death/death-system";
 
 export type UseInventoryItemResult = {
   ok: boolean;
@@ -33,8 +29,6 @@ type OwnedCharacter = {
   brains: number | null;
   shrewd: number | null;
   presence_score: number | null;
-  life_state: "alive" | "death_save_pending" | "dead";
-  died_at: string | null;
 };
 
 type ItemMechanics = {
@@ -54,12 +48,6 @@ type ItemMechanics = {
   cooldown_minutes: number | null;
   teaches_recipe_id: string | null;
   category: { slug: string } | { slug: string }[] | null;
-  effects:
-    | {
-        trigger_type: string;
-        health_delta: number | null;
-      }[]
-    | null;
 };
 
 type AttemptRecord = {
@@ -122,21 +110,13 @@ async function getOwnedCharacter() {
   const { data, error } = await supabase
     .from("characters")
     .select(
-      "id, display_name, current_room_id, muscles, reflexes, vigor, brains, shrewd, presence_score, life_state, died_at",
+      "id, display_name, current_room_id, muscles, reflexes, vigor, brains, shrewd, presence_score",
     )
     .eq("user_id", user.id)
     .maybeSingle();
 
   if (error || !data) {
     throw new Error("Your character could not be found.");
-  }
-
-  if (data.life_state !== "alive") {
-    throw new Error(
-      data.life_state === "dead"
-        ? "Dead Characters cannot use Items."
-        : "Characters at Death's Threshold cannot use normal Items.",
-    );
   }
 
   return {
@@ -168,8 +148,7 @@ async function loadAttemptRecord(
     damage_type,
     cooldown_minutes,
     teaches_recipe_id,
-    category:item_categories(slug),
-    effects:item_effects(trigger_type,health_delta)
+    category:item_categories(slug)
   `;
 
   if (recordKind === "standard") {
@@ -261,8 +240,6 @@ async function resolveTarget({
     return {
       id: character.id,
       displayName: character.display_name,
-      lifeState: character.life_state,
-      diedAt: character.died_at,
     };
   }
 
@@ -278,8 +255,6 @@ async function resolveTarget({
     return {
       id: character.id,
       displayName: character.display_name,
-      lifeState: character.life_state,
-      diedAt: character.died_at,
     };
   }
 
@@ -290,7 +265,7 @@ async function resolveTarget({
   const admin = createPrivilegedClient();
   const { data, error } = await admin
     .from("characters")
-    .select("id, display_name, current_room_id, status, life_state, died_at")
+    .select("id, display_name, current_room_id, status")
     .eq("id", requestedTargetId)
     .eq("status", "approved")
     .eq("is_system", false)
@@ -309,8 +284,6 @@ async function resolveTarget({
   return {
     id: data.id,
     displayName: data.display_name,
-    lifeState: data.life_state,
-    diedAt: data.died_at,
   };
 }
 
@@ -803,21 +776,6 @@ export async function useInventoryItem(
       requestedTargetId: targetCharacterId,
     });
 
-    const healingCapable =
-      targetMode !== "self" &&
-      (record.item.effects ?? []).some(
-        (effect) =>
-          effect.trigger_type === "use" &&
-          Number(effect.health_delta ?? 0) > 0,
-      );
-
-    await assertDeadTargetAllowed({
-      targetCharacterId: target.id,
-      healingCapable,
-      resurrection: false,
-      effectLabel: "Item",
-    });
-
     if (record.item.resolution_mode === "opposed") {
       return {
         ok: false,
@@ -918,19 +876,6 @@ export async function useInventoryItem(
           result.block_reason ??
           "This Item cannot be used right now.",
       };
-    }
-
-    if (
-      target.lifeState === "dead" &&
-      Number(result.health_delta ?? 0) > 0
-    ) {
-      await reviveDeadCharacter({
-        characterId: target.id,
-        source: "item",
-        forceBeyondEssence: false,
-        healthAfterRevival:
-          Number(result.health_delta ?? 1),
-      });
     }
 
     const baseDamage =
