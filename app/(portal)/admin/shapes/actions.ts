@@ -96,50 +96,50 @@ function payload(f:FormData){
 
     is_dispel:dispel,
     price_key:txt(f,"price_key")||null,
-    damage_type:dispel?null:(txt(f,"damage_type")||null),
+    damage_type:txt(f,"damage_type")||null,
 
-    self_damage_dice:dispel?null:(txt(f,"self_damage_dice")||null),
-    self_damage_attribute:dispel?null:(txt(f,"self_damage_attribute")||null),
-    self_heal_dice:dispel?null:(txt(f,"self_heal_dice")||null),
-    self_heal_attribute:dispel?null:(txt(f,"self_heal_attribute")||null),
-    self_max_hp_change:dispel?null:(txt(f,"self_max_hp_change")||null),
-    self_conditions:dispel?[]:csv(f,"self_conditions"),
+    self_damage_dice:txt(f,"self_damage_dice")||null,
+    self_damage_attribute:txt(f,"self_damage_attribute")||null,
+    self_heal_dice:txt(f,"self_heal_dice")||null,
+    self_heal_attribute:txt(f,"self_heal_attribute")||null,
+    self_max_hp_change:txt(f,"self_max_hp_change")||null,
+    self_conditions:csv(f,"self_conditions"),
 
-    other_damage_dice:dispel?null:(txt(f,"other_damage_dice")||null),
-    other_damage_attribute:dispel?null:(txt(f,"other_damage_attribute")||null),
-    other_heal_dice:dispel?null:(txt(f,"other_heal_dice")||null),
-    other_heal_attribute:dispel?null:(txt(f,"other_heal_attribute")||null),
-    other_max_hp_change:dispel?null:(txt(f,"other_max_hp_change")||null),
-    other_conditions:dispel?[]:csv(f,"other_conditions"),
+    other_damage_dice:txt(f,"other_damage_dice")||null,
+    other_damage_attribute:txt(f,"other_damage_attribute")||null,
+    other_heal_dice:txt(f,"other_heal_dice")||null,
+    other_heal_attribute:txt(f,"other_heal_attribute")||null,
+    other_max_hp_change:txt(f,"other_max_hp_change")||null,
+    other_conditions:csv(f,"other_conditions"),
 
-    other_alternative_enabled:!dispel&&targetMode!=="self"&&targetMode!=="written"&&alt,
-    other_alt_damage_dice:(!dispel&&alt)?(txt(f,"other_alt_damage_dice")||null):null,
-    other_alt_damage_attribute:(!dispel&&alt)?(txt(f,"other_alt_damage_attribute")||null):null,
-    other_alt_heal_dice:(!dispel&&alt)?(txt(f,"other_alt_heal_dice")||null):null,
-    other_alt_heal_attribute:(!dispel&&alt)?(txt(f,"other_alt_heal_attribute")||null):null,
-    other_alt_max_hp_change:(!dispel&&alt)?(txt(f,"other_alt_max_hp_change")||null):null,
-    other_alt_conditions:(!dispel&&alt)?csv(f,"other_alt_conditions"):[],
+    other_alternative_enabled:targetMode!=="self"&&targetMode!=="written"&&alt,
+    other_alt_damage_dice:alt?(txt(f,"other_alt_damage_dice")||null):null,
+    other_alt_damage_attribute:alt?(txt(f,"other_alt_damage_attribute")||null):null,
+    other_alt_heal_dice:alt?(txt(f,"other_alt_heal_dice")||null):null,
+    other_alt_heal_attribute:alt?(txt(f,"other_alt_heal_attribute")||null):null,
+    other_alt_max_hp_change:alt?(txt(f,"other_alt_max_hp_change")||null):null,
+    other_alt_conditions:alt?csv(f,"other_alt_conditions"):[],
 
-    self_muscles_modifier:dispel?0:nint(f,"self_muscles_modifier"),
-    self_reflexes_modifier:dispel?0:nint(f,"self_reflexes_modifier"),
-    self_vigour_modifier:dispel?0:nint(f,"self_vigour_modifier"),
-    self_brains_modifier:dispel?0:nint(f,"self_brains_modifier"),
-    self_shrewd_modifier:dispel?0:nint(f,"self_shrewd_modifier"),
-    self_presence_modifier:dispel?0:nint(f,"self_presence_modifier"),
+    self_muscles_modifier:nint(f,"self_muscles_modifier"),
+    self_reflexes_modifier:nint(f,"self_reflexes_modifier"),
+    self_vigour_modifier:nint(f,"self_vigour_modifier"),
+    self_brains_modifier:nint(f,"self_brains_modifier"),
+    self_shrewd_modifier:nint(f,"self_shrewd_modifier"),
+    self_presence_modifier:nint(f,"self_presence_modifier"),
 
-    other_muscles_modifier:dispel?0:nint(f,"other_muscles_modifier"),
-    other_reflexes_modifier:dispel?0:nint(f,"other_reflexes_modifier"),
-    other_vigour_modifier:dispel?0:nint(f,"other_vigour_modifier"),
-    other_brains_modifier:dispel?0:nint(f,"other_brains_modifier"),
-    other_shrewd_modifier:dispel?0:nint(f,"other_shrewd_modifier"),
-    other_presence_modifier:dispel?0:nint(f,"other_presence_modifier"),
+    other_muscles_modifier:nint(f,"other_muscles_modifier"),
+    other_reflexes_modifier:nint(f,"other_reflexes_modifier"),
+    other_vigour_modifier:nint(f,"other_vigour_modifier"),
+    other_brains_modifier:nint(f,"other_brains_modifier"),
+    other_shrewd_modifier:nint(f,"other_shrewd_modifier"),
+    other_presence_modifier:nint(f,"other_presence_modifier"),
 
-    other_alt_muscles_modifier:(!dispel&&alt)?nint(f,"other_alt_muscles_modifier"):0,
-    other_alt_reflexes_modifier:(!dispel&&alt)?nint(f,"other_alt_reflexes_modifier"):0,
-    other_alt_vigour_modifier:(!dispel&&alt)?nint(f,"other_alt_vigour_modifier"):0,
-    other_alt_brains_modifier:(!dispel&&alt)?nint(f,"other_alt_brains_modifier"):0,
-    other_alt_shrewd_modifier:(!dispel&&alt)?nint(f,"other_alt_shrewd_modifier"):0,
-    other_alt_presence_modifier:(!dispel&&alt)?nint(f,"other_alt_presence_modifier"):0,
+    other_alt_muscles_modifier:alt?nint(f,"other_alt_muscles_modifier"):0,
+    other_alt_reflexes_modifier:alt?nint(f,"other_alt_reflexes_modifier"):0,
+    other_alt_vigour_modifier:alt?nint(f,"other_alt_vigour_modifier"):0,
+    other_alt_brains_modifier:alt?nint(f,"other_alt_brains_modifier"):0,
+    other_alt_shrewd_modifier:alt?nint(f,"other_alt_shrewd_modifier"):0,
+    other_alt_presence_modifier:alt?nint(f,"other_alt_presence_modifier"):0,
 
     min_muscles:optInt(f,"min_muscles"),min_reflexes:optInt(f,"min_reflexes"),
     min_vigour:optInt(f,"min_vigour"),min_brains:optInt(f,"min_brains"),
@@ -224,7 +224,6 @@ export async function createShape(
 
   if(
     p.is_instantaneous&&
-    !p.is_dispel&&
     persistent
   ){
     return{
@@ -319,7 +318,6 @@ export async function updateShape(
 
   if(
     p.is_instantaneous&&
-    !p.is_dispel&&
     persistent
   ){
     return{

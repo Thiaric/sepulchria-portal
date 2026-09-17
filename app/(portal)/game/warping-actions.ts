@@ -150,19 +150,6 @@ export async function resolveImmediateShapeCast(
       );
     }
 
-    /*
-     * Dispel has its own preparation / response resolver and must not
-     * use the ordinary Shape payload path here.
-     */
-    if (shape.is_dispel) {
-      return {
-        ok: true,
-        message: "",
-        submittedAt:
-          Date.now(),
-      };
-    }
-
     const {
       data: targetRows,
       error: targetError,
@@ -428,21 +415,6 @@ export async function resolveImmediateShapeCast(
 
 export async function resolveIncomingShape(_p:WarpingActionState,f:FormData):Promise<WarpingActionState>{try{
  const c=await mine(),id=field(f,"shape_cast_target_id"),choice=field(f,"save_choice"),t=await target(id,c.id),cast=one(t.cast),s=one(cast?.shape),caster=one(cast?.caster);if(!cast||!s||!caster)throw Error("Shape data unavailable.");
- if(s.is_dispel){
-  const effectId=String(t.dispel_effect_id??"");if(!effectId)throw Error("The caster has not chosen an effect to dispel yet.");
-  const a=admin();const eq=await a.from("character_shape_effects").select("id,shape_level,effect_nature,shape:shapes!character_shape_effects_shape_id_fkey(name)").eq("id",effectId).eq("target_character_id",c.id).is("dispelled_at",null).maybeSingle();
-  if(eq.error||!eq.data)throw Error("That effect is no longer active.");
-  if(Number(s.level)<Number(eq.data.shape_level))throw Error(`Level ${s.level} cannot dispel Level ${eq.data.shape_level}.`);
-  const effectShape:any=one(eq.data.shape as any);
-  if(choice==="__do_nothing__"){const u=await a.from("character_shape_effects").update({dispelled_at:new Date().toISOString(),dispelled_by_cast_id:cast.id}).eq("id",effectId);if(u.error)throw Error(u.error.message);await a.from("shape_cast_targets").update({response:"do_nothing",outcome:"success",resolved_at:new Date().toISOString()}).eq("id",id);await message(cast.room_id,c.id,`◆ ${c.display_name} does nothing against ${s.name} · ${effectShape?.name??"Shape effect"} dispelled · Level ${s.level} vs Level ${eq.data.shape_level}`);revalidatePath("/game");revalidatePath("/character");return{ok:true,message:"Effect dispelled.",submittedAt:Date.now()}}
-  const dispelProfile=effectProfile(s,t,caster.id),dispelResolution=profileResolution(s,dispelProfile);
-  if(dispelResolution.mode!=="save")throw Error("This Dispel effect no longer requires a Save.");
-  const allowed=dispelResolution.saveOptions;if(!allowed.includes(choice))throw Error("That Save is unavailable.");const sa=SAVE[choice];if(!sa)throw Error("Invalid Save.");const mod=await eff(c,sa),roll=randomInt(1,21),total=roll+mod,dc=11+(dispelResolution.dcAttribute?await eff(caster,dispelResolution.dcAttribute):0),saved=total>=dc;
-  if(!saved){const u=await a.from("character_shape_effects").update({dispelled_at:new Date().toISOString(),dispelled_by_cast_id:cast.id}).eq("id",effectId);if(u.error)throw Error(u.error.message)}
-  await a.from("shape_cast_targets").update({response:choice,save_roll:roll,save_attribute:sa,save_attribute_value:mod,save_total:total,dc,outcome:saved?"saved":"success",resolved_at:new Date().toISOString()}).eq("id",id);
-  await message(cast.room_id,c.id,`◆ ${c.display_name} uses ${SAVE_NAME[choice]??choice} against ${s.name} · d20 -> ${roll} + ${LABEL[sa]??sa} (${mod>=0?"+":""}${mod}) = ${total} vs DC ${dc} · ${saved?`SUCCESS — ${effectShape?.name??"effect"} remains active`:`FAILED — ${effectShape?.name??"effect"} dispelled`}`);
-  revalidatePath("/game");revalidatePath("/character");return{ok:true,message:saved?"Save successful. Effect remains active.":"Save failed. Effect dispelled.",submittedAt:Date.now()}
- }
 
  const profile=effectProfile(s,t,caster.id),resolution=profileResolution(s,profile);
  if(resolution.mode!=="save")throw Error("This Shape effect no longer requires a Save.");
@@ -457,13 +429,48 @@ export async function resolveIncomingShape(_p:WarpingActionState,f:FormData):Pro
 
 export async function prepareDispelEffect(_p:WarpingActionState,f:FormData):Promise<WarpingActionState>{try{
  const caster=await mine(),castId=field(f,"cast_id"),effectId=field(f,"effect_id"),targetId=field(f,"target_character_id"),a=admin();
- const cq=await a.from("shape_casts").select("id,room_id,shape:shapes!shape_casts_shape_id_fkey(id,name,level,is_dispel)").eq("id",castId).eq("caster_character_id",caster.id).maybeSingle();
+ const cq=await a.from("shape_casts").select("id,room_id,shape:shapes!shape_casts_shape_id_fkey(id,name,level,is_dispel,other_resolution_mode,other_dc_attribute,other_save_options,other_save_success_damage,self_resolution_mode,self_dc_attribute,self_save_options,self_save_success_damage,resolution_mode,dc_attribute,save_options,save_success_damage)").eq("id",castId).eq("caster_character_id",caster.id).maybeSingle();
  const cast:any=cq.data,shape=one(cast?.shape);if(cq.error||!cast||!shape?.is_dispel)throw Error("Invalid Dispel cast.");
- const tq=await a.from("shape_cast_targets").select("id,outcome").eq("cast_id",castId).eq("target_character_id",targetId).maybeSingle();if(tq.error||!tq.data)throw Error("That character was not the target of this Dispel.");
  const eq=await a.from("character_shape_effects").select("id,shape_level,effect_nature,shape:shapes!character_shape_effects_shape_id_fkey(name)").eq("id",effectId).eq("target_character_id",targetId).is("dispelled_at",null).maybeSingle();if(eq.error||!eq.data)throw Error("Active effect not found.");
  if(Number(shape.level)<Number(eq.data.shape_level))throw Error(`Dispel failed: Level ${shape.level} cannot dispel Level ${eq.data.shape_level}.`);
+ const stored=await a.from("shape_casts").update({dispel_target_character_id:targetId,dispel_effect_id:effectId}).eq("id",castId).eq("caster_character_id",caster.id);if(stored.error)throw Error(stored.error.message);
  const effectShape:any=one(eq.data.shape as any);
- if(eq.data.effect_nature==="harmful"){const u=await a.from("character_shape_effects").update({dispelled_at:new Date().toISOString(),dispelled_by_cast_id:castId}).eq("id",effectId);if(u.error)throw Error(u.error.message);await a.from("shape_cast_targets").update({dispel_effect_id:effectId,response:"automatic_harmful_dispel",outcome:"success",resolved_at:new Date().toISOString()}).eq("id",tq.data.id);await message(cast.room_id,caster.id,`◆ Dispel ${effectShape?.name??"Shape effect"} · Level ${shape.level} vs Level ${eq.data.shape_level} · SUCCESS — effect removed`);revalidatePath("/game");revalidatePath("/character");return{ok:true,message:"Harmful effect dispelled.",submittedAt:Date.now()}}
- const q=await a.from("shape_cast_targets").update({dispel_effect_id:effectId,response:null,outcome:"pending",resolved_at:null}).eq("id",tq.data.id);if(q.error)throw Error(q.error.message);
- return{ok:true,message:"Effect selected. The target must Save or choose Do nothing.",submittedAt:Date.now()}
+ const fakeTarget={target_character_id:targetId,other_effect_choice:"beneficial"};
+ const dispelResolution=profileResolution(shape,effectProfile(shape,fakeTarget,caster.id));
+ if(eq.data.effect_nature==="harmful"||dispelResolution.mode==="automatic"){
+  const u=await a.from("character_shape_effects").update({dispelled_at:new Date().toISOString(),dispelled_by_cast_id:castId}).eq("id",effectId).is("dispelled_at",null);if(u.error)throw Error(u.error.message);
+  const clear=await a.from("shape_casts").update({dispel_effect_id:null}).eq("id",castId);if(clear.error)throw Error(clear.error.message);
+  await message(cast.room_id,caster.id,`◆ Dispel ${effectShape?.name??"Shape effect"} · Level ${shape.level} vs Level ${eq.data.shape_level} · SUCCESS — effect removed`);
+  revalidatePath("/game");revalidatePath("/character");
+  return{ok:true,message:"Effect dispelled.",submittedAt:Date.now()}
+ }
+ if(dispelResolution.mode!=="save")throw Error("Unsupported Dispel resolution mode.");
+ return{ok:true,message:"Effect selected. The Dispel target must Save or choose Do nothing.",submittedAt:Date.now()}
 }catch(e){return{ok:false,message:e instanceof Error?e.message:"Unable to prepare Dispel."}}}
+
+export async function resolveIncomingDispel(_p:WarpingActionState,f:FormData):Promise<WarpingActionState>{try{
+ const c=await mine(),castId=field(f,"dispel_cast_id"),choice=field(f,"save_choice"),a=admin();
+ const cq=await a.from("shape_casts").select(`id,room_id,caster_character_id,dispel_target_character_id,dispel_effect_id,caster:characters!shape_casts_caster_character_id_fkey(id,display_name,muscles,reflexes,vigor,brains,shrewd,presence_score),shape:shapes!shape_casts_shape_id_fkey(*)`).eq("id",castId).eq("dispel_target_character_id",c.id).maybeSingle();
+ const cast:any=cq.data,s=one(cast?.shape),caster=one(cast?.caster);if(cq.error||!cast||!s?.is_dispel||!caster)throw Error("Incoming Dispel not found.");
+ const effectId=String(cast.dispel_effect_id??"");if(!effectId)throw Error("This Dispel is already resolved.");
+ const eq=await a.from("character_shape_effects").select("id,shape_level,effect_nature,shape:shapes!character_shape_effects_shape_id_fkey(name)").eq("id",effectId).eq("target_character_id",c.id).is("dispelled_at",null).maybeSingle();
+ if(eq.error||!eq.data)throw Error("That effect is no longer active.");
+ if(Number(s.level)<Number(eq.data.shape_level))throw Error(`Level ${s.level} cannot dispel Level ${eq.data.shape_level}.`);
+ const effectShape:any=one(eq.data.shape as any);
+ const fakeTarget={target_character_id:c.id,other_effect_choice:"beneficial"};
+ const resolution=profileResolution(s,effectProfile(s,fakeTarget,caster.id));
+ if(choice==="__do_nothing__"){
+  const u=await a.from("character_shape_effects").update({dispelled_at:new Date().toISOString(),dispelled_by_cast_id:cast.id}).eq("id",effectId).is("dispelled_at",null);if(u.error)throw Error(u.error.message);
+  const clear=await a.from("shape_casts").update({dispel_effect_id:null}).eq("id",cast.id).eq("dispel_effect_id",effectId);if(clear.error)throw Error(clear.error.message);
+  await message(cast.room_id,c.id,`◆ ${c.display_name} does nothing against ${s.name} Dispel · ${effectShape?.name??"Shape effect"} dispelled · Level ${s.level} vs Level ${eq.data.shape_level}`);
+  revalidatePath("/game");revalidatePath("/character");return{ok:true,message:"Effect dispelled.",submittedAt:Date.now()}
+ }
+ if(resolution.mode!=="save")throw Error("This Dispel no longer requires a Save.");
+ const allowed=resolution.saveOptions;if(!allowed.includes(choice))throw Error("That Save is unavailable.");
+ const sa=SAVE[choice];if(!sa)throw Error("Invalid Save.");
+ const mod=await eff(c,sa),roll=randomInt(1,21),total=roll+mod,dc=11+(resolution.dcAttribute?await eff(caster,resolution.dcAttribute):0),saved=total>=dc;
+ if(!saved){const u=await a.from("character_shape_effects").update({dispelled_at:new Date().toISOString(),dispelled_by_cast_id:cast.id}).eq("id",effectId).is("dispelled_at",null);if(u.error)throw Error(u.error.message)}
+ const clear=await a.from("shape_casts").update({dispel_effect_id:null}).eq("id",cast.id).eq("dispel_effect_id",effectId);if(clear.error)throw Error(clear.error.message);
+ await message(cast.room_id,c.id,`◆ ${c.display_name} uses ${SAVE_NAME[choice]??choice} against ${s.name} Dispel · d20 -> ${roll} + ${LABEL[sa]??sa} (${mod>=0?"+":""}${mod}) = ${total} vs DC ${dc} · ${saved?`SUCCESS — ${effectShape?.name??"effect"} remains active`:`FAILED — ${effectShape?.name??"effect"} dispelled`}`);
+ revalidatePath("/game");revalidatePath("/character");return{ok:true,message:saved?"Save successful. Effect remains active.":"Save failed. Effect dispelled.",submittedAt:Date.now()}
+}catch(e){return{ok:false,message:e instanceof Error?e.message:"Unable to resolve Dispel."}}}

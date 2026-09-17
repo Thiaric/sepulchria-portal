@@ -462,6 +462,11 @@ export function WarpingPanel({
   ] = useState<string[]>([]);
 
   const [
+    dispelTarget,
+    setDispelTarget,
+  ] = useState("");
+
+  const [
     dispelEffects,
     setDispelEffects,
   ] = useState<any[]>([]);
@@ -626,7 +631,7 @@ export function WarpingPanel({
     async function loadDispelEffects() {
       if (
         !s?.is_dispel ||
-        targets.length !== 1
+        !dispelTarget
       ) {
         if (active) {
           setDispelEffects([]);
@@ -642,7 +647,7 @@ export function WarpingPanel({
         "get_character_active_shape_effects",
         {
           p_character_id:
-            targets[0],
+            dispelTarget,
         },
       );
 
@@ -682,7 +687,7 @@ export function WarpingPanel({
     s?.id,
     s?.is_dispel,
     s?.level,
-    targets,
+    dispelTarget,
   ]);
 
   function toggle(
@@ -691,8 +696,7 @@ export function WarpingPanel({
     if (
       blockedTargets.includes(
         id,
-      ) &&
-      !s?.is_dispel
+      )
     ) {
       return;
     }
@@ -808,11 +812,11 @@ export function WarpingPanel({
 
       if (
         s.is_dispel &&
-        (!targets.length ||
+        (!dispelTarget ||
           !selectedDispelEffect)
       ) {
         throw Error(
-          "Choose an active effect to dispel before Warping.",
+          "Choose a Dispel target and an active effect to dispel before Warping.",
         );
       }
 
@@ -929,10 +933,7 @@ export function WarpingPanel({
       let immediateResolutionMessage =
         "";
 
-      if (
-        !wt &&
-        !s.is_dispel
-      ) {
+      if (!wt) {
         const immediate =
           await resolveImmediateShapeCast(
             cr.data.id,
@@ -963,7 +964,7 @@ export function WarpingPanel({
 
         fd.set(
           "target_character_id",
-          targets[0],
+          dispelTarget,
         );
 
         fd.set(
@@ -1532,8 +1533,15 @@ return [
           );
 
         if (de) {
+          const dispelTargetName =
+            dispelTarget === me.data.id
+              ? "Self"
+              : presentCharacters.find(c => c.id === dispelTarget)?.display_name ??
+                presentCharacters.find(c => c.id === dispelTarget)?.displayName ??
+                "Unknown";
+
           parts.push(
-            `Dispels [${de.shape_name} - Level ${de.shape_level}]`,
+            `Dispels [${de.shape_name} - Level ${de.shape_level} from ${dispelTargetName}]`,
           );
         }
       }
@@ -1589,6 +1597,7 @@ return [
         "",
       );
       setDispelEffects([]);
+      setDispelTarget("");
 
       setMsg(
         preparedDispelMessage ||
@@ -1704,6 +1713,7 @@ return [
               setDispelEffects(
                 [],
               );
+              setDispelTarget("");
               setSelectedDispelEffect(
                 "",
               );
@@ -1779,14 +1789,6 @@ return [
                   setTargetEffectChoices(
                     {},
                   );
-
-                  setDispelEffects(
-                    [],
-                  );
-
-                  setSelectedDispelEffect(
-                    "",
-                  );
                 }}
                 aria-pressed={
                   targetChoice ===
@@ -1846,10 +1848,9 @@ return [
             <div className="mt-3 flex flex-wrap gap-2 game_components_warpingpanel_div_container_8">
               {s?.target_mode ===
                 "either" &&
-              (!blockedTargets.includes(
+              !blockedTargets.includes(
                 r.character_id,
-              ) ||
-                s?.is_dispel) ? (
+              ) ? (
                 <button
                   type="button"
                   onClick={() =>
@@ -1887,10 +1888,9 @@ return [
                   c =>
                     c.id !==
                       r.character_id &&
-                    (!blockedTargets.includes(
+                    !blockedTargets.includes(
                       c.id,
-                    ) ||
-                      s?.is_dispel),
+                    ),
                 )
                 .map(c => {
                   const selected =
@@ -2054,71 +2054,86 @@ return [
             </div>
           ) : null}
 
-          {s?.is_dispel &&
-          targets.length ===
-            1 ? (
+          {s?.is_dispel ? (
             <div className="mt-3 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] p-3 game_components_warpingpanel_div_container_12">
               <p className="text-[8px] uppercase tracking-[.14em] text-[rgb(var(--sep-colour-806b50))] game_components_warpingpanel_p_text_9">
-                Effect to Dispel
+                Dispel Target
               </p>
 
-              {dispelEffects.length ? (
-                <select
-                  value={
-                    selectedDispelEffect
-                  }
-                  onChange={e =>
-                    setSelectedDispelEffect(
-                      e.target
-                        .value,
-                    )
-                  }
-                  className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] game_components_warpingpanel_select_select_2"
+              <div className="mt-2 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDispelTarget(r.character_id);
+                    setSelectedDispelEffect("");
+                  }}
+                  aria-pressed={dispelTarget === r.character_id}
+                  className={[
+                    "border px-3 py-2 text-[9px] transition",
+                    dispelTarget === r.character_id
+                      ? "border-[rgb(var(--sep-skin-c1))] bg-[rgb(var(--sep-skin-c1))]/25 text-[rgb(var(--sep-skin-c2))]"
+                      : "border-[rgb(var(--sep-colour-60482e))]/55",
+                  ].join(" ")}
                 >
-                  <option
-                    className="game_components_warpingpanel_option_option_2"
-                    value=""
-                  >
-                    Choose active
-                    effect...
-                  </option>
+                  {dispelTarget === r.character_id ? "✓ Self" : "Self"}
+                </button>
 
-                  {dispelEffects.map(
-                    (
-                      e: any,
-                    ) => (
-                      <option
-                        className="game_components_warpingpanel_option_option_3"
-                        key={
-                          e.id
-                        }
-                        value={
-                          e.id
-                        }
+                {presentCharacters
+                  .filter(c => c.id !== r.character_id)
+                  .map(c => {
+                    const selected = dispelTarget === c.id;
+
+                    return (
+                      <button
+                        key={c.id}
+                        type="button"
+                        onClick={() => {
+                          setDispelTarget(c.id);
+                          setSelectedDispelEffect("");
+                        }}
+                        aria-pressed={selected}
+                        className={[
+                          "border px-3 py-2 text-[9px] transition",
+                          selected
+                            ? "border-[rgb(var(--sep-skin-c1))] bg-[rgb(var(--sep-skin-c1))]/25 text-[rgb(var(--sep-skin-c2))]"
+                            : "border-[rgb(var(--sep-colour-60482e))]/55",
+                        ].join(" ")}
                       >
-                        {
-                          e.shape_name
-                        }{" "}
-                        · Level{" "}
-                        {
-                          e.shape_level
-                        }{" "}
-                        ·{" "}
-                        {
-                          e.effect_nature
-                        }
-                      </option>
-                    ),
+                        {selected ? "✓ " : ""}
+                        {c.display_name ?? c.displayName}
+                      </button>
+                    );
+                  })}
+              </div>
+
+              {dispelTarget ? (
+                <>
+                  <p className="mt-3 text-[8px] uppercase tracking-[.14em] text-[rgb(var(--sep-colour-806b50))]">
+                    Effect to Dispel
+                  </p>
+
+                  {dispelEffects.length ? (
+                    <select
+                      value={selectedDispelEffect}
+                      onChange={e => setSelectedDispelEffect(e.target.value)}
+                      className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] game_components_warpingpanel_select_select_2"
+                    >
+                      <option value="">Choose active effect...</option>
+                      {dispelEffects.map((e: any) => (
+                        <option key={e.id} value={e.id}>
+                          {e.shape_name} · Level {e.shape_level} · {e.effect_nature}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <p className="mt-2 text-[9px] text-[rgb(var(--sep-colour-887865))] game_components_warpingpanel_p_text_10">
+                      This character has no active effect that this Level {s.level} Dispel can remove.
+                    </p>
                   )}
-                </select>
+                </>
               ) : (
-                <p className="mt-2 text-[9px] text-[rgb(var(--sep-colour-887865))] game_components_warpingpanel_p_text_10">
-                  This character
-                  has no active
-                  effect that this
-                  Level {s.level}{" "}
-                  Dispel can
-                  remove.
+                <p className="mt-2 text-[9px] text-[rgb(var(--sep-colour-887865))]">
+                  Choose the character whose active Shape effect you want to dispel.
                 </p>
               )}
             </div>
@@ -2142,7 +2157,8 @@ return [
               (Boolean(
                 s?.is_dispel,
               ) &&
-                !selectedDispelEffect)
+                (!dispelTarget ||
+                  !selectedDispelEffect))
             }
             onClick={() =>
               void warp()
