@@ -102,10 +102,7 @@ export function CharacterDeathGate({
           : "This Location does not permit Ghost chat; you may move elsewhere."}{" "}
         {until ? `Dead until ${until}. ` : "This Character is dead. "}
         {essenceLabel}{" "}
-        {ghostChatAllowed
-          ? "Whispers are available here. "
-          : "Whispers are unavailable here. "}
-        Mechanical actions, Feats, Warping, Items, Conditions and Dice remain unavailable.
+        Mechanical actions, Whispers, Feats, Warping, Items, Conditions and Dice remain unavailable.
       </div>
     );
   }

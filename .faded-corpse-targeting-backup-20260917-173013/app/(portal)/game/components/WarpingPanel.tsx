@@ -411,11 +411,9 @@ function ShapeInformation({
 
 export function WarpingPanel({
   presentCharacters,
-  beyondEssenceCharacterIds,
   onBack,
 }: {
   presentCharacters: C[];
-  beyondEssenceCharacterIds: string[];
   onBack: () => void;
 }) {
   const db = useMemo(
@@ -513,76 +511,6 @@ export function WarpingPanel({
     ) ??
     r?.shapes?.[0] ??
     null;
-
-  const beyondEssenceIds =
-    useMemo(
-      () =>
-        new Set(
-          beyondEssenceCharacterIds,
-        ),
-      [beyondEssenceCharacterIds],
-    );
-
-  const isResurrectionShape =
-    Boolean(
-      s &&
-      Number(s.level) === 9 &&
-      (
-        String(
-          s.other_heal_dice ?? "",
-        ).trim() ||
-        String(
-          s.other_heal_attribute ?? "",
-        ).trim()
-      ),
-    );
-
-  const ordinaryShapeTargets =
-    useMemo(
-      () =>
-        presentCharacters.filter(
-          (character) =>
-            !beyondEssenceIds.has(
-              character.id,
-            ),
-        ),
-      [
-        presentCharacters,
-        beyondEssenceIds,
-      ],
-    );
-
-  const shapeTargetCharacters =
-    isResurrectionShape
-      ? presentCharacters
-      : ordinaryShapeTargets;
-
-  useEffect(() => {
-    if (isResurrectionShape) {
-      return;
-    }
-
-    setTargets((current) =>
-      current.filter(
-        (id) =>
-          !beyondEssenceIds.has(id),
-      ),
-    );
-
-    if (
-      dispelTarget &&
-      beyondEssenceIds.has(
-        dispelTarget,
-      )
-    ) {
-      setDispelTarget("");
-      setSelectedDispelEffect("");
-    }
-  }, [
-    beyondEssenceIds,
-    dispelTarget,
-    isResurrectionShape,
-  ]);
 
   useEffect(() => {
     let active = true;
@@ -1955,7 +1883,7 @@ return [
                 </button>
               ) : null}
 
-              {shapeTargetCharacters
+              {presentCharacters
                 .filter(
                   c =>
                     c.id !==
@@ -2150,7 +2078,7 @@ return [
                   {dispelTarget === r.character_id ? "✓ Self" : "Self"}
                 </button>
 
-                {ordinaryShapeTargets
+                {presentCharacters
                   .filter(c => c.id !== r.character_id)
                   .map(c => {
                     const selected = dispelTarget === c.id;

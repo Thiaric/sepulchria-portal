@@ -2,9 +2,6 @@ import { NextResponse } from "next/server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
-import {
-  assertOrdinaryInteractionTargetAllowed,
-} from "@/lib/death/death-system";
 
 export const dynamic = "force-dynamic";
 
@@ -90,29 +87,6 @@ export async function POST(
       {
         error:
           "You cannot start an Item Exchange with yourself.",
-      },
-      { status: 400 },
-    );
-  }
-
-  try {
-    await Promise.all([
-      assertOrdinaryInteractionTargetAllowed({
-        targetCharacterId: me.id,
-        interactionLabel: "Item Exchange",
-      }),
-      assertOrdinaryInteractionTargetAllowed({
-        targetCharacterId: other,
-        interactionLabel: "Item Exchange",
-      }),
-    ]);
-  } catch (error) {
-    return NextResponse.json(
-      {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Item Exchange is unavailable.",
       },
       { status: 400 },
     );

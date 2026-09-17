@@ -535,16 +535,6 @@ export default function RoomChatForm({
   const [viewerDead, setViewerDead] = useState(false);
   const [ghostChatAllowed, setGhostChatAllowed] = useState(false);
 
-  const [
-    deadCharacterIds,
-    setDeadCharacterIds,
-  ] = useState<string[]>([]);
-
-  const [
-    beyondEssenceCharacterIds,
-    setBeyondEssenceCharacterIds,
-  ] = useState<string[]>([]);
-
   useEffect(() => {
     let active = true;
     const supabase = createClient();
@@ -619,135 +609,10 @@ export default function RoomChatForm({
   }, [viewerCharacterId, roomId]);
 
   useEffect(() => {
-    let active = true;
-    const supabase = createClient();
-
-    async function refreshTargetAvailability() {
-      try {
-        const response = await fetch(
-          `/api/game/death-target-availability?roomId=${encodeURIComponent(roomId)}`,
-          { cache: "no-store" },
-        );
-
-        const payload = (await response.json()) as {
-          deadCharacterIds?: string[];
-          beyondEssenceCharacterIds?: string[];
-          error?: string;
-        };
-
-        if (!response.ok) {
-          throw new Error(
-            payload.error ??
-              "Unable to load target availability.",
-          );
-        }
-
-        if (!active) return;
-
-        setDeadCharacterIds(
-          payload.deadCharacterIds ?? [],
-        );
-        setBeyondEssenceCharacterIds(
-          payload.beyondEssenceCharacterIds ?? [],
-        );
-      } catch (error) {
-        console.error(
-          "Unable to refresh Death target availability:",
-          error,
-        );
-      }
-    }
-
-    void refreshTargetAvailability();
-
-    const channel = supabase
-      .channel(
-        `death-targets-${roomId}-${crypto.randomUUID()}`,
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "characters",
-          filter: `current_room_id=eq.${roomId}`,
-        },
-        () => void refreshTargetAvailability(),
-      )
-      .subscribe();
-
-    const timer = window.setInterval(
-      () => void refreshTargetAvailability(),
-      20_000,
-    );
-
-    return () => {
-      active = false;
-      window.clearInterval(timer);
-      void supabase.removeChannel(channel);
-    };
-  }, [roomId]);
-
-  const deadCharacterIdSet = useMemo(
-    () => new Set(deadCharacterIds),
-    [deadCharacterIds],
-  );
-
-  const beyondEssenceCharacterIdSet =
-    useMemo(
-      () =>
-        new Set(
-          beyondEssenceCharacterIds,
-        ),
-      [beyondEssenceCharacterIds],
-    );
-
-  const ordinaryTargetCharacters =
-    useMemo(
-      () =>
-        presentCharacters.filter(
-          (entry) =>
-            !beyondEssenceCharacterIdSet.has(
-              entry.id,
-            ),
-        ),
-      [
-        presentCharacters,
-        beyondEssenceCharacterIdSet,
-      ],
-    );
-
-  const whisperCharacters =
-    useMemo(
-      () =>
-        ghostChatAllowed
-          ? presentCharacters
-          : presentCharacters.filter(
-              (entry) =>
-                !deadCharacterIdSet.has(
-                  entry.id,
-                ),
-            ),
-      [
-        presentCharacters,
-        deadCharacterIdSet,
-        ghostChatAllowed,
-      ],
-    );
-
-  const viewerBeyondEssence =
-    beyondEssenceCharacterIdSet.has(
-      viewerCharacterId,
-    );
-
-  useEffect(() => {
     if (!viewerDead) return;
 
     if (
-      (
-        utilityMode === "whisper" &&
-        !ghostChatAllowed
-      ) ||
+      utilityMode === "whisper" ||
       utilityMode === "dice" ||
       utilityMode === "attributes" ||
       utilityMode === "feat" ||
@@ -757,23 +622,7 @@ export default function RoomChatForm({
     ) {
       setUtilityMode(null);
     }
-  }, [
-    viewerDead,
-    utilityMode,
-    ghostChatAllowed,
-  ]);
-
-  useEffect(() => {
-    if (
-      viewerBeyondEssence &&
-      utilityMode === "exchange"
-    ) {
-      setUtilityMode(null);
-    }
-  }, [
-    viewerBeyondEssence,
-    utilityMode,
-  ]);
+  }, [viewerDead, utilityMode]);
 
   const requestedExchangeId =
     searchParams.get("exchange");
@@ -862,15 +711,12 @@ export default function RoomChatForm({
           : requestedTrade.character_one_id;
 
       const partnerStillHere =
-        ordinaryTargetCharacters.some(
+        presentCharacters.some(
           (entry) =>
             entry.id === partnerId,
         );
 
-      if (
-        partnerStillHere &&
-        !viewerBeyondEssence
-      ) {
+      if (partnerStillHere) {
         setUtilityMode("exchange");
       }
 
@@ -884,9 +730,8 @@ export default function RoomChatForm({
     };
   }, [
     exchangeSupabase,
-    ordinaryTargetCharacters,
+    presentCharacters,
     requestedExchangeId,
-    viewerBeyondEssence,
   ]);
 
   const [itemState, itemAction] =
@@ -1385,7 +1230,7 @@ const visibleSpellingIssues =
     }
 
     const recipient =
-      whisperCharacters.find(
+      presentCharacters.find(
         (entry) =>
           entry.id ===
           whisperRecipientId,
@@ -1431,7 +1276,7 @@ const visibleSpellingIssues =
     }
 
     const recipient =
-      whisperCharacters.find(
+      presentCharacters.find(
         (entry) =>
           entry.id === characterId,
       );
@@ -1481,7 +1326,7 @@ const visibleSpellingIssues =
     }
 
     const characterIsPresent =
-      whisperCharacters.some(
+      presentCharacters.some(
         (character) =>
           character.id ===
           detail.characterId,
@@ -1509,7 +1354,7 @@ const visibleSpellingIssues =
       handleWhisperCharacter,
     );
   };
-}, [whisperCharacters, value]);
+}, [presentCharacters, value]);
 
   const utilityMessage =
     itemState.message ||
@@ -1838,20 +1683,13 @@ function ignoreSpellingWord() {
     if (
       viewerDead &&
       (
-        (
-          mode === "whisper" &&
-          !ghostChatAllowed
-        ) ||
+        mode === "whisper" ||
         mode === "dice" ||
         mode === "attributes" ||
         mode === "feat" ||
         mode === "items" ||
         mode === "warping" ||
-        mode === "conditions" ||
-        (
-          mode === "exchange" &&
-          viewerBeyondEssence
-        )
+        mode === "conditions"
       )
     ) {
       return;
@@ -2383,7 +2221,7 @@ function ignoreSpellingWord() {
             characterName={viewerDisplayName}
             selectableCharacters={
               canUseFate
-                ? ordinaryTargetCharacters
+                ? presentCharacters
                 : []
             }
           />
@@ -2433,7 +2271,7 @@ function ignoreSpellingWord() {
               <option className="game_components_roomchatform_option_option_2" value="">
                 Choose character...
               </option>
-              {whisperCharacters.map((entry) => (
+              {presentCharacters.map((entry) => (
                 <option className="game_components_roomchatform_option_option_3"
                   key={entry.id}
                   value={entry.id}
@@ -2633,7 +2471,7 @@ function ignoreSpellingWord() {
                     className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))] game_components_roomchatform_select_select_3"
                   >
                     <option className="game_components_roomchatform_option_option_6" value="">No Character target</option>
-                    {ordinaryTargetCharacters.map((entry) => (
+                    {presentCharacters.map((entry) => (
                       <option className="game_components_roomchatform_option_option_7" key={entry.id} value={entry.id}>
                         {entry.display_name}
                       </option>
@@ -2768,7 +2606,7 @@ function ignoreSpellingWord() {
                 className="mt-2 w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] game_components_roomchatform_select_select_4"
               >
                 <option className="game_components_roomchatform_option_option_8" value="">No Character target</option>
-                {ordinaryTargetCharacters.map((entry) => (
+                {presentCharacters.map((entry) => (
                   <option className="game_components_roomchatform_option_option_9" key={entry.id} value={entry.id}>
                     {entry.display_name}
                   </option>
@@ -2836,7 +2674,7 @@ function ignoreSpellingWord() {
                 className="mt-2 w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] game_components_roomchatform_select_select_5"
               >
                 <option className="game_components_roomchatform_option_option_11" value="">No Character target</option>
-                {ordinaryTargetCharacters.map((entry) => (
+                {presentCharacters.map((entry) => (
                   <option className="game_components_roomchatform_option_option_12" key={entry.id} value={entry.id}>
                     {entry.display_name}
                   </option>
@@ -2948,7 +2786,7 @@ function ignoreSpellingWord() {
                     ) : (
                       <option className="game_components_roomchatform_option_option_15" value="">Choose character...</option>
                     )}
-                    {ordinaryTargetCharacters.map((entry) => (
+                    {presentCharacters.map((entry) => (
                       <option className="game_components_roomchatform_option_option_16" key={entry.id} value={entry.id}>
                         {entry.display_name}
                       </option>
@@ -3145,14 +2983,11 @@ function ignoreSpellingWord() {
       ) : utilityMode === "warping" ? (
         <WarpingPanel
           presentCharacters={presentCharacters}
-          beyondEssenceCharacterIds={
-            beyondEssenceCharacterIds
-          }
           onBack={() => setUtilityMode(null)}
         />
       ) : utilityMode === "exchange" ? (
         <ItemExchangePanel
-          presentCharacters={ordinaryTargetCharacters}
+          presentCharacters={presentCharacters}
           limitedToGiving={viewerDead}
           onClose={() => setUtilityMode(null)}
         />
@@ -3486,18 +3321,10 @@ if (
             toggleUtility("whisper")
           }
           disabled={
-            (
-              viewerDead &&
-              !ghostChatAllowed
-            ) ||
-            whisperCharacters.length === 0
+            viewerDead ||
+            presentCharacters.length === 0
           }
-          title={
-            viewerDead &&
-            !ghostChatAllowed
-              ? "Whispers are unavailable to Ghosts in this Location."
-              : undefined
-          }
+          title={viewerDead ? "Unavailable while dead." : undefined}
           className={[((utilityMode === "whisper"
               ? utilityButtonActiveClass
               : utilityButtonClass)), "game_components_roomchatform_button_whisper"].filter(Boolean).join(" ")}
@@ -3579,14 +3406,9 @@ if (
             toggleUtility("exchange")
           }
           disabled={
-            viewerBeyondEssence ||
-            ordinaryTargetCharacters.length === 0
+            presentCharacters.length === 0
           }
-          title={
-            viewerBeyondEssence
-              ? "Item Exchange is unavailable after your Essence has faded."
-              : "Item Exchange"
-          }
+          title="Item Exchange"
           className={[((utilityMode === "exchange"
               ? utilityButtonActiveClass
               : utilityButtonClass)), "game_components_roomchatform_button_item_exchange"].filter(Boolean).join(" ")}

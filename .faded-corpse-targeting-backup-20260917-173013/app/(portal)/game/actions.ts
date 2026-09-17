@@ -17,7 +17,6 @@ import { createClient } from "@/lib/supabase/server";
 import {
   assertDeadTargetAllowed,
   assertGhostChatAllowed,
-  assertWhisperBetweenCharactersAllowed,
   assertGhostMovementAllowed,
   reconcileExpiredCharacterDeath,
 } from "@/lib/death/death-system";
@@ -878,22 +877,6 @@ async function resolveWhisperRecipient(
         recipientError
           ? `Unable to load the whisper recipient: ${recipientError.message}`
           : "The selected whisper recipient no longer exists.",
-    };
-  }
-
-  try {
-    await assertWhisperBetweenCharactersAllowed({
-      senderCharacterId,
-      recipientCharacterId: recipient.id,
-      roomId,
-    });
-  } catch (error) {
-    return {
-      ok: false,
-      message:
-        error instanceof Error
-          ? error.message
-          : "Whisper is unavailable.",
     };
   }
 
