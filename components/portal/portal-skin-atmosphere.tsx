@@ -62,7 +62,7 @@ const ATMOSPHERES: Record<AtmosphereKind, AtmosphereConfig> = {
   blendMode: "screen",
   vignette: "dark",
   scale: 1.03,
-  playbackRate: 0.9,
+  playbackRate: 2,
 },
   vellum: {
     type: "video",

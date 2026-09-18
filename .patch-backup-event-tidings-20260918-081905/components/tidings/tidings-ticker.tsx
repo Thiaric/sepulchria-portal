@@ -8,11 +8,6 @@ import {
 } from "react";
 
 import { createClient } from "@/lib/supabase/client";
-import { useWorldState } from "@/components/world/world-state-provider";
-import {
-  getActiveEventTidings,
-  type EventTidingSource,
-} from "@/lib/tidings/event-tidings";
 import type { Tiding } from "@/lib/tidings/types";
 
 const RESYNC_INTERVAL_MS = 3_000;
@@ -84,20 +79,9 @@ export function TidingsTicker({
     [],
   );
 
-  const {
-    gameDate,
-  } = useWorldState();
-
   const [tidings, setTidings] = useState(() =>
     sortTidings(initialTidings),
   );
-
-  const [
-    calendarEvents,
-    setCalendarEvents,
-  ] = useState<
-    EventTidingSource[]
-  >([]);
 
   const sync = useCallback(async () => {
     const now = new Date().toISOString();
@@ -125,141 +109,6 @@ export function TidingsTicker({
         sortTidings(data as Tiding[]),
       );
     }
-  }, [supabase]);
-
-  useEffect(() => {
-    let cancelled =
-      false;
-
-    async function loadCalendarEvents() {
-      const {
-        data,
-        error,
-      } = await supabase
-        .from(
-          "calendar_events",
-        )
-        .select(`
-          id,
-          title,
-          description,
-          event_date,
-          recurrence_type,
-          start_time,
-          end_time,
-          location_name,
-          room:rooms!calendar_events_room_id_fkey(
-            id,
-            name,
-            slug
-          )
-        `)
-        .eq(
-          "is_active",
-          true,
-        )
-        .neq(
-          "recurrence_type",
-          "once",
-        )
-        .order(
-          "event_date",
-          {
-            ascending: true,
-          },
-        );
-
-      if (cancelled) {
-        return;
-      }
-
-      if (error) {
-        console.error(
-          "Unable to load recurring Event Tidings:",
-          error.message,
-        );
-        setCalendarEvents([]);
-        return;
-      }
-
-      setCalendarEvents(
-        (data ?? []).map(
-          (event) => {
-            const room =
-              Array.isArray(
-                event.room,
-              )
-                ? event.room[0] ??
-                  null
-                : event.room;
-
-            return {
-              id: String(event.id),
-              title: String(event.title),
-              description:
-                event.description ??
-                null,
-              event_date:
-                String(event.event_date),
-              recurrence_type:
-                (
-                  event.recurrence_type ??
-                  "once"
-                ) as EventTidingSource["recurrence_type"],
-              start_time:
-                event.start_time ??
-                null,
-              end_time:
-                event.end_time ??
-                null,
-              location_name:
-                event.location_name ??
-                null,
-              room:
-                room
-                  ? {
-                      id:
-                        String(room.id),
-                      name:
-                        String(room.name),
-                      slug:
-                        String(room.slug),
-                    }
-                  : null,
-            };
-          },
-        ),
-      );
-    }
-
-    void loadCalendarEvents();
-
-    const channel =
-      supabase
-        .channel(
-          "portal-event-tidings-live-v1",
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema:
-              "public",
-            table:
-              "calendar_events",
-          },
-          () => {
-            void loadCalendarEvents();
-          },
-        )
-        .subscribe();
-
-    return () => {
-      cancelled = true;
-      void supabase.removeChannel(
-        channel,
-      );
-    };
   }, [supabase]);
 
   useEffect(() => {
@@ -403,32 +252,12 @@ export function TidingsTicker({
   const visible = useMemo(() => {
     const now = Date.now();
 
-    const manualTidings =
+    return sortTidings(
       tidings.filter((entry) =>
-        stillVisible(
-          entry,
-          now,
-        ),
-      );
-
-    const eventTidings =
-      getActiveEventTidings(
-        calendarEvents,
-        gameDate,
-      );
-
-    return sortTidings([
-      ...eventTidings,
-      ...manualTidings,
-    ]).slice(
-      0,
-      12,
+        stillVisible(entry, now),
+      ),
     );
-  }, [
-    tidings,
-    calendarEvents,
-    gameDate,
-  ]);
+  }, [tidings]);
 
   const tickerText = useMemo(
     () =>
