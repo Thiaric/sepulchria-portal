@@ -589,6 +589,7 @@ export function NotificationBell() {
         "forum_reply",
         "order_headquarters_invite",
         "friend_online",
+        "friend_presence",
       ]);
 
     let retryTimer:

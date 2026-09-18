@@ -121,6 +121,18 @@ portalWindow.document.title =
         throw error;
       }
 
+      const { error: friendEnterError } =
+        await supabase.rpc(
+          "notify_my_mutual_friends_entered",
+        );
+
+      if (friendEnterError) {
+        console.error(
+          "Unable to notify mutual friends of login:",
+          friendEnterError.message,
+        );
+      }
+
       /*
        * Authentication is complete here. The dedicated portal window
        * performs the active-session claim for itself on the same-origin

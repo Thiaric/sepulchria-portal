@@ -69,9 +69,6 @@ export function PortalPresenceHeartbeat({
   const logoutStartedRef =
     useRef(false);
 
-  const loginAnnouncedRef =
-    useRef(false);
-
   useEffect(() => {
     if (!enabled) {
       return;
@@ -131,18 +128,7 @@ export function PortalPresenceHeartbeat({
       runningRef.current = true;
 
       try {
-        const result =
-          await heartbeatPresence(
-            !loginAnnouncedRef.current,
-          );
-
-        if (
-          result.ok &&
-          !loginAnnouncedRef.current
-        ) {
-          loginAnnouncedRef.current =
-            true;
-        }
+        await heartbeatPresence();
       } catch (error) {
         if (
           !isTransientTransportError(

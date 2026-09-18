@@ -46,6 +46,18 @@ export async function clearOwnPresenceForLogout(): Promise<LogoutPresenceResult>
     return { ok: true };
   }
 
+  const { error: friendLeaveError } =
+    await supabase.rpc(
+      "notify_my_mutual_friends_left",
+    );
+
+  if (friendLeaveError) {
+    console.error(
+      "Unable to notify mutual friends of logout:",
+      friendLeaveError.message,
+    );
+  }
+
   const admin = createAdminClient();
 
   const { error: deleteError } =

@@ -2303,7 +2303,7 @@ export async function toggleStaffAppearOffline(): Promise<{
  * Heartbeat: aggiorna solo last_seen_at e stanza.
  * Non riceve né riscrive lo status.
  */
-export async function heartbeatPresence(announceLogin = false): Promise<PresenceActionResult> {
+export async function heartbeatPresence(): Promise<PresenceActionResult> {
   try {
     const {
       supabase,
@@ -2316,20 +2316,6 @@ export async function heartbeatPresence(announceLogin = false): Promise<Presence
       character.current_room_id,
     );
 
-    if (announceLogin) {
-      const {
-        error: friendOnlineError,
-      } = await supabase.rpc(
-        "notify_my_mutual_friends_online",
-      );
-
-      if (friendOnlineError) {
-        console.error(
-          "Unable to notify mutual friends of login:",
-          friendOnlineError.message,
-        );
-      }
-    }
 
     return {
       ok: true,

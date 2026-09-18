@@ -63,7 +63,7 @@ function londonOffsetMinutes(
 
   const match =
     timeZoneName.match(
-      /^GMT([+-])(\d{1,2})(?::(\d{2}))?$/,
+      /^GMT([+-])(\\d{1,2})(?::(\\d{2}))?$/,
     );
 
   if (!match) {
@@ -294,7 +294,7 @@ function formatClockRange(
   startTime: string,
   endTime: string,
 ) {
-  return `${startTime.slice(0, 5)}-${endTime.slice(0, 5)}`;
+  return `${startTime.slice(0, 5)}–${endTime.slice(0, 5)}`;
 }
 
 function formatRealDateTimeRange(
@@ -413,7 +413,7 @@ export function getActiveEventTidings(
       const location =
         event.room?.name ??
         event.location_name ??
-        "all over Sepulchria";
+        "No specific location";
 
       const description =
         event.description?.trim() ||
@@ -432,14 +432,14 @@ export function getActiveEventTidings(
         message:
           `Date: ${formatAurethDate(
             occurrenceDate,
-          )} - Time: ${formatClockRange(
-            event.start_time,
-            event.end_time,
           )} ${formatRealDateTimeRange(
             occurrenceStart,
             event.start_time,
             event.end_time,
-          )} - Location: ${location} - ${description}`,
+          )} · Time: ${formatClockRange(
+            event.start_time,
+            event.end_time,
+          )} · Location: ${location} · ${description}`,
         priority:
           "important",
         is_active:
