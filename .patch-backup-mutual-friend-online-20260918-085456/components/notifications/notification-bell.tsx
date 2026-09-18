@@ -588,7 +588,6 @@ export function NotificationBell() {
         "breeze_lodging_invite",
         "forum_reply",
         "order_headquarters_invite",
-        "friend_online",
       ]);
 
     let retryTimer:

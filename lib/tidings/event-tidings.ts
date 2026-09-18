@@ -29,6 +29,89 @@ export type EventTidingSource = {
 const DAY_MS =
   24 * 60 * 60 * 1000;
 
+const LONDON_TIME_ZONE =
+  "Europe/London";
+
+function londonOffsetMinutes(
+  instant: Date,
+) {
+  const timeZoneName =
+    new Intl.DateTimeFormat(
+      "en-GB",
+      {
+        timeZone:
+          LONDON_TIME_ZONE,
+        timeZoneName:
+          "shortOffset",
+        hour:
+          "2-digit",
+      },
+    )
+      .formatToParts(
+        instant,
+      )
+      .find(
+        (part) =>
+          part.type ===
+          "timeZoneName",
+      )
+      ?.value ?? "GMT";
+
+  if (timeZoneName === "GMT") {
+    return 0;
+  }
+
+  const match =
+    timeZoneName.match(
+      /^GMT([+-])(\\d{1,2})(?::(\\d{2}))?$/,
+    );
+
+  if (!match) {
+    return 0;
+  }
+
+  const sign =
+    match[1] === "-" ? -1 : 1;
+
+  return sign * (
+    Number(match[2]) * 60 +
+    Number(match[3] ?? 0)
+  );
+}
+
+function londonWallClockToDate(
+  date: Date,
+  clock: { hour: number; minute: number },
+) {
+  const wallClockAsUtc = Date.UTC(
+    date.getUTCFullYear(),
+    date.getUTCMonth(),
+    date.getUTCDate(),
+    clock.hour,
+    clock.minute,
+    0,
+    0,
+  );
+
+  const firstOffset = londonOffsetMinutes(
+    new Date(wallClockAsUtc),
+  );
+
+  let instant = new Date(
+    wallClockAsUtc - firstOffset * 60_000,
+  );
+
+  const secondOffset = londonOffsetMinutes(instant);
+
+  if (secondOffset !== firstOffset) {
+    instant = new Date(
+      wallClockAsUtc - secondOffset * 60_000,
+    );
+  }
+
+  return instant;
+}
+
 function startOfUtcDay(value: Date) {
   return new Date(
     Date.UTC(
@@ -201,16 +284,9 @@ function dateWithClock(
     minute: number;
   },
 ) {
-  return new Date(
-    Date.UTC(
-      date.getUTCFullYear(),
-      date.getUTCMonth(),
-      date.getUTCDate(),
-      clock.hour,
-      clock.minute,
-      0,
-      0,
-    ),
+  return londonWallClockToDate(
+    date,
+    clock,
   );
 }
 
@@ -226,18 +302,25 @@ function formatRealDateTimeRange(
   startTime: string,
   endTime: string,
 ) {
-  const weekday =
+  const parts =
     new Intl.DateTimeFormat(
       "en-GB",
       {
+        timeZone: LONDON_TIME_ZONE,
         weekday: "long",
-        timeZone: "UTC",
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
       },
-    ).format(date);
+    ).formatToParts(date);
 
-  const day = String(date.getUTCDate()).padStart(2, "0");
-  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-  const year = String(date.getUTCFullYear()).padStart(4, "0");
+  const readPart = (type: string) =>
+    parts.find((part) => part.type === type)?.value ?? "";
+
+  const weekday = readPart("weekday");
+  const day = readPart("day");
+  const month = readPart("month");
+  const year = readPart("year");
 
   return `[${weekday} ${day}-${month}-${year} ${startTime.slice(0, 5)} to ${endTime.slice(0, 5)}]`;
 }
@@ -347,7 +430,16 @@ export function getActiveEventTidings(
         title:
           event.title,
         message:
-          `Date: ${formatAurethDate(occurrenceDate)} · Time: ${formatClockRange(event.start_time, event.end_time)} · Location: ${location} · ${description}`,
+          `Date: ${formatAurethDate(
+            occurrenceDate,
+          )} ${formatRealDateTimeRange(
+            occurrenceStart,
+            event.start_time,
+            event.end_time,
+          )} · Time: ${formatClockRange(
+            event.start_time,
+            event.end_time,
+          )} · Location: ${location} · ${description}`,
         priority:
           "important",
         is_active:

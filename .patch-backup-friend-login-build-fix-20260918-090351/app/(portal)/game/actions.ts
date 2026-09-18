@@ -1358,6 +1358,21 @@ export async function sendRoomMessage(
       character.current_room_id,
     );
 
+    if (announceLogin) {
+      const {
+        error: friendOnlineError,
+      } = await supabase.rpc(
+        "notify_my_mutual_friends_online",
+      );
+
+      if (friendOnlineError) {
+        console.error(
+          "Unable to notify mutual friends of login:",
+          friendOnlineError.message,
+        );
+      }
+    }
+
     return {
       ok: true,
       message:
@@ -2315,21 +2330,6 @@ export async function heartbeatPresence(announceLogin = false): Promise<Presence
       character.id,
       character.current_room_id,
     );
-
-    if (announceLogin) {
-      const {
-        error: friendOnlineError,
-      } = await supabase.rpc(
-        "notify_my_mutual_friends_online",
-      );
-
-      if (friendOnlineError) {
-        console.error(
-          "Unable to notify mutual friends of login:",
-          friendOnlineError.message,
-        );
-      }
-    }
 
     return {
       ok: true,
