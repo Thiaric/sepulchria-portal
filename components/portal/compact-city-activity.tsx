@@ -9,7 +9,7 @@ import {
 import { createClient } from "@/lib/supabase/client";
 
 const REFRESH_INTERVAL_MS =
-  60_000;
+  20_000;
 
 const WINDOW_MS =
   60_000;
@@ -83,6 +83,37 @@ export function CompactCityActivity() {
   useEffect(() => {
     void refresh();
 
+    const supabase =
+      createClient();
+
+    /*
+     * General City Activity is stored in portal_presence_events.
+     *
+     * character_presence changes provide an immediate signal that
+     * somebody has entered or left the active portal presence system,
+     * so refresh the City Activity feed immediately.
+     *
+     * The 20-second timer remains as a fallback/resync.
+     */
+    const channel =
+      supabase
+        .channel(
+          "portal-compact-city-activity",
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table:
+              "character_presence",
+          },
+          () => {
+            void refresh();
+          },
+        )
+        .subscribe();
+
     const timer =
       window.setInterval(
         () => {
@@ -91,9 +122,57 @@ export function CompactCityActivity() {
         REFRESH_INTERVAL_MS,
       );
 
+    const resync = () => {
+      void refresh();
+    };
+
+    const handleVisibilityChange =
+      () => {
+        if (
+          document.visibilityState ===
+          "visible"
+        ) {
+          resync();
+        }
+      };
+
+    window.addEventListener(
+      "focus",
+      resync,
+    );
+
+    window.addEventListener(
+      "online",
+      resync,
+    );
+
+    document.addEventListener(
+      "visibilitychange",
+      handleVisibilityChange,
+    );
+
     return () => {
       window.clearInterval(
         timer,
+      );
+
+      window.removeEventListener(
+        "focus",
+        resync,
+      );
+
+      window.removeEventListener(
+        "online",
+        resync,
+      );
+
+      document.removeEventListener(
+        "visibilitychange",
+        handleVisibilityChange,
+      );
+
+      void supabase.removeChannel(
+        channel,
       );
     };
   }, [

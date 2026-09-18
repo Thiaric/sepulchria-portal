@@ -4,6 +4,7 @@ import {
   useEffect,
   useRef,
   useState,
+  type CSSProperties,
 } from "react";
 import { X } from "lucide-react";
 import Link from "next/link";
@@ -45,6 +46,11 @@ export function PortalResponsiveRightSidebar({
 
   const [mobileButtonTop, setMobileButtonTop] =
   useState<number | null>(null);
+
+  const [
+    mobileTidingsHeight,
+    setMobileTidingsHeight,
+  ] = useState(0);
 
 const mobileButtonRef =
   useRef<HTMLButtonElement>(null);
@@ -169,6 +175,61 @@ const suppressClick =
     pathname.startsWith(
       "/admin/",
     );
+
+  useEffect(() => {
+    const measureTidings = () => {
+      const ticker =
+        document.querySelector<HTMLElement>(
+          'footer[data-tidings-ticker="true"]',
+        );
+
+      setMobileTidingsHeight(
+        ticker
+          ? Math.ceil(
+              ticker
+                .getBoundingClientRect()
+                .height,
+            )
+          : 0,
+      );
+    };
+
+    measureTidings();
+
+    const mobileStack =
+      document.querySelector(
+        "[data-portal-mobile-stack]",
+      );
+
+    const observer =
+      new MutationObserver(
+        measureTidings,
+      );
+
+    if (mobileStack) {
+      observer.observe(
+        mobileStack,
+        {
+          childList: true,
+          subtree: true,
+        },
+      );
+    }
+
+    window.addEventListener(
+      "resize",
+      measureTidings,
+    );
+
+    return () => {
+      observer.disconnect();
+
+      window.removeEventListener(
+        "resize",
+        measureTidings,
+      );
+    };
+  }, []);
 
     useEffect(() => {
   const saved =
@@ -485,6 +546,10 @@ const nextTop =
         data-portal-column
         data-portal-scroll
         data-portal-right-sidebar
+        style={{
+          "--sep-mobile-tidings-height":
+            `${mobileTidingsHeight}px`,
+        } as CSSProperties}
         className={[(([
           "z-[70] flex min-h-0 min-w-0 flex-col border-l border-[rgb(var(--sep-colour-6e5535))]/40 bg-[rgb(var(--sep-colour-100d0b))]",
           "fixed top-0 bottom-[calc(64px+var(--sep-mobile-tidings-height,0px)+env(safe-area-inset-bottom))] right-0 w-[min(88vw,360px)] overflow-hidden overscroll-contain shadow-[-18px_0_50px_rgba(var(--sep-rgb-0-0-0),0.55)] transition-transform duration-200 ease-out",
@@ -700,9 +765,7 @@ const nextTop =
               )}
             </section>
 
-            {pathname === "/" ? (
-              <CompactCityActivity />
-            ) : null}
+            <CompactCityActivity />
           </div>
 
           {character?.status ===
