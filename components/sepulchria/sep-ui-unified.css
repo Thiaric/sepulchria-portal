@@ -5565,3 +5565,31 @@ input:autofill {
     rgb(var(--sep-skin-c2, 211 194 170)) 35%
   ) !important;
 }
+
+@media (min-height: 900px) and (min-width: 1024px) {
+  .tall-sidebar-spacing .components_portal_portal_sidebar_button_action,
+  .tall-sidebar-spacing .components_portal_portal_sidebar_div_container,
+  .tall-sidebar-spacing .components_portal_portal_sidebar_div_container_3,
+  .tall-sidebar-spacing .components_portal_portal_sidebar_div_container_6,
+  .tall-sidebar-spacing .components_portal_portal_sidebar_div_container_15,
+  .tall-sidebar-spacing .components_portal_portal_sidebar_button_go_directly_breeze_lodgings,
+  .tall-sidebar-spacing .components_portal_portal_sidebar_button_enter_order_headquarters,
+  .tall-sidebar-spacing .components_portal_portal_sidebar_button_economy_crafting_submenu {
+    min-height: 28px !important;
+  }
+
+  .tall-sidebar-spacing .components_portal_portal_sidebar_section_section {
+    margin-bottom: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  .tall-sidebar-spacing .components_portal_portal_sidebar_section_main_navigation {
+    margin-bottom: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  .tall-sidebar-spacing .components_portal_portal_sidebar_div_container_16 {
+    margin-top: 6px !important;
+    padding-top: 6px !important;
+  }
+}

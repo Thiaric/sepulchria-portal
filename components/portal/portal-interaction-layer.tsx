@@ -455,8 +455,27 @@ function deactivate(
     return;
   }
 
+  /*
+   * Fully remove the interaction state when the pointer/focus leaves.
+   *
+   * Leaving data-sep-interaction-kind behind keeps the element matched by
+   * the CSS interaction rule, including `will-change: transform`.
+   * Chromium can then keep small navigation text on a composited layer
+   * after the first hover, which makes it look softer/blurry.
+   */
   delete element.dataset
     .sepInteractionActive;
+
+  delete element.dataset
+    .sepInteractionKind;
+
+  element.style.removeProperty(
+    "--sep-interact-x",
+  );
+
+  element.style.removeProperty(
+    "--sep-interact-y",
+  );
 
   element.style.removeProperty(
     "--sep-interact-rx",

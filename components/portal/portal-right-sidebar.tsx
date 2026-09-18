@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { PortalContextPanel } from "@/components/portal/portal-context-panel";
+import { DashboardCityActivitySlot } from "@/components/portal/dashboard-city-activity-slot";
 import { RoomInfoButton } from "@/components/portal/room-info-button";
 import type { PortalContext } from "@/types/portal";
 
@@ -64,6 +65,8 @@ export function PortalRightSidebar({
             context={context}
           />
         </section>
+
+        <DashboardCityActivitySlot />
       </div>
     </aside>
   );

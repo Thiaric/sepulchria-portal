@@ -1593,7 +1593,7 @@ export function PortalSidebar({
         <div
           key={item.label}
           title={`${item.title} — Coming soon`}
-          className={[((`flex min-h-[var(--portal-nav-min-h)] cursor-not-allowed items-center gap-2 border border-transparent px-2.5 py-[var(--portal-nav-y)] text-[11px] text-[rgb(var(--sep-colour-62594d))] opacity-65 lg:text-xs ${
+          className={[((`flex min-h-6 cursor-not-allowed items-center gap-2 border border-transparent px-2.5 py-[2px] text-[11px] text-[rgb(var(--sep-colour-62594d))] opacity-65 lg:text-xs ${
             item.subItem
               ? "lg:ml-5"
               : ""
@@ -1632,18 +1632,18 @@ export function PortalSidebar({
 
     const itemClassName = `
       flex
-      min-h-[var(--portal-nav-min-h)]
+      min-h-6
       items-center
       gap-2
       border
       px-2.5
-      py-[var(--portal-nav-y)]
+      py-[2px]
       text-[11px]
       transition
       lg:text-xs
       ${
         item.subItem
-  ? "lg:ml-5 lg:w-[calc(100%-1.25rem)] lg:min-h-7 lg:py-1 lg:text-[10px]"
+  ? "lg:ml-5 lg:w-[calc(100%-1.25rem)] lg:min-h-6 lg:py-[2px] lg:text-[10px]"
   : ""
       }
       ${
@@ -1752,7 +1752,7 @@ export function PortalSidebar({
         className="min-w-0 components_portal_portal_sidebar_div_container_2"
       >
         <div
-          className={[((`flex min-h-[var(--portal-nav-min-h)] items-center border text-[11px] transition lg:text-xs ${
+          className={[((`flex min-h-6 items-center border text-[11px] transition lg:text-xs ${
             modalActive ||
             active
               ? "border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] text-[rgb(var(--sep-colour-efd9aa))]"
@@ -1769,7 +1769,7 @@ export function PortalSidebar({
                 rulesItem,
               )
             }
-            className="flex min-w-0 flex-1 items-center gap-2 px-2.5 py-[var(--portal-nav-y)] text-left components_portal_portal_sidebar_button_action_2"
+            className="flex min-w-0 flex-1 items-center gap-2 px-2.5 py-[2px] text-left components_portal_portal_sidebar_button_action_2"
             aria-haspopup="dialog"
             aria-expanded={
               modalActive
@@ -1835,7 +1835,7 @@ export function PortalSidebar({
                   glossaryItem,
                 )
               }
-              className={[((`flex min-h-7 w-full items-center gap-2 border px-2 py-1 text-left text-[10px] transition ${
+              className={[((`flex min-h-6 w-full items-center gap-2 border px-2 py-[2px] text-left text-[10px] transition ${
                 modalItem?.href ===
                 glossaryItem.href
                   ? "border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-2a1d12))] text-[rgb(var(--sep-colour-efd9aa))]"
@@ -1888,7 +1888,7 @@ export function PortalSidebar({
         className="min-w-0 components_portal_portal_sidebar_div_container_5"
       >
         <div
-          className={[((`flex min-h-[var(--portal-nav-min-h)] items-center border text-[11px] transition lg:text-xs ${
+          className={[((`flex min-h-6 items-center border text-[11px] transition lg:text-xs ${
             active
               ? "border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] text-[rgb(var(--sep-colour-efd9aa))]"
               : "border-transparent text-[rgb(var(--sep-colour-b6a894))] hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))]"
@@ -1901,7 +1901,7 @@ export function PortalSidebar({
                 (current) => !current,
               )
             }
-            className="flex min-w-0 flex-1 items-center gap-2 px-2.5 py-[var(--portal-nav-y)] text-left components_portal_portal_sidebar_button_action_5"
+            className="flex min-w-0 flex-1 items-center gap-2 px-2.5 py-[2px] text-left components_portal_portal_sidebar_button_action_5"
             aria-expanded={
               premiumExpanded
             }
@@ -2035,7 +2035,7 @@ export function PortalSidebar({
                       item,
                     )
                   }
-                  className={[((`block w-full py-1 text-left text-[9px] tracking-[0.08em] transition ${
+                  className={[((`block w-full py-[2px] text-left text-[9px] tracking-[0.08em] transition ${
                     modalItem?.href ===
                     item.href
                       ? "text-[rgb(var(--sep-colour-efd9aa))]"
@@ -2499,7 +2499,7 @@ export function PortalSidebar({
 </div>
 
         {/* DESKTOP SIDEBAR */}
-        <div className="hidden p-[var(--portal-column-pad)] lg:block components_portal_portal_sidebar_div_container_12">
+        <div className="hidden p-[var(--portal-column-pad)] lg:block tall-sidebar-spacing components_portal_portal_sidebar_div_container_12">
           <nav className="components_portal_portal_sidebar_nav_main_navigation_2" aria-label="Main navigation">
             <NavigationGroup
   title="Explore Sepulchria"
@@ -2524,7 +2524,7 @@ export function PortalSidebar({
     <button
       type="submit"
       title="Go directly to The Breeze Lodgings."
-      className="flex min-h-[var(--portal-nav-min-h)] w-full items-center gap-2 border border-transparent px-2.5 py-[var(--portal-nav-y)] text-left text-[11px] text-[rgb(var(--sep-colour-b6a894))] transition hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))] lg:text-xs components_portal_portal_sidebar_button_go_directly_breeze_lodgings"
+      className="flex min-h-6 w-full items-center gap-2 border border-transparent px-2.5 py-[2px] text-left text-[11px] text-[rgb(var(--sep-colour-b6a894))] transition hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))] lg:text-xs components_portal_portal_sidebar_button_go_directly_breeze_lodgings"
     >
       <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center components_portal_portal_sidebar_span_go_directly_breeze_lodgings">
         <img
@@ -2551,7 +2551,7 @@ export function PortalSidebar({
                     <button
                       type="submit"
                       title="Enter your Order Headquarters."
-                      className="flex min-h-[var(--portal-nav-min-h)] w-full items-center gap-2 border border-transparent px-2.5 py-[var(--portal-nav-y)] text-left text-[11px] text-[rgb(var(--sep-colour-b6a894))] transition hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))] lg:text-xs components_portal_portal_sidebar_button_enter_order_headquarters"
+                      className="flex min-h-6 w-full items-center gap-2 border border-transparent px-2.5 py-[2px] text-left text-[11px] text-[rgb(var(--sep-colour-b6a894))] transition hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))] lg:text-xs components_portal_portal_sidebar_button_enter_order_headquarters"
                     >
                       <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center components_portal_portal_sidebar_span_enter_order_headquarters">
                         <img
@@ -2591,7 +2591,7 @@ export function PortalSidebar({
               ]}
             />
 
-            <section className="mb-[var(--portal-group-gap)] border-b border-[rgb(var(--sep-colour-6e5535))]/20 pb-[var(--portal-group-gap)] components_portal_portal_sidebar_section_main_navigation">
+            <section className="mb-[var(--portal-group-gap)] border-b border-[rgb(var(--sep-colour-6e5535))]/20 pb-1 components_portal_portal_sidebar_section_main_navigation">
               <button
                 type="button"
                 onClick={() =>
@@ -2614,10 +2614,10 @@ export function PortalSidebar({
                   servicesExpanded
                 }
                 data-left-sidebar-section-heading="true"
-                className="mb-1 flex w-full items-center justify-between text-left text-[8px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-766754))] transition hover:text-[rgb(var(--sep-colour-b4a07f))] components_portal_portal_sidebar_button_main_navigation_3"
+                className="mb-0 flex w-full items-center justify-between text-left text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-766754))] transition hover:text-[rgb(var(--sep-colour-b4a07f))] components_portal_portal_sidebar_button_main_navigation_3"
               >
                 <span className="components_portal_portal_sidebar_span_main_navigation">
-                  Services and Utilities
+                  Services & Utilities
                 </span>
                 <span
                   aria-hidden="true"
@@ -2633,7 +2633,7 @@ export function PortalSidebar({
               <div className="grid grid-cols-1 gap-0 components_portal_portal_sidebar_div_container_13">
                 <div className="min-w-0 components_portal_portal_sidebar_div_container_14">
                   <div
-                    className={[((`flex min-h-[var(--portal-nav-min-h)] items-center border text-[11px] transition lg:text-xs ${
+                    className={[((`flex min-h-6 items-center border text-[11px] transition lg:text-xs ${
                       modalItem?.href === marketItem.href ||
                       modalItem?.href === craftingItem.href
                         ? "border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] text-[rgb(var(--sep-colour-efd9aa))]"
@@ -2651,7 +2651,7 @@ export function PortalSidebar({
                         economyCraftingExpanded
                       }
                       aria-controls="economy-crafting-submenu"
-                      className="flex min-w-0 flex-1 items-center gap-2 px-2.5 py-[var(--portal-nav-y)] text-left components_portal_portal_sidebar_button_action_10"
+                      className="flex min-w-0 flex-1 items-center gap-2 px-2.5 py-[2px] text-left components_portal_portal_sidebar_button_action_10"
                     >
                       <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center components_portal_portal_sidebar_span_text_19">
                         <img
@@ -2720,7 +2720,7 @@ export function PortalSidebar({
                               ? "Go directly to The Odd Jobs Bureau."
                               : "The Odd Jobs Bureau is currently unavailable."
                           }
-                          className="flex min-h-[var(--portal-nav-min-h)] w-full items-center gap-2 border border-transparent px-2.5 py-[var(--portal-nav-y)] text-left text-[11px] text-[rgb(var(--sep-colour-b6a894))] transition hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))] disabled:cursor-not-allowed disabled:opacity-45 lg:text-xs components_portal_portal_sidebar_button_economy_crafting_submenu"
+                          className="flex min-h-6 w-full items-center gap-2 border border-transparent px-2.5 py-[2px] text-left text-[11px] text-[rgb(var(--sep-colour-b6a894))] transition hover:border-[rgb(var(--sep-colour-5d4930))] hover:bg-[rgb(var(--sep-colour-1d1712))] hover:text-[rgb(var(--sep-colour-e8d8ba))] disabled:cursor-not-allowed disabled:opacity-45 lg:text-xs components_portal_portal_sidebar_button_economy_crafting_submenu"
                         >
                           <span className="flex h-4 w-4 shrink-0 items-center justify-center components_portal_portal_sidebar_span_economy_crafting_submenu">
                             <img
@@ -4031,13 +4031,13 @@ function NavigationGroup({
   }
 
   return (
-    <section className="mb-[var(--portal-group-gap)] border-b border-[rgb(var(--sep-colour-6e5535))]/20 pb-[var(--portal-group-gap)] components_portal_portal_sidebar_section_section">
+    <section className="mb-[2px] border-b border-[rgb(var(--sep-colour-6e5535))]/20 pb-[2px] components_portal_portal_sidebar_section_section">
       <button
         type="button"
         onClick={toggleExpanded}
         aria-expanded={expanded}
         data-left-sidebar-section-heading="true"
-        className="mb-1 flex w-full items-center justify-between text-left text-[8px] uppercase tracking-[0.3em] text-[rgb(var(--sep-colour-766754))] transition hover:text-[rgb(var(--sep-colour-b4a07f))] components_portal_portal_sidebar_button_toggle_expanded"
+        className="mb-1 flex w-full items-center justify-between text-left text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-766754))] transition hover:text-[rgb(var(--sep-colour-b4a07f))] components_portal_portal_sidebar_button_toggle_expanded"
       >
         <span className="components_portal_portal_sidebar_span_text_24">{title}</span>
 

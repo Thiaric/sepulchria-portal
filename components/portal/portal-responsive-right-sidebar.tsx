@@ -24,6 +24,7 @@ import { MarketShopsContext } from "@/components/portal/market-shops-context";
 import { MarketItemsContext } from "@/components/portal/market-items-context";
 import { CharacterDetailContextPanel } from "@/components/portal/character-detail-context-panel";
 import { PortalContextPanel } from "@/components/portal/portal-context-panel";
+import { CompactCityActivity } from "@/components/portal/compact-city-activity";
 import { PollsContextPanel } from "@/components/polls/polls-context-panel";
 import { StoreContextPanel } from "@/components/portal/store-context-panel";
 import { RoomInfoButton } from "@/components/portal/room-info-button";
@@ -698,6 +699,10 @@ const nextTop =
                 />
               )}
             </section>
+
+            {pathname === "/" ? (
+              <CompactCityActivity />
+            ) : null}
           </div>
 
           {character?.status ===
