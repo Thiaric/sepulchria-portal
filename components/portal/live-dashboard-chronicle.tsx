@@ -29,6 +29,7 @@ type PresenceRoomRow = {
   id: string;
   name: string;
   slug: string;
+  image_url: string | null;
   area:
     | {
         name: string;
@@ -75,6 +76,7 @@ type ActiveRoom = {
   id: string;
   name: string;
   slug: string;
+  imageUrl: string | null;
   areaName: string | null;
   characters: ActiveCharacter[];
 };
@@ -154,14 +156,15 @@ export function LiveDashboardChronicle({
           ),
 
           room:rooms!character_presence_room_id_fkey(
-            id,
-            name,
-            slug,
-            area:areas!rooms_area_id_fkey(
-              name,
-              slug
-            )
-          )
+  id,
+  name,
+  slug,
+  image_url,
+  area:areas!rooms_area_id_fkey(
+    name,
+    slug
+  )
+)
         `)
         .gte(
           "last_seen_at",
@@ -287,15 +290,16 @@ export function LiveDashboardChronicle({
         }
 
         roomMap.set(room.id, {
-          id: room.id,
-          name: room.name,
-          slug: room.slug,
-          areaName:
-            area?.name ?? null,
-          characters: [
-            activeCharacter,
-          ],
-        });
+  id: room.id,
+  name: room.name,
+  slug: room.slug,
+  imageUrl: room.image_url ?? null,
+  areaName:
+    area?.name ?? null,
+  characters: [
+    activeCharacter,
+  ],
+});
       }
 
       const nextRooms =
@@ -464,12 +468,30 @@ function ActiveRoomCard({
     currentRoomId === room.id;
 
   return (
-    <article className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 components_portal_live_dashboard_chronicle_article_article">
+    <article
+  className="relative overflow-hidden border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 components_portal_live_dashboard_chronicle_article_article"
+  style={
+    room.imageUrl
+      ? {
+          backgroundImage: `
+            linear-gradient(
+              rgb(var(--sep-colour-100d0b) / 72%),
+              rgb(var(--sep-colour-100d0b) / 72%)
+            ),
+            url("${room.imageUrl}")
+          `,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }
+      : undefined
+  }
+>
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 components_portal_live_dashboard_chronicle_div_container_3">
         <div className="min-w-0 components_portal_live_dashboard_chronicle_div_container_4">
-          <h3 className="truncate font-serif text-sm text-[rgb(var(--sep-colour-d6bd91))] components_portal_live_dashboard_chronicle_h3_heading">
-            {room.name}
-          </h3>
+          <h3 className="truncate font-serif font-bold text-[12px] text-[rgb(var(--sep-colour-d6bd91))] components_portal_live_dashboard_chronicle_h3_heading">
+  {room.name}
+</h3>
 
           {room.areaName ? (
             <p className="mt-0.5 truncate text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-74654f))] components_portal_live_dashboard_chronicle_p_text_4">
@@ -485,7 +507,7 @@ function ActiveRoomCard({
                 ? ""
                 : "s"
             }`}
-            className="flex h-6 min-w-6 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-59432c))]/60 bg-[rgb(var(--sep-colour-19120d))] px-1.5 text-[9px] text-[rgb(var(--sep-colour-c3a67d))] components_portal_live_dashboard_chronicle_span_text"
+            className="flex h-4 min-w-4 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-59432c))]/60 bg-[rgb(var(--sep-colour-19120d))] px-1.5 text-[9px] text-[rgb(var(--sep-colour-c3a67d))] components_portal_live_dashboard_chronicle_span_text"
           >
             {room.characters.length}
           </span>
@@ -509,7 +531,7 @@ function ActiveRoomCard({
                   ? "Current room"
                   : `Join ${room.name}`
               }
-              className="flex h-6 w-6 items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-271c12))] text-[11px] text-[rgb(var(--sep-colour-dfc79c))] transition hover:border-[rgb(var(--sep-colour-997042))] hover:bg-[rgb(var(--sep-colour-3b2919))] disabled:cursor-default disabled:border-[rgb(var(--sep-colour-4d4336))] disabled:bg-[rgb(var(--sep-colour-17130f))] disabled:text-[rgb(var(--sep-colour-706658))] components_portal_live_dashboard_chronicle_button_action"
+              className="flex h-4 w-4 items-center justify-center border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-271c12))] text-[11px] text-[rgb(var(--sep-colour-dfc79c))] transition hover:border-[rgb(var(--sep-colour-997042))] hover:bg-[rgb(var(--sep-colour-3b2919))] disabled:cursor-default disabled:border-[rgb(var(--sep-colour-4d4336))] disabled:bg-[rgb(var(--sep-colour-17130f))] disabled:text-[rgb(var(--sep-colour-706658))] components_portal_live_dashboard_chronicle_button_action"
             >
               <span className="components_portal_live_dashboard_chronicle_span_text_2" aria-hidden="true">
                 {alreadyHere ? "⊙" : "➔"}

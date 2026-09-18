@@ -17,9 +17,6 @@ import type { Tiding } from "@/lib/tidings/types";
 
 const RESYNC_INTERVAL_MS = 3_000;
 
-const EVENT_RESYNC_INTERVAL_MS =
-  5_000;
-
 function stillVisible(tiding: Tiding, now: number) {
   if (!tiding.is_active) return false;
 
@@ -130,8 +127,11 @@ export function TidingsTicker({
     }
   }, [supabase]);
 
-  const loadCalendarEvents =
-    useCallback(async () => {
+  useEffect(() => {
+    let cancelled =
+      false;
+
+    async function loadCalendarEvents() {
       const {
         data,
         error,
@@ -169,11 +169,16 @@ export function TidingsTicker({
           },
         );
 
+      if (cancelled) {
+        return;
+      }
+
       if (error) {
         console.error(
           "Unable to load recurring Event Tidings:",
           error.message,
         );
+        setCalendarEvents([]);
         return;
       }
 
@@ -184,88 +189,78 @@ export function TidingsTicker({
               Array.isArray(
                 event.room,
               )
-                ? event.room[0] ?? null
+                ? event.room[0] ??
+                  null
                 : event.room;
 
             return {
               id: String(event.id),
               title: String(event.title),
-              description: event.description ?? null,
-              event_date: String(event.event_date),
+              description:
+                event.description ??
+                null,
+              event_date:
+                String(event.event_date),
               recurrence_type:
-                (event.recurrence_type ?? "once") as EventTidingSource["recurrence_type"],
-              start_time: event.start_time ?? null,
-              end_time: event.end_time ?? null,
-              location_name: event.location_name ?? null,
+                (
+                  event.recurrence_type ??
+                  "once"
+                ) as EventTidingSource["recurrence_type"],
+              start_time:
+                event.start_time ??
+                null,
+              end_time:
+                event.end_time ??
+                null,
+              location_name:
+                event.location_name ??
+                null,
               room:
                 room
                   ? {
-                      id: String(room.id),
-                      name: String(room.name),
-                      slug: String(room.slug),
+                      id:
+                        String(room.id),
+                      name:
+                        String(room.name),
+                      slug:
+                        String(room.slug),
                     }
                   : null,
             };
           },
         ),
       );
-    }, [supabase]);
+    }
 
-  useEffect(() => {
     void loadCalendarEvents();
 
     const channel =
       supabase
         .channel(
-          "portal-event-tidings-live-v2",
+          "portal-event-tidings-live-v1",
         )
         .on(
           "postgres_changes",
           {
             event: "*",
-            schema: "public",
-            table: "calendar_events",
+            schema:
+              "public",
+            table:
+              "calendar_events",
           },
           () => {
             void loadCalendarEvents();
           },
         )
-        .subscribe((status) => {
-          if (status === "SUBSCRIBED") {
-            void loadCalendarEvents();
-          }
-        });
-
-    const timer =
-      window.setInterval(
-        () => {
-          void loadCalendarEvents();
-        },
-        EVENT_RESYNC_INTERVAL_MS,
-      );
-
-    const resyncEvents = () => {
-      void loadCalendarEvents();
-    };
-
-    const onVisibilityChange = () => {
-      if (document.visibilityState === "visible") {
-        resyncEvents();
-      }
-    };
-
-    window.addEventListener("focus", resyncEvents);
-    window.addEventListener("online", resyncEvents);
-    document.addEventListener("visibilitychange", onVisibilityChange);
+        .subscribe();
 
     return () => {
-      window.clearInterval(timer);
-      window.removeEventListener("focus", resyncEvents);
-      window.removeEventListener("online", resyncEvents);
-      document.removeEventListener("visibilitychange", onVisibilityChange);
-      void supabase.removeChannel(channel);
+      cancelled = true;
+      void supabase.removeChannel(
+        channel,
+      );
     };
-  }, [loadCalendarEvents, supabase]);
+  }, [supabase]);
 
   useEffect(() => {
     const channel = supabase
