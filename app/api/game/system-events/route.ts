@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
+import { ROOM_HISTORY_HOURS } from "@/lib/game/constants";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -52,7 +53,11 @@ export async function GET(request: Request) {
   }
 
   const cutoff = new Date(
-    Date.now() - 48 * 60 * 60 * 1000,
+    Date.now() -
+      ROOM_HISTORY_HOURS *
+        60 *
+        60 *
+        1000,
   ).toISOString();
 
   const { data, error } = await admin

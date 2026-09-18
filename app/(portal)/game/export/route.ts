@@ -11,6 +11,7 @@ import {
 import {
   legacyRichTextToHtml,
 } from "@/lib/rich-text-shared";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import {
   getPrivateLocationAccess,
@@ -66,10 +67,16 @@ type ExportChatTags = {
   prices: ExportPriceChatTag[];
 };
 
+type ExportResurrectionMalus = {
+  name: string;
+  description: string;
+};
+
 type ExportRenderContext = {
   tagsByCharacterId: Map<string, ExportChatTags>;
   conditionsByMessageId: Map<string, string[]>;
   ordersByCharacterId: Map<string, ExportOrderIdentity>;
+  resurrectionMalusesByCharacterId: Map<string, ExportResurrectionMalus>;
   viewerCharacterId: string;
 };
 
@@ -1125,6 +1132,26 @@ function renderChatTagHeader(
 }
 
 
+function renderResurrectionMalusHeader(
+  characterId: string,
+  context: ExportRenderContext,
+): string {
+  const malus =
+    context.resurrectionMalusesByCharacterId.get(
+      characterId,
+    );
+
+  if (!malus) {
+    return "";
+  }
+
+  return `<span
+    class="resurrection-malus"
+    title="${escapeHtml(malus.description)}"
+  > | ${escapeHtml(malus.name)}</span>`;
+}
+
+
 function renderMessage(
   message: RoomMessage,
   origin: string,
@@ -1176,6 +1203,37 @@ function renderMessage(
     formatCompactTime(
       message.created_at,
     );
+
+  /*
+   * LOCATION SYSTEM EVENTS
+   */
+  if (
+    message.speaker_type ===
+    "system"
+  ) {
+    return `
+      <article class="entry system-entry">
+        <div class="system-header">
+          <span class="system-label">
+            The Current
+          </span>
+
+          <time>
+            ${escapeHtml(time)}
+          </time>
+        </div>
+
+        <div class="system-body">
+          ${escapeHtml(
+            message.message.replace(
+              /^◆\s*/,
+              "",
+            ),
+          )}
+        </div>
+      </article>
+    `;
+  }
 
   /*
    * FATE stays exactly as its own special export block.
@@ -1401,6 +1459,9 @@ function renderMessage(
             message.id,
             message.condition_snapshot,
             context,
+          )}${renderResurrectionMalusHeader(
+            characterId,
+            context,
           )}
         </div>
 
@@ -1424,84 +1485,74 @@ async function loadVisibleMessages(
   const supabase =
     await createClient();
 
-  const {
-    data: latestMessage,
-    error: latestMessageError,
-  } = await supabase
-    .from("room_messages")
-    .select("created_at")
-    .eq(
-      "room_id",
-      roomId,
-    )
-    .order(
-      "created_at",
-      {
-        ascending: false,
-      },
-    )
-    .limit(1)
-    .maybeSingle();
+  const admin =
+    createAdminClient();
 
-  if (latestMessageError) {
+  const [
+    latestRoomMessageResult,
+    latestSystemEventResult,
+  ] = await Promise.all([
+    supabase
+      .from("room_messages")
+      .select("created_at")
+      .eq("room_id", roomId)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+
+    admin
+      .from("room_system_events")
+      .select("created_at")
+      .eq("room_id", roomId)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+  ]);
+
+  if (latestRoomMessageResult.error) {
     throw new Error(
-      `Unable to load the latest room entry: ${latestMessageError.message}`,
+      `Unable to load the latest room entry: ${latestRoomMessageResult.error.message}`,
     );
   }
 
-  if (!latestMessage) {
+  if (latestSystemEventResult.error) {
+    throw new Error(
+      `Unable to load the latest room system event: ${latestSystemEventResult.error.message}`,
+    );
+  }
+
+  const latestTimestamps = [
+    latestRoomMessageResult.data?.created_at,
+    latestSystemEventResult.data?.created_at,
+  ]
+    .filter((value): value is string => Boolean(value))
+    .map((value) => Date.parse(value))
+    .filter((value) => !Number.isNaN(value));
+
+  if (!latestTimestamps.length) {
     return [] as RoomMessage[];
   }
 
-  const now =
-    Date.now();
-
-  const latestTimestamp =
-    Date.parse(
-      latestMessage.created_at,
-    );
-
+  const now = Date.now();
+  const latestTimestamp = Math.max(...latestTimestamps);
   const inactivityLimit =
-    ROOM_INACTIVITY_RESET_HOURS *
-    60 *
-    60 *
-    1000;
+    ROOM_INACTIVITY_RESET_HOURS * 60 * 60 * 1000;
 
-  const roomIsStillActive =
-    !Number.isNaN(
-      latestTimestamp,
-    ) &&
-    now - latestTimestamp <
-      inactivityLimit;
-
-  if (!roomIsStillActive) {
+  if (now - latestTimestamp >= inactivityLimit) {
     return [] as RoomMessage[];
   }
 
-  const historyStart =
-    new Date(
-      now -
-        ROOM_HISTORY_HOURS *
-          60 *
-          60 *
-          1000,
-    ).toISOString();
+  const historyStart = new Date(
+    now - ROOM_HISTORY_HOURS * 60 * 60 * 1000,
+  ).toISOString();
 
-  const messages:
-    RoomMessage[] = [];
-
+  const messages: RoomMessage[] = [];
   let from = 0;
 
   while (true) {
-    const to =
-      from +
-      ROOM_HISTORY_BATCH_SIZE -
-      1;
+    const to = from + ROOM_HISTORY_BATCH_SIZE - 1;
 
-    const {
-      data,
-      error,
-    } = await supabase
+    const { data, error } = await supabase
       .from("room_messages")
       .select(`
         id,
@@ -1543,24 +1594,10 @@ async function loadVisibleMessages(
           public_slug
         )
       `)
-      .eq(
-        "room_id",
-        roomId,
-      )
-      .gte(
-        "created_at",
-        historyStart,
-      )
-      .order(
-        "created_at",
-        {
-          ascending: true,
-        },
-      )
-      .range(
-        from,
-        to,
-      );
+      .eq("room_id", roomId)
+      .gte("created_at", historyStart)
+      .order("created_at", { ascending: true })
+      .range(from, to);
 
     if (error) {
       throw new Error(
@@ -1568,28 +1605,63 @@ async function loadVisibleMessages(
       );
     }
 
-    const batch =
-      (data ??
-        []) as unknown as RoomMessage[];
+    const batch = (data ?? []) as unknown as RoomMessage[];
+    messages.push(...batch);
 
-    messages.push(
-      ...batch,
-    );
-
-    if (
-      batch.length <
-      ROOM_HISTORY_BATCH_SIZE
-    ) {
+    if (batch.length < ROOM_HISTORY_BATCH_SIZE) {
       break;
     }
 
-    from +=
-      ROOM_HISTORY_BATCH_SIZE;
+    from += ROOM_HISTORY_BATCH_SIZE;
   }
 
-  return messages;
-}
+  const {
+    data: systemEvents,
+    error: systemEventsError,
+  } = await admin
+    .from("room_system_events")
+    .select("id,message,created_at")
+    .eq("room_id", roomId)
+    .gte("created_at", historyStart)
+    .order("created_at", { ascending: true })
+    .limit(500);
 
+  if (systemEventsError) {
+    throw new Error(
+      `Unable to export Location system events: ${systemEventsError.message}`,
+    );
+  }
+
+  for (const event of systemEvents ?? []) {
+    messages.push({
+      id: `death-system-${event.id}`,
+      message: String(event.message ?? ""),
+      message_type: "action",
+      fate_image_url: null,
+      roll_label: null,
+      dice_sides: null,
+      dice_result: null,
+      attribute_key: null,
+      attribute_value: null,
+      roll_total: null,
+      whisper_recipient_character_id: null,
+      condition_snapshot: [],
+      speaker_type: "system",
+      npc_id: null,
+      npc_snapshot: null,
+      created_at: String(event.created_at),
+      character_id: null,
+      character: null,
+      whisperRecipient: null,
+    });
+  }
+
+  return messages.sort(
+    (first, second) =>
+      Date.parse(first.created_at) -
+      Date.parse(second.created_at),
+  );
+}
 
 export async function GET(
   request: Request,
@@ -1739,6 +1811,9 @@ export async function GET(
   const ordersByCharacterId =
     new Map<string, ExportOrderIdentity>();
 
+  const resurrectionMalusesByCharacterId =
+    new Map<string, ExportResurrectionMalus>();
+
   if (characterIds.length) {
     for (const id of characterIds) {
       tagsByCharacterId.set(
@@ -1884,17 +1959,84 @@ export async function GET(
     }
   }
 
-  if (messages.length) {
+  if (characterIds.length) {
+    const admin = createAdminClient();
+
+    const {
+      data: resurrectionMalusRows,
+      error: resurrectionMalusError,
+    } = await admin
+      .from("character_resurrection_maluses")
+      .select(`
+        character_id,
+        narrative_text,
+        applied_at,
+        expires_at,
+        malus:death_resurrection_maluses(
+          name,
+          description
+        )
+      `)
+      .in("character_id", characterIds)
+      .is("cleared_at", null)
+      .or(
+        `expires_at.is.null,expires_at.gt.${new Date().toISOString()}`,
+      )
+      .order("applied_at", { ascending: false });
+
+    if (resurrectionMalusError) {
+      console.error(
+        "Unable to load Resurrection Maluses for export:",
+        resurrectionMalusError.message,
+      );
+    } else {
+      for (const row of resurrectionMalusRows ?? []) {
+        const characterId = String(row.character_id ?? "");
+
+        if (
+          !characterId ||
+          resurrectionMalusesByCharacterId.has(characterId)
+        ) {
+          continue;
+        }
+
+        const relation = Array.isArray(row.malus)
+          ? row.malus[0] ?? null
+          : row.malus;
+
+        resurrectionMalusesByCharacterId.set(
+          characterId,
+          {
+            name: String(
+              relation?.name ?? "Resurrection Scar",
+            ),
+            description: String(
+              row.narrative_text ??
+              relation?.description ??
+              "",
+            ),
+          },
+        );
+      }
+    }
+  }
+
+  const uuidPattern =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+  const realMessageIds =
+    messages
+      .map((message) => message.id)
+      .filter((id) => uuidPattern.test(id));
+
+  if (realMessageIds.length) {
     const {
       data: historicalConditionRows,
       error: historicalConditionError,
     } = await supabase.rpc(
       "get_room_message_effect_conditions",
       {
-        p_message_ids:
-          messages.map(
-            (message) => message.id,
-          ),
+        p_message_ids: realMessageIds,
       },
     );
 
@@ -1934,6 +2076,7 @@ export async function GET(
       tagsByCharacterId,
       conditionsByMessageId,
       ordersByCharacterId,
+      resurrectionMalusesByCharacterId,
       viewerCharacterId:
         character.id,
     };
@@ -2573,6 +2716,45 @@ export async function GET(
       text-transform: uppercase;
     }
 
+    .resurrection-malus {
+      color: #c98b71;
+      font-size: 9px;
+      letter-spacing: 0.04em;
+      text-decoration: underline dotted;
+      text-underline-offset: 2px;
+    }
+
+    .system-entry {
+      padding: 10px 18px;
+      border-top: 1px solid rgba(var(--sep-rgb-138-102-55),0.45);
+      border-bottom: 1px solid rgba(var(--sep-rgb-138-102-55),0.45);
+      background: rgba(var(--sep-rgb-33-23-15),0.75);
+    }
+
+    .system-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .system-label {
+      color: #c99b58;
+      font-size: 8px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+    }
+
+    .system-body {
+      margin-top: 6px;
+      color: #d9c39a;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 13px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
     .compact-header {
       display: flex;
 
@@ -3195,7 +3377,8 @@ export async function GET(
 
       .role-entry,
       .roll-entry,
-      .fate-entry {
+      .fate-entry,
+      .system-entry {
         break-inside: avoid;
       }
 

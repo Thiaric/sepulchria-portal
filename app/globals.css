@@ -20768,7 +20768,10 @@ html[data-portal-skin] [data-homepage-nav-button="true"] [data-homepage-nav-role
    Same mechanism as Location Atmosphere
    ========================================= */
 
-   
+   .game_components_roomchatform_div_container_27 button {
+    letter-spacing: 0.5 !important;
+}
+
    .character_page_p_text_7,
    .components_characters_character_order_summary_p_text_2,
    .components_characters_public_character_order_p_text_2,

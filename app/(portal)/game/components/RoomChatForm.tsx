@@ -3476,7 +3476,7 @@ if (
       ? utilityButtonActiveClass
       : utilityButtonClass)), "game_components_roomchatform_button_conditions"].filter(Boolean).join(" ")}
 >
-  Conditions
+  Cond.
 </button>
 ) : null}
 
@@ -3530,7 +3530,7 @@ if (
               ? utilityButtonActiveClass
               : utilityButtonClass)), "game_components_roomchatform_button_atk_use_attributes"].filter(Boolean).join(" ")}
         >
-          ATK / Use Attributes
+          ATK/Use Attributes
         </button>
 
         <button
@@ -3544,7 +3544,7 @@ if (
               ? utilityButtonActiveClass
               : utilityButtonClass)), "game_components_roomchatform_button_use_feat_2"].filter(Boolean).join(" ")}
         >
-          Use Feat
+          Feats
         </button>
 
         <button
@@ -3556,7 +3556,7 @@ if (
               ? utilityButtonActiveClass
               : utilityButtonClass)), "game_components_roomchatform_button_warping"].filter(Boolean).join(" ")}
         >
-          Warping
+          Shapes
         </button>
 
         <button
