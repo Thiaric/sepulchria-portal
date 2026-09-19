@@ -700,23 +700,29 @@ export function NotificationBell() {
      * immediately even if the generic notifications Realtime signal is late.
      * The existing retry then catches notification_targets after creation.
      */
-    const invitationTables = [
+    /*
+     * Lifecycle-backed notifications can disappear without the notification
+     * row itself changing. Listen to the underlying records as well so the
+     * bell drops resolved invitations/exchanges immediately.
+     */
+    const lifecycleTables = [
       "private_location_invitations",
       "breeze_lodging_invitations",
       "order_headquarters_invitations",
+      "item_trades",
     ] as const;
 
-    const invitationChannels =
-      invitationTables.map(
+    const lifecycleChannels =
+      lifecycleTables.map(
         (table) =>
           supabase
             .channel(
-              `bell-invitation-${table}-${crypto.randomUUID()}`,
+              `bell-lifecycle-${table}-${crypto.randomUUID()}`,
             )
             .on(
               "postgres_changes",
               {
-                event: "INSERT",
+                event: "*",
                 schema: "public",
                 table,
               },
@@ -782,11 +788,11 @@ export function NotificationBell() {
       );
 
       for (
-        const invitationChannel of
-          invitationChannels
+        const lifecycleChannel of
+          lifecycleChannels
       ) {
         void supabase.removeChannel(
-          invitationChannel,
+          lifecycleChannel,
         );
       }
     };
@@ -1021,11 +1027,8 @@ export function NotificationBell() {
         ),
     );
 
-    const [
-      readResponse,
-      viewedResult,
-    ] = await Promise.all([
-      fetch(
+    const readResponse =
+      await fetch(
         "/api/notifications/read",
         {
           method: "POST",
@@ -1039,27 +1042,12 @@ export function NotificationBell() {
             notificationIds: unreadIds,
           }),
         },
-      ).catch(() => null),
-      supabase.rpc(
-        "mark_my_notifications_viewed",
-      ),
-    ]);
+      ).catch(() => null);
 
-    if (
-      !readResponse?.ok ||
-      viewedResult.error
-    ) {
-      if (viewedResult.error) {
-        console.warn(
-          "Mark all notifications read:",
-          viewedResult.error.message,
-        );
-      }
-      if (!readResponse?.ok) {
-        console.warn(
-          "Mark all notifications read: ID persistence failed.",
-        );
-      }
+    if (!readResponse?.ok) {
+      console.warn(
+        "Mark all notifications read: ID persistence failed.",
+      );
 
       await load();
       setMarkingAllRead(false);

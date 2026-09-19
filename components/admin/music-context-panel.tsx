@@ -91,18 +91,14 @@ export function MusicContextPanel() {
         Music administration
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_admin_music_context_panel_h2_music_catalogue">
-        Music Catalogue
-      </h2>
-
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_admin_music_context_panel_p_music_catalogue_2">
+      <p className="mt-[4px] text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_admin_music_context_panel_p_music_catalogue_2">
         Upload tracks or jump directly to an existing track.
       </p>
 
       <button
         type="button"
         onClick={jumpToCreate}
-        className="mt-4 w-full border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-21170f))] px-3 py-2.5 text-left font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] transition hover:border-[rgb(var(--sep-colour-a17a49))] components_admin_music_context_panel_button_add_track"
+        className="mt-[4px] w-full border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-21170f))] px-3 py-2.5 text-left font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] transition hover:border-[rgb(var(--sep-colour-a17a49))] components_admin_music_context_panel_button_add_track"
       >
         + Add Track
       </button>
@@ -114,10 +110,10 @@ export function MusicContextPanel() {
           setSearch(event.target.value)
         }
         placeholder="Search music..."
-        className="mt-3 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none focus:border-[rgb(var(--sep-colour-987344))] components_admin_music_context_panel_input_search_music"
+        className="mt-[4px] w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none focus:border-[rgb(var(--sep-colour-987344))] components_admin_music_context_panel_input_search_music"
       />
 
-      <div className="mt-3 min-h-0 flex-1 space-y-1.5 overflow-y-auto components_admin_music_context_panel_div_music_catalogue_2">
+      <div className="mt-[4px] min-h-0 flex-1 space-y-1.5 overflow-y-auto components_admin_music_context_panel_div_music_catalogue_2">
         {visible.map((entry) => (
           <button
             key={entry.id}

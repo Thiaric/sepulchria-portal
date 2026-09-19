@@ -83,12 +83,7 @@ export function GatheringContextPanel() {
       <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_admin_gathering_context_panel_p_text">
         Gathering administration
       </p>
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_admin_gathering_context_panel_h2_heading">
-        Filter Gatherings
-      </h2>
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_admin_gathering_context_panel_p_text_2">
-        Search by Gathering, Location or description. Select one to show only that Gathering.
-      </p>
+      
 
       <input
         type="search"
@@ -98,13 +93,13 @@ export function GatheringContextPanel() {
           setSearch(event.target.value);
         }}
         placeholder="Search Gatherings..."
-        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))] components_admin_gathering_context_panel_input_search_gatherings"
+        className="mt-[4px] w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))] components_admin_gathering_context_panel_input_search_gatherings"
       />
 
       <button
         type="button"
         onClick={showAll}
-        className="mt-3 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-bca27b))] transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] components_admin_gathering_context_panel_button_show_all_gatherings"
+        className="mt-[4px] w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-bca27b))] transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))] components_admin_gathering_context_panel_button_show_all_gatherings"
       >
         Show all Gatherings
       </button>

@@ -616,14 +616,7 @@ body.portal-skin-scope
   --sep-interact-ry: 0deg;
 
   position: relative;
-  transform-origin: 50% 50%;
-  will-change: transform;
-  transition:
-    transform 180ms
-      cubic-bezier(0.2, 0.75, 0.22, 1),
-    filter 180ms ease;
 }
-
 body.portal-skin-scope
   [data-sep-interaction-kind]::after {
   content: "";
@@ -658,12 +651,7 @@ body.portal-skin-scope
 
 body.portal-skin-scope
   [data-sep-interaction-kind="card"][data-sep-interaction-active="true"] {
-  transform:
-    perspective(1000px)
-    translateY(-2px)
-    rotateX(var(--sep-interact-rx))
-    rotateY(var(--sep-interact-ry))
-    scale(1.0025) !important;
+  transform: none !important;
 }
 
 body.portal-skin-scope
@@ -673,12 +661,7 @@ body.portal-skin-scope
 
 body.portal-skin-scope
   [data-sep-interaction-kind="row"][data-sep-interaction-active="true"] {
-  transform:
-    perspective(1100px)
-    translateY(-1px)
-    rotateX(var(--sep-interact-rx))
-    rotateY(var(--sep-interact-ry))
-    scale(1.0015) !important;
+  transform: none !important;
 }
 
 body.portal-skin-scope
@@ -711,8 +694,7 @@ body.portal-skin-scope
 
 body.portal-skin-scope
   [data-sep-interaction-kind="control"][data-sep-interaction-active="true"] {
-  transform:
-    translateY(-1px) !important;
+  transform: none !important;
 }
 
 body.portal-skin-scope

@@ -163,14 +163,12 @@ export function ExperienceContextPanel() {
       className="flex h-full min-h-0 flex-col [transform:none!important] components_admin_experience_context_panel_div_container"
     >
       <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-756957))] components_admin_experience_context_panel_p_text">
-        Experience
+        Experience Helper
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-c9b184))] components_admin_experience_context_panel_h2_heading">
-        Find satisfaction
-      </h2>
+      
 
-      <div className="mt-3 components_admin_experience_context_panel_div_container_2">
+      <div className="mt-[4px] components_admin_experience_context_panel_div_container_2">
         <div className="flex items-center justify-between gap-2 components_admin_experience_context_panel_div_container_3">
           <p className="text-[9px] text-[rgb(var(--sep-colour-756957))] components_admin_experience_context_panel_p_text_2">
             Rating
@@ -192,7 +190,7 @@ export function ExperienceContextPanel() {
           ) : null}
         </div>
 
-        <div className="mt-2 grid grid-cols-5 gap-1.5 components_admin_experience_context_panel_div_container_4">
+        <div className="mt-[4px] grid grid-cols-5 gap-1.5 components_admin_experience_context_panel_div_container_4">
           {EXPERIENCE_RATINGS.map(
             (rating) => {
               const active =
@@ -230,7 +228,7 @@ export function ExperienceContextPanel() {
         </div>
       </div>
 
-      <div className="mt-4 flex min-h-0 flex-1 flex-col components_admin_experience_context_panel_div_container_5">
+      <div className="mt-[4px] flex min-h-0 flex-1 flex-col components_admin_experience_context_panel_div_container_5">
         <div className="flex items-center justify-between gap-2 components_admin_experience_context_panel_div_container_6">
           <p className="text-[9px] text-[rgb(var(--sep-colour-756957))] components_admin_experience_context_panel_p_text_3">
             Characters
@@ -261,10 +259,10 @@ export function ExperienceContextPanel() {
             )
           }
           placeholder="Search characters..."
-          className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-a99b89))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-876a46))] components_admin_experience_context_panel_input_search_characters"
+          className="mt-[4px] w-full border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-a99b89))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-876a46))] components_admin_experience_context_panel_input_search_characters"
         />
 
-        <p className="mb-2 mt-3 text-[8px] text-[rgb(var(--sep-colour-665b4d))] components_admin_experience_context_panel_p_text_4">
+        <p className="mb-[4px] mt-3 text-[8px] text-[rgb(var(--sep-colour-665b4d))] components_admin_experience_context_panel_p_text_4">
           {visibleCharacters.length} characters
         </p>
 

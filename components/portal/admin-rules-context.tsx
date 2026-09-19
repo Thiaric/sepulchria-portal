@@ -166,10 +166,6 @@ export function AdminRulesContext() {
           Rules management
         </p>
 
-        <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d9c29a))] components_portal_admin_rules_context_h2_rules_glossary">
-          Rules & Glossary
-        </h2>
-
         <p className="mt-2 text-xs leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_rules_context_p_rules_glossary_2">
           Search the existing entries and jump directly to the editor.
         </p>

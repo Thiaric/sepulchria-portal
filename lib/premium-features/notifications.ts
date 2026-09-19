@@ -41,6 +41,8 @@ export async function createPremiumFeatureGrantNotification({
       expires_game_at: null,
       created_by: createdBy,
       is_automatic: true,
+      source_type: "premium_feature",
+      source_trigger: "granted",
       staff_overridden: false,
       is_active: true,
     })

@@ -211,19 +211,15 @@ export function HouseOfChancesContextPanel() {
           <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_admin_house_of_chances_context_panel_p_jump_rule">
             Prize rules
           </p>
-          <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_admin_house_of_chances_context_panel_h2_jump_rule">
-            Jump to Rule
-          </h2>
-
           <input
             type="search"
             value={ruleSearch}
             onChange={(event) => setRuleSearch(event.target.value)}
             placeholder="Search rules or numbers..."
-            className={[((`${searchClass} mt-3`)), "components_admin_house_of_chances_context_panel_input_search_rules_numbers"].filter(Boolean).join(" ")}
+            className={[((`${searchClass} mt-[4px] max-h-1`)), "components_admin_house_of_chances_context_panel_input_search_rules_numbers"].filter(Boolean).join(" ")}
           />
 
-          <p className="mb-2 mt-3 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_admin_house_of_chances_context_panel_p_jump_rule_2">
+          <p className="mb-[4px] mt-[4px] text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_admin_house_of_chances_context_panel_p_jump_rule_2">
             Rules · {visibleRules.length}
             {ruleQuery ? ` / ${rules.length}` : ""}
           </p>
@@ -250,7 +246,7 @@ export function HouseOfChancesContextPanel() {
                   </span>
                 </span>
 
-                <span className="mt-2 flex flex-wrap gap-1 components_admin_house_of_chances_context_panel_span_text_4">
+                <span className="mt-[4px] flex flex-wrap gap-1 components_admin_house_of_chances_context_panel_span_text_4">
                   {conditionTokens(rule).map((token, index) => (
                     <span
                       key={`${rule.id}-${token}-${index}`}
@@ -270,30 +266,28 @@ export function HouseOfChancesContextPanel() {
         </div>
       </section>
 
-      <section className="flex min-h-0 flex-col border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-4 components_admin_house_of_chances_context_panel_section_section_2">
+      <section className="flex min-h-0 flex-col border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-[4px] components_admin_house_of_chances_context_panel_section_section_2">
         <div className="shrink-0 components_admin_house_of_chances_context_panel_div_container_3">
           <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_admin_house_of_chances_context_panel_p_text_2">
             Recent plays
           </p>
-          <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_admin_house_of_chances_context_panel_h2_heading">
-            Find a Play
-          </h2>
+          
 
           <input
             type="search"
             value={playSearch}
             onChange={(event) => setPlaySearch(event.target.value)}
             placeholder="Name, rule or date..."
-            className={[((`${searchClass} mt-3`)), "components_admin_house_of_chances_context_panel_input_name_rule_date"].filter(Boolean).join(" ")}
+            className={[((`${searchClass} mt-[4px] max-h-1`)), "components_admin_house_of_chances_context_panel_input_name_rule_date"].filter(Boolean).join(" ")}
           />
 
-          <p className="mb-2 mt-3 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_admin_house_of_chances_context_panel_p_text_3">
+          <p className="mb-[4px] mt-[4px] text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_admin_house_of_chances_context_panel_p_text_3">
             Plays · {visiblePlays.length}
             {playQuery ? ` / ${plays.length}` : ""}
           </p>
         </div>
 
-        <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-1 components_admin_house_of_chances_context_panel_div_container_4">
+        <div className="min-h-0 flex-1 space-y-[4px] overflow-y-auto pr-1 components_admin_house_of_chances_context_panel_div_container_4">
           {visiblePlays.length ? (
             visiblePlays.map((play) => (
               <button

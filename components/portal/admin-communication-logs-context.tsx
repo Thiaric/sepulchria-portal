@@ -198,9 +198,7 @@ export function AdminCommunicationLogsContext() {
         {labelForView(view)}
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_communication_logs_context_p_text_2">
-        Search the communication entries already loaded by the current filters, then jump directly to a result.
-      </p>
+      
 
       <input
         type="search"

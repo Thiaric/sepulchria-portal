@@ -72,12 +72,7 @@ export function CosmeticsContextPanel() {
       <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_admin_cosmetics_context_panel_p_cosmetic_catalogue">
         Cosmetics administration
       </p>
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_admin_cosmetics_context_panel_h2_cosmetic_catalogue">
-        Cosmetic Catalogue
-      </h2>
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_admin_cosmetics_context_panel_p_cosmetic_catalogue_2">
-        Create a cosmetic or jump directly to an existing frame.
-      </p>
+      
 
       <button
         type="button"

@@ -15,7 +15,7 @@ export function storeDestinationForCategory(
     case "skin":
       return "/appearance";
     case "music":
-      return "/game";
+      return "/cosmetics";
     case "friend_list":
       return "/friends";
     case "private_location":

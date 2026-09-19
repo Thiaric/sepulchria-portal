@@ -779,16 +779,22 @@ function TrophyEditor({
             />
 
             {isManual ? (
-              <button
-                type="submit"
-                formAction={deleteManualTrophy}
-                name="id"
-                value={trophy.id}
-                className="border border-red-900/60 bg-red-950/20 px-3 py-2 text-[7px] uppercase tracking-[0.14em] text-red-300 transition hover:border-red-700 hover:bg-red-950/40 admin_trophies_page_button_delete_manual_trophy"
-              >
-                Delete Manual Trophy
-              </button>
-            ) : null}
+  <>
+    <input
+      type="hidden"
+      name="id"
+      value={trophy.id}
+    />
+
+    <button
+      type="submit"
+      formAction={deleteManualTrophy}
+      className="border border-red-900/60 bg-red-950/20 px-3 py-2 text-[7px] uppercase tracking-[0.14em] text-red-300 transition hover:border-red-700 hover:bg-red-950/40 admin_trophies_page_button_delete_manual_trophy"
+    >
+      Delete Manual Trophy
+    </button>
+  </>
+) : null}
           </div>
         </div>
       </div>

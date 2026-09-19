@@ -589,15 +589,7 @@ function AdminPollsNavigatorContext() {
         Poll administration
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_admin_context_panel_h2_heading">
-        Find a Poll
-      </h2>
-
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_text_2">
-        Search the Poll archive, filter
-        by its state, or jump straight
-        to a Poll&apos;s controls.
-      </p>
+      
 
       <input
         type="search"
@@ -609,10 +601,10 @@ function AdminPollsNavigatorContext() {
         }
         placeholder="Search Polls..."
         aria-label="Search Polls"
-        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none transition focus:border-[rgb(var(--sep-colour-987344))] focus:shadow-[0_0_14px_rgba(var(--sep-rgb-177-132-75),0.12)] placeholder:text-[rgb(var(--sep-colour-665b4d))] components_portal_admin_context_panel_input_search_polls"
+        className="mt-[4px] w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none transition focus:border-[rgb(var(--sep-colour-987344))] focus:shadow-[0_0_14px_rgba(var(--sep-rgb-177-132-75),0.12)] placeholder:text-[rgb(var(--sep-colour-665b4d))] components_portal_admin_context_panel_input_search_polls"
       />
 
-      <div className="mt-2 grid grid-cols-4 gap-1 components_portal_admin_context_panel_div_container_2">
+      <div className="mt-[4px] grid grid-cols-4 gap-1 components_portal_admin_context_panel_div_container_2">
         {(
           [
             ["all", "All"],
@@ -832,11 +824,7 @@ function AdminTrophiesNavigatorContext() {
         Jump to Trophy
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_jump_trophy_2">
-        Search by Trophy name,
-        category or description and
-        jump directly to its editor.
-      </p>
+      
 
       <input
         type="search"
@@ -1127,9 +1115,7 @@ function AdminRegistrationsNavigatorContext() {
         Jump to Registration
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_jump_registration_2">
-        Search applications by applicant name or email address.
-      </p>
+      
 
       <input
         type="search"
@@ -1337,9 +1323,7 @@ function AdminMediaNavigatorContext() {
         Jump to Media
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_jump_media_2">
-        Search any part of an image URL or path and jump directly to that media item.
-      </p>
+      
 
       <input
         type="search"
@@ -1563,9 +1547,7 @@ function AdminCodexNavigatorContext() {
         Jump to Chapter
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_jump_chapter_2">
-        Search chapter headings or text and jump directly to the matching chapter.
-      </p>
+      
 
       <input
         type="search"
@@ -2047,17 +2029,13 @@ function AdminNavigationContext() {
 
   return (
     <div className="flex h-full min-h-0 flex-col components_portal_admin_context_panel_div_admin_navigation">
-      <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_p_admin_navigation">
-        Administration
-      </p>
+      
 
       <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_admin_context_panel_h2_admin_navigation">
         Admin Navigation
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_admin_navigation_2">
-        Search the sections available to your staff role and open the page directly.
-      </p>
+      
 
       <input
         type="search"
@@ -2190,9 +2168,7 @@ function AdminCharacterFieldNavigator() {
         Jump to Field
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_jump_field_2">
-        Search this character record and jump directly to the field or section you need.
-      </p>
+      
 
       <input
         type="search"
@@ -2327,7 +2303,18 @@ function AdminShapesJumpContext() {
   });
 }
   function create(){document.getElementById("shape-new")?.scrollIntoView({behavior:"smooth",block:"start"});}
-  return <div className="flex h-full min-h-0 flex-col components_portal_admin_context_panel_div_jump_shapes"><p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_p_jump_shapes">Administration</p><h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_admin_context_panel_h2_jump_shapes">Jump to Shapes</h2><p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_jump_shapes_2">Search the Shape catalogue and jump directly to a Shape.</p><button type="button" onClick={create} className="mt-3 flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d6b37d))] components_portal_admin_context_panel_button_create"><span className="components_portal_admin_context_panel_span_jump_shapes">Create new</span><span className="components_portal_admin_context_panel_span_jump_shapes_2">+</span></button><label className="mt-3 block components_portal_admin_context_panel_label_jump_shapes"><span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_span_jump_shapes_3">Search Shapes</span><input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Name or Word of Power..." className="mt-2 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none components_portal_admin_context_panel_input_name_word_power"/><span className="mt-1.5 block text-right text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-6f6353))] components_portal_admin_context_panel_span_jump_shapes_4">{visible.length}{q?` / ${entries.length}`:""} Shapes</span></label>{error?<p className="mt-3 text-[10px] text-[rgb(var(--sep-colour-d8a49a))] components_portal_admin_context_panel_p_jump_shapes_3">{error}</p>:null}<div className="mt-3 min-h-0 flex-1 overflow-y-auto pr-1 components_portal_admin_context_panel_div_jump_shapes_2">{loading?<p className="text-[10px] text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_jump_shapes_4">Loading...</p>:<div className="space-y-1.5 components_portal_admin_context_panel_div_jump_shapes_3">{visible.map(e=><button key={e.id} type="button" onClick={()=>jump(e)} className="group flex w-full items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-left components_portal_admin_context_panel_button_action_9"><span className="min-w-0 components_portal_admin_context_panel_span_text_33"><span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] components_portal_admin_context_panel_span_text_34">{e.label}</span><span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))] components_portal_admin_context_panel_span_text_35">{e.secondary}</span></span><span className={[((`h-1.5 w-1.5 rounded-full ${e.active?"bg-emerald-600":"bg-[rgb(var(--sep-colour-66594b))]"}`)), "components_portal_admin_context_panel_span_text_36"].filter(Boolean).join(" ")}/></button>)}</div>}</div></div>;
+  return <div className="flex h-full min-h-0 flex-col components_portal_admin_context_panel_div_jump_shapes">
+    <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_p_jump_shapes">Administration</p>
+  <button type="button" onClick={create} className="mt-[4px] flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d6b37d))] components_portal_admin_context_panel_button_create">
+  <span className="components_portal_admin_context_panel_span_jump_shapes">Create new</span>
+  <span className="components_portal_admin_context_panel_span_jump_shapes_2">+</span></button>
+  <label className="mt-[4px] block components_portal_admin_context_panel_label_jump_shapes">
+    <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_span_jump_shapes_3">Search Shapes</span>
+    <input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Name or Word of Power..." className="mt-[4px] w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none components_portal_admin_context_panel_input_name_word_power"/>
+    <span className="mt-[4px] block text-right text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-6f6353))] components_portal_admin_context_panel_span_jump_shapes_4">{visible.length}{q?` / ${entries.length}`:""} Shapes</span></label>
+    {error?<p className="mt-[4px] text-[10px] text-[rgb(var(--sep-colour-d8a49a))] components_portal_admin_context_panel_p_jump_shapes_3">{error}</p>:null}
+    <div className="mt-[4px] min-h-0 flex-1 overflow-y-auto pr-1 components_portal_admin_context_panel_div_jump_shapes_2">
+      {loading?<p className="text-[10px] text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_jump_shapes_4">Loading...</p>:<div className="space-y-1.5 components_portal_admin_context_panel_div_jump_shapes_3">{visible.map(e=><button key={e.id} type="button" onClick={()=>jump(e)} className="group flex w-full items-center justify-between gap-2 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-left components_portal_admin_context_panel_button_action_9"><span className="min-w-0 components_portal_admin_context_panel_span_text_33"><span className="block truncate font-serif text-[13px] text-[rgb(var(--sep-colour-cbb28a))] components_portal_admin_context_panel_span_text_34">{e.label}</span><span className="mt-0.5 block truncate text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-6f6252))] components_portal_admin_context_panel_span_text_35">{e.secondary}</span></span><span className={[((`h-1.5 w-1.5 rounded-full ${e.active?"bg-emerald-600":"bg-[rgb(var(--sep-colour-66594b))]"}`)), "components_portal_admin_context_panel_span_text_36"].filter(Boolean).join(" ")}/></button>)}</div>}</div></div>;
 }
 
 function AdminGiftsJumpContext() {
@@ -2449,26 +2436,17 @@ function AdminGiftsJumpContext() {
         Administration
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_admin_context_panel_h2_jump_feats">
-        Jump to Feats
-      </h2>
-
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_jump_feats_2">
-        Search the Feats catalogue
-        and jump directly to the
-        definition you want to edit.
-      </p>
 
       <button
         type="button"
         onClick={jumpToCreate}
-        className="mt-3 flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d6b37d))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-342318))] components_portal_admin_context_panel_button_jump_create_2"
+        className="mt-[2px] flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d6b37d))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-342318))] components_portal_admin_context_panel_button_jump_create_2"
       >
         <span className="components_portal_admin_context_panel_span_jump_feats">Create new</span>
         <span className="components_portal_admin_context_panel_span_jump_feats_2">+</span>
       </button>
 
-      <label className="mt-3 block components_portal_admin_context_panel_label_jump_feats">
+      <label className="mt-[2px] block components_portal_admin_context_panel_label_jump_feats">
         <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_context_panel_span_jump_feats_3">
           Search Feats
         </span>
@@ -2480,7 +2458,7 @@ function AdminGiftsJumpContext() {
             setSearch(event.target.value)
           }
           placeholder="Search by name..."
-          className="mt-2 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))] components_portal_admin_context_panel_input_search_name"
+          className="mt-[2px] w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))] components_portal_admin_context_panel_input_search_name"
         />
 
         <span className="mt-1.5 block text-right text-[7px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-6f6353))] components_portal_admin_context_panel_span_jump_feats_4">
@@ -3104,9 +3082,7 @@ function AdminRecordJumpContext({
         Administration
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_admin_context_panel_h2_jump">
-        Jump to {title}
-      </h2>
+      
 
       <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_context_panel_p_jump_2">
         Jump directly to the

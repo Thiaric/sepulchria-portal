@@ -450,25 +450,21 @@ export function AdminRecordSearchContext({ mode }: { mode: Mode }) {
       <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_record_search_context_p_jump">
         Administration
       </p>
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_admin_record_search_context_h2_jump">Jump to {title}</h2>
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_record_search_context_p_jump_2">
-        {mode === "expertise"
-          ? "Search characters live and jump directly to their Expertise row."
-          : "Search the catalogue and jump directly to the record you want to edit."}
-      </p>
+      <h2 className="mt-[1px] font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_admin_record_search_context_h2_jump">Jump to {title}</h2>
+      
 
       {mode !== "users" && mode !== "expertise" ? (
         <button
           type="button"
           onClick={jumpToCreate}
-          className="mt-3 flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d6b37d))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-342318))] components_portal_admin_record_search_context_button_jump_create"
+          className="mt-[4px] flex w-full items-center justify-between border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-271c12))] px-3 py-2.5 text-left text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d6b37d))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-342318))] components_portal_admin_record_search_context_button_jump_create"
         >
           <span className="components_portal_admin_record_search_context_span_text">Create new</span>
           <span className="components_portal_admin_record_search_context_span_text_2">+</span>
         </button>
       ) : null}
 
-      <div className="mt-3 space-y-2 components_portal_admin_record_search_context_div_jump_2">
+      <div className="mt-[4px] space-y-2 components_portal_admin_record_search_context_div_jump_2">
         <input
           type="search"
           value={search}

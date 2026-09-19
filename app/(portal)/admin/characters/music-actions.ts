@@ -165,7 +165,7 @@ export async function setCharacterMusicEntitlement(
           `Premium feature unlocked: ${musicTrack.name}`,
         body:
           `You have unlocked the music track ${musicTrack.name}. You can select it from the music controls while in a location.`,
-        href: "/game",
+        href: "/cosmetics",
       });
     } catch (notificationError) {
       console.error(

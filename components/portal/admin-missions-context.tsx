@@ -110,21 +110,10 @@ export function AdminMissionsContext() {
           Mission management
         </p>
 
-        <h2 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-d6bd91))] components_portal_admin_missions_context_h2_daily_missions">
-          Daily Missions
-        </h2>
+        
       </div>
 
-      <div className="mt-4 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 components_portal_admin_missions_context_div_container_2">
-        <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))] components_portal_admin_missions_context_p_text">
-          Daily rules
-        </p>
-
-        <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-948672))] components_portal_admin_missions_context_p_text_2">
-          Reset: midnight UTC. Unclaimed rewards expire.
-          Mission rewards never create Daily Mission progress.
-        </p>
-      </div>
+      
 
       <input
         type="search"

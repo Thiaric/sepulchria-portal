@@ -133,14 +133,11 @@ export function AdminOrdersContext() {
         Administration
       </p>
 
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_admin_orders_context_h2_jump_orders">
+      <h2 className="mt-[4px] font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))] components_portal_admin_orders_context_h2_jump_orders">
         Jump to Orders
       </h2>
 
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_admin_orders_context_p_jump_orders_2">
-        Jump directly to the Order you
-        want to work on.
-      </p>
+      
 
       <button
         type="button"

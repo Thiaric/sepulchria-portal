@@ -66,21 +66,20 @@ export function DeathContextPanel() {
   return (
     <div className="flex h-full min-h-0 flex-col">
       <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-806b50))]">Death administration</p>
-      <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">Death Navigator</h2>
-      <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))]">Search by Character or Malus and jump directly to its controls.</p>
+      
       <input
         type="search"
         value={search}
         onChange={(event) => setSearch(event.target.value)}
         placeholder="Search Character or Malus..."
-        className="mt-4 w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]"
+        className="mt-[4px] w-full border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d4bea0))] outline-none placeholder:text-[rgb(var(--sep-colour-665b4d))] focus:border-[rgb(var(--sep-colour-987344))]"
       />
-      <div className="mt-2 min-h-0 flex-1 overflow-y-auto pr-1">
+      <div className="mt-[4px] min-h-0 flex-1 overflow-y-auto pr-1">
         {groups.map(([kind, title]) => {
           const items = visible.filter((entry) => entry.kind === kind);
           return (
             <section key={kind} className="mt-4 first:mt-2">
-              <p className="mb-2 text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">{title} · {items.length}</p>
+              <p className="mb-[4px] text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">{title} · {items.length}</p>
               <div className="space-y-1.5">
                 {items.length ? items.map((entry) => (
                   <button key={`${entry.kind}-${entry.id}`} type="button" onClick={() => jumpTo(entry.id)} className="group flex w-full items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-left transition hover:border-[rgb(var(--sep-colour-8a673f))] hover:bg-[rgb(var(--sep-colour-17110d))]">
