@@ -204,9 +204,7 @@ export function PublicCodex({
   return (
     <main
       className={[
-        embedded
-          ? "flex h-full min-h-0 flex-col overflow-hidden bg-[rgb(var(--sep-colour-090705))] text-[rgb(var(--sep-colour-d6c3a3))]"
-          : "min-h-screen bg-[rgb(var(--sep-colour-090705))] text-[rgb(var(--sep-colour-d6c3a3))]",
+        "flex h-full max-h-dvh min-h-0 flex-col overflow-hidden bg-[rgb(var(--sep-colour-090705))] text-[rgb(var(--sep-colour-d6c3a3))]",
         "components_codex_public_codex_main_main_2",
       ]
         .filter(Boolean)
@@ -217,9 +215,7 @@ export function PublicCodex({
         className={[
           [
             "border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0d0a08))]",
-            embedded
-              ? "shrink-0"
-              : "",
+            "shrink-0",
           ].join(" "),
           "components_codex_public_codex_header_header",
         ]
@@ -248,25 +244,30 @@ export function PublicCodex({
         </div>
       </header>
 
-      {/* CHAPTER NAVIGATION */}
+      {/* HANDBOOK BODY */}
       <div
         id="codex-chapter-navigation"
-        className={[
-          [
-            "scroll-mt-4 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))]",
-            embedded
-              ? "shrink-0"
-              : "",
-          ].join(" "),
-          "components_codex_public_codex_div_codex_chapter_navigation",
-        ]
-          .filter(Boolean)
-          .join(" ")}
+        className="flex min-h-0 flex-1 overflow-hidden components_codex_public_codex_div_codex_chapter_navigation"
       >
-        <nav
-  aria-label="Codex chapters"
-  className="mx-auto flex max-w-7xl justify-center px-2 sm:px-5 components_codex_public_codex_nav_codex_chapters"
->
+        {/* CHAPTER SIDEBAR */}
+        <aside
+          aria-label="Codex chapter navigation"
+          className="hidden h-full w-[220px] shrink-0 overflow-hidden border-r border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] md:flex md:flex-col lg:w-[250px]"
+        >
+          <div className="shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/35 px-4 py-4">
+            <p className="text-[7px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-80684b))]">
+              Contents
+            </p>
+
+            <p className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-d8bf91))]">
+              Chapters
+            </p>
+          </div>
+
+          <nav
+            aria-label="Codex chapters"
+            className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-2 components_codex_public_codex_nav_codex_chapters"
+          >
           {orderedChapters.map(
             (chapter) => {
               const active =
@@ -285,36 +286,87 @@ export function PublicCodex({
                   }
                   title={`Chapter ${chapter.chapter_number}: ${chapter.title}`}
                   className={[
-                    `h-8 flex-1 border-x border-[rgb(var(--sep-colour-4c3926))]/25 px-0.5 font-serif text-[11px] transition sm:h-10 sm:px-1 sm:text-sm ${
+                    `mb-1 flex w-full items-start gap-3 border px-3 py-2.5 text-left transition ${
                       active
-                        ? "bg-[rgb(var(--sep-colour-2b1f14))] text-[rgb(var(--sep-colour-e6c68f))]"
-                        : "text-[rgb(var(--sep-colour-796342))] hover:bg-[rgb(var(--sep-colour-19120d))] hover:text-[rgb(var(--sep-colour-c9ad7c))]"
+                        ? "border-[rgb(var(--sep-colour-8e6b3e))]/70 bg-[rgb(var(--sep-colour-2b1f14))] text-[rgb(var(--sep-colour-e6c68f))]"
+                        : "border-transparent text-[rgb(var(--sep-colour-8c7758))] hover:border-[rgb(var(--sep-colour-60482e))]/45 hover:bg-[rgb(var(--sep-colour-19120d))] hover:text-[rgb(var(--sep-colour-c9ad7c))]"
                     }`,
                     "components_codex_public_codex_button_action",
                   ]
                     .filter(Boolean)
                     .join(" ")}
                 >
-                  {
-                    ROMAN_NUMERALS[
-                      chapter.chapter_number -
-                        1
-                    ]
-                  }
+                  <span className="w-7 shrink-0 pt-0.5 text-center font-serif text-[10px] text-[rgb(var(--sep-colour-997446))]">
+                    {
+                      ROMAN_NUMERALS[
+                        chapter.chapter_number -
+                          1
+                      ]
+                    }
+                  </span>
+
+                  <span className="min-w-0">
+                    <span className="block text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756550))]">
+                      Chapter {chapter.chapter_number}
+                    </span>
+
+                    <span className="mt-0.5 block font-serif text-[12px] leading-4">
+                      {chapter.title}
+                    </span>
+                  </span>
                 </button>
               );
             },
           )}
+          </nav>
+        </aside>
+
+        {/* MOBILE CHAPTER STRIP */}
+        <nav
+          aria-label="Codex chapters"
+          className="flex shrink-0 overflow-x-auto border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] md:hidden"
+        >
+          {orderedChapters.map((chapter) => {
+            const active =
+              selectedChapter?.id ===
+              chapter.id;
+
+            return (
+              <button
+                key={chapter.id}
+                type="button"
+                onClick={() =>
+                  selectChapter(
+                    chapter,
+                    false,
+                  )
+                }
+                title={`Chapter ${chapter.chapter_number}: ${chapter.title}`}
+                className={`h-9 min-w-10 shrink-0 border-r border-[rgb(var(--sep-colour-4c3926))]/30 px-3 font-serif text-[10px] ${
+                  active
+                    ? "bg-[rgb(var(--sep-colour-2b1f14))] text-[rgb(var(--sep-colour-e6c68f))]"
+                    : "text-[rgb(var(--sep-colour-796342))]"
+                }`}
+              >
+                {
+                  ROMAN_NUMERALS[
+                    chapter.chapter_number -
+                      1
+                  ]
+                }
+              </button>
+            );
+          })}
         </nav>
-      </div>
+
+        {/* READING PANE */}
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
 
       {selectedChapter ? (
         <article
           id="codex-chapter"
           className={[
-            embedded
-              ? "flex min-h-0 flex-1 flex-col overflow-hidden"
-              : undefined,
+            "flex min-h-0 flex-1 flex-col overflow-hidden",
             "components_codex_public_codex_article_codex_chapter",
           ]
             .filter(Boolean)
@@ -325,9 +377,7 @@ export function PublicCodex({
             className={[
               [
                 "border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))]",
-                embedded
-                  ? "shrink-0"
-                  : "",
+                "shrink-0",
               ].join(" "),
               "components_codex_public_codex_section_codex_chapter",
             ]
@@ -357,15 +407,9 @@ export function PublicCodex({
 
           {/* CHAPTER CONTENT */}
           <section
-            id={
-              embedded
-                ? "codex-chapter-scroll"
-                : undefined
-            }
+            id="codex-chapter-scroll"
             className={[
-              embedded
-                ? "mx-auto min-h-0 w-full max-w-7xl flex-1 overflow-y-auto overscroll-contain px-5 py-5 sm:px-8"
-                : "mx-auto max-w-7xl px-5 py-5 sm:px-8",
+              "mx-auto min-h-0 w-full max-w-7xl flex-1 overflow-y-auto overscroll-contain px-5 py-5 sm:px-8",
               "components_codex_public_codex_section_codex_chapter_2",
             ]
               .filter(Boolean)
@@ -408,6 +452,9 @@ export function PublicCodex({
           </section>
         </article>
       ) : null}
+
+        </div>
+      </div>
     </main>
   );
 }
