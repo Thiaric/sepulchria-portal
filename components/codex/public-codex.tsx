@@ -220,7 +220,7 @@ export function PublicCodex({
         {/* CHAPTER SIDEBAR */}
         <aside
           aria-label="Codex chapter navigation"
-          className="hidden h-full w-[220px] shrink-0 overflow-hidden border-r border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] md:flex md:flex-col lg:w-[250px]"
+          className="hidden h-full w-[220px] shrink-0 overflow-hidden border-r border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] md:flex md:flex-col lg:w-[250px] codex_side_chapters_hello"
         >
           <div className="shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/35 px-4 py-4">
             <p className="text-[7px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-80684b))]">

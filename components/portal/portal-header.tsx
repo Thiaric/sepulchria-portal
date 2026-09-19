@@ -59,60 +59,19 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
   payload={{
     label: "Store",
     title: "Browse Sepulchria Store products, bundles and premium unlocks.",
-    icon: "/icons/store.png",
+    icon: "/icons/store.gif",
     href: "/store",
   }}
   aria-label="Open Sepulchria Store"
   title="Sepulchria Store"
-  className="relative overflow-visible flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-614b31))] bg-[rgb(var(--sep-colour-17120f))] text-[rgb(var(--sep-colour-c69b5c))] transition hover:border-[rgb(var(--sep-colour-977242))] hover:text-[rgb(var(--sep-colour-efd6a3))] sm:h-9 sm:w-9 2xl:h-10 2xl:w-10"
+  className="relative flex h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-614b31))] bg-[rgb(var(--sep-colour-17120f))] transition hover:border-[rgb(var(--sep-colour-977242))] sm:h-9 sm:w-9 2xl:h-10 2xl:w-10"
 >
-  <span className="sep-store-sparkle-orbit components_portal_portal_header_span_text_3">
-  <span className="sep-metal-twinkle t1 components_portal_portal_header_span_text_4" />
-  <span className="sep-metal-twinkle t2 components_portal_portal_header_span_text_5" />
-  <span className="sep-metal-twinkle t4 components_portal_portal_header_span_text_6" />
-  <span className="sep-metal-twinkle t6 components_portal_portal_header_span_text_7" />
-  <span className="sep-metal-twinkle t7 components_portal_portal_header_span_text_8" />
-  <span className="sep-metal-twinkle t11 components_portal_portal_header_span_text_9" />
-  <span className="sep-metal-twinkle t13 components_portal_portal_header_span_text_10" />
-  <span className="sep-metal-twinkle t16 components_portal_portal_header_span_text_11" />
-
-  <svg
+  <img
+    src="/icons/store.gif"
+    alt=""
     aria-hidden="true"
-    viewBox="0 0 26 26"
-    className="pointer-events-none h-6 w-6"
-  >
-    <defs>
-      <filter
-        id="store-header-icon-colour"
-        x="0"
-        y="0"
-        width="100%"
-        height="100%"
-        colorInterpolationFilters="sRGB"
-      >
-        <feFlood
-          floodColor="currentColor"
-          result="colour"
-        />
-        <feComposite
-          in="colour"
-          in2="SourceAlpha"
-          operator="in"
-        />
-      </filter>
-    </defs>
-
-    <image
-      href="/icons/store.png"
-      x="0"
-      y="0"
-      width="26"
-      height="26"
-      preserveAspectRatio="xMidYMid meet"
-      filter="url(#store-header-icon-colour)"
-    />
-  </svg>
-</span>
+    className="pointer-events-none h-6 w-6 object-contain"
+  />
 </PortalModalButton>
 
             <WorldIndicator

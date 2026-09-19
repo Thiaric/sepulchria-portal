@@ -21268,7 +21268,8 @@ background: rgb(var(--sep-colour-100c09) / 80%) !important;
 .components_rules_public_rules_aside_sidebar,
 .components_codex_public_codex_div_codex_chapter_3,
 .components_codex_public_codex_header_header,
-.components_codex_public_codex_section_codex_chapter {
+.components_codex_public_codex_section_codex_chapter,
+.codex_side_chapters_hello {
 background: rgb(var(--sep-colour-100c09) / 60%) !important;
 }
 
