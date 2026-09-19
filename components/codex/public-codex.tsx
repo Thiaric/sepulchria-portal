@@ -210,44 +210,12 @@ export function PublicCodex({
         .filter(Boolean)
         .join(" ")}
     >
-      {/* COMPACT CODEX HEADER */}
-      <header
-        className={[
-          [
-            "border-b border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0d0a08))]",
-            "shrink-0",
-          ].join(" "),
-          "components_codex_public_codex_header_header",
-        ]
-          .filter(Boolean)
-          .join(" ")}
-      >
-        <div className="mx-auto max-w-7xl px-4 py-3 sm:px-8 sm:py-5 components_codex_public_codex_div_container">
-          <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between sm:gap-6 components_codex_public_codex_div_container_2">
-            <div className="components_codex_public_codex_div_codex_first_2">
-              <p className="text-[7px] uppercase tracking-[0.32em] text-[rgb(var(--sep-colour-92734d))] components_codex_public_codex_p_codex_first_2">
-                Aureth · Public Record
-              </p>
-
-              <h1 className="mt-1 font-serif text-xl leading-none text-[rgb(var(--sep-colour-ead5ac))] sm:text-4xl components_codex_public_codex_h1_codex_first_2">
-                The Codex of the First
-              </h1>
-            </div>
-
-           <p className="max-w-xl text-[10px] leading-4 text-[rgb(var(--sep-colour-8f8271))] sm:text-right sm:text-xs sm:leading-5 components_codex_public_codex_p_text">
-  {NUMBER_WORDS[orderedChapters.length]}{" "}
-  {orderedChapters.length === 1 ? "chapter" : "chapters"} preserving
-  the known history and lore
-  of Aureth.
-</p>
-          </div>
-        </div>
-      </header>
+      
 
       {/* HANDBOOK BODY */}
       <div
         id="codex-chapter-navigation"
-        className="flex min-h-0 flex-1 overflow-hidden components_codex_public_codex_div_codex_chapter_navigation"
+        className="flex min-h-0 flex-1 flex-col overflow-hidden md:flex-row components_codex_public_codex_div_codex_chapter_navigation"
       >
         {/* CHAPTER SIDEBAR */}
         <aside
@@ -324,8 +292,7 @@ export function PublicCodex({
         {/* MOBILE CHAPTER STRIP */}
         <nav
           aria-label="Codex chapters"
-          className="flex shrink-0 overflow-x-auto border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] md:hidden"
-        >
+            className="flex w-full shrink-0 justify-center overflow-x-auto border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] md:hidden"        >
           {orderedChapters.map((chapter) => {
             const active =
               selectedChapter?.id ===
@@ -342,7 +309,7 @@ export function PublicCodex({
                   )
                 }
                 title={`Chapter ${chapter.chapter_number}: ${chapter.title}`}
-                className={`h-9 min-w-10 shrink-0 border-r border-[rgb(var(--sep-colour-4c3926))]/30 px-3 font-serif text-[10px] ${
+                className={`h-9 min-w-10 shrink-0 border-r border-[rgb(var(--sep-colour-4c3926))]/30 px-3 font-serif text-[10px] first:border-l ${
                   active
                     ? "bg-[rgb(var(--sep-colour-2b1f14))] text-[rgb(var(--sep-colour-e6c68f))]"
                     : "text-[rgb(var(--sep-colour-796342))]"
