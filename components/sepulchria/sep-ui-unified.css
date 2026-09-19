@@ -712,8 +712,7 @@ body.portal-skin-scope
 body.portal-skin-scope
   [data-sep-interaction-kind="control"][data-sep-interaction-active="true"] {
   transform:
-    translateY(-1px)
-    scale(1.012) !important;
+    translateY(-1px) !important;
 }
 
 body.portal-skin-scope
@@ -733,17 +732,7 @@ body.portal-skin-scope
     );
 }
 
-body.portal-skin-scope
-  [data-sep-interaction-kind="control"][data-sep-interaction-active="true"]::after {
-  opacity: 1;
-}
 
-body.portal-skin-scope
-  [data-sep-interaction-kind="nav"][data-sep-interaction-active="true"] {
-  transform:
-    translateY(-0.5px)
-    scale(1.004) !important;
-}
 
 body.portal-skin-scope
   [data-sep-interaction-kind="nav"]::after {

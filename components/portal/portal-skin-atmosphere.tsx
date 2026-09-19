@@ -209,10 +209,11 @@ const ATMOSPHERES: Record<AtmosphereKind, AtmosphereConfig> = {
   type: "video",
   webm: "/skins/atmospheres/pioneers-land.webm",
   mp4: "/skins/atmospheres/pioneers-land.mp4",
-  opacity: 0.06,
+  opacity: 0.08,
   blendMode: "screen",
   vignette: "dark",
-  scale: 1.03,
+  scale: 1.03,  
+  playbackRate: 0.65,
 },
 };
 
