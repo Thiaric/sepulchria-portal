@@ -891,7 +891,7 @@ export default function RoomMusicPlayer({
     <section
       data-sep-interaction-ignore="true"
       data-skin-widget="room-music"
-      className="mb-3 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] game_components_roommusicplayer_section_section"
+      className="mb-1 border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] game_components_roommusicplayer_section_section"
     >
       <div className="flex h-10 items-center game_components_roommusicplayer_div_container">
         <button

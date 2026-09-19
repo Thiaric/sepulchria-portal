@@ -34,6 +34,7 @@ type CodexSummary = {
 
 type CharacterSummary = {
   id: string;
+  first_name: string | null;
   display_name: string | null;
   portrait_url: string | null;
   public_slug: string;
@@ -140,9 +141,10 @@ export function GameContextPanel({
               appear_offline,
 
               character:characters!character_presence_character_id_fkey(
-                id,
-                display_name,
-                portrait_url,
+  id,
+  first_name,
+  display_name,
+  portrait_url,
                 public_slug,
                 title,
 
@@ -404,7 +406,7 @@ export function GameContextPanel({
             
           </div>
 
-          <span className="flex h-6 min-w-6 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-59432c))]/50 bg-[rgb(var(--sep-colour-15100d))] px-1.5 text-[10px] text-[rgb(var(--sep-colour-a68b67))] components_portal_game_context_panel_span_text">
+          <span className="flex h-5 min-w-5 shrink-0 items-center justify-center border border-[rgb(var(--sep-colour-59432c))]/50 bg-[rgb(var(--sep-colour-15100d))] px-1.5 text-[10px] text-[rgb(var(--sep-colour-a68b67))] components_portal_game_context_panel_span_text">
             {presentCharacters.length}
           </span>
         </div>
@@ -432,8 +434,9 @@ export function GameContextPanel({
                 
 
                 const displayName =
-                  person.display_name?.trim() ||
-                  "Unnamed character";
+  person.first_name?.trim() ||
+  person.display_name?.trim() ||
+  "Unnamed character";
 
                 const raceName =
   race?.name ?? null;
@@ -468,7 +471,7 @@ export function GameContextPanel({
     >
       <div className="absolute inset-y-0 left-0 w-px bg-[rgb(var(--sep-colour-b88a52))]/0 transition group-hover:bg-[rgb(var(--sep-colour-b88a52))]/70 components_portal_game_context_panel_div_container_6" />
 
-      <div className="flex  items-center gap-3 px-3 py-2.5 pr-10 components_portal_game_context_panel_div_container_7">
+      <div className="flex  items-center gap-3 px-3 py-1 pr-10 components_portal_game_context_panel_div_container_7">
         <div className="relative shrink-0 py-1 px-0.5 components_portal_game_context_panel_div_container_8">
           
 
@@ -489,25 +492,18 @@ export function GameContextPanel({
             <div className="px-1 font-serif text-[11px] leading-4 text-[rgb(var(--sep-colour-dbc397))] transition group-hover:text-[rgb(var(--sep-colour-ecd5a8))] components_portal_game_context_panel_div_container_11">
               {displayName}
             </div></div>
-
-            
-
-          
-
-          
-
-        </div>
+</div>
       </div>
     </button>
 
-    <div className="absolute bottom-2 right-2 z-10 flex items-center gap-1 components_portal_game_context_panel_div_container_12">
+    <div className="absolute bottom-[4px] right-2 z-10 flex items-center gap-1 components_portal_game_context_panel_div_container_12">
       {person.id !== currentCharacterId &&
       !blockedCharacterIds.has(person.id) &&
       !communication.blocked ? (
         <MessageCharacterModalButton
           recipientId={person.id}
           recipientName={displayName}
-          className="flex h-6 w-6 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-17110d))] text-[12px] text-[rgb(var(--sep-colour-a98b61))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-2a1d12))] hover:text-[rgb(var(--sep-colour-e0c392))]"
+          className="flex h-5 w-5 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-17110d))] text-[12px] text-[rgb(var(--sep-colour-a98b61))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-2a1d12))] hover:text-[rgb(var(--sep-colour-e0c392))]"
         />
       ) : person.id !== currentCharacterId && communication.blocked ? (
         <SanctionRestrictionNotice message={communication.message} compact />
@@ -526,7 +522,7 @@ export function GameContextPanel({
               href: `/admin/characters/${person.id}`,
             })
           }
-          className="flex h-6 w-6 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-17110d))] text-[12px] text-[rgb(var(--sep-colour-a98b61))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-2a1d12))] hover:text-[rgb(var(--sep-colour-e0c392))] components_portal_game_context_panel_button_action_2"
+          className="flex h-5 w-5 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-17110d))] text-[12px] text-[rgb(var(--sep-colour-a98b61))] transition hover:border-[rgb(var(--sep-colour-9a7445))] hover:bg-[rgb(var(--sep-colour-2a1d12))] hover:text-[rgb(var(--sep-colour-e0c392))] components_portal_game_context_panel_button_action_2"
         >
           <svg viewBox="0 0 24 24" aria-hidden="true" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="3" />
@@ -552,7 +548,7 @@ export function GameContextPanel({
         </div>
       </section>
 
-      <section className="mt-4 max-h-48 shrink-0 border-t border-[rgb(var(--sep-colour-59432c))]/40 pt-4 components_portal_game_context_panel_section_section_2">
+      <section className="mt-[4px] max-h-48 shrink-0 border-t border-[rgb(var(--sep-colour-59432c))]/40 pt-[4px] components_portal_game_context_panel_section_section_2">
         <div className="flex items-end justify-between gap-3 components_portal_game_context_panel_div_container_13">
           <div className="components_portal_game_context_panel_div_container_14">
             <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-876a46))] components_portal_game_context_panel_p_text_4">
@@ -567,7 +563,7 @@ export function GameContextPanel({
           </span>
         </div>
 
-        <div className="mt-3 max-h-28 space-y-1.5 overflow-y-auto overscroll-contain pr-1 components_portal_game_context_panel_div_container_15">
+        <div className="mt-[4px] max-h-28 space-y-1.5 overflow-y-auto overscroll-contain pr-1 components_portal_game_context_panel_div_container_15">
           {loading ? (
             <CompactLoadingRows />
           ) : (
@@ -596,7 +592,7 @@ export function GameContextPanel({
 
                   <button
                     type="submit"
-                    className="group w-full border border-[rgb(var(--sep-colour-765937))]/60 bg-[rgb(var(--sep-colour-271c12))] px-2.5 py-2 text-left transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-3b2919))] components_portal_game_context_panel_button_action_3"
+                    className="group w-full border border-[rgb(var(--sep-colour-765937))]/60 bg-[rgb(var(--sep-colour-271c12))] px-2.5 py-[2px] text-left transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-3b2919))] components_portal_game_context_panel_button_action_3"
                   >
                     <span className="flex items-center justify-between gap-3 components_portal_game_context_panel_span_text_3">
                       <span className="min-w-0 components_portal_game_context_panel_span_text_4">
