@@ -2687,11 +2687,7 @@ for(const row of priceResult.data??[]){
                               ? "text-[rgb(var(--sep-colour-c8b89f))]"
                               : "text-[rgb(var(--sep-colour-d3c2aa))]"
                       }`)), "game_components_roommessagelist_p_text_3"].filter(Boolean).join(" ")}
-                      title={
-                        isMechanicalOutput
-                          ? formatRollText(item)
-                          : undefined
-                      }
+                      
                       style={
                         isMechanicalOutput &&
                         privateLocationTheme &&
