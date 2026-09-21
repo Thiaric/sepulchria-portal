@@ -322,7 +322,7 @@ export function SepulchriaHomepage({
                         {...item}
                         label={
                           !registrationsOpen
-                            ? "Info about Registration"
+                            ? "Apply for Alpha Access"
                             : item.label
                         }
                       />

@@ -2632,6 +2632,16 @@ export function PortalSidebar({
               {servicesExpanded ? (
               <div className="grid grid-cols-1 gap-0 components_portal_portal_sidebar_div_container_13">
                 <div className="min-w-0 components_portal_portal_sidebar_div_container_14">
+
+                  {renderNavigationItem(
+  messagesItem,
+)}
+
+<ForumSidebarMenu
+  unreadCount={
+    currentUnreadForumCount
+  }
+/>
                   <div
                     className={[((`flex min-h-6 items-center border text-[11px] transition lg:text-xs ${
                       modalItem?.href === marketItem.href ||
@@ -2746,11 +2756,7 @@ export function PortalSidebar({
 
                 
 
-                <ForumSidebarMenu
-                  unreadCount={
-                    currentUnreadForumCount
-                  }
-                />
+               
 
                 {hasOrderLeadership
                   ? renderNavigationItem(
@@ -2758,9 +2764,7 @@ export function PortalSidebar({
                     )
                   : null}
 
-                {renderNavigationItem(
-                  messagesItem,
-                )}
+                
 
                 {renderPremiumMenu()}
 

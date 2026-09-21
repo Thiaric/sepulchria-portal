@@ -90,12 +90,12 @@ export function RegistrationClosedNotice() {
           </p>
 
           <h2 className="mt-3 font-serif text-2xl text-[rgb(var(--sep-colour-e6cfa3))] sm:text-3xl components_registration_closed_notice_h2_closed_alpha_access">
-            Closed Alpha access
+            Early Alpha Access
           </h2>
 
           <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-[rgb(var(--sep-colour-b8aa95))] components_registration_closed_notice_p_closed_alpha_access_2">
   Public registrations will open soon. We are now selecting an
-  initial group of up to 50 players (18+ only) for the Closed Alpha.
+  initial group of up to 50 players (18+ only) for the Early Alpha Access.
 </p>
 
 <p className="mx-auto mt-3 max-w-xl text-xs leading-6 text-[rgb(var(--sep-colour-8f8271))] components_registration_closed_notice_p_closed_alpha_access_3">
@@ -112,7 +112,7 @@ export function RegistrationClosedNotice() {
             }}
             className="mt-6 border border-[rgb(var(--sep-colour-a77a42))]/80 bg-[rgb(var(--sep-colour-382313))] px-6 py-3 font-serif text-base text-[rgb(var(--sep-colour-ead3a6))] transition hover:border-[rgb(var(--sep-colour-d4a460))] hover:bg-[rgb(var(--sep-colour-472c17))] components_registration_closed_notice_button_apply_closed_alpha"
           >
-            Apply for Closed Alpha
+            Apply for Early Alpha Access
           </button>
         </div>
 
