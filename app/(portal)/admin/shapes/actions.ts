@@ -11,6 +11,7 @@ import {
   requireAdminSection,
 } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { wordOfPower } from "@/lib/warping/constants";
 import {
   sanitizeRichHtml,
@@ -485,3 +486,137 @@ export async function unlinkOrderLevel(f:FormData){
   revalidatePath("/admin/shapes");
   revalidatePath("/game");
 }
+
+function parseWarpingPrice(formData: FormData) {
+  const key = txt(formData, "price_key")
+    .toLowerCase()
+    .replace(/[^a-z0-9_]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+
+  const number = nint(formData, "price_number", 0);
+  const stage = nint(formData, "price_stage", 0);
+  const durationDays = nint(formData, "duration_days", 0);
+  const name = txt(formData, "price_name");
+  const manifestation = txt(formData, "manifestation");
+
+  if (!key) throw new Error("Price key is required.");
+  if (!name) throw new Error("Price name is required.");
+  if (!manifestation) throw new Error("Manifestation is required.");
+  if (number < 1) throw new Error("Price number must be at least 1.");
+  if (stage < 1 || stage > 3) throw new Error("Price stage must be 1, 2 or 3.");
+  if (durationDays < 1) throw new Error("Price duration must be at least 1 day.");
+
+  return {
+    key,
+    number,
+    name,
+    stage,
+    duration_days: durationDays,
+    manifestation,
+    updated_at: new Date().toISOString(),
+  };
+}
+
+export async function createWarpingPrice(formData: FormData) {
+  await requireAdminSection("shapes");
+  const admin = createAdminClient();
+  const payload = parseWarpingPrice(formData);
+
+  const { error } = await admin
+    .from("warping_prices")
+    .insert(payload);
+
+  if (error) {
+    redirect(`/admin/shapes?error=${encodeURIComponent(error.message)}`);
+  }
+
+  revalidatePath("/admin/shapes");
+  revalidatePath("/game");
+  revalidatePath("/character");
+  revalidatePath("/warping");
+  redirect("/admin/shapes?success=Price%20created");
+}
+
+export async function updateWarpingPrice(formData: FormData) {
+  await requireAdminSection("shapes");
+  const admin = createAdminClient();
+  const originalKey = txt(formData, "original_price_key");
+  const payload = parseWarpingPrice(formData);
+
+  if (!originalKey) {
+    redirect("/admin/shapes?error=Price%20key%20is%20missing");
+  }
+
+  if (payload.key !== originalKey) {
+    redirect("/admin/shapes?error=Existing%20Price%20keys%20cannot%20be%20changed");
+  }
+
+  const { error } = await admin
+    .from("warping_prices")
+    .update({
+      number: payload.number,
+      name: payload.name,
+      stage: payload.stage,
+      duration_days: payload.duration_days,
+      manifestation: payload.manifestation,
+      updated_at: payload.updated_at,
+    })
+    .eq("key", originalKey);
+
+  if (error) {
+    redirect(`/admin/shapes?error=${encodeURIComponent(error.message)}`);
+  }
+
+  revalidatePath("/admin/shapes");
+  revalidatePath("/game");
+  revalidatePath("/character");
+  revalidatePath("/warping");
+  redirect("/admin/shapes?success=Price%20updated");
+}
+
+export async function deleteWarpingPrice(formData: FormData) {
+  await requireAdminSection("shapes");
+  const admin = createAdminClient();
+  const key = txt(formData, "price_key");
+
+  if (!key) {
+    redirect("/admin/shapes?error=Price%20key%20is%20missing");
+  }
+
+  const [shapeUsage, effectUsage] = await Promise.all([
+    admin.from("shapes").select("id", { count: "exact", head: true }).eq("price_key", key),
+    admin.from("character_price_effects").select("id", { count: "exact", head: true }).eq("price_key", key),
+  ]);
+
+  const usageError = shapeUsage.error ?? effectUsage.error;
+  if (usageError) {
+    redirect(`/admin/shapes?error=${encodeURIComponent(usageError.message)}`);
+  }
+
+  const shapes = shapeUsage.count ?? 0;
+  const effects = effectUsage.count ?? 0;
+
+  if (shapes > 0 || effects > 0) {
+    redirect(
+      `/admin/shapes?error=${encodeURIComponent(
+        `Cannot delete this Price: ${shapes} Shape(s) and ${effects} character Price effect(s) still reference it.`,
+      )}`,
+    );
+  }
+
+  const { error } = await admin
+    .from("warping_prices")
+    .delete()
+    .eq("key", key);
+
+  if (error) {
+    redirect(`/admin/shapes?error=${encodeURIComponent(error.message)}`);
+  }
+
+  revalidatePath("/admin/shapes");
+  revalidatePath("/game");
+  revalidatePath("/character");
+  revalidatePath("/warping");
+  redirect("/admin/shapes?success=Price%20deleted");
+}
+

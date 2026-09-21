@@ -2,8 +2,8 @@ import {
   requireAdminSection,
 } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
-import { ACTION_WORDS,ATTRIBUTES,ESSENCE_WORDS,LAW_WORDS,MOVEMENTS,PRICES,SAVES,WARPING_SCHOOLS } from "@/lib/warping/constants";
-import { assignShape,createShape,deleteShape,linkOrderLevel,unlinkOrderLevel,removeAssignment,updateShape } from "./actions";
+import { ACTION_WORDS,ATTRIBUTES,ESSENCE_WORDS,LAW_WORDS,MOVEMENTS,SAVES,WARPING_SCHOOLS } from "@/lib/warping/constants";
+import { assignShape,createShape,createWarpingPrice,deleteShape,deleteWarpingPrice,linkOrderLevel,unlinkOrderLevel,removeAssignment,updateShape,updateWarpingPrice } from "./actions";
 import { ShapeDeleteSubmit } from "@/components/admin/shape-delete-submit";
 import { WarpingReference } from "@/components/admin/warping-reference";
 import { ShapeProgression } from "./ShapeProgression";
@@ -77,12 +77,14 @@ function Profile({s,p,title}:{s?:S;p:"self"|"other"|"other_alt";title:string}){
 function ShapeForm({
   s,
   action,
+  priceOptions,
 }:{
   s?:S;
   action:(
     previous:ShapeActionState,
     formData:FormData,
   )=>Promise<ShapeActionState>;
+  priceOptions:readonly (readonly [string,string])[];
 }){
   const req=[["muscles","Muscles"],["reflexes","Reflexes"],["vigour","Vigour"],["brains","Brains"],["shrewd","Shrewd"],["presence","Presence"]] as const;
   return <ShapeActionForm action={action} submitLabel={s?"Save Shape":"Create Shape"}><ShapeProgression/>{s?<input className="admin_shapes_page_input_shape_id" type="hidden" name="shape_id" value={s.id}/>:null}
@@ -126,7 +128,7 @@ function ShapeForm({
         <label className="admin_shapes_page_label_targeting_duration_price_4"><span className={[((lab)), "admin_shapes_page_span_targeting_duration_price_4"].filter(Boolean).join(" ")}>Damage Type</span><input name="damage_type" defaultValue={s?.damage_type??""} placeholder="free text" className={[((cls)), "admin_shapes_page_input_damage_type"].filter(Boolean).join(" ")}/></label>
         <label className="admin_shapes_page_label_targeting_duration_price_5"><span className={[((lab)), "admin_shapes_page_span_targeting_duration_price_5"].filter(Boolean).join(" ")}>Duration</span><select name="duration_mode" data-shape-duration defaultValue={s?.is_instantaneous?"instantaneous":(s?.duration_unit??"minutes")} className={[((cls)), "admin_shapes_page_select_duration_mode"].filter(Boolean).join(" ")}><option className="admin_shapes_page_option_instantaneous" value="instantaneous">Instantaneous</option><option className="admin_shapes_page_option_minutes" value="minutes">Minutes</option><option className="admin_shapes_page_option_hours" value="hours">Hours</option><option className="admin_shapes_page_option_days" value="days">Days</option><option className="admin_shapes_page_option_until_dispelled" value="until_dispelled">Until Dispelled</option></select><input className="admin_shapes_page_input_instantaneous" type="hidden" name="is_instantaneous" value={s?.is_instantaneous?"true":"false"} data-shape-instant/><input className="admin_shapes_page_input_duration_unit" type="hidden" name="duration_unit" value={s?.duration_unit??"minutes"} data-shape-duration-unit/></label>
         <label className="admin_shapes_page_label_targeting_duration_price_6"><span className={[((lab)), "admin_shapes_page_span_targeting_duration_price_6"].filter(Boolean).join(" ")}>How many</span><input type="number" min={1} name="duration_amount" defaultValue={s?.duration_amount??1} className={[((cls)), "admin_shapes_page_input_duration_amount"].filter(Boolean).join(" ")}/></label>
-        <label className="md:col-span-2 admin_shapes_page_label_targeting_duration_price_7"><span className={[((lab)), "admin_shapes_page_span_targeting_duration_price_7"].filter(Boolean).join(" ")}>Price</span><Sel name="price_key" value={s?.price_key} options={PRICES} none/></label>
+        <label className="md:col-span-2 admin_shapes_page_label_targeting_duration_price_7"><span className={[((lab)), "admin_shapes_page_span_targeting_duration_price_7"].filter(Boolean).join(" ")}>Price</span><Sel name="price_key" value={s?.price_key} options={priceOptions} none/></label>
       </div>
     </section>
     <Profile s={s} p="self" title="Self Effect Profile"/><Profile s={s} p="other" title={s?.other_alternative_enabled?"Beneficial Other Effect":"Other Effect Profile"}/>
@@ -152,21 +154,55 @@ export default async function AdminShapesPage({searchParams}:Props){
   const db=
     await createClient();
 
-  const summaryResult=
-    await db
-      .from("shapes")
-      .select("id,name,level,school,word_of_power,is_active")
-      .order("level")
-      .order("name");
+  const [summaryResult,pricesResult]=
+    await Promise.all([
+      db
+        .from("shapes")
+        .select("id,name,level,school,word_of_power,is_active")
+        .order("level")
+        .order("name"),
+      db
+        .from("warping_prices")
+        .select("key,number,name,stage,duration_days,manifestation")
+        .order("number"),
+    ]);
 
-  if(summaryResult.error){
+  const initialLoadError=
+    summaryResult.error??
+    pricesResult.error;
+
+  if(initialLoadError){
     throw new Error(
-      `Unable to load Shapes: ${summaryResult.error.message}`,
+      `Unable to load Shapes administration: ${initialLoadError.message}`,
     );
   }
 
   const shapes=
     (summaryResult.data??[]) as S[];
+
+  const prices=
+    (pricesResult.data??[]) as {
+      key:string;
+      number:number;
+      name:string;
+      stage:number;
+      duration_days:number;
+      manifestation:string;
+    }[];
+
+  const priceOptions=
+    prices.map(
+      (price)=>[
+        price.key,
+        `${price.name} — Stage ${
+          price.stage===1
+            ?"I"
+            :price.stage===2
+              ?"II"
+              :"III"
+        } — ${price.duration_days} days`,
+      ] as const,
+    );
 
   let selectedShape:S|null=null;
   let chars:{
@@ -273,6 +309,56 @@ export default async function AdminShapesPage({searchParams}:Props){
           Warping — Shapes
         </h1>
 
+        <details className="mt-8 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))]">
+          <summary className="cursor-pointer list-none px-5 py-4 transition hover:bg-[rgb(var(--sep-colour-1c140e))]">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">Warping Configuration</p>
+                <h2 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-dfc99f))]">Price Management</h2>
+                <p className="mt-1 text-[10px] text-[rgb(var(--sep-colour-8f8271))]">Create, edit and remove the Prices used by Shapes.</p>
+              </div>
+              <span className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8c704b))]">{prices.length} Prices · Click to expand</span>
+            </div>
+          </summary>
+
+          <div className="border-t border-[rgb(var(--sep-colour-60482e))]/35 p-5">
+            <div className="space-y-4">
+              {prices.map((price)=>(
+                <div key={price.key} className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-100c09))] p-4">
+                  <form action={updateWarpingPrice} className="grid gap-3 lg:grid-cols-12">
+                    <input type="hidden" name="original_price_key" value={price.key}/>
+                    <input type="hidden" name="price_key" value={price.key}/>
+                    <label className="lg:col-span-1"><span className={lab}>#</span><input required type="number" min={1} name="price_number" defaultValue={price.number} className={cls}/></label>
+                    <label className="lg:col-span-3"><span className={lab}>Name</span><input required name="price_name" defaultValue={price.name} className={cls}/></label>
+                    <label className="lg:col-span-2"><span className={lab}>Key</span><input value={price.key} readOnly className={`${cls} opacity-65`}/></label>
+                    <label className="lg:col-span-1"><span className={lab}>Stage</span><select name="price_stage" defaultValue={price.stage} className={cls}><option value={1}>I</option><option value={2}>II</option><option value={3}>III</option></select></label>
+                    <label className="lg:col-span-2"><span className={lab}>Duration Days</span><input required type="number" min={1} name="duration_days" defaultValue={price.duration_days} className={cls}/></label>
+                    <div className="flex items-end lg:col-span-3"><button type="submit" className="w-full border border-[rgb(var(--sep-colour-765937))]/60 bg-[rgb(var(--sep-colour-261b12))] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d2b783))]">Save Price</button></div>
+                    <label className="lg:col-span-12"><span className={lab}>Manifestation</span><textarea required rows={3} name="manifestation" defaultValue={price.manifestation} className={cls}/></label>
+                  </form>
+                  <form action={deleteWarpingPrice} className="mt-3 flex justify-end">
+                    <input type="hidden" name="price_key" value={price.key}/>
+                    <button type="submit" className="border border-red-900/60 bg-red-950/20 px-3 py-2 text-[7px] uppercase tracking-[0.14em] text-red-300">Delete Price</button>
+                  </form>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6 border-t border-[rgb(var(--sep-colour-60482e))]/35 pt-5">
+              <h3 className="font-serif text-xl text-[rgb(var(--sep-colour-d8c29b))]">Create New Price</h3>
+              <form action={createWarpingPrice} className="mt-4 grid gap-3 lg:grid-cols-12">
+                <label className="lg:col-span-1"><span className={lab}>#</span><input required type="number" min={1} name="price_number" className={cls}/></label>
+                <label className="lg:col-span-3"><span className={lab}>Name</span><input required name="price_name" className={cls}/></label>
+                <label className="lg:col-span-2"><span className={lab}>Key</span><input required name="price_key" placeholder="e.g. glass_skin" pattern="[a-z0-9_]+" className={cls}/></label>
+                <label className="lg:col-span-1"><span className={lab}>Stage</span><select name="price_stage" defaultValue={1} className={cls}><option value={1}>I</option><option value={2}>II</option><option value={3}>III</option></select></label>
+                <label className="lg:col-span-2"><span className={lab}>Duration Days</span><input required type="number" min={1} name="duration_days" defaultValue={2} className={cls}/></label>
+                <div className="flex items-end lg:col-span-3"><button type="submit" className="w-full border border-[rgb(var(--sep-colour-765937))]/60 bg-[rgb(var(--sep-colour-261b12))] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d2b783))]">Create Price</button></div>
+                <label className="lg:col-span-12"><span className={lab}>Manifestation</span><textarea required rows={3} name="manifestation" className={cls}/></label>
+              </form>
+            </div>
+          </div>
+        </details>
+
         <section
           id="shape-new"
           className="mt-8 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5 admin_shapes_page_section_shape_new"
@@ -281,8 +367,20 @@ export default async function AdminShapesPage({searchParams}:Props){
             Create a Shape
           </h2>
 
-          <WarpingReference/>
-          <ShapeForm action={createShape}/>
+          <WarpingReference
+            prices={prices.map((price)=>({
+              key:price.key,
+              number:price.number,
+              name:price.name,
+              stage:price.stage,
+              durationDays:price.duration_days,
+              manifestation:price.manifestation,
+            }))}
+          />
+          <ShapeForm
+            action={createShape}
+            priceOptions={priceOptions}
+          />
         </section>
 
         <section className="mt-8">
@@ -391,6 +489,7 @@ export default async function AdminShapesPage({searchParams}:Props){
               <ShapeForm
                 s={selectedShape}
                 action={updateShape}
+                priceOptions={priceOptions}
               />
 
               <div className="mt-5 grid gap-4 lg:grid-cols-2 admin_shapes_page_div_container_14">

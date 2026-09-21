@@ -1,4 +1,4 @@
-import { WARPING_PRICE_DEFINITIONS } from "@/lib/warping/price-definitions";
+import type { WarpingPriceDefinition } from "@/lib/warping/warping-price-types";
 
 const WORDS = [
   ["Essence", "Pyr", "Fire", "Heat, destruction, passion, purification"],
@@ -61,7 +61,11 @@ const MOVEMENTS = [
   ["Suspension", "Begin a deliberate movement, pause distinctly before completing it, then finish the movement.", "Delay, deferred activation"],
 ] as const;
 
-export function WarpingReference() {
+export function WarpingReference({
+  prices,
+}: {
+  prices: WarpingPriceDefinition[];
+}) {
   return (
     <details className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] components_admin_warping_reference_details_word_power_movement_reference">
       <summary className="cursor-pointer px-4 py-3 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d6b37d))] transition hover:bg-[rgb(var(--sep-colour-1c140e))] components_admin_warping_reference_summary_word_power_movement_reference">
@@ -98,11 +102,11 @@ export function WarpingReference() {
                 <tr className="components_admin_warping_reference_tr_prices"><th className="px-3 py-2">#</th><th className="px-3 py-2">Price</th><th className="px-3 py-2">Stage / Duration</th><th className="px-3 py-2">Manifestation while active</th></tr>
               </thead>
               <tbody>
-                {WARPING_PRICE_DEFINITIONS.map((price) => (
+                {prices.map((price) => (
                   <tr key={price.key} className="border-t border-[rgb(var(--sep-colour-60482e))]/25 align-top components_admin_warping_reference_tr_row_3">
                     <td className="px-3 py-2 text-[rgb(var(--sep-colour-8e785a))] components_admin_warping_reference_td_cell_5">{price.number}</td>
                     <td className="px-3 py-2 font-serif text-[rgb(var(--sep-colour-d9c29b))] components_admin_warping_reference_td_cell_6">{price.name}</td>
-                    <td className="whitespace-nowrap px-3 py-2 text-[rgb(var(--sep-colour-c2ac88))] components_admin_warping_reference_td_cell_7">{price.stageLabel} — {price.durationDays} days</td>
+                    <td className="whitespace-nowrap px-3 py-2 text-[rgb(var(--sep-colour-c2ac88))] components_admin_warping_reference_td_cell_7">{price.stage === 1 ? "I" : price.stage === 2 ? "II" : "III"} — {price.durationDays} days</td>
                     <td className="px-3 py-2 leading-5 text-[rgb(var(--sep-colour-a99b89))] components_admin_warping_reference_td_cell_8">{price.manifestation}</td>
                   </tr>
                 ))}

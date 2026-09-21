@@ -7,9 +7,8 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import {
-  getWarpingPriceDefinition,
-  getWarpingPriceDefinitionFromText,
-} from "@/lib/warping/price-definitions";
+  useWarpingPrices,
+} from "@/lib/warping/use-warping-prices";
 
 function formatExpiry(value: string): string {
   const date = new Date(value);
@@ -41,9 +40,39 @@ export function PriceTooltip({
   children: ReactNode;
   className?: string;
 }) {
+  const prices =
+    useWarpingPrices();
+
+  const cleanDisplayText =
+    String(displayText ?? "")
+      .replace(
+        /\s*\(Stage\s+(?:I|II|III|\d+)\)\s*$/i,
+        "",
+      )
+      .trim()
+      .toLowerCase();
+
   const price =
-    getWarpingPriceDefinition(priceKey) ??
-    getWarpingPriceDefinitionFromText(displayText);
+    (
+      priceKey
+        ? prices.find(
+            (entry) =>
+              entry.key === priceKey,
+          )
+        : undefined
+    ) ??
+    (
+      cleanDisplayText
+        ? prices.find(
+            (entry) =>
+              entry.name
+                .trim()
+                .toLowerCase() ===
+              cleanDisplayText,
+          )
+        : undefined
+    ) ??
+    null;
 
   const triggerRef =
     useRef<HTMLSpanElement>(null);
@@ -172,8 +201,14 @@ export function PriceTooltip({
 
               <span className="mt-1 block text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-b99765))] components_warping_price_tooltip_span_text_2">
                 Stage{" "}
-                {price.stageLabel} ·{" "}
-                {price.durationDays} days
+                {price.stage === 1
+                  ? "I"
+                  : price.stage === 2
+                    ? "II"
+                    : price.stage === 3
+                      ? "III"
+                      : price.stage}{" "}
+                · {price.durationDays} days
               </span>
 
               {expiresAt ? (

@@ -8,6 +8,9 @@ import {
 
 import { createClient } from "@/lib/supabase/client";
 import { PriceTooltip } from "@/components/warping/price-tooltip";
+import {
+  useWarpingPrices,
+} from "@/lib/warping/use-warping-prices";
 
 import { sendRoomMessage } from "../actions";
 import {
@@ -23,41 +26,6 @@ type C = {
 };
 
 type S = Record<string, any>;
-
-const PM: Record<
-  string,
-  [number, number, string]
-> = {
-  cinder_eyes: [1, 2, "Cinder Eyes"],
-  luminous_veins: [1, 2, "Luminous Veins"],
-  cinderblood: [1, 2, "Cinderblood"],
-  dreamtouched: [1, 2, "Dreamtouched"],
-  beastmarked: [1, 2, "Beastmarked"],
-
-  bloomwake: [2, 5, "Bloomwake"],
-  witherwake: [2, 5, "Witherwake"],
-  upstream: [2, 5, "Upstream"],
-  unbound_shadow: [2, 5, "Unbound Shadow"],
-  starbound: [2, 5, "Starbound"],
-  false_remembrance: [
-    2,
-    5,
-    "False Remembrance",
-  ],
-
-  current_sighted: [
-    3,
-    10,
-    "Current-Sighted",
-  ],
-  godwhispered: [3, 10, "Godwhispered"],
-  realitys_misstep: [
-    3,
-    10,
-    "Reality's Misstep",
-  ],
-  unmoored: [3, 10, "Unmoored"],
-};
 
 const SAVE_LABEL: Record<
   string,
@@ -189,6 +157,9 @@ function ShapeInformation({
 }: {
   shape: S;
 }) {
+  const priceDefinitions =
+    useWarpingPrices();
+
   const target =
     shape.target_mode === "self"
       ? "Self"
@@ -239,9 +210,15 @@ function ShapeInformation({
           }`;
 
   const price =
-    shape.price_key &&
-    PM[shape.price_key]
-      ? PM[shape.price_key][2]
+    shape.price_key
+      ? (
+          priceDefinitions.find(
+            (entry) =>
+              entry.key ===
+              String(shape.price_key),
+          )?.name ??
+          String(shape.price_key)
+        )
       : "None";
 
   const selfBits = profileBits(
@@ -418,6 +395,23 @@ export function WarpingPanel({
   beyondEssenceCharacterIds: string[];
   onBack: () => void;
 }) {
+  const priceDefinitions =
+    useWarpingPrices();
+
+  const priceByKey =
+    useMemo(
+      () =>
+        new Map(
+          priceDefinitions.map(
+            (price) => [
+              price.key,
+              price,
+            ],
+          ),
+        ),
+      [priceDefinitions],
+    );
+
   const db = useMemo(
     () => createClient(),
     [],
@@ -1584,15 +1578,17 @@ return [
         );
       }
 
-      if (
-        s.price_key &&
-        PM[String(s.price_key)]
-      ) {
-        const [, , label] =
-          PM[String(s.price_key)];
+      if (s.price_key) {
+        const priceDefinition =
+          priceByKey.get(
+            String(s.price_key),
+          );
 
         parts.push(
-          `Price [${label}]`,
+          `Price [${
+            priceDefinition?.name ??
+            String(s.price_key)
+          }]`,
         );
       }
 

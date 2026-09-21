@@ -16,6 +16,9 @@ import {
 import {
   PriceTooltip,
 } from "@/components/warping/price-tooltip";
+import {
+  useWarpingPrices,
+} from "@/lib/warping/use-warping-prices";
 
 export type ShapeCard =
   Record<string, any> & {
@@ -75,25 +78,6 @@ const SAVE_LABELS:
     resist_shrewd: "Resist · Shrewd",
     resist_brains: "Resist · Brains",
     resist_presence: "Resist · Presence",
-  };
-
-const PRICE_LABELS:
-  Record<string, string> = {
-    cinder_eyes: "Cinder Eyes",
-    luminous_veins: "Luminous Veins",
-    cinderblood: "Cinderblood",
-    dreamtouched: "Dreamtouched",
-    beastmarked: "Beastmarked",
-    bloomwake: "Bloomwake",
-    witherwake: "Witherwake",
-    upstream: "Upstream",
-    unbound_shadow: "Unbound Shadow",
-    starbound: "Starbound",
-    false_remembrance: "False Remembrance",
-    current_sighted: "Current-Sighted",
-    godwhispered: "Godwhispered",
-    realitys_misstep: "Reality's Misstep",
-    unmoored: "Unmoored",
   };
 
 function durationLabel(shape: ShapeCard) {
@@ -409,6 +393,23 @@ function ShapeArticle({
 }: {
   shape: ShapeCard;
 }) {
+  const priceDefinitions =
+    useWarpingPrices();
+
+  const priceNames =
+    useMemo(
+      () =>
+        new Map(
+          priceDefinitions.map(
+            (price) => [
+              price.key,
+              price.name,
+            ],
+          ),
+        ),
+      [priceDefinitions],
+    );
+
   const backgroundImage =
     shapeBackgroundImage(shape.level);
 
@@ -534,7 +535,7 @@ function ShapeArticle({
                 {shape.price_key ? (
                   <PriceTooltip priceKey={shape.price_key}>
                     <span className="underline decoration-dotted underline-offset-2 components_warping_shapes_catalogue_span_text_8">
-                      {PRICE_LABELS[shape.price_key] ?? pretty(shape.price_key)}
+                      {priceNames.get(shape.price_key) ?? pretty(shape.price_key)}
                     </span>
                   </PriceTooltip>
                 ) : (

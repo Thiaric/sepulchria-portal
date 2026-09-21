@@ -1,5 +1,3 @@
-import { WARPING_PRICE_DEFINITIONS } from "@/lib/warping/price-definitions";
-
 export const WARPING_SCHOOLS = [
   ["embercraft","Embercraft"],["vitalcraft","Vitalcraft"],["mindcraft","Mindcraft"],
   ["veilcraft","Veilcraft"],["waycraft","Waycraft"],["bondcraft","Bondcraft"],["runecraft","Runecraft"],
@@ -39,12 +37,5 @@ export const SAVES = [
   ["resist_vigour","Resist (Physical) — Vigour"],["resist_shrewd","Resist (Shrewd) — Shrewd"],
   ["resist_brains","Resist (Brains) — Brains"],["resist_presence","Resist (Presence) — Presence"],
 ] as const;
-
-export const PRICES = WARPING_PRICE_DEFINITIONS.map(
-  (price) => [
-    price.key,
-    `${price.name} — Stage ${price.stageLabel} — ${price.durationDays} days`,
-  ] as const,
-);
 
 export const wordOfPower = (e:string,a:string,l:string) => `${e}${a}${l}`;
