@@ -426,7 +426,7 @@ export function SepulchriaHomepage({
               aria-label="Footer navigation"
               className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-[8px] uppercase tracking-[0.18em] sm:justify-end [&_a]:uppercase [&_button]:uppercase components_homepage_sepulchria_homepage_nav_footer_navigation"
             >
-              <Link href="#">
+              <Link href="https://discord.gg/pNbpsRQV9" target="_new">
                 Discord
               </Link>
 

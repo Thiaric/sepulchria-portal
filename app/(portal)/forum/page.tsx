@@ -497,7 +497,7 @@ function CompactForumSection({
   return (
     <Link
       href={`/forum/${section.slug}`}
-      className={`group relative block overflow-hidden px-5 py-5 transition sm:px-6 ${
+      className={`group relative block overflow-hidden px-5 py-2 transition sm:px-6 ${
         hasUnreadTopics
           ? "bg-[rgb(var(--sep-colour-1d140d))] shadow-[inset_3px_0_0_#a87532]"
           : "hover:bg-[rgb(var(--sep-colour-1a130e))]"

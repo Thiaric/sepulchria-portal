@@ -6,6 +6,7 @@ import { hasEnvVars } from "../utils";
 const PUBLIC_ROUTES = [
   "/",
   "/homepage",
+  "/early-alpha-rewards",
   "/codex",
   "/rules",
   "/terms",
