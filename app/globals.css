@@ -20853,7 +20853,8 @@ button.components_characters_character_sheet_tabs_button_tab {
 .areas_slug_page_section_section_2,
 .components_portal_portal_appearance_modal_section_dialog,
 .layout_main_main,
-.components_portal_interactive_world_map_div_container_3 {
+.components_portal_interactive_world_map_div_container_3,
+.components_auth_page_shell_main_main {
   background-image:
     linear-gradient(
       rgb(var(--sep-colour-100d0b) / 80%),
