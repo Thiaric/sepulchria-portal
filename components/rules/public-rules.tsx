@@ -46,7 +46,37 @@ export function PublicRules({
   embedded = false,
 }: PublicRulesProps) {
   const firstRule =
-    data.rules[0] ?? null;
+  [...data.rules]
+    .sort((a, b) => {
+      const categoryA =
+        data.categories.find(
+          (category) =>
+            category.id ===
+            a.category_id,
+        );
+
+      const categoryB =
+        data.categories.find(
+          (category) =>
+            category.id ===
+            b.category_id,
+        );
+
+      const categoryComparison =
+        (categoryA?.sort_order ?? 0) -
+        (categoryB?.sort_order ?? 0);
+
+      if (
+        categoryComparison !== 0
+      ) {
+        return categoryComparison;
+      }
+
+      return (
+        (a.sort_order ?? 0) -
+        (b.sort_order ?? 0)
+      );
+    })[0] ?? null;
 
   const startInGlossary =
     initialView === "glossary";
@@ -74,12 +104,12 @@ export function PublicRules({
   ] = useState(startInGlossary);
 
   const selectedRule =
-    data.rules.find(
-      (rule) =>
-        rule.id === selectedRuleId,
-    ) ??
-    data.rules[0] ??
-    null;
+  data.rules.find(
+    (rule) =>
+      rule.id === selectedRuleId,
+  ) ??
+  firstRule ??
+  null;
 
   const normalizedQuery =
     query.trim().toLowerCase();

@@ -158,7 +158,9 @@ export default async function AdminShapesPage({searchParams}:Props){
     await Promise.all([
       db
         .from("shapes")
-        .select("id,name,level,school,word_of_power,is_active")
+        .select(
+  "id,name,level,school,word_of_power,essence_word,action_word,law_word,movement,target_mode,target_scope,max_targets,is_instantaneous,duration_amount,duration_unit,price_key,description,is_active",
+)
         .order("level")
         .order("name"),
       db
@@ -405,37 +407,195 @@ export default async function AdminShapesPage({searchParams}:Props){
               const selected=
                 selectedShapeId===shape.id;
 
-              return (
-                <a
-                  key={shape.id}
-                  id={`shape-card-${shape.id}`}
-                  href={`/admin/shapes?shape=${shape.id}#shape-editor`}
-                  className={[
-                    `block border bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 transition hover:bg-[rgb(var(--sep-colour-1c140e))] ${shapeSchoolBorderClass(shape.school)}`,
-                    selected
-                      ?"ring-1 ring-[rgb(var(--sep-colour-a17a49))]/70"
-                      :"",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                >
-                  <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8c704b))]">
-                    Level {shape.level} · {shape.school} · {shape.word_of_power}
-                  </p>
+              const price =
+  prices.find(
+    (entry) =>
+      entry.key === shape.price_key,
+  );
 
-                  <div className="mt-1 flex items-center justify-between gap-3">
-                    <h2 className="truncate font-serif text-lg text-[rgb(var(--sep-colour-dfc99f))] admin_shapes_page_h2_text">
-                      {shape.name}
-                    </h2>
+const duration =
+  shape.is_instantaneous
+    ? "Instantaneous"
+    : shape.duration_unit ===
+        "until_dispelled"
+      ? "Until Dispelled"
+      : `${shape.duration_amount ?? 1} ${
+          shape.duration_unit ?? "minutes"
+        }`;
 
-                    <span className="shrink-0 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806b50))]">
-                      {shape.is_active
-                        ?"Active"
-                        :"Inactive"}
-                    </span>
-                  </div>
-                </a>
-              );
+const target =
+  shape.target_mode === "self"
+    ? "Self"
+    : shape.target_mode === "other"
+      ? "Other"
+      : shape.target_mode === "either"
+        ? "Self / Other"
+        : "Written / Fate";
+
+return (
+  <div
+    key={shape.id}
+    className="group relative"
+  >
+    <a
+      id={`shape-card-${shape.id}`}
+      href={`/admin/shapes?shape=${shape.id}#shape-editor`}
+      className={[
+        `block border bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 transition hover:bg-[rgb(var(--sep-colour-1c140e))] ${shapeSchoolBorderClass(
+          shape.school,
+        )}`,
+        selected
+          ? "ring-1 ring-[rgb(var(--sep-colour-a17a49))]/70"
+          : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
+      <p className="text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-8c704b))]">
+        Level {shape.level} ·{" "}
+        {shape.school} ·{" "}
+        {shape.word_of_power}
+      </p>
+
+      <div className="mt-1 flex items-center justify-between gap-3">
+        <h2 className="truncate font-serif text-lg text-[rgb(var(--sep-colour-dfc99f))] admin_shapes_page_h2_text">
+          {shape.name}
+        </h2>
+
+        <span className="shrink-0 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806b50))]">
+          {shape.is_active
+            ? "Active"
+            : "Inactive"}
+        </span>
+      </div>
+    </a>
+
+    <div
+      className="
+        pointer-events-none
+        absolute
+        bottom-[calc(100%+8px)]
+        left-1/2
+        z-50
+        hidden
+        w-[340px]
+        -translate-x-1/2
+        border
+        border-[rgb(var(--sep-colour-765937))]/70
+        bg-[rgb(var(--sep-colour-0f0b09))]
+        p-4
+        shadow-[0_18px_50px_rgba(0,0,0,.75)]
+        group-hover:block
+      "
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-[7px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-8c704b))]">
+            Level {shape.level} ·{" "}
+            {shape.school}
+          </p>
+
+          <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dfc99f))]">
+            {shape.name}
+          </h3>
+        </div>
+
+        <span
+          className={[
+            "shrink-0 border px-2 py-1 text-[7px] uppercase tracking-[0.12em]",
+            shape.is_active
+              ? "border-emerald-900/60 text-emerald-400"
+              : "border-red-900/50 text-red-400",
+          ].join(" ")}
+        >
+          {shape.is_active
+            ? "Active"
+            : "Inactive"}
+        </span>
+      </div>
+
+      {shape.description ? (
+        <p className="mt-3 whitespace-pre-wrap text-[10px] leading-5 text-[rgb(var(--sep-colour-a99b89))]">
+  {shape.description}
+</p>
+      ) : null}
+
+      <div className="mt-4 grid grid-cols-2 gap-2">
+        <div className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] p-2">
+          <p className="text-[6px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
+            Words
+          </p>
+
+          <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-c6ae88))]">
+            {[
+              shape.essence_word,
+              shape.action_word,
+              shape.law_word,
+            ]
+              .filter(Boolean)
+              .join(" · ") ||
+              shape.word_of_power}
+          </p>
+        </div>
+
+        <div className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] p-2">
+          <p className="text-[6px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
+            Movement
+          </p>
+
+          <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-c6ae88))]">
+            {shape.movement ?? "—"}
+          </p>
+        </div>
+
+        <div className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] p-2">
+          <p className="text-[6px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
+            Target
+          </p>
+
+          <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-c6ae88))]">
+            {target}
+            {shape.target_scope ===
+              "multiple" &&
+            shape.max_targets
+              ? ` · up to ${shape.max_targets}`
+              : ""}
+          </p>
+        </div>
+
+        <div className="border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] p-2">
+          <p className="text-[6px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
+            Duration
+          </p>
+
+          <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-c6ae88))]">
+            {duration}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-2 border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] p-2">
+        <p className="text-[6px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
+          Price
+        </p>
+
+        <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-c6ae88))]">
+          {price
+            ? `${price.name} · Stage ${
+                price.stage === 1
+                  ? "I"
+                  : price.stage === 2
+                    ? "II"
+                    : "III"
+              }`
+            : "None"}
+        </p>
+      </div>
+
+      <div className="absolute -bottom-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 border-b border-r border-[rgb(var(--sep-colour-765937))]/70 bg-[rgb(var(--sep-colour-0f0b09))]" />
+    </div>
+  </div>
+);
             })}
           </div>
         </section>

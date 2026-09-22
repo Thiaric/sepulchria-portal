@@ -442,7 +442,7 @@ function ShapeArticle({
     backgroundPosition: "center calc(100% - 2px)",
     backgroundRepeat: "no-repeat",
   }}
-  className={[((`relative min-h-[430px] scroll-mt-4 overflow-hidden border bg-[rgb(var(--sep-colour-18110c))] p-4 transition-[border-color,box-shadow] duration-200 ${shapeSchoolBorderClass(
+  className={[((`relative min-h-[300px] scroll-mt-4 overflow-hidden border bg-[rgb(var(--sep-colour-18110c))] p-4 transition-[border-color,box-shadow] duration-200 ${shapeSchoolBorderClass(
     shape.school,
   )}`)), "components_warping_shapes_catalogue_article_article"].filter(Boolean).join(" ")}
 >
@@ -457,8 +457,6 @@ function ShapeArticle({
               </p>
 
               <p className="mt-1 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-776957))] components_warping_shapes_catalogue_p_text_11">
-                Level {shape.level}
-                {" · "}
                 {pretty(shape.school)}
                 {" · "}
                 {shape.word_of_power}
@@ -466,6 +464,16 @@ function ShapeArticle({
                 {pretty(shape.movement)}
                 {" · "}
                 {durationLabel(shape)}
+                {shape.price_key ? ( " · Price: " ) : ("") }
+                {shape.price_key ? (
+                      <PriceTooltip priceKey={shape.price_key}>
+                        <span className="underline decoration-dotted underline-offset-2 components_warping_shapes_catalogue_span_text_8">
+                          {priceNames.get(shape.price_key) ?? pretty(shape.price_key)}
+                        </span>
+                      </PriceTooltip>
+                    ) : (
+                      ""
+                    )}
               </p>
             </div>
 
@@ -499,105 +507,93 @@ function ShapeArticle({
           {shape.extended_description?.trim() ? (
             <ShapeExtendedDescription
               body={shape.extended_description}
-            />
-          ) : null}
-
-          <div className="mt-2 grid grid-cols-2 gap-1.5 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-2 sm:grid-cols-3 components_warping_shapes_catalogue_div_container_14">
-            <div className="min-w-0 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-2 components_warping_shapes_catalogue_div_container_15">
-              <p className="text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806a4c))] components_warping_shapes_catalogue_p_text_14">
-                Words
-              </p>
-              <p className="mt-1 break-words text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))] components_warping_shapes_catalogue_p_text_15">
-                {[
-                  pretty(shape.essence_word),
-                  pretty(shape.action_word),
-                  pretty(shape.law_word),
-                ].join(" · ")}
-              </p>
-            </div>
-
-            <div className="min-w-0 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-2 components_warping_shapes_catalogue_div_container_16">
-              <p className="text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806a4c))] components_warping_shapes_catalogue_p_text_16">
-                Components
-              </p>
-              <p className="mt-1 break-words text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))] components_warping_shapes_catalogue_p_text_17">
-                {shape.requires_verbal ? "Verbal" : "No verbal"}
-                {" · "}
-                {shape.requires_movement ? "Movement" : "No movement"}
-              </p>
-            </div>
-
-            <div className="min-w-0 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-2 components_warping_shapes_catalogue_div_container_17">
-              <p className="text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806a4c))] components_warping_shapes_catalogue_p_text_18">
-                Price
-              </p>
-              <p className="mt-1 break-words text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))] components_warping_shapes_catalogue_p_text_19">
-                {shape.price_key ? (
-                  <PriceTooltip priceKey={shape.price_key}>
-                    <span className="underline decoration-dotted underline-offset-2 components_warping_shapes_catalogue_span_text_8">
-                      {priceNames.get(shape.price_key) ?? pretty(shape.price_key)}
-                    </span>
-                  </PriceTooltip>
-                ) : (
-                  "None"
-                )}
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-3 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-2.5 components_warping_shapes_catalogue_div_container_18">
-            <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))] components_warping_shapes_catalogue_p_text_20">
-              Effects
-            </p>
-
-            <div className="mt-2 grid gap-2 components_warping_shapes_catalogue_div_container_19">
-              {hasSelf ? (
-                <ProfileCard
-                  shape={shape}
-                  profile="self"
-                  title="Self Effect"
-                  subtitle="Applied when the caster is the recipient."
-                />
-              ) : null}
-
-              {hasOther ? (
-                <ProfileCard
-                  shape={shape}
-                  profile="other"
-                  title={
-                    shape.other_alternative_enabled
-                      ? "Beneficial Other Effect"
-                      : "Other Effect"
-                  }
-                  subtitle={
-                    shape.other_alternative_enabled
-                      ? "Chosen independently for each Other target."
-                      : "Applied to another Character."
-                  }
-                />
-              ) : null}
-
-              {hasOther && shape.other_alternative_enabled ? (
-                <ProfileCard
-                  shape={shape}
-                  profile="other_alt"
-                  title="Harmful Other Effect"
-                  subtitle="Chosen independently for each Other target."
-                />
-              ) : null}
-
-              {shape.target_mode === "written" ? (
-                <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 components_warping_shapes_catalogue_div_container_20">
-                  <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))] components_warping_shapes_catalogue_p_text_21">
-                    Written / Fate
+            >
+              <div className="mt-2 grid grid-cols-2 gap-1.5 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-2 sm:grid-cols-3 components_warping_shapes_catalogue_div_container_14">
+                <div className="min-w-0 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-2 components_warping_shapes_catalogue_div_container_15">
+                  <p className="text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806a4c))] components_warping_shapes_catalogue_p_text_14">
+                    Words
                   </p>
-                  <p className="mt-1 text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))] components_warping_shapes_catalogue_p_text_22">
-                    Resolved narratively through its Written / Fate target.
+
+                  <p className="mt-1 break-words text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))] components_warping_shapes_catalogue_p_text_15">
+                    {[
+                      pretty(shape.essence_word),
+                      pretty(shape.action_word),
+                      pretty(shape.law_word),
+                    ].join(" · ")}
                   </p>
                 </div>
-              ) : null}
-            </div>
-          </div>
+
+                <div className="min-w-0 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-2 components_warping_shapes_catalogue_div_container_16">
+                  <p className="text-[6px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-806a4c))] components_warping_shapes_catalogue_p_text_16">
+                    Components
+                  </p>
+
+                  <p className="mt-1 break-words text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))] components_warping_shapes_catalogue_p_text_17">
+                    {shape.requires_verbal ? "Verbal" : "No verbal"}
+                    {" · "}
+                    {shape.requires_movement ? "Movement" : "No movement"}
+                  </p>
+                </div>
+
+                
+              </div>
+
+              <div className="mt-3 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-2.5 components_warping_shapes_catalogue_div_container_18">
+                <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))] components_warping_shapes_catalogue_p_text_20">
+                  Effects
+                </p>
+
+                <div className="mt-2 grid gap-2 components_warping_shapes_catalogue_div_container_19">
+                  {hasSelf ? (
+                    <ProfileCard
+                      shape={shape}
+                      profile="self"
+                      title="Effect on Self"
+                      subtitle="Applied when the caster is the recipient."
+                    />
+                  ) : null}
+
+                  {hasOther ? (
+                    <ProfileCard
+                      shape={shape}
+                      profile="other"
+                      title={
+                        shape.other_alternative_enabled
+                          ? "Beneficial Effect on Others"
+                          : "Effect on Others"
+                      }
+                      subtitle={
+                        shape.other_alternative_enabled
+                          ? "Chosen independently for each Other target."
+                          : "Applied to another Character."
+                      }
+                    />
+                  ) : null}
+
+                  {hasOther && shape.other_alternative_enabled ? (
+                    <ProfileCard
+                      shape={shape}
+                      profile="other_alt"
+                      title="Harmful Other Effect"
+                      subtitle="Chosen independently for each Other target."
+                    />
+                  ) : null}
+
+                  {shape.target_mode === "written" ? (
+                    <div className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 components_warping_shapes_catalogue_div_container_20">
+                      <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))] components_warping_shapes_catalogue_p_text_21">
+                        Written / Fate
+                      </p>
+
+                      <p className="mt-1 text-[8px] leading-4 text-[rgb(var(--sep-colour-b8a382))] components_warping_shapes_catalogue_p_text_22">
+                        Resolved narratively through its Written / Fate target.
+                      </p>
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            </ShapeExtendedDescription>
+          ) : null}
 
           <div className="mt-3 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-2.5 components_warping_shapes_catalogue_div_container_21">
             <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))] components_warping_shapes_catalogue_p_text_23">
