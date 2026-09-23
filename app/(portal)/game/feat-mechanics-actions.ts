@@ -335,7 +335,7 @@ export async function useMechanicalFeat(
       immediate.message,
     ].filter(Boolean);
 
-    const messageInsert = await admin
+    const messageInsert = await supabase
       .from("room_messages")
       .insert({
         room_id: character.current_room_id,

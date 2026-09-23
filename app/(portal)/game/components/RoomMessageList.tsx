@@ -1735,22 +1735,39 @@ for(const row of priceResult.data??[]){
   }
 
   function conditionSnapshotHeaderText(
-    snapshot:
-      | {
-          label: string;
-        }[]
-      | null
-      | undefined,
-    metadataColour?: string,
-  ) {
-    const labels =
-      (snapshot ?? [])
-        .map((entry) =>
-          String(
-            entry?.label ?? "",
-          ).trim(),
-        )
-        .filter(Boolean);
+  snapshot:
+    | {
+        label: string;
+      }[]
+    | null
+    | undefined,
+  metadataColour?: string,
+  activeConditions: string[] = [],
+) {
+  const activeSet =
+    new Set(
+      activeConditions.map((label) =>
+        label.trim().toLowerCase(),
+      ),
+    );
+
+  const labels =
+    Array.from(
+      new Set(
+        (snapshot ?? [])
+          .map((entry) =>
+            String(
+              entry?.label ?? "",
+            ).trim(),
+          )
+          .filter(Boolean),
+      ),
+    ).filter(
+      (label) =>
+        !activeSet.has(
+          label.toLowerCase(),
+        ),
+    );
 
     if (!labels.length) {
       return null;
@@ -2555,16 +2572,19 @@ for(const row of priceResult.data??[]){
                             : null}
 
                           {conditionSnapshotHeaderText(
-                            [
-                              ...(item.condition_snapshot ?? []),
-                              ...(messageEffectConditions[item.id] ?? []).map(
-                                (label) => ({ label }),
-                              ),
-                            ],
-                            privateLocationTheme
-                              ? privateLocationTheme.offgameTextColour
-                              : "rgb(var(--sep-colour-d3c2aa))",
-                          )}
+  [
+    ...(item.condition_snapshot ?? []),
+    ...(messageEffectConditions[item.id] ?? []).map(
+      (label) => ({ label }),
+    ),
+  ],
+  privateLocationTheme
+    ? privateLocationTheme.offgameTextColour
+    : "rgb(var(--sep-colour-d3c2aa))",
+  author
+    ? activeShapeTags[author.id]?.conditions ?? []
+    : [],
+)}
 
                           <br />
 
@@ -2771,15 +2791,19 @@ for(const row of priceResult.data??[]){
                         : null}
 
                       {!isNpcMessage
-                        ? conditionSnapshotHeaderText(
-                            [
-                              ...(item.condition_snapshot ?? []),
-                              ...(messageEffectConditions[item.id] ?? []).map(
-                                (label) => ({ label }),
-                              ),
-                            ],
-                          )
-                        : null}
+  ? conditionSnapshotHeaderText(
+      [
+        ...(item.condition_snapshot ?? []),
+        ...(messageEffectConditions[item.id] ?? []).map(
+          (label) => ({ label }),
+        ),
+      ],
+      undefined,
+      author
+        ? activeShapeTags[author.id]?.conditions ?? []
+        : [],
+    )
+  : null}
 
                       <br />
 

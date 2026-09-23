@@ -399,7 +399,7 @@ export function GameContextPanel({
       <section className="mt-1 flex min-h-0 flex-1 flex-col border-[rgb(var(--sep-colour-59432c))]/40 pt-0 components_portal_game_context_panel_section_section">
         <div className="flex shrink-0 items-center justify-between gap-3 components_portal_game_context_panel_div_container_2">
           <div className="min-w-0 components_portal_game_context_panel_div_container_3">
-            <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-876a46))] components_portal_game_context_panel_p_text_2">
+            <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-skin-c1))] components_portal_game_context_panel_p_text_2">
               Present in this Location
             </p>
 
@@ -551,7 +551,7 @@ export function GameContextPanel({
       <section className="mt-[4px] max-h-48 shrink-0 border-t border-[rgb(var(--sep-colour-59432c))]/40 pt-[4px] components_portal_game_context_panel_section_section_2">
         <div className="flex items-end justify-between gap-3 components_portal_game_context_panel_div_container_13">
           <div className="components_portal_game_context_panel_div_container_14">
-            <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-876a46))] components_portal_game_context_panel_p_text_4">
+            <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-skin-c1))] components_portal_game_context_panel_p_text_4">
               Journey to...
             </p>
 
