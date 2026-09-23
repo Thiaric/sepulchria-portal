@@ -15,6 +15,7 @@ import {
   removeGiftOwnershipHealthEffects,
 } from "@/lib/gifts/gift-health-effects";
 import { createClient } from "@/lib/supabase/server";
+import { wordOfPower } from "@/lib/warping/constants";
 
 function requiredText(formData: FormData, name: string, label: string) {
   const value = formData.get(name);
@@ -391,6 +392,341 @@ function giftValues(formData: FormData) {
   };
 }
 
+function prefixedText(formData: FormData, name: string) {
+  return optionalText(formData, `mechanics_${name}`);
+}
+
+function prefixedInt(
+  formData: FormData,
+  name: string,
+  fallback = 0,
+) {
+  return integer(formData, `mechanics_${name}`, fallback);
+}
+
+function prefixedAll(formData: FormData, name: string) {
+  return formData.getAll(`mechanics_${name}`).map(String);
+}
+
+function prefixedCsv(formData: FormData, name: string) {
+  return (prefixedText(formData, name) ?? "")
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean);
+}
+
+function shapeStylePayload(
+  formData: FormData,
+  giftId: string,
+  values: ReturnType<typeof giftValues>,
+) {
+  const targetMode =
+    prefixedText(formData, "target_mode") ??
+    values.target_mode ??
+    "self";
+
+  const targetScope =
+    prefixedText(formData, "target_scope") ??
+    "single";
+
+  const durationMode =
+    prefixedText(formData, "duration_mode") ??
+    "instantaneous";
+
+  const instantaneous = durationMode === "instantaneous";
+  const durationUnit = instantaneous ? "minutes" : durationMode;
+
+  const otherAlternative =
+    targetMode !== "self" &&
+    formData.get("mechanics_other_alternative_enabled") === "on";
+
+  const resolution = (
+    profile: "self" | "other" | "other_alt",
+    fallback: "automatic" | "save",
+  ) =>
+    prefixedText(formData, `${profile}_resolution_mode`) ??
+    fallback;
+
+  const selfResolution = resolution("self", "automatic");
+  const otherResolution = resolution("other", "automatic");
+  const otherAltResolution = resolution("other_alt", "save");
+
+  const profileFields = (
+    profile: "self" | "other" | "other_alt",
+    enabled = true,
+  ) => ({
+    [`${profile}_damage_dice`]:
+      enabled
+        ? prefixedText(formData, `${profile}_damage_dice`)
+        : null,
+    [`${profile}_damage_attribute`]:
+      enabled
+        ? prefixedText(formData, `${profile}_damage_attribute`)
+        : null,
+    [`${profile}_heal_dice`]:
+      enabled
+        ? prefixedText(formData, `${profile}_heal_dice`)
+        : null,
+    [`${profile}_heal_attribute`]:
+      enabled
+        ? prefixedText(formData, `${profile}_heal_attribute`)
+        : null,
+    [`${profile}_max_hp_change`]:
+      enabled
+        ? prefixedText(formData, `${profile}_max_hp_change`)
+        : null,
+    [`${profile}_conditions`]:
+      enabled
+        ? prefixedCsv(formData, `${profile}_conditions`)
+        : [],
+    [`${profile}_muscles_modifier`]:
+      enabled
+        ? prefixedInt(formData, `${profile}_muscles_modifier`)
+        : 0,
+    [`${profile}_reflexes_modifier`]:
+      enabled
+        ? prefixedInt(formData, `${profile}_reflexes_modifier`)
+        : 0,
+    [`${profile}_vigour_modifier`]:
+      enabled
+        ? prefixedInt(formData, `${profile}_vigour_modifier`)
+        : 0,
+    [`${profile}_brains_modifier`]:
+      enabled
+        ? prefixedInt(formData, `${profile}_brains_modifier`)
+        : 0,
+    [`${profile}_shrewd_modifier`]:
+      enabled
+        ? prefixedInt(formData, `${profile}_shrewd_modifier`)
+        : 0,
+    [`${profile}_presence_modifier`]:
+      enabled
+        ? prefixedInt(formData, `${profile}_presence_modifier`)
+        : 0,
+  });
+
+  const essence = "Pyr";
+  const action = "Creo";
+  const law = "Eos";
+
+  return {
+    feat_id: giftId,
+    is_feat_backing: true,
+    name: values.name,
+    description: values.description,
+    extended_description: null,
+    level: 1,
+    school: "embercraft",
+    essence_word: essence,
+    action_word: action,
+    law_word: law,
+    word_of_power: wordOfPower(essence, action, law),
+    movement: "projection",
+    requires_verbal: false,
+    requires_movement: false,
+
+    resolution_mode: otherResolution,
+    dc_attribute:
+      otherResolution === "save"
+        ? prefixedText(formData, "other_dc_attribute")
+        : null,
+    save_options:
+      otherResolution === "save"
+        ? prefixedAll(formData, "other_save_options")
+        : [],
+    save_success_damage:
+      otherResolution === "save"
+        ? prefixedText(formData, "other_save_success_damage") ?? "none"
+        : "none",
+
+    self_resolution_mode: selfResolution,
+    self_dc_attribute:
+      selfResolution === "save"
+        ? prefixedText(formData, "self_dc_attribute")
+        : null,
+    self_save_options:
+      selfResolution === "save"
+        ? prefixedAll(formData, "self_save_options")
+        : [],
+    self_save_success_damage:
+      selfResolution === "save"
+        ? prefixedText(formData, "self_save_success_damage") ?? "none"
+        : "none",
+
+    other_resolution_mode: otherResolution,
+    other_dc_attribute:
+      otherResolution === "save"
+        ? prefixedText(formData, "other_dc_attribute")
+        : null,
+    other_save_options:
+      otherResolution === "save"
+        ? prefixedAll(formData, "other_save_options")
+        : [],
+    other_save_success_damage:
+      otherResolution === "save"
+        ? prefixedText(formData, "other_save_success_damage") ?? "none"
+        : "none",
+
+    other_alt_resolution_mode: otherAltResolution,
+    other_alt_dc_attribute:
+      otherAlternative && otherAltResolution === "save"
+        ? prefixedText(formData, "other_alt_dc_attribute")
+        : null,
+    other_alt_save_options:
+      otherAlternative && otherAltResolution === "save"
+        ? prefixedAll(formData, "other_alt_save_options")
+        : [],
+    other_alt_save_success_damage:
+      otherAlternative && otherAltResolution === "save"
+        ? prefixedText(formData, "other_alt_save_success_damage") ?? "none"
+        : "none",
+
+    target_mode: targetMode,
+    target_scope:
+      targetMode === "self" ? "single" : targetScope,
+    max_targets:
+      targetMode === "self" || targetScope !== "multiple"
+        ? 1
+        : Math.max(2, prefixedInt(formData, "max_targets", 2)),
+
+    effect_nature:
+      prefixedText(formData, "effect_nature") ?? "harmful",
+    is_instantaneous: instantaneous,
+    duration_unit: durationUnit,
+    duration_amount:
+      instantaneous || durationUnit === "until_dispelled"
+        ? null
+        : Math.max(1, prefixedInt(formData, "duration_amount", 1)),
+
+    is_dispel:
+      formData.get(
+        "mechanics_is_dispel",
+      ) === "on",
+    price_key: null,
+    damage_type:
+      prefixedText(formData, "damage_type") ??
+      values.damage_type ??
+      null,
+
+    ...profileFields("self"),
+    ...profileFields("other"),
+    ...profileFields("other_alt", otherAlternative),
+
+    other_alternative_enabled: otherAlternative,
+
+    min_muscles: null,
+    min_reflexes: null,
+    min_vigour: null,
+    min_brains: null,
+    min_shrewd: null,
+    min_presence: null,
+
+    is_active: values.is_active,
+    updated_at: new Date().toISOString(),
+  };
+}
+
+function validateShapeStylePayload(
+  payload: any,
+) {
+  if (
+    (payload.target_mode === "other" ||
+      payload.target_mode === "either") &&
+    payload.other_resolution_mode === "save" &&
+    payload.other_save_options.length === 0
+  ) {
+    throw new Error(
+      "The normal/Beneficial Other effect requires at least one Save option.",
+    );
+  }
+
+  if (
+    payload.other_alternative_enabled &&
+    payload.other_alt_resolution_mode === "save" &&
+    payload.other_alt_save_options.length === 0
+  ) {
+    throw new Error(
+      "The Harmful Other effect requires at least one Save option.",
+    );
+  }
+
+  const persistent =
+    payload.self_conditions.length ||
+    payload.other_conditions.length ||
+    payload.other_alt_conditions.length ||
+    [
+      payload.self_max_hp_change,
+      payload.other_max_hp_change,
+      payload.other_alt_max_hp_change,
+      payload.self_muscles_modifier,
+      payload.self_reflexes_modifier,
+      payload.self_vigour_modifier,
+      payload.self_brains_modifier,
+      payload.self_shrewd_modifier,
+      payload.self_presence_modifier,
+      payload.other_muscles_modifier,
+      payload.other_reflexes_modifier,
+      payload.other_vigour_modifier,
+      payload.other_brains_modifier,
+      payload.other_shrewd_modifier,
+      payload.other_presence_modifier,
+      payload.other_alt_muscles_modifier,
+      payload.other_alt_reflexes_modifier,
+      payload.other_alt_vigour_modifier,
+      payload.other_alt_brains_modifier,
+      payload.other_alt_shrewd_modifier,
+      payload.other_alt_presence_modifier,
+    ].some((value) =>
+      typeof value === "number" ? value !== 0 : Boolean(value),
+    );
+
+  if (payload.is_instantaneous && persistent) {
+    throw new Error(
+      "Instantaneous Feat mechanics cannot apply Conditions, Attribute modifiers or Max Health changes.",
+    );
+  }
+}
+
+async function syncGiftMechanics(
+  giftId: string,
+  formData: FormData,
+  values: ReturnType<typeof giftValues>,
+) {
+  const supabase = await createClient();
+  const payload = shapeStylePayload(formData, giftId, values);
+  validateShapeStylePayload(payload);
+
+  const existing = await supabase
+    .from("shapes")
+    .select("id")
+    .eq("feat_id", giftId)
+    .maybeSingle();
+
+  if (existing.error) throw new Error(existing.error.message);
+
+  if (existing.data) {
+    const update = await supabase
+      .from("shapes")
+      .update(payload)
+      .eq("id", existing.data.id);
+
+    if (update.error) {
+      throw new Error(
+        `Unable to save Shape-style Feat mechanics: ${update.error.message}`,
+      );
+    }
+    return;
+  }
+
+  const insert = await supabase.from("shapes").insert(payload);
+
+  if (insert.error) {
+    throw new Error(
+      `Unable to create Shape-style Feat mechanics: ${insert.error.message}`,
+    );
+  }
+}
+
 async function replaceEligibility(
   giftId: string,
   raceIds: string[],
@@ -496,6 +832,12 @@ export async function createGift(formData: FormData) {
     if (error || !data) throw new Error(error?.message ?? "Gift could not be created.");
 
     try {
+      await syncGiftMechanics(
+        data.id,
+        formData,
+        values,
+      );
+
       await replaceEligibility(
         data.id,
         allIds(formData, "raceIds"),
@@ -521,12 +863,21 @@ export async function updateGift(formData: FormData) {
     const giftId = requiredText(formData, "giftId", "Gift ID");
     if (!isUuid(giftId)) throw new Error("Invalid Gift.");
 
+    const values =
+      giftValues(formData);
+
     const { error } = await supabase
       .from("gifts")
-      .update(giftValues(formData))
+      .update(values)
       .eq("id", giftId);
 
     if (error) throw new Error(error.message);
+
+    await syncGiftMechanics(
+      giftId,
+      formData,
+      values,
+    );
 
     await replaceEligibility(
       giftId,

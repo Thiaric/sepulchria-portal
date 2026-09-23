@@ -28,13 +28,24 @@ export function DispelPicker({
     let active = true;
 
     async function load() {
-      const result = await db.rpc(
-        "get_character_active_shape_effects",
-        { p_character_id: targetCharacterId },
-      );
+      const result = await (db as any)
+        .from("character_effects")
+        .select("id,source_type,source_name,source_level,effect_nature,conditions,dispellable,expires_at")
+        .eq("target_character_id",targetCharacterId)
+        .eq("dispellable",true)
+        .is("ended_at",null)
+        .is("dispelled_at",null)
+        .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`);
 
       if (active) {
-        setEffects(result.data ?? []);
+        setEffects(
+          (result.data ?? [])
+            .map((effect: any) => ({
+              ...effect,
+              shape_name: effect.source_name,
+              shape_level: effect.source_level,
+            })),
+        );
       }
     }
 

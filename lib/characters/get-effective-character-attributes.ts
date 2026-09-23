@@ -1,7 +1,6 @@
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
-import { getCharacterShapeModifiers } from "@/lib/warping/get-character-shape-modifiers";
 import {
   getCharacterGiftAttributeModifiers,
 } from "@/lib/gifts/get-character-gift-modifiers";
@@ -9,8 +8,8 @@ import {
   getCharacterItemPassiveModifiers,
 } from "@/lib/items/get-character-item-modifiers";
 import {
-  getCharacterActiveItemModifiers,
-} from "@/lib/items/get-character-active-item-modifiers";
+  getCharacterActiveEffectModifiers,
+} from "@/lib/effects/get-character-active-effect-modifiers";
 
 export type CharacterAttributeValues = {
   muscles: number | null;
@@ -110,8 +109,7 @@ export async function getCharacterAttributeBreakdown(
     },
     giftModifiers,
     itemModifiers,
-    activeItemModifiers,
-    shapeModifiers,
+    activeEffectModifiers,
   ] = await Promise.all([
     supabase
       .from("characters")
@@ -146,8 +144,7 @@ export async function getCharacterAttributeBreakdown(
 
     getCharacterGiftAttributeModifiers(characterId),
     getCharacterItemPassiveModifiers(characterId),
-    getCharacterActiveItemModifiers(characterId),
-    getCharacterShapeModifiers(characterId),
+    getCharacterActiveEffectModifiers(characterId),
   ]);
 
   if (characterError) {
@@ -173,62 +170,67 @@ export async function getCharacterAttributeBreakdown(
   return {
     muscles: makeBreakdown(
       baseAttributes.muscles,
-      giftModifiers.muscles,
+      giftModifiers.muscles + activeEffectModifiers.feat.muscles,
       itemModifiers.muscles,
-      activeItemModifiers.muscles,
-      shapeModifiers.muscles,
+      activeEffectModifiers.item.muscles,
+      activeEffectModifiers.shape.muscles,
       ancestry?.muscles_modifier ?? 0,
       orderRole?.muscles_modifier ?? 0,
     ),
     reflexes: makeBreakdown(
       baseAttributes.reflexes,
-      giftModifiers.reflexes,
+      giftModifiers.reflexes + activeEffectModifiers.feat.reflexes,
       itemModifiers.reflexes,
-      activeItemModifiers.reflexes,
-      shapeModifiers.reflexes,
+      activeEffectModifiers.item.reflexes,
+      activeEffectModifiers.shape.reflexes,
       ancestry?.reflexes_modifier ?? 0,
       orderRole?.reflexes_modifier ?? 0,
     ),
     vigor: makeBreakdown(
       baseAttributes.vigor,
-      giftModifiers.vigor,
+      giftModifiers.vigor + activeEffectModifiers.feat.vigor,
       itemModifiers.vigor,
-      activeItemModifiers.vigor,
-      shapeModifiers.vigor,
+      activeEffectModifiers.item.vigor,
+      activeEffectModifiers.shape.vigor,
       ancestry?.vigour_modifier ?? 0,
       orderRole?.vigour_modifier ?? 0,
     ),
     brains: makeBreakdown(
       baseAttributes.brains,
-      giftModifiers.brains,
+      giftModifiers.brains + activeEffectModifiers.feat.brains,
       itemModifiers.brains,
-      activeItemModifiers.brains,
-      shapeModifiers.brains,
+      activeEffectModifiers.item.brains,
+      activeEffectModifiers.shape.brains,
       ancestry?.brains_modifier ?? 0,
       orderRole?.brains_modifier ?? 0,
     ),
     shrewd: makeBreakdown(
       baseAttributes.shrewd,
-      giftModifiers.shrewd,
+      giftModifiers.shrewd + activeEffectModifiers.feat.shrewd,
       itemModifiers.shrewd,
-      activeItemModifiers.shrewd,
-      shapeModifiers.shrewd,
+      activeEffectModifiers.item.shrewd,
+      activeEffectModifiers.shape.shrewd,
       ancestry?.shrewd_modifier ?? 0,
       orderRole?.shrewd_modifier ?? 0,
     ),
     presence_score: makeBreakdown(
       baseAttributes.presence_score,
-      giftModifiers.presence_score,
+      giftModifiers.presence_score + activeEffectModifiers.feat.presence_score,
       itemModifiers.presence_score,
-      activeItemModifiers.presence_score,
-      shapeModifiers.presence_score,
+      activeEffectModifiers.item.presence_score,
+      activeEffectModifiers.shape.presence_score,
       ancestry?.presence_modifier ?? 0,
       orderRole?.presence_modifier ?? 0,
     ),
-    giftMaxHealth: giftModifiers.maxHealth,
-    itemMaxHealth: itemModifiers.maxHealth,
-    activeItemMaxHealth: activeItemModifiers.maxHealth,
-    shapeMaxHealth: shapeModifiers.maxHealth,
+    giftMaxHealth:
+      giftModifiers.maxHealth +
+      activeEffectModifiers.feat.maxHealth,
+    itemMaxHealth:
+      itemModifiers.maxHealth,
+    activeItemMaxHealth:
+      activeEffectModifiers.item.maxHealth,
+    shapeMaxHealth:
+      activeEffectModifiers.shape.maxHealth,
   };
 }
 

@@ -30,6 +30,7 @@ export type GiftCard = {
   damageType: string | null;
   healthDelta: number;
   healthDice: string | null;
+  mechanicsShape?: Record<string, any> | null;
   maxHealthModifier: number;
   warpingAffinityModifier: number;
   warpsPerDayModifier: number;
@@ -116,6 +117,39 @@ function durationLabel(gift: GiftCard) {
   if (gift.effectMode === "none") return "Instantaneous";
   if (gift.durationMinutes === 0) return "Instantaneous";
   return gift.durationMinutes ? minutesLabel(gift.durationMinutes) : "Not set";
+}
+
+function mechanicalDurationLabel(
+  shape: Record<string, any>,
+) {
+  if (shape.is_instantaneous) return "Instantaneous";
+  if (shape.duration_unit === "until_dispelled") return "Until Dispelled";
+  return `${shape.duration_amount ?? 1} ${shape.duration_unit ?? "minutes"}`;
+}
+
+function mechanicalProfileSummary(
+  shape: Record<string, any>,
+  profile: "self" | "other" | "other_alt",
+) {
+  const values: string[] = [];
+
+  const damage = String(shape[`${profile}_damage_dice`] ?? "").trim();
+  if (damage) {
+    values.push(
+      `Damage ${damage}${shape.damage_type ? ` ${shape.damage_type}` : ""}`,
+    );
+  }
+
+  const healing = String(shape[`${profile}_heal_dice`] ?? "").trim();
+  if (healing) values.push(`Healing ${healing}`);
+
+  const conditions = Array.isArray(shape[`${profile}_conditions`])
+    ? shape[`${profile}_conditions`]
+    : [];
+
+  if (conditions.length) values.push(conditions.join(", "));
+
+  return values.join(" · ");
 }
 
 function typeLabels(gift: GiftCard) {
@@ -330,6 +364,52 @@ function FeatCard({
               }`}
             />
           </div>
+
+          {gift.mechanicsShape ? (
+            <div className="mt-3 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-2">
+              <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))]">
+                Advanced Mechanics
+              </p>
+
+              <div className="mt-2 grid gap-1.5 sm:grid-cols-2">
+                <RecapBox
+                  label="Target / Duration"
+                  value={`${gift.mechanicsShape.target_mode ?? "self"} · ${
+                    gift.mechanicsShape.target_scope === "multiple"
+                      ? `up to ${gift.mechanicsShape.max_targets ?? 1}`
+                      : "single"
+                  } · ${mechanicalDurationLabel(gift.mechanicsShape)}`}
+                />
+
+                <RecapBox
+                  label="Resolution"
+                  value={`Self: ${gift.mechanicsShape.self_resolution_mode ?? "automatic"} · Other: ${gift.mechanicsShape.other_resolution_mode ?? "automatic"}`}
+                />
+              </div>
+
+              {mechanicalProfileSummary(gift.mechanicsShape, "self") ? (
+                <p className="mt-2 text-[8px] leading-4 text-[rgb(var(--sep-colour-a99577))]">
+                  <b>Self:</b>{" "}
+                  {mechanicalProfileSummary(gift.mechanicsShape, "self")}
+                </p>
+              ) : null}
+
+              {mechanicalProfileSummary(gift.mechanicsShape, "other") ? (
+                <p className="mt-1 text-[8px] leading-4 text-[rgb(var(--sep-colour-a99577))]">
+                  <b>Other:</b>{" "}
+                  {mechanicalProfileSummary(gift.mechanicsShape, "other")}
+                </p>
+              ) : null}
+
+              {gift.mechanicsShape.other_alternative_enabled &&
+              mechanicalProfileSummary(gift.mechanicsShape, "other_alt") ? (
+                <p className="mt-1 text-[8px] leading-4 text-[rgb(var(--sep-colour-a99577))]">
+                  <b>Harmful Other:</b>{" "}
+                  {mechanicalProfileSummary(gift.mechanicsShape, "other_alt")}
+                </p>
+              ) : null}
+            </div>
+          ) : null}
 
           <div className="mt-3 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-2 components_gifts_gifts_catalogue_div_container_8">
             <p className="text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-806b50))] components_gifts_gifts_catalogue_p_text_7">

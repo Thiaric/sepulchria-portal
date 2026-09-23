@@ -20,6 +20,10 @@ export default async function WarpingPage() {
       "is_active",
       true,
     )
+    .eq(
+      "is_feat_backing",
+      false,
+    )
     .order("level")
     .order("name");
 

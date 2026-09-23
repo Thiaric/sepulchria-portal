@@ -161,6 +161,7 @@ export default async function AdminShapesPage({searchParams}:Props){
         .select(
   "id,name,level,school,word_of_power,essence_word,action_word,law_word,movement,target_mode,target_scope,max_targets,is_instantaneous,duration_amount,duration_unit,price_key,description,is_active",
 )
+        .eq("is_feat_backing", false)
         .order("level")
         .order("name"),
       db
@@ -227,6 +228,7 @@ export default async function AdminShapesPage({searchParams}:Props){
         .from("shapes")
         .select("*,assignments:character_shapes(id,character_id,acquisition_source,level_override),order_links:order_level_shapes(id,order_level_id)")
         .eq("id",selectedShapeId)
+        .eq("is_feat_backing",false)
         .maybeSingle(),
       db
         .from("characters")

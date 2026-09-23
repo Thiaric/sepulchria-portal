@@ -355,10 +355,11 @@ export async function updateShape(
 export async function deleteShape(f:FormData){
   await requireAdminSection("shapes"); const db=await createClient(); const id=txt(f,"shape_id");
 
-  const {count:effectCount,error:effectError}=await db
-    .from("character_shape_effects")
+  const {count:effectCount,error:effectError}=await (db as any)
+    .from("character_effects")
     .select("id",{count:"exact",head:true})
-    .eq("shape_id",id);
+    .eq("source_type","shape")
+    .eq("source_definition_id",id);
 
   if(effectError){
     redirect(`/admin/shapes?error=${encodeURIComponent(`Unable to inspect Shape effects: ${effectError.message}`)}`);

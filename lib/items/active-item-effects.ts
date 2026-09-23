@@ -1,6 +1,8 @@
 import "server-only";
 
-import { createClient } from "@/lib/supabase/server";
+import {
+  getCharacterActiveEffects,
+} from "@/lib/effects/active-effects";
 
 export type ActiveItemEffect = {
   id: string;
@@ -20,80 +22,61 @@ export type ActiveItemEffect = {
   expires_at: string;
 };
 
-function normalizeConditions(
-  value: unknown,
-): string[] {
-  if (Array.isArray(value)) {
-    return value
-      .map((entry) => String(entry).trim())
-      .filter(Boolean);
-  }
-
-  if (typeof value === "string") {
-    try {
-      const parsed = JSON.parse(value);
-
-      if (Array.isArray(parsed)) {
-        return parsed
-          .map((entry) => String(entry).trim())
-          .filter(Boolean);
-      }
-    } catch {
-      // Ignore malformed JSON and fall through.
-    }
-
-    return value
-      .replace(/^\{|\}$/g, "")
-      .split(",")
-      .map((entry) =>
-        entry
-          .replace(/^"|"$/g, "")
-          .trim(),
-      )
-      .filter(Boolean);
-  }
-
-  return [];
-}
-
 export async function getCharacterActiveItemEffects(
   characterId: string,
 ): Promise<ActiveItemEffect[]> {
-  const supabase = await createClient();
-
-  const { data, error } =
-    await supabase.rpc(
-      "get_character_active_item_effects_v2",
-      {
-        p_character_id:
-          characterId,
-      },
+  const rows =
+    await getCharacterActiveEffects(
+      characterId,
+      ["item"],
     );
 
-  if (error) {
-    throw new Error(
-      `Unable to load active Item effects: ${error.message}`,
-    );
-  }
-
-  return (data ?? []).map(
-    (row: any) => ({
-      ...row,
+  return rows.map(
+    row => ({
+      id:
+        row.id,
+      item_id:
+        row.source_definition_id ??
+        "",
+      source_name:
+        row.source_name,
       conditions:
-        normalizeConditions(
-          row.conditions,
-        ),
+        row.conditions,
+      muscles_modifier:
+        row.muscles_modifier,
+      reflexes_modifier:
+        row.reflexes_modifier,
+      vigour_modifier:
+        row.vigour_modifier,
+      brains_modifier:
+        row.brains_modifier,
+      shrewd_modifier:
+        row.shrewd_modifier,
+      presence_modifier:
+        row.presence_modifier,
+      max_health_modifier:
+        row.max_health_modifier,
+      warping_affinity_modifier:
+        row.warping_affinity_modifier,
+      warps_per_day_modifier:
+        row.warps_per_day_modifier,
+      activated_at:
+        row.starts_at,
+      expires_at:
+        row.expires_at ??
+        row.starts_at,
     }),
-  ) as ActiveItemEffect[];
+  );
 }
 
 export function itemEffectDuration(
-  effect: ActiveItemEffect,
+  effect:
+    ActiveItemEffect,
 ) {
   const ms =
-    new Date(
+    Date.parse(
       effect.expires_at,
-    ).getTime() -
+    ) -
     Date.now();
 
   if (ms <= 0) {
@@ -101,7 +84,9 @@ export function itemEffectDuration(
   }
 
   const minutes =
-    Math.ceil(ms / 60000);
+    Math.ceil(
+      ms / 60_000,
+    );
 
   if (minutes < 60) {
     return `${minutes}m remaining`;

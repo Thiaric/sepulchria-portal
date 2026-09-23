@@ -54,6 +54,8 @@ import { PendingOpposedActions } from "./PendingOpposedActions";
 import { PendingShapeResponses } from "./PendingShapeResponses";
 import { CharacterDeathGate } from "./CharacterDeathGate";
 import { WarpingPanel } from "./WarpingPanel";
+import { MechanicalFeatPanel } from "./MechanicalFeatPanel";
+import { EffectDispelPicker } from "./EffectDispelPicker";
 import { NpcControlPanel } from "./NpcControlPanel";
 import { CharacterConditionsEditor } from "@/components/characters/character-conditions-editor";
 import {
@@ -141,6 +143,7 @@ cooldownReadyAt: string | null;
   successAttribute?: CharacterAttributeKey | null;
   damageDice?: string | null;
   damageType?: string | null;
+  isDispel?: boolean;
   categorySlug?: string | null;
   isEquipped?: boolean;
   equippedSlot?: string | null;
@@ -180,6 +183,7 @@ type ChatGift = {
   cooldownMinutes: number;
   healthDelta: number;
   healthDice: string | null;
+  mechanicsShape: Record<string, any> | null;
   maxHealthModifier: number;
   musclesModifier: number;
   reflexesModifier: number;
@@ -2976,7 +2980,8 @@ function ignoreSpellingWord() {
                 </select>
               </label>
 
-              {selectedGift.targetMode !== "self" ? (
+              {!selectedGift.mechanicsShape &&
+              selectedGift.targetMode !== "self" ? (
                 <label className="mt-3 block game_components_roomchatform_label_label_8">
                   <span className="mb-1.5 block text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))] game_components_roomchatform_span_text_11">
                     Target character
@@ -3133,7 +3138,14 @@ function ignoreSpellingWord() {
                     giftState.message}
                 </p>
 
-                {selectedGift.effectMode === "passive" ? (
+                {selectedGift.mechanicsShape &&
+                selectedGift.effectMode !== "passive" ? (
+                  <MechanicalFeatPanel
+                    gift={selectedGift}
+                    viewerCharacterId={viewerCharacterId}
+                    presentCharacters={ordinaryTargetCharacters}
+                  />
+                ) : selectedGift.effectMode === "passive" ? (
                   <button
                     type="submit"
                     formAction={giftUseAction}
@@ -3330,6 +3342,17 @@ function ignoreSpellingWord() {
                   </select>
                 </label>
               </div>
+
+              {selectedItem.isDispel ? (
+                <EffectDispelPicker
+                  targetCharacterId={
+                    itemTargetId ||
+                    viewerCharacterId
+                  }
+                  dispelSourceType="item"
+                  inputName="item_dispel_effect_id"
+                />
+              ) : null}
 
               <div className="mt-3 border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3 game_components_roomchatform_div_container_24">
                 <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))] game_components_roomchatform_p_text_23">

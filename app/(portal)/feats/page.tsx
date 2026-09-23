@@ -35,6 +35,7 @@ export default async function GiftsPage() {
       presence_modifier,
       warping_affinity_modifier,
       warps_per_day_modifier,
+      mechanics:shapes!shapes_feat_id_fkey(*),
       races:gift_races(
         race:races(
           id,
@@ -150,6 +151,8 @@ export default async function GiftsPage() {
         gift.health_delta,
       healthDice:
         gift.health_dice ?? null,
+      mechanicsShape:
+        one(gift.mechanics as any) ?? null,
       maxHealthModifier:
         gift.max_health_modifier,
       warpingAffinityModifier: gift.warping_affinity_modifier,

@@ -2,6 +2,7 @@
 
 import { AdminActionForm } from "@/components/admin/admin-action-form";
 import { GiftEffectFormLogic } from "@/components/admin/gift-effect-form-logic";
+import { FeatMechanicsBuilder } from "@/components/admin/feat-mechanics-builder";
 import {
   requireAdminSection,
 } from "@/lib/auth/require-staff";
@@ -65,6 +66,10 @@ type Gift = {
     acquisition_source: "ancestry" | "order" | "staff";
     expires_at: string | null;
   }[] | null;
+  mechanics:
+    | Record<string, any>
+    | Record<string, any>[]
+    | null;
 };
 
 type LevelRow = {
@@ -217,7 +222,8 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
           roles:gift_order_jobs(order_job_id),
           assignments:character_gifts(
             id, character_id, acquisition_source, expires_at
-          )
+          ),
+          mechanics:shapes!shapes_feat_id_fkey(*)
         `)
         .order("sort_order", { ascending: true })
         .order("name", { ascending: true }),
@@ -867,6 +873,13 @@ function GiftForm({
             </Field>
           ))}
         </div>
+
+        <FeatMechanicsBuilder
+          gift={gift as any}
+          shape={one(
+            gift?.mechanics ?? null,
+          ) as Record<string, any> | null}
+        />
 
         <Eligibility
           title="Ancestries"

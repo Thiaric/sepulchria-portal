@@ -119,7 +119,7 @@ export function LiveCharacterSheetRefresh({
           {
             event: "*",
             schema: "public",
-            table: "character_active_item_effects",
+            table: "character_effects",
             filter: `character_id=eq.${characterId}`,
           },
           refreshSheet,

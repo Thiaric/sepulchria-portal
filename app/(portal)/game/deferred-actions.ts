@@ -50,6 +50,7 @@ cooldownReadyAt: string | null;
   successAttribute?: CharacterAttributeKey | null;
   damageDice?: string | null;
   damageType?: string | null;
+  isDispel?: boolean;
   categorySlug?: string | null;
   isEquipped?: boolean;
   equippedSlot?: string | null;
@@ -86,6 +87,7 @@ export type DeferredChatGift = {
   cooldownMinutes: number;
   healthDelta: number;
   healthDice: string | null;
+  mechanicsShape: Record<string, any> | null;
   maxHealthModifier: number;
   musclesModifier: number;
   reflexesModifier: number;
@@ -204,6 +206,7 @@ async function itemsFor(
             success_attribute,
             damage_dice,
             damage_type,
+            is_dispel,
             cooldown_minutes,
             teaches_recipe_id,
             category:item_categories(slug),
@@ -312,6 +315,7 @@ cooldownReadyAt:
           | null,
         damageDice: master.damage_dice ?? null,
         damageType: master.damage_type ?? null,
+        isDispel: master.is_dispel === true,
         categorySlug: category?.slug ?? null,
         isEquipped: row.is_equipped ?? false,
         equippedSlot: row.equipped_slot ?? null,
@@ -361,7 +365,8 @@ async function giftsFor(
         brains_modifier,
         presence_modifier,
         warping_affinity_modifier,
-        warps_per_day_modifier
+        warps_per_day_modifier,
+        mechanics:shapes!shapes_feat_id_fkey(*)
       ),
       activations:gift_activations(
         activated_at,
@@ -427,6 +432,10 @@ async function giftsFor(
         cooldownMinutes: gift.cooldown_minutes ?? 0,
         healthDelta: gift.health_delta ?? 0,
         healthDice: gift.health_dice ?? null,
+        mechanicsShape:
+          Array.isArray(gift.mechanics)
+            ? gift.mechanics[0] ?? null
+            : gift.mechanics ?? null,
         maxHealthModifier: gift.max_health_modifier ?? 0,
         musclesModifier: gift.muscles_modifier ?? 0,
         reflexesModifier: gift.reflexes_modifier ?? 0,

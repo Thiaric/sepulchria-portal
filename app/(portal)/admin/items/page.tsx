@@ -87,6 +87,7 @@ type Item = {
   max_stack: number | null;
   reference_value: number | null;
   is_usable: boolean;
+  is_dispel: boolean;
   use_behaviour: "reusable" | "consumable" | "limited_charges" | null;
   max_charges: number | null;
   target_mode: "self" | "other" | "either" | null;
@@ -171,6 +172,7 @@ export default async function AdminItemsPage({ searchParams }: Props) {
         max_stack,
         reference_value,
         is_usable,
+        is_dispel,
         use_behaviour,
         max_charges,
         target_mode,
@@ -942,6 +944,7 @@ function ItemForm({
           <Check name="isQuestItem" label="Quest Item" checked={item?.is_quest_item ?? false} />
           <Check name="stackable" label="Stackable" checked={item?.stackable ?? true} />
           <Check name="isUsable" label="Usable" checked={item?.is_usable ?? false} />
+          <Check name="isDispel" label="Dispel active effect" checked={item?.is_dispel ?? false} />
         </div>
 
         {!item || !existingCraftingRecipe ? (

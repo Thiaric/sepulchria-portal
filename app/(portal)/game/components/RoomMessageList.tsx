@@ -1453,12 +1453,18 @@ const messageIdsKey =
       }
 
       const [shapeResult,priceResult]=await Promise.all([
-        supabase.rpc("get_active_shape_chat_tags",{p_character_ids:ids}),
+        (supabase as any)
+          .from("character_effects")
+          .select("target_character_id,conditions,muscles_modifier,reflexes_modifier,vigour_modifier,brains_modifier,shrewd_modifier,presence_modifier")
+          .in("target_character_id",ids)
+          .is("ended_at",null)
+          .is("dispelled_at",null)
+          .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`),
         supabase.rpc("get_active_price_chat_tags",{p_character_ids:ids}),
       ]);
 
       if(shapeResult.error){
-        console.error("Unable to load Shape chat tags:",shapeResult.error.message);
+        console.error("Unable to load active effect chat tags:",shapeResult.error.message);
         return;
       }
 if(priceResult.error){
@@ -1482,13 +1488,24 @@ if(priceResult.error){
         }
 
         for(const row of shapeResult.data??[]){
-          const id=String(row.character_id);
-          next[id]={
-            buffs:row.buffs??[],
-            debuffs:row.debuffs??[],
-            conditions:[],
-            prices:next[id]?.prices??[],
-          };
+          const id=String(row.target_character_id);
+          if(!next[id])next[id]={buffs:[],debuffs:[],conditions:[],prices:[]};
+          const pairs=[
+            ["Muscles",Number(row.muscles_modifier??0)],
+            ["Reflexes",Number(row.reflexes_modifier??0)],
+            ["Vigour",Number(row.vigour_modifier??0)],
+            ["Brains",Number(row.brains_modifier??0)],
+            ["Shrewd",Number(row.shrewd_modifier??0)],
+            ["Presence",Number(row.presence_modifier??0)],
+          ] as const;
+          for(const [label,value] of pairs){
+            if(value>0)next[id].buffs.push(`${label} +${value}`);
+            if(value<0)next[id].debuffs.push(`${label} ${value}`);
+          }
+          for(const condition of Array.isArray(row.conditions)?row.conditions:[]){
+            const label=String(condition).trim();
+            if(label&&!next[id].conditions.includes(label))next[id].conditions.push(label);
+          }
         }
 for(const row of priceResult.data??[]){
           const id=String(row.character_id);
@@ -1504,7 +1521,7 @@ for(const row of priceResult.data??[]){
 
     const channel=supabase
       .channel(`shape-chat-effects-${crypto.randomUUID()}`)
-      .on("postgres_changes",{event:"*",schema:"public",table:"character_shape_effects"},()=>void loadShapeTags())
+      .on("postgres_changes",{event:"*",schema:"public",table:"character_effects"},()=>void loadShapeTags())
       .on("postgres_changes",{event:"*",schema:"public",table:"character_price_effects"},()=>void loadShapeTags())
       .subscribe();
 

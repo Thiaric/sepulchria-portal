@@ -9,9 +9,11 @@ import {
 import {
   createClient,
 } from "@/lib/supabase/client";
-import type {
-  CharacterCondition,
-} from "@/types/game";
+
+type ConditionRow = {
+  id: string;
+  label: string;
+};
 
 export function CharacterConditionsDisplay({
   characterId,
@@ -21,9 +23,10 @@ export function CharacterConditionsDisplay({
   const [
     conditions,
     setConditions,
-  ] = useState<
-    CharacterCondition[]
-  >([]);
+  ] =
+    useState<
+      ConditionRow[]
+    >([]);
 
   const supabase =
     useMemo(
@@ -38,33 +41,37 @@ export function CharacterConditionsDisplay({
       const {
         data,
         error,
-      } = await supabase
-        .from(
-          "character_conditions",
-        )
-        .select(
-          "id, character_id, label, created_at",
-        )
-        .eq(
-          "character_id",
-          characterId,
-        )
-        .order(
-          "created_at",
-          {
-            ascending: true,
-          },
-        )
-        .order(
-          "id",
-          {
-            ascending: true,
-          },
-        );
+      } =
+        await (supabase as any)
+          .from(
+            "character_effects",
+          )
+          .select(
+            "id,conditions",
+          )
+          .eq(
+            "target_character_id",
+            characterId,
+          )
+          .is(
+            "ended_at",
+            null,
+          )
+          .is(
+            "dispelled_at",
+            null,
+          )
+          .or(
+            `expires_at.is.null,expires_at.gt.${new Date().toISOString()}`,
+          )
+          .order(
+            "starts_at",
+            {
+              ascending: true,
+            },
+          );
 
-      if (
-        !active
-      ) {
+      if (!active) {
         return;
       }
 
@@ -76,16 +83,48 @@ export function CharacterConditionsDisplay({
         return;
       }
 
-      setConditions(
-        (data ?? []) as
-          CharacterCondition[],
-      );
+      const next:
+        ConditionRow[] = [];
+
+      for (
+        const row
+        of data ?? []
+      ) {
+        const values =
+          Array.isArray(
+            row.conditions,
+          )
+            ? row.conditions
+            : [];
+
+        values.forEach(
+          (
+            raw: unknown,
+            index: number,
+          ) => {
+            const label =
+              String(
+                raw,
+              ).trim();
+
+            if (label) {
+              next.push({
+                id:
+                  `${row.id}:${index}`,
+                label,
+              });
+            }
+          },
+        );
+      }
+
+      setConditions(next);
     }
 
     void load();
 
     const channel =
-      supabase
+      (supabase as any)
         .channel(
           `condition-display-${characterId}-${crypto.randomUUID()}`,
         )
@@ -95,20 +134,18 @@ export function CharacterConditionsDisplay({
             event: "*",
             schema: "public",
             table:
-              "character_conditions",
+              "character_effects",
             filter:
-              `character_id=eq.${characterId}`,
+              `target_character_id=eq.${characterId}`,
           },
-          () => {
-            void load();
-          },
+          () =>
+            void load(),
         )
         .subscribe();
 
     return () => {
       active = false;
-
-      void supabase
+      void (supabase as any)
         .removeChannel(
           channel,
         );
@@ -129,9 +166,11 @@ export function CharacterConditionsDisplay({
 
       {conditions.length ? (
         conditions.map(
-          (condition) => (
+          condition => (
             <span
-              key={condition.id}
+              key={
+                condition.id
+              }
               className="border border-[rgb(var(--sep-skin-c1))]/35 bg-[rgb(var(--sep-colour-100c09))] px-2 py-1 text-[8px] text-[rgb(var(--sep-skin-c2))] components_characters_character_conditions_display_span_text_2"
             >
               {

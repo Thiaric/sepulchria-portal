@@ -67,6 +67,7 @@ export async function CharacterGiftsDisplay({
         presence_modifier,
         warping_affinity_modifier,
         warps_per_day_modifier,
+        mechanics:shapes!shapes_feat_id_fkey(*),
         races:gift_races(
           race:races(id,name)
         ),
@@ -189,6 +190,8 @@ export async function CharacterGiftsDisplay({
       damageType: gift.damage_type ?? null,
       healthDelta: Number(gift.health_delta ?? 0),
       healthDice: gift.health_dice ?? null,
+      mechanicsShape:
+        one<any>(gift.mechanics) ?? null,
       maxHealthModifier: Number(gift.max_health_modifier ?? 0),
       warpingAffinityModifier: Number(
         gift.warping_affinity_modifier ?? 0,

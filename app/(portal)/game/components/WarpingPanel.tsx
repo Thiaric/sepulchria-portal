@@ -627,20 +627,25 @@ export function WarpingPanel({
         ),
       ];
 
-      const q = await db
+      const q = await (db as any)
         .from(
-          "character_shape_effects",
+          "character_effects",
         )
         .select(
           "target_character_id",
         )
-        .eq("shape_id", s.id)
+        .eq("source_type", "shape")
+        .eq("source_definition_id", s.id)
         .in(
           "target_character_id",
           ids,
         )
         .is(
           "dispelled_at",
+          null,
+        )
+        .is(
+          "ended_at",
           null,
         )
         .or(
@@ -650,7 +655,7 @@ export function WarpingPanel({
       if (active) {
         setBlockedTargets(
           (q.data ?? []).map(
-            x =>
+            (x: any) =>
               String(
                 x.target_character_id,
               ),
@@ -673,7 +678,7 @@ export function WarpingPanel({
           event: "*",
           schema: "public",
           table:
-            "character_shape_effects",
+            "character_effects",
         },
         () =>
           void loadBlocked(),
@@ -709,22 +714,28 @@ export function WarpingPanel({
         return;
       }
 
-      const q = await db.rpc(
-        "get_character_active_shape_effects",
-        {
-          p_character_id:
-            dispelTarget,
-        },
-      );
+      const q = await (db as any)
+        .from("character_effects")
+        .select("id,source_type,source_name,source_level,effect_nature,conditions,dispellable,expires_at")
+        .eq("target_character_id",dispelTarget)
+        .eq("dispellable",true)
+        .is("ended_at",null)
+        .is("dispelled_at",null)
+        .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`);
 
       const eligible = (
         q.data ?? []
-      ).filter(
-        (e: any) =>
-          Number(
-            e.shape_level,
-          ) <= Number(s.level),
-      );
+      )
+        .filter(
+          (e: any) =>
+            e.source_type !== "shape" ||
+            Number(e.source_level) <= Number(s.level),
+        )
+        .map((e: any) => ({
+          ...e,
+          shape_name: e.source_name,
+          shape_level: e.source_level,
+        }));
 
       if (active) {
         setDispelEffects(

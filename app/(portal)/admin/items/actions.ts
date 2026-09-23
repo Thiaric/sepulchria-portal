@@ -571,6 +571,15 @@ if (isUsable) {
   }
 
   if (
+    checkbox(formData, "isDispel") &&
+    resolutionMode === "opposed"
+  ) {
+    throw new Error(
+      "Dispel Items must use Automatic or Fixed resolution, not Opposed.",
+    );
+  }
+
+  if (
     isUsable &&
     resolutionMode === "opposed" &&
     targetMode !== "other"
@@ -636,6 +645,7 @@ if (isUsable) {
     max_stack: maxStack,
     reference_value: referenceValue,
     is_usable: isUsable,
+    is_dispel: checkbox(formData, "isDispel"),
     use_behaviour: useBehaviour,
     max_charges: maxCharges,
     target_mode: targetMode,

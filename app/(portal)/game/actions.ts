@@ -3181,6 +3181,11 @@ export async function useRoomItem(
         formData.get("item_target_character_id") ?? "",
       ).trim() || null;
 
+    const itemDispelEffectId =
+      String(
+        formData.get("item_dispel_effect_id") ?? "",
+      ).trim();
+
     if (
       !["standard", "unique"].includes(recordKind) ||
       !recordId
@@ -3247,6 +3252,7 @@ export async function useRoomItem(
         counter_options,
         damage_dice,
         damage_type,
+        is_dispel,
         cooldown_minutes,
         use_behaviour,
         category:item_categories(slug),
@@ -3766,6 +3772,8 @@ message_type: "action",
       };
     }
 
+    const effectParts: string[] = [];
+
     let outcome = (result ?? {}) as {
       blocked?: boolean;
       block_reason?: string;
@@ -3849,6 +3857,48 @@ message_type: "action",
       }
     }
 
+    if (item.is_dispel) {
+      if (!itemDispelEffectId) {
+        return {
+          ok: false,
+          message: "Choose an active effect to dispel.",
+        };
+      }
+
+      const {
+        dispelActiveCharacterEffect,
+      } =
+        await import(
+          "@/lib/effects/dispel-effect"
+        );
+
+      try {
+        const removed =
+          await dispelActiveCharacterEffect({
+            effectId:
+              itemDispelEffectId,
+            dispelSourceType:
+              "item",
+            dispelLevel:
+              1,
+            dispelSourceId:
+              itemId,
+          });
+
+        effectParts.push(
+          `Dispelled ${removed.sourceName}`,
+        );
+      } catch (error) {
+        return {
+          ok: false,
+          message:
+            error instanceof Error
+              ? error.message
+              : "Unable to dispel effect.",
+        };
+      }
+    }
+
     const baseDamage =
       rollRoomItemDamage(
         item.damage_dice ?? null,
@@ -3874,8 +3924,6 @@ message_type: "action",
 
     const rawEffects =
       rawUseEffects;
-
-    const effectParts: string[] = [];
 
     for (const effect of rawEffects) {
       if (effect.trigger_type !== "use") continue;
