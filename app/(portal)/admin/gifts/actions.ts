@@ -429,12 +429,28 @@ function shapeStylePayload(
     prefixedText(formData, "target_scope") ??
     "single";
 
-  const durationMode =
-    prefixedText(formData, "duration_mode") ??
-    "instantaneous";
+  const passive =
+    values.effect_mode === "passive";
 
-  const instantaneous = durationMode === "instantaneous";
-  const durationUnit = instantaneous ? "minutes" : durationMode;
+  const durationMode =
+    passive
+      ? "until_dispelled"
+      : prefixedText(
+          formData,
+          "duration_mode",
+        ) ??
+        "instantaneous";
+
+  const instantaneous =
+    !passive &&
+    durationMode === "instantaneous";
+
+  const durationUnit =
+    passive
+      ? "until_dispelled"
+      : instantaneous
+        ? "minutes"
+        : durationMode;
 
   const otherAlternative =
     targetMode !== "self" &&
