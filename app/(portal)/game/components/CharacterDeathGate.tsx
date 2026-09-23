@@ -151,7 +151,14 @@ export function CharacterDeathGate({
                   {feat.description || "No description"}
                 </span>
                 <span className="mt-1.5 block text-[8px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-b99765))]">
-                  Health +{feat.healthDelta}
+                  Healing{" "}
+                  {feat.healthDice
+                    ? `${feat.healthDice}${
+                        feat.healthDelta !== 0
+                          ? ` ${feat.healthDelta > 0 ? "+" : ""}${feat.healthDelta}`
+                          : ""
+                      }`
+                    : `${feat.healthDelta > 0 ? "+" : ""}${feat.healthDelta}`}
                   {feat.successDie
                     ? ` · d${feat.successDie} vs ${feat.successThreshold ?? "?"}`
                     : " · Automatic"}

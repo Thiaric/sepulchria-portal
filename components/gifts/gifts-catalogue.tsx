@@ -29,6 +29,7 @@ export type GiftCard = {
   damageDice: string | null;
   damageType: string | null;
   healthDelta: number;
+  healthDice: string | null;
   maxHealthModifier: number;
   warpingAffinityModifier: number;
   warpsPerDayModifier: number;
@@ -329,7 +330,14 @@ function FeatCard({
                 </span>
               ) : null}
 
-              {gift.healthDelta !== 0 ? (
+              {gift.healthDice ? (
+                <span className="border border-emerald-900/65 bg-emerald-950/20 px-2 py-1 text-[7px] uppercase tracking-[0.1em] text-emerald-400">
+                  Healing · {gift.healthDice}
+                  {gift.healthDelta !== 0
+                    ? ` ${signed(gift.healthDelta)}`
+                    : ""}
+                </span>
+              ) : gift.healthDelta !== 0 ? (
                 <span
                   className={[((`border px-2 py-1 text-[7px] uppercase tracking-[0.1em] ${
                     gift.healthDelta > 0
@@ -363,6 +371,7 @@ function FeatCard({
               ))}
 
               {!gift.damageDice &&
+              !gift.healthDice &&
               gift.healthDelta === 0 &&
               gift.maxHealthModifier === 0 &&
               !modifiers.length ? (

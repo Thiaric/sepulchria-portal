@@ -20,6 +20,7 @@ export type DeathRescueFeat = {
   name: string;
   description: string;
   healthDelta: number;
+  healthDice: string | null;
   successDie: number | null;
   successThreshold: number | null;
   successAttribute: AttributeKey | null;
@@ -71,6 +72,7 @@ type GiftRelation = {
   success_threshold: number | null;
   success_attribute: AttributeKey | null;
   health_delta: number | null;
+  health_dice: string | null;
 };
 
 function adminClient(): any {
@@ -149,7 +151,7 @@ async function eligibleRescueFeats(characterId: string): Promise<DeathRescueFeat
       id,
       gift:gifts(
         name,description,is_active,effect_mode,target_mode,damage_dice,
-        success_die,success_threshold,success_attribute,health_delta
+        success_die,success_threshold,success_attribute,health_delta,health_dice
       )
     `)
     .eq("character_id", characterId);
@@ -165,7 +167,10 @@ async function eligibleRescueFeats(characterId: string): Promise<DeathRescueFeat
       gift.effect_mode !== "none" ||
       !["self", "either"].includes(gift.target_mode ?? "") ||
       gift.damage_dice ||
-      Number(gift.health_delta ?? 0) <= 0
+      (
+        Number(gift.health_delta ?? 0) <= 0 &&
+        !gift.health_dice
+      )
     ) continue;
 
     feats.push({
@@ -173,6 +178,7 @@ async function eligibleRescueFeats(characterId: string): Promise<DeathRescueFeat
       name: gift.name,
       description: gift.description ?? "",
       healthDelta: Number(gift.health_delta ?? 0),
+      healthDice: gift.health_dice ?? null,
       successDie: gift.success_die ?? null,
       successThreshold: gift.success_threshold ?? null,
       successAttribute: gift.success_attribute ?? null,
@@ -293,16 +299,59 @@ async function rollRescueSuccess(character: CharacterRow, feat: DeathRescueFeat)
   };
 }
 
+function rollRescueHealing(feat: DeathRescueFeat) {
+  if (!feat.healthDice) {
+    return {
+      amount: feat.healthDelta,
+      summary: `Healing: ${feat.healthDelta > 0 ? "+" : ""}${feat.healthDelta} Health`,
+    };
+  }
+
+  const match = /^([1-9][0-9]*)d(4|6|8|10|12|20|100)$/.exec(
+    feat.healthDice,
+  );
+
+  if (!match) {
+    throw new Error("This Feat has invalid healing dice.");
+  }
+
+  const count = Number.parseInt(match[1], 10);
+  const sides = Number.parseInt(match[2], 10);
+
+  if (count < 1 || count > 20) {
+    throw new Error("This Feat has invalid healing dice.");
+  }
+
+  let rolled = 0;
+  for (let index = 0; index < count; index += 1) {
+    rolled += randomInt(1, sides + 1);
+  }
+
+  const amount = rolled + feat.healthDelta;
+
+  return {
+    amount,
+    summary:
+      `Healing: ${feat.healthDice} -> ${rolled}` +
+      `${
+        feat.healthDelta !== 0
+          ? ` ${feat.healthDelta > 0 ? "+" : ""}${feat.healthDelta}`
+          : ""
+      } = ${amount} Health`,
+  };
+}
+
 async function announceRescue(
   character: CharacterRow,
   feat: DeathRescueFeat,
   summary: string,
   succeeded: boolean,
+  healthAmount: number,
 ) {
   if (!character.current_room_id) return;
   const admin = adminClient();
   const effect = succeeded
-    ? `Health +${feat.healthDelta} · Death prevented`
+    ? `Health +${healthAmount} · Death prevented`
     : "No effect applied · Death follows";
 
   const result = await admin.from("room_messages").insert({
@@ -370,7 +419,7 @@ export async function useDeathRescueFeat(eventId: string, characterGiftId: strin
     const roll = await rollRescueSuccess(character, feat);
 
     if (!roll.success) {
-      await announceRescue(character, feat, roll.summary, false);
+      await announceRescue(character, feat, roll.summary, false, 0);
       const deadUntil = await finaliseDeath(character, eventId);
       return {
         ok: true,
@@ -380,11 +429,25 @@ export async function useDeathRescueFeat(eventId: string, characterGiftId: strin
       };
     }
 
+    const healing = rollRescueHealing(feat);
+
+    if (healing.amount <= 0) {
+      throw new Error(
+        "This rescue Feat did not produce a positive healing result.",
+      );
+    }
+
     await applyGiftCurrentHealthDelta({
       characterId: character.id,
-      healthDelta: feat.healthDelta,
+      healthDelta: healing.amount,
     });
-    await announceRescue(character, feat, roll.summary, true);
+    await announceRescue(
+      character,
+      feat,
+      `${roll.summary} · ${healing.summary}`,
+      true,
+      healing.amount,
+    );
 
     await admin
       .from("character_death_events")

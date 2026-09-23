@@ -132,6 +132,31 @@ function giftValues(formData: FormData) {
       ? 0
       : integer(formData, "healthDelta", 0);
 
+  const healthDice =
+    isPassive
+      ? null
+      : optionalText(formData, "healthDice");
+
+  if (
+    healthDice &&
+    !/^[1-9][0-9]*d(4|6|8|10|12|20|100)$/.test(healthDice)
+  ) {
+    throw new Error(
+      "Healing dice must use a format such as 1d4, 2d6 or 1d12.",
+    );
+  }
+
+  if (healthDice) {
+    const count =
+      Number.parseInt(healthDice.split("d")[0] ?? "0", 10);
+
+    if (count > 20) {
+      throw new Error(
+        "A Feat cannot roll more than 20 healing dice.",
+      );
+    }
+  }
+
   const requestedTargetMode =
     isPassive
       ? "self"
@@ -301,6 +326,7 @@ function giftValues(formData: FormData) {
     duration_minutes: durationMinutes,
     cooldown_minutes: cooldownMinutes,
     health_delta: healthDelta,
+    health_dice: healthDice,
     damage_dice: damageDice,
     damage_type: damageType,
     success_die: successDie,

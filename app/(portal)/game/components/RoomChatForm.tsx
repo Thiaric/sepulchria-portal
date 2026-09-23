@@ -179,6 +179,7 @@ type ChatGift = {
   durationMinutes: number | null;
   cooldownMinutes: number;
   healthDelta: number;
+  healthDice: string | null;
   maxHealthModifier: number;
   musclesModifier: number;
   reflexesModifier: number;
@@ -2981,19 +2982,26 @@ function ignoreSpellingWord() {
                       : "Automatic"}
                 </p>
 
-                {(selectedGift.healthDelta !== 0 ||
+                {(selectedGift.healthDice ||
+                  selectedGift.healthDelta !== 0 ||
                   selectedGift.maxHealthModifier !== 0) ? (
                   <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-aa8c61))] game_components_roomchatform_p_text_18">
-                    {selectedGift.healthDelta !== 0
-                      ? `Health ${formatSigned(selectedGift.healthDelta)}`
-                      : ""}
-                    {selectedGift.healthDelta !== 0 &&
-                    selectedGift.maxHealthModifier !== 0
-                      ? " · "
-                      : ""}
-                    {selectedGift.maxHealthModifier !== 0
-                      ? `Max Health ${formatSigned(selectedGift.maxHealthModifier)}`
-                      : ""}
+                    {[
+                      selectedGift.healthDice
+                        ? `Healing ${selectedGift.healthDice}${
+                            selectedGift.healthDelta !== 0
+                              ? ` ${formatSigned(selectedGift.healthDelta)}`
+                              : ""
+                          }`
+                        : selectedGift.healthDelta !== 0
+                          ? `Health ${formatSigned(selectedGift.healthDelta)}`
+                          : "",
+                      selectedGift.maxHealthModifier !== 0
+                        ? `Max Health ${formatSigned(selectedGift.maxHealthModifier)}`
+                        : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" · ")}
                   </p>
                 ) : null}
 

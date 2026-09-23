@@ -46,6 +46,7 @@ type Gift = {
   duration_minutes: number | null;
   cooldown_minutes: number;
   health_delta: number;
+  health_dice: string | null;
   max_health_modifier: number;
   muscles_modifier: number;
   reflexes_modifier: number;
@@ -166,7 +167,7 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
           id, name, description, is_active, is_general, effect_mode,
           target_mode, damage_dice, damage_type,
           success_die, success_threshold, success_attribute,
-          duration_minutes, cooldown_minutes, health_delta, max_health_modifier,
+          duration_minutes, cooldown_minutes, health_delta, health_dice, max_health_modifier,
           muscles_modifier, reflexes_modifier,
           vigour_modifier, shrewd_modifier, brains_modifier,
           presence_modifier, warping_affinity_modifier, warps_per_day_modifier, sort_order,
@@ -344,10 +345,16 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                     gift.damage_dice
                       ? `${gift.damage_dice}${gift.damage_type ? ` ${gift.damage_type}` : ""}`
                       : "No damage"
-                  } · HP ${
-                    gift.health_delta !== 0
-                      ? `${gift.health_delta > 0 ? "+" : ""}${gift.health_delta}`
-                      : "—"
+                  } · Healing ${
+                    gift.health_dice
+                      ? `${gift.health_dice}${
+                          gift.health_delta !== 0
+                            ? ` ${gift.health_delta > 0 ? "+" : ""}${gift.health_delta}`
+                            : ""
+                        }`
+                      : gift.health_delta !== 0
+                        ? `${gift.health_delta > 0 ? "+" : ""}${gift.health_delta}`
+                        : "—"
                   } · Max ${
                     gift.max_health_modifier !== 0
                       ? `${gift.max_health_modifier > 0 ? "+" : ""}${gift.max_health_modifier}`
@@ -677,12 +684,22 @@ function GiftForm({
           </datalist>
         </Field>
 
-        <Field label="Current Health change on use">
+        <Field label="Current Health change on use (fixed)">
           <input
             type="number"
             name="healthDelta"
             defaultValue={gift?.health_delta ?? 0}
             className={[((inputClass)), "admin_gifts_page_input_health_delta"].filter(Boolean).join(" ")}
+          />
+        </Field>
+
+        <Field label="Healing dice">
+          <input
+            type="text"
+            name="healthDice"
+            placeholder="e.g. 1d8 or 2d6"
+            defaultValue={gift?.health_dice ?? ""}
+            className={[((inputClass)), "admin_gifts_page_input_health_dice"].filter(Boolean).join(" ")}
           />
         </Field>
 

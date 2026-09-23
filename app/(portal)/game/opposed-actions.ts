@@ -813,12 +813,12 @@ export async function counterOpposedAction(
     const outcome = countered
       ? `${counter?.label.toUpperCase()} SUCCESSFUL · ${total} >= ${attackTotal} · No effect`
       : doNothing
-        ? `${pending.action_label} SUCCEEDS · No Counter attempted${
+        ? `${pending.action_label} FAILED · No Counter attempted - Attack successful${
             damage > 0 ? ` · ${damage} Damage` : ""
           }`
-        : `${pending.action_label} SUCCEEDS · ${attackTotal} > ${total}${
-            damage > 0 ? ` · ${damage} Damage` : ""
-          }`;
+        : `FAILED - Attack successful · ${attackTotal} > ${total}${
+    damage > 0 ? ` · ${damage} Damage` : ""
+  }`;
 
     const resolutionMessage = doNothing
       ? `◆ ${character.display_name} chooses Do nothing · ${outcome}`

@@ -220,6 +220,32 @@ function rollGiftDamage(damageDice: string | null): number {
   return total;
 }
 
+function rollGiftHealing(healthDice: string | null): number {
+  if (!healthDice) return 0;
+
+  const match = /^([1-9][0-9]*)d(4|6|8|10|12|20|100)$/.exec(
+    healthDice,
+  );
+
+  if (!match) {
+    throw new Error("This Feat has invalid healing dice.");
+  }
+
+  const count = Number.parseInt(match[1], 10);
+  const sides = Number.parseInt(match[2], 10);
+
+  if (count < 1 || count > 20) {
+    throw new Error("This Feat has invalid healing dice.");
+  }
+
+  let total = 0;
+  for (let index = 0; index < count; index += 1) {
+    total += randomInt(1, sides + 1);
+  }
+
+  return total;
+}
+
 async function resolveGiftTarget({
   supabase,
   character,
@@ -1423,7 +1449,7 @@ export async function useRoomGift(
             id, name, description, is_active, effect_mode,
             target_mode, damage_dice, damage_type,
             success_die, success_threshold, success_attribute,
-            duration_minutes, health_delta
+            duration_minutes, health_delta, health_dice
           )
         `)
         .eq("id", characterGiftId)
@@ -1502,7 +1528,10 @@ export async function useRoomGift(
     await assertDeadTargetAllowed({
       targetCharacterId: target.id,
       healingCapable:
-        Number(gift.health_delta ?? 0) > 0 &&
+        (
+          Number(gift.health_delta ?? 0) > 0 ||
+          Boolean(gift.health_dice)
+        ) &&
         ["other", "either"].includes(
           gift.target_mode ?? "self",
         ),
@@ -1547,8 +1576,10 @@ export async function useRoomGift(
     }
 
     const damage = rollGiftDamage(gift.damage_dice ?? null);
+    const healingRoll = rollGiftHealing(gift.health_dice ?? null);
     const healthDelta = Number(gift.health_delta ?? 0);
-    const combinedHealthDelta = healthDelta - damage;
+    const healingTotal = healthDelta + healingRoll;
+    const combinedHealthDelta = healingTotal - damage;
 
     if (combinedHealthDelta !== 0) {
       await applyGiftCurrentHealthDelta({
@@ -1559,7 +1590,15 @@ export async function useRoomGift(
 
     const effectSummary: string[] = [successRoll.summary];
 
-    if (healthDelta !== 0) {
+    if (gift.health_dice) {
+      effectSummary.push(
+        `Healing ${gift.health_dice} → ${healingRoll}${
+          healthDelta !== 0
+            ? ` ${healthDelta > 0 ? "+" : ""}${healthDelta} fixed`
+            : ""
+        } = ${healingTotal} Health`,
+      );
+    } else if (healthDelta !== 0) {
       effectSummary.push(
         `Health ${healthDelta > 0 ? "+" : ""}${healthDelta}`,
       );
@@ -1668,7 +1707,7 @@ export async function activateRoomGift(
             id, name, description, is_active, effect_mode,
             target_mode, damage_dice, damage_type,
             success_die, success_threshold, success_attribute,
-            duration_minutes, cooldown_minutes, health_delta,
+            duration_minutes, cooldown_minutes, health_delta, health_dice,
             max_health_modifier, muscles_modifier, reflexes_modifier,
             vigour_modifier, shrewd_modifier, brains_modifier,
             presence_modifier, warping_affinity_modifier,
@@ -1715,7 +1754,10 @@ export async function activateRoomGift(
     await assertDeadTargetAllowed({
       targetCharacterId: target.id,
       healingCapable:
-        Number(gift.health_delta ?? 0) > 0 &&
+        (
+          Number(gift.health_delta ?? 0) > 0 ||
+          Boolean(gift.health_dice)
+        ) &&
         ["other", "either"].includes(
           gift.target_mode ?? "self",
         ),
@@ -1871,8 +1913,10 @@ export async function activateRoomGift(
     }
 
     const damage = rollGiftDamage(gift.damage_dice ?? null);
+    const healingRoll = rollGiftHealing(gift.health_dice ?? null);
     const healthDelta = Number(gift.health_delta ?? 0);
-    const combinedHealthDelta = healthDelta - damage;
+    const healingTotal = healthDelta + healingRoll;
+    const combinedHealthDelta = healingTotal - damage;
 
     try {
       if (
@@ -1909,7 +1953,15 @@ export async function activateRoomGift(
 
     const effectSummary: string[] = [successRoll.summary];
 
-    if (healthDelta !== 0) {
+    if (gift.health_dice) {
+      effectSummary.push(
+        `Healing ${gift.health_dice} → ${healingRoll}${
+          healthDelta !== 0
+            ? ` ${healthDelta > 0 ? "+" : ""}${healthDelta} fixed`
+            : ""
+        } = ${healingTotal} Health`,
+      );
+    } else if (healthDelta !== 0) {
       effectSummary.push(
         `Health ${healthDelta > 0 ? "+" : ""}${healthDelta}`,
       );

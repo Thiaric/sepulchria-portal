@@ -57,6 +57,7 @@ export async function CharacterGiftsDisplay({
         damage_dice,
         damage_type,
         health_delta,
+        health_dice,
         max_health_modifier,
         muscles_modifier,
         reflexes_modifier,
@@ -187,6 +188,7 @@ export async function CharacterGiftsDisplay({
       damageDice: gift.damage_dice ?? null,
       damageType: gift.damage_type ?? null,
       healthDelta: Number(gift.health_delta ?? 0),
+      healthDice: gift.health_dice ?? null,
       maxHealthModifier: Number(gift.max_health_modifier ?? 0),
       warpingAffinityModifier: Number(
         gift.warping_affinity_modifier ?? 0,

@@ -25,6 +25,7 @@ export default async function GiftsPage() {
       damage_dice,
       damage_type,
       health_delta,
+      health_dice,
       max_health_modifier,
       muscles_modifier,
       reflexes_modifier,
@@ -147,6 +148,8 @@ export default async function GiftsPage() {
         gift.damage_type ?? null,
       healthDelta:
         gift.health_delta,
+      healthDice:
+        gift.health_dice ?? null,
       maxHealthModifier:
         gift.max_health_modifier,
       warpingAffinityModifier: gift.warping_affinity_modifier,

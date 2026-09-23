@@ -130,6 +130,7 @@ export function GiftEffectFormLogic() {
       if (passive) {
         setValue(form, "targetMode", "self");
         setValue(form, "healthDelta", "0");
+        setValue(form, "healthDice", "");
         setValue(form, "damageDice", "");
         setValue(form, "damageType", "");
         setValue(form, "successDie", "");
@@ -143,6 +144,7 @@ export function GiftEffectFormLogic() {
       setControlDisabled(form, "durationMode", passive);
       setControlDisabled(form, "cooldownMinutes", passive);
       setControlDisabled(form, "healthDelta", passive);
+      setControlDisabled(form, "healthDice", passive);
       setControlDisabled(form, "successDie", passive);
       setControlDisabled(form, "damageDice", passive);
 

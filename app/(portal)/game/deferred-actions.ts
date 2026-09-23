@@ -85,6 +85,7 @@ export type DeferredChatGift = {
   durationMinutes: number | null;
   cooldownMinutes: number;
   healthDelta: number;
+  healthDice: string | null;
   maxHealthModifier: number;
   musclesModifier: number;
   reflexesModifier: number;
@@ -351,6 +352,7 @@ async function giftsFor(
         duration_minutes,
         cooldown_minutes,
         health_delta,
+        health_dice,
         max_health_modifier,
         muscles_modifier,
         reflexes_modifier,
@@ -424,6 +426,7 @@ async function giftsFor(
         durationMinutes: gift.duration_minutes,
         cooldownMinutes: gift.cooldown_minutes ?? 0,
         healthDelta: gift.health_delta ?? 0,
+        healthDice: gift.health_dice ?? null,
         maxHealthModifier: gift.max_health_modifier ?? 0,
         musclesModifier: gift.muscles_modifier ?? 0,
         reflexesModifier: gift.reflexes_modifier ?? 0,
