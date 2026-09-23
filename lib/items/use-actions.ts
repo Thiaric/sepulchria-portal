@@ -4,6 +4,7 @@ import { randomInt } from "node:crypto";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 
 import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
+import { getEffectiveCharacterWarping } from "@/lib/warping/get-effective-character-warping";
 import { createClient } from "@/lib/supabase/server";
 import {
   assertDeadTargetAllowed,
@@ -53,6 +54,7 @@ type ItemMechanics = {
   damage_type: string | null;
   cooldown_minutes: number | null;
   teaches_recipe_id: string | null;
+  teaches_shape_id: string | null;
   category: { slug: string } | { slug: string }[] | null;
   effects:
     | {
@@ -168,6 +170,7 @@ async function loadAttemptRecord(
     damage_type,
     cooldown_minutes,
     teaches_recipe_id,
+    teaches_shape_id,
     category:item_categories(slug),
     effects:item_effects(trigger_type,health_delta)
   `;
@@ -709,6 +712,149 @@ export async function useInventoryItem(
       throw new Error(
         "This Item cannot be used through the Use Item action.",
       );
+    }
+
+    if (record.item.teaches_shape_id) {
+      const admin = createPrivilegedClient();
+
+      const { data: knownShape, error: knownShapeError } =
+        await admin
+          .from("character_shapes")
+          .select("id")
+          .eq("character_id", character.id)
+          .eq("shape_id", record.item.teaches_shape_id)
+          .limit(1)
+          .maybeSingle();
+
+      if (knownShapeError) {
+        throw new Error(knownShapeError.message);
+      }
+
+      if (knownShape) {
+        return {
+          ok: false,
+          message:
+            "You already know this Shape. The Scroll was not consumed.",
+        };
+      }
+
+      const { data: shape, error: shapeError } =
+        await admin
+          .from("shapes")
+          .select("id,name,level,is_active,is_feat_backing")
+          .eq("id", record.item.teaches_shape_id)
+          .maybeSingle();
+
+      if (
+        shapeError ||
+        !shape ||
+        shape.is_active !== true ||
+        shape.is_feat_backing === true
+      ) {
+        throw new Error(
+          "The Shape recorded on this Scroll is unavailable.",
+        );
+      }
+
+      const effectiveWarping =
+        await getEffectiveCharacterWarping(character.id);
+      const shapeLevel = Number(shape.level ?? 1);
+      const affinity = Number(effectiveWarping.affinity ?? 1);
+      const needsOverride = shapeLevel > affinity;
+
+      let roll: number | null = null;
+      let brains: number | null = null;
+      let total: number | null = null;
+      let dc: number | null = null;
+
+      if (needsOverride) {
+        const effectiveAttributes =
+          await getEffectiveCharacterAttributes(
+            character.id,
+            {
+              muscles: character.muscles,
+              reflexes: character.reflexes,
+              vigor: character.vigor,
+              brains: character.brains,
+              shrewd: character.shrewd,
+              presence_score: character.presence_score,
+            },
+          );
+
+        brains = Number(
+  effectiveAttributes.brains ?? 0,
+);
+        roll = randomInt(1, 21);
+        total = roll + brains;
+        dc = 10 + shapeLevel;
+
+        if (total <= dc) {
+          await consumeFailedAttempt(
+            record,
+            character.id,
+          );
+
+          if (record.recordKind === "standard") {
+            await supabase.rpc(
+              "normalize_inventory_after_change",
+              { p_other_character_id: null },
+            );
+          }
+
+          return {
+            ok: true,
+            message:
+              `${record.item.name} · d20 ${roll} + Brains ${brains} = ${total} vs DC ${dc} · FAILED — ${shape.name} was not learned. Scroll destroyed.`,
+          };
+        }
+      }
+
+      const { data: assignment, error: assignmentError } =
+        await admin
+          .from("character_shapes")
+          .insert({
+            character_id: character.id,
+            shape_id: shape.id,
+            acquisition_source: "scroll",
+            level_override: needsOverride,
+          })
+          .select("id")
+          .single();
+
+      if (assignmentError || !assignment) {
+        throw new Error(
+          assignmentError?.message ??
+            "Unable to learn the Shape.",
+        );
+      }
+
+      try {
+        await consumeFailedAttempt(
+          record,
+          character.id,
+        );
+      } catch (consumeError) {
+        await admin
+          .from("character_shapes")
+          .delete()
+          .eq("id", assignment.id);
+        throw consumeError;
+      }
+
+      if (record.recordKind === "standard") {
+        await supabase.rpc(
+          "normalize_inventory_after_change",
+          { p_other_character_id: null },
+        );
+      }
+
+      return {
+        ok: true,
+        message:
+          needsOverride
+            ? `${record.item.name} · d20 ${roll} + Brains ${brains} = ${total} vs DC ${dc} · SUCCESS — ${shape.name} learned with Level Override. Scroll consumed.`
+            : `${record.item.name} · Affinity ${affinity} >= Shape Level ${shapeLevel} · ${shape.name} learned. Scroll consumed.`,
+      };
     }
 
     if (record.item.teaches_recipe_id) {

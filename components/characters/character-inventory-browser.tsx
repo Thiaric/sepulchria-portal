@@ -55,6 +55,7 @@ export type InventoryBrowserRow = {
   item_id: string;
   item_active: boolean;
   teaches_recipe: boolean;
+  teaches_shape: boolean;
   parent_container_id:
     | string
     | null;
@@ -644,12 +645,15 @@ function UseControl({
           className="border border-[rgb(var(--sep-colour-6f7545))] bg-[rgb(var(--sep-colour-202615))] px-3 py-1.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-cbd39a))] transition hover:bg-[rgb(var(--sep-colour-293019))] disabled:cursor-wait disabled:opacity-50 components_characters_character_inventory_browser_button_run"
         >
           {pending
-            ? row.teaches_recipe
+            ? row.teaches_recipe ||
+              row.teaches_shape
               ? "Learning..."
               : "Using..."
             : row.teaches_recipe
               ? "Learn Recipe"
-              : "Use"}
+              : row.teaches_shape
+                ? "Learn Shape"
+                : "Use"}
         </button>
 
         {remaining !== null ? (

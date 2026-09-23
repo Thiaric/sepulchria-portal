@@ -51,7 +51,9 @@ export async function CharacterShapesDisplay({
     const source =
       row.acquisition_source === "order"
         ? "Order"
-        : "Staff";
+        : row.acquisition_source === "scroll"
+          ? "Scroll"
+          : "Staff";
 
     byId.set(
       raw.id,

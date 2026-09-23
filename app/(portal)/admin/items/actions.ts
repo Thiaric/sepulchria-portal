@@ -10,6 +10,7 @@ import {
 import {
   requireAdminSection,
 } from "@/lib/auth/require-staff";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
 const QUALITIES = ["poor", "average", "fine", "superior", "flawless", "peerless"] as const;
@@ -77,6 +78,7 @@ function refresh() {
   revalidatePath("/characters");
   revalidatePath("/crafting");
   revalidatePath("/admin/crafting-recipes");
+  revalidatePath("/game");
 }
 
 async function validateSubcategory(categoryId: string, subcategoryId: string | null) {
@@ -396,6 +398,54 @@ async function itemValues(formData: FormData) {
     }
   }
 
+  const teachesShapeId =
+    optionalText(
+      formData,
+      "teachesShapeId",
+    );
+
+  if (
+    teachesShapeId &&
+    !isUuid(teachesShapeId)
+  ) {
+    throw new Error(
+      "Invalid Shape.",
+    );
+  }
+
+  if (
+    teachesRecipeId &&
+    teachesShapeId
+  ) {
+    throw new Error(
+      "An Item cannot teach both a Recipe and a Shape.",
+    );
+  }
+
+  if (teachesShapeId) {
+    const supabase =
+      await createClient();
+
+    const {
+      data: shape,
+      error: shapeError,
+    } = await supabase
+      .from("shapes")
+      .select("id,is_active,is_feat_backing")
+      .eq("id", teachesShapeId)
+      .maybeSingle();
+
+    if (
+      shapeError ||
+      !shape ||
+      shape.is_feat_backing === true
+    ) {
+      throw new Error(
+        "The selected Shape could not be found.",
+      );
+    }
+  }
+
   const quality = requiredText(formData, "quality", "Quality");
   if (!QUALITIES.includes(quality as (typeof QUALITIES)[number])) {
     throw new Error("Invalid quality.");
@@ -475,7 +525,10 @@ if (isUsable) {
     }
   }
 
-  if (teachesRecipeId) {
+  if (
+    teachesRecipeId ||
+    teachesShapeId
+  ) {
     isUsable = true;
     useBehaviour = "consumable";
     targetMode = "self";
@@ -659,6 +712,7 @@ if (isUsable) {
     damage_type: damageType,
     container_capacity: containerCapacity,
     teaches_recipe_id: teachesRecipeId,
+    teaches_shape_id: teachesShapeId,
     sort_order: integer(formData, "sortOrder", 0) ?? 0,
     updated_at: new Date().toISOString(),
   };
@@ -1175,6 +1229,122 @@ export async function updateItem(formData: FormData) {
     }
   } catch (error) {
     fail(error instanceof Error ? error.message : "Unable to update item.");
+  }
+
+  refresh();
+}
+
+export async function saveItemShapeGrant(
+  formData: FormData,
+) {
+  await requireAdminSection("items");
+
+  try {
+    const itemId =
+      requiredText(formData, "itemId", "Item");
+    const shapeId =
+      requiredText(formData, "shapeId", "Shape");
+    const chargesPerDay =
+      integer(formData, "chargesPerDay", null);
+    const sortOrder =
+      integer(formData, "sortOrder", 0) ?? 0;
+
+    if (!isUuid(itemId) || !isUuid(shapeId)) {
+      throw new Error("Invalid Item or Shape.");
+    }
+
+    if (
+      chargesPerDay === null ||
+      chargesPerDay < 1 ||
+      chargesPerDay > 100
+    ) {
+      throw new Error(
+        "Daily Shape charges must be between 1 and 100.",
+      );
+    }
+
+    const admin = createAdminClient();
+
+    const [itemResult, shapeResult] =
+      await Promise.all([
+        admin
+          .from("items")
+          .select("id")
+          .eq("id", itemId)
+          .maybeSingle(),
+        admin
+          .from("shapes")
+          .select("id,is_feat_backing")
+          .eq("id", shapeId)
+          .maybeSingle(),
+      ]);
+
+    if (itemResult.error || !itemResult.data) {
+      throw new Error("Item not found.");
+    }
+
+    if (
+      shapeResult.error ||
+      !shapeResult.data ||
+      shapeResult.data.is_feat_backing === true
+    ) {
+      throw new Error("Shape not found.");
+    }
+
+    const { error } =
+      await admin
+        .from("item_shapes")
+        .upsert(
+          {
+            item_id: itemId,
+            shape_id: shapeId,
+            charges_per_day: chargesPerDay,
+            sort_order: sortOrder,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: "item_id,shape_id" },
+        );
+
+    if (error) throw new Error(error.message);
+  } catch (error) {
+    fail(
+      error instanceof Error
+        ? error.message
+        : "Unable to save Item Shape.",
+    );
+  }
+
+  refresh();
+}
+
+export async function deleteItemShapeGrant(
+  formData: FormData,
+) {
+  await requireAdminSection("items");
+
+  try {
+    const grantId =
+      requiredText(formData, "grantId", "Item Shape");
+
+    if (!isUuid(grantId)) {
+      throw new Error("Invalid Item Shape.");
+    }
+
+    const admin = createAdminClient();
+
+    const { error } =
+      await admin
+        .from("item_shapes")
+        .delete()
+        .eq("id", grantId);
+
+    if (error) throw new Error(error.message);
+  } catch (error) {
+    fail(
+      error instanceof Error
+        ? error.message
+        : "Unable to remove Item Shape.",
+    );
   }
 
   refresh();

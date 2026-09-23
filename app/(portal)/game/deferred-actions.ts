@@ -209,6 +209,7 @@ async function itemsFor(
             is_dispel,
             cooldown_minutes,
             teaches_recipe_id,
+            teaches_shape_id,
             category:item_categories(slug),
             effects:item_effects(
               trigger_type,
@@ -255,7 +256,11 @@ async function itemsFor(
   const preparedItems: Array<DeferredChatItem | null> =
     candidates.map((row) => {
       const master = masters.get(row.item_id);
-      if (!master || master.teaches_recipe_id) {
+      if (
+        !master ||
+        master.teaches_recipe_id ||
+        master.teaches_shape_id
+      ) {
         return null;
       }
 

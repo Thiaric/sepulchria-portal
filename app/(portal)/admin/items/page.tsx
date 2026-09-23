@@ -7,6 +7,10 @@ import type { ReactNode } from "react";
 import { ItemEquipmentForm } from "@/components/admin/item-equipment-form";
 import { ItemCreateRecipeFields } from "@/components/admin/item-create-recipe-fields";
 import {
+  ItemShapeGrants,
+  ItemTeachShapeField,
+} from "@/components/admin/item-shape-controls";
+import {
   ItemImageFrame,
 } from "@/components/items/item-image-frame";
 import {
@@ -108,6 +112,7 @@ type Item = {
   damage_type: string | null;
   container_capacity: number | null;
   teaches_recipe_id: string | null;
+  teaches_shape_id: string | null;
   sort_order: number;
   effects: Effect[] | null;
 };
@@ -186,6 +191,7 @@ export default async function AdminItemsPage({ searchParams }: Props) {
         damage_type,
         container_capacity,
         teaches_recipe_id,
+        teaches_shape_id,
         sort_order,
         effects:item_effects(
           id,
@@ -566,6 +572,10 @@ export default async function AdminItemsPage({ searchParams }: Props) {
                 itemId={selectedItem.id}
               />
 
+              <ItemShapeGrants
+                itemId={selectedItem.id}
+              />
+
               <div className="mt-6 flex justify-end border-t border-[rgb(var(--sep-colour-59432c))]/35 pt-5 admin_items_page_div_container_11">
                 <AdminActionForm
                   action={deleteItem}
@@ -700,6 +710,10 @@ function ItemForm({
             Using it from Inventory teaches the linked recipe.
           </p>
         </Field>
+
+        <ItemTeachShapeField
+          value={item?.teaches_shape_id ?? null}
+        />
 
         <div className="md:col-span-2 xl:col-span-4 admin_items_page_div_container_13">
           <Field label="Description">

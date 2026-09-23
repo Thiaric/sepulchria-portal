@@ -485,14 +485,171 @@ export function WarpingPanel({
       return;
     }
 
-    setR(x.data);
+    const runtime = x.data ?? {};
 
-    if (
-      !sid &&
-      x.data?.shapes?.[0]
-    ) {
+    const normalShapes =
+      (runtime.shapes ?? []).map(
+        (shape: S) => ({
+          ...shape,
+          _selection_key:
+            `shape:${shape.id}`,
+          _item_granted: false,
+        }),
+      );
+
+    const itemShapes: S[] = [];
+
+    if (runtime.character_id) {
+      const inventory = await db.rpc(
+        "get_public_character_inventory",
+        {
+          p_character_id:
+            runtime.character_id,
+        },
+      );
+
+      if (inventory.error) {
+        setMsg(inventory.error.message);
+        return;
+      }
+
+      const equippedRows =
+        (inventory.data ?? []).filter(
+          (row: any) =>
+            row.is_equipped === true,
+        );
+
+      const itemIds = [
+        ...new Set(
+          equippedRows.map(
+            (row: any) =>
+              String(row.item_id),
+          ),
+        ),
+      ];
+
+      if (itemIds.length) {
+        const grants = await db
+          .from("item_shapes")
+          .select(
+            "id,item_id,charges_per_day,sort_order,item:items(name,is_active),shape:shapes(*)",
+          )
+          .in("item_id", itemIds)
+          .order("sort_order", {
+            ascending: true,
+          });
+
+        if (grants.error) {
+          setMsg(grants.error.message);
+          return;
+        }
+
+        const resetDate =
+          new Date()
+            .toISOString()
+            .slice(0, 10);
+
+        const usage = await db
+          .from("character_item_shape_usage")
+          .select(
+            "item_shape_id,item_record_kind,item_record_id,charges_used",
+          )
+          .eq(
+            "character_id",
+            runtime.character_id,
+          )
+          .eq("reset_date", resetDate);
+
+        if (usage.error) {
+          setMsg(usage.error.message);
+          return;
+        }
+
+        const usageByKey = new Map(
+          (usage.data ?? []).map(
+            (entry: any) => [
+              `${entry.item_shape_id}:${entry.item_record_kind}:${entry.item_record_id}`,
+              Number(entry.charges_used ?? 0),
+            ],
+          ),
+        );
+
+        for (const record of equippedRows) {
+          for (const grant of grants.data ?? []) {
+            if (
+              String(grant.item_id) !==
+              String(record.item_id)
+            ) {
+              continue;
+            }
+
+            const rawShape: any = grant.shape;
+            const shape =
+              Array.isArray(rawShape)
+                ? rawShape[0] ?? null
+                : rawShape;
+
+            const rawItem: any = grant.item;
+            const item =
+              Array.isArray(rawItem)
+                ? rawItem[0] ?? null
+                : rawItem;
+
+            if (
+              !shape ||
+              shape.is_active !== true ||
+              !item ||
+              item.is_active !== true
+            ) {
+              continue;
+            }
+
+            const usageKey =
+              `${grant.id}:${record.record_kind}:${record.record_id}`;
+            const used =
+              usageByKey.get(usageKey) ?? 0;
+            const perDay =
+              Number(grant.charges_per_day ?? 0);
+
+            itemShapes.push({
+              ...shape,
+              _selection_key:
+                `item:${record.record_kind}:${record.record_id}:${grant.id}`,
+              _item_granted: true,
+              _item_shape_id: grant.id,
+              _item_record_kind:
+                record.record_kind,
+              _item_record_id:
+                record.record_id,
+              _item_name:
+                item.name ??
+                record.name ??
+                "Item",
+              _item_charges_per_day:
+                perDay,
+              _item_charges_used: used,
+              _item_charges_remaining:
+                Math.max(0, perDay - used),
+              level_available: true,
+            });
+          }
+        }
+      }
+    }
+
+    const shapes = [
+      ...normalShapes,
+      ...itemShapes,
+    ];
+
+    setR({
+      ...runtime,
+      shapes,
+    });
+
+    if (!sid && shapes[0]) {
       setSid(
-        x.data.shapes[0].id,
+        shapes[0]._selection_key,
       );
     }
   }
@@ -503,7 +660,8 @@ export function WarpingPanel({
 
   const s: S | null =
     r?.shapes?.find(
-      (x: S) => x.id === sid,
+      (x: S) =>
+        x._selection_key === sid,
     ) ??
     r?.shapes?.[0] ??
     null;
@@ -587,6 +745,39 @@ export function WarpingPanel({
         return;
       }
 
+      if (s._item_granted) {
+        const remaining =
+          Number(
+            s._item_charges_remaining ?? 0,
+          );
+
+        if (active) {
+          setAccess({
+            allowed: remaining > 0,
+            reasons:
+              remaining > 0
+                ? []
+                : [
+                    "No Item Shape charges remaining",
+                  ],
+            affinity:
+              r?.affinity ?? 1,
+            warpsPerDay:
+              Number(
+                s._item_charges_per_day ?? 0,
+              ),
+            warpsUsed:
+              Number(
+                s._item_charges_used ?? 0,
+              ),
+            warpsRemaining: remaining,
+            itemGranted: true,
+          });
+        }
+
+        return;
+      }
+
       const result =
         await getShapeAccessForCurrentCharacter(
           s.id,
@@ -603,7 +794,9 @@ export function WarpingPanel({
       active = false;
     };
   }, [
-    s?.id,
+    s?._selection_key,
+    s?._item_charges_remaining,
+    r?.affinity,
     r?.warps_used,
     r?.warps_per_day,
   ]);
@@ -837,9 +1030,24 @@ export function WarpingPanel({
       }
 
       const freshAccess =
-        await getShapeAccessForCurrentCharacter(
-          s.id,
-        );
+        s._item_granted
+          ? {
+              allowed:
+                Number(
+                  s._item_charges_remaining ?? 0,
+                ) > 0,
+              reasons:
+                Number(
+                  s._item_charges_remaining ?? 0,
+                ) > 0
+                  ? []
+                  : [
+                      "No Item Shape charges remaining",
+                    ],
+            }
+          : await getShapeAccessForCurrentCharacter(
+              s.id,
+            );
 
       if (
         !freshAccess.allowed
@@ -897,30 +1105,87 @@ export function WarpingPanel({
         );
       }
 
-      const cr = await db
-        .from("shape_casts")
-        .insert({
-          caster_character_id:
-            me.data.id,
-          shape_id: s.id,
-          room_id:
-            me.data
-              .current_room_id,
-          written_target: wt
-            ? written.trim()
-            : null,
-        })
-        .select("id")
-        .single();
+      let castId = "";
+      let itemChargeRemaining:
+        number | null = null;
 
-      if (
-        cr.error ||
-        !cr.data
-      ) {
-        throw Error(
-          cr.error?.message ??
-            "Cast failed.",
-        );
+      if (s._item_granted) {
+        const itemCast =
+          await db.rpc(
+            "create_item_shape_cast",
+            {
+              p_shape_id: s.id,
+              p_room_id:
+                me.data.current_room_id,
+              p_written_target:
+                wt
+                  ? written.trim()
+                  : null,
+              p_item_shape_id:
+                s._item_shape_id,
+              p_record_kind:
+                s._item_record_kind,
+              p_record_id:
+                s._item_record_id,
+            },
+          );
+
+        if (
+          itemCast.error ||
+          !itemCast.data
+        ) {
+          throw Error(
+            itemCast.error?.message ??
+              "Item Shape cast failed.",
+          );
+        }
+
+        castId =
+          String(
+            (itemCast.data as any).cast_id ??
+              "",
+          );
+
+        itemChargeRemaining =
+          Number(
+            (itemCast.data as any).remaining ??
+              0,
+          );
+
+        if (!castId) {
+          throw Error(
+            "Item Shape cast failed.",
+          );
+        }
+      } else {
+        const cr = await db
+          .from("shape_casts")
+          .insert({
+            caster_character_id:
+              me.data.id,
+            shape_id: s.id,
+            room_id:
+              me.data.current_room_id,
+            written_target: wt
+              ? written.trim()
+              : null,
+            resource_type:
+              "character",
+          })
+          .select("id")
+          .single();
+
+        if (
+          cr.error ||
+          !cr.data
+        ) {
+          throw Error(
+            cr.error?.message ??
+              "Cast failed.",
+          );
+        }
+
+        castId = (cr.data as any).id;
       }
 
       if (s.price_key) {
@@ -929,7 +1194,7 @@ export function WarpingPanel({
             "create_price_for_shape_cast",
             {
               p_cast_id:
-                cr.data.id,
+                castId,
               p_shape_id:
                 s.id,
             },
@@ -946,7 +1211,7 @@ export function WarpingPanel({
         ? [
             {
               cast_id:
-                cr.data.id,
+                castId,
               target_kind:
                 "written",
               outcome:
@@ -957,7 +1222,7 @@ export function WarpingPanel({
           ? [
               {
                 cast_id:
-                  cr.data.id,
+                  castId,
                 target_character_id:
                   me.data.id,
                 target_kind:
@@ -971,7 +1236,7 @@ export function WarpingPanel({
           : targets.map(
               id => ({
                 cast_id:
-                  cr.data.id,
+                  castId,
                 target_character_id:
                   id,
                 target_kind:
@@ -1013,7 +1278,7 @@ export function WarpingPanel({
       if (!wt) {
         const immediate =
           await resolveImmediateShapeCast(
-            cr.data.id,
+            castId,
           );
 
         if (!immediate.ok) {
@@ -1036,7 +1301,7 @@ export function WarpingPanel({
 
         fd.set(
           "cast_id",
-          cr.data.id,
+          castId,
         );
 
         fd.set(
@@ -1170,6 +1435,12 @@ if (wordAndMovement) {
         parts.push(
   `Level: [${s.level}]`,
 );
+      }
+
+      if (s._item_granted) {
+        parts.push(
+          `Granted by [${s._item_name}] · Item Charge [${itemChargeRemaining ?? Math.max(0, Number(s._item_charges_remaining ?? 1) - 1)} / ${s._item_charges_per_day}]`,
+        );
       }
 
       if (s.school) {
@@ -1739,7 +2010,9 @@ return [
           </span>
 
           <span className="ml-3 game_components_warpingpanel_span_text_14">
-            Shapes{" "}
+            {s?._item_granted
+              ? "Item Charges"
+              : "Shapes"}{" "}
             <b className="text-[rgb(var(--sep-colour-ead1a3))]">
               {access
                 ? Math.max(
@@ -1803,15 +2076,17 @@ return [
               (x: S) => (
                 <option
                   className="game_components_warpingpanel_option_option"
-                  key={x.id}
-                  value={x.id}
+                  key={x._selection_key}
+                  value={x._selection_key}
                 >
                   L{x.level} ·{" "}
                   {x.name} ·{" "}
                   {x.word_of_power}
-                  {x.level_available
-                    ? ""
-                    : " · LOCKED"}
+                  {x._item_granted
+                    ? ` · ${x._item_name} · ${x._item_charges_remaining}/${x._item_charges_per_day} charges`
+                    : x.level_available
+                      ? ""
+                      : " · LOCKED"}
                 </option>
               ),
             )}

@@ -18,6 +18,7 @@ type InventoryRow = Omit<
   | "item_effects"
   | "item_active"
   | "teaches_recipe"
+  | "teaches_shape"
 >;
 
 type CharacterState = {
@@ -59,6 +60,7 @@ type ItemRequirementRow = {
   max_charges: number | null;
   cooldown_minutes: number | null;
   teaches_recipe_id: string | null;
+  teaches_shape_id: string | null;
   reference_value: number | null;
   success_die: number | null;
   success_threshold: number | null;
@@ -293,7 +295,10 @@ function getUseBlockReason(
     return null;
   }
 
-  if (item.teaches_recipe_id) {
+  if (
+    item.teaches_recipe_id ||
+    item.teaches_shape_id
+  ) {
     return null;
   }
 
@@ -613,6 +618,7 @@ export async function CharacterInventoryDisplay({
             max_charges,
             cooldown_minutes,
             teaches_recipe_id,
+            teaches_shape_id,
             reference_value,
             success_die,
             success_threshold,
@@ -897,6 +903,10 @@ export async function CharacterInventoryDisplay({
         teaches_recipe:
           Boolean(
             master?.teaches_recipe_id,
+          ),
+        teaches_shape:
+          Boolean(
+            master?.teaches_shape_id,
           ),
         reference_value:
           master?.reference_value === null ||

@@ -94,6 +94,7 @@ export async function getCharacterShapeAccess(characterId:string,shapeId:string)
     .from("shape_casts")
     .select("id",{count:"exact",head:true})
     .eq("caster_character_id",characterId)
+    .eq("resource_type","character")
     .gte("created_at",boundaryResult.data);
 
   if(castCount.error)throw new Error(castCount.error.message);
