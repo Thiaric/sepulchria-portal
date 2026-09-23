@@ -136,25 +136,32 @@ export function GiftEffectFormLogic() {
         setValue(form, "successDie", "");
         setValue(form, "successThreshold", "");
         setValue(form, "successAttribute", "");
-        setValue(form, "cooldownMinutes", "0");
-        setValue(form, "durationMinutes", "");
+        setValue(form, "cooldownValue", "0");
+        setValue(form, "durationValue", "");
       }
 
       setControlDisabled(form, "targetMode", passive);
       setControlDisabled(form, "durationMode", passive);
-      setControlDisabled(form, "cooldownMinutes", passive);
+      setControlDisabled(form, "cooldownValue", passive);
+      setControlDisabled(form, "cooldownUnit", passive);
       setControlDisabled(form, "healthDelta", passive);
       setControlDisabled(form, "healthDice", passive);
       setControlDisabled(form, "successDie", passive);
       setControlDisabled(form, "damageDice", passive);
 
       if (!timed) {
-        setValue(form, "durationMinutes", "");
+        setValue(form, "durationValue", "");
       }
 
       setControlDisabled(
         form,
-        "durationMinutes",
+        "durationValue",
+        !timed,
+      );
+
+      setControlDisabled(
+        form,
+        "durationUnit",
         !timed,
       );
 

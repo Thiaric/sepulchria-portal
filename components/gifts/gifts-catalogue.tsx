@@ -95,11 +95,27 @@ function successLabel(gift: GiftCard) {
   return `d${gift.successDie}${attribute} ≥ ${gift.successThreshold}`;
 }
 
+function minutesLabel(minutes: number) {
+  const value = Math.max(0, Math.trunc(minutes));
+
+  if (value > 0 && value % 1440 === 0) {
+    const days = value / 1440;
+    return `${days} ${days === 1 ? "day" : "days"}`;
+  }
+
+  if (value > 0 && value % 60 === 0) {
+    const hours = value / 60;
+    return `${hours} ${hours === 1 ? "hour" : "hours"}`;
+  }
+
+  return `${value} ${value === 1 ? "minute" : "minutes"}`;
+}
+
 function durationLabel(gift: GiftCard) {
   if (gift.effectMode === "passive") return "Permanent while owned";
   if (gift.effectMode === "none") return "Instantaneous";
   if (gift.durationMinutes === 0) return "Instantaneous";
-  return gift.durationMinutes ? `${gift.durationMinutes} min` : "Not set";
+  return gift.durationMinutes ? minutesLabel(gift.durationMinutes) : "Not set";
 }
 
 function typeLabels(gift: GiftCard) {
@@ -309,7 +325,7 @@ function FeatCard({
               label="Timing"
               value={`${durationLabel(gift)} · ${
                 gift.cooldownMinutes
-                  ? `${gift.cooldownMinutes} min cooldown`
+                  ? `${minutesLabel(gift.cooldownMinutes)} cooldown`
                   : "No cooldown"
               }`}
             />

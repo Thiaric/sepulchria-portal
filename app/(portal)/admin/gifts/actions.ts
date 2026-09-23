@@ -40,6 +40,42 @@ function checkbox(formData: FormData, name: string) {
   return formData.get(name) === "on";
 }
 
+function timeInMinutes(
+  formData: FormData,
+  valueName: string,
+  unitName: string,
+  fallback = 0,
+) {
+  const amount = integer(
+    formData,
+    valueName,
+    fallback,
+  );
+
+  const unit =
+    optionalText(
+      formData,
+      unitName,
+    ) ?? "minutes";
+
+  const multiplier =
+    unit === "days"
+      ? 1440
+      : unit === "hours"
+        ? 60
+        : unit === "minutes"
+          ? 1
+          : null;
+
+  if (multiplier === null) {
+    throw new Error(
+      "Invalid Feat time unit.",
+    );
+  }
+
+  return amount * multiplier;
+}
+
 function allIds(formData: FormData, name: string) {
   return formData.getAll(name).filter(
     (value): value is string =>
@@ -108,11 +144,16 @@ function giftValues(formData: FormData) {
       durationMinutes = 0;
     } else {
       durationMinutes =
-        integer(formData, "durationMinutes", 0);
+        timeInMinutes(
+          formData,
+          "durationValue",
+          "durationUnit",
+          0,
+        );
 
       if (durationMinutes <= 0) {
         throw new Error(
-          "Timed Activated Feats need a duration greater than 0 minutes.",
+          "Timed Activated Feats need a duration greater than 0.",
         );
       }
     }
@@ -121,7 +162,12 @@ function giftValues(formData: FormData) {
   const cooldownMinutes =
     isPassive
       ? 0
-      : integer(formData, "cooldownMinutes", 0);
+      : timeInMinutes(
+          formData,
+          "cooldownValue",
+          "cooldownUnit",
+          0,
+        );
 
   if (cooldownMinutes < 0) {
     throw new Error("Feat cooldown cannot be negative.");

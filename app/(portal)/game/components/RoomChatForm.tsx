@@ -206,6 +206,50 @@ function formatSigned(
     : String(value);
 }
 
+function formatMinutesLabel(
+  minutes: number,
+): string {
+  const value =
+    Math.max(
+      0,
+      Math.trunc(minutes),
+    );
+
+  if (
+    value > 0 &&
+    value % 1440 === 0
+  ) {
+    const days =
+      value / 1440;
+
+    return `${days} ${
+      days === 1
+        ? "day"
+        : "days"
+    }`;
+  }
+
+  if (
+    value > 0 &&
+    value % 60 === 0
+  ) {
+    const hours =
+      value / 60;
+
+    return `${hours} ${
+      hours === 1
+        ? "hour"
+        : "hours"
+    }`;
+  }
+
+  return `${value} ${
+    value === 1
+      ? "minute"
+      : "minutes"
+  }`;
+}
+
 export default function RoomChatForm({
   roomId,
   viewerCharacterId,
@@ -3055,11 +3099,17 @@ function ignoreSpellingWord() {
                         ? `Duration: ${
                             selectedGift.durationMinutes === 0
                               ? "Instantaneous"
-                              : `${selectedGift.durationMinutes ?? "?"} min`
+                              : selectedGift.durationMinutes
+                                ? formatMinutesLabel(
+                                    selectedGift.durationMinutes,
+                                  )
+                                : "?"
                           } · Cooldown: ${
                             selectedGift.cooldownMinutes === 0
                               ? "None"
-                              : `${selectedGift.cooldownMinutes} min`
+                              : formatMinutesLabel(
+                                  selectedGift.cooldownMinutes,
+                                )
                           }`
                         : "No automatic Attribute effect"}
                 </p>

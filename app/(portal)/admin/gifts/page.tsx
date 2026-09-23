@@ -120,13 +120,52 @@ function adminSuccessLabel(gift: Gift) {
   return `d${gift.success_die}${attribute} ≥ ${gift.success_threshold}`;
 }
 
+function adminMinutesLabel(minutes: number) {
+  const value = Math.max(0, Math.trunc(minutes));
+
+  if (value > 0 && value % 1440 === 0) {
+    const days = value / 1440;
+    return `${days} ${days === 1 ? "day" : "days"}`;
+  }
+
+  if (value > 0 && value % 60 === 0) {
+    const hours = value / 60;
+    return `${hours} ${hours === 1 ? "hour" : "hours"}`;
+  }
+
+  return `${value} ${value === 1 ? "minute" : "minutes"}`;
+}
+
+function adminTimeParts(minutes: number) {
+  const value = Math.max(0, Math.trunc(minutes));
+
+  if (value > 0 && value % 1440 === 0) {
+    return {
+      value: value / 1440,
+      unit: "days" as const,
+    };
+  }
+
+  if (value > 0 && value % 60 === 0) {
+    return {
+      value: value / 60,
+      unit: "hours" as const,
+    };
+  }
+
+  return {
+    value,
+    unit: "minutes" as const,
+  };
+}
+
 function adminDurationLabel(gift: Gift) {
   if (gift.effect_mode === "passive") return "Permanent";
   if (gift.effect_mode !== "temporary") return "Instant use";
   if (gift.duration_minutes === 0) return "Instantaneous";
 
   return gift.duration_minutes
-    ? `${gift.duration_minutes} min`
+    ? adminMinutesLabel(gift.duration_minutes)
     : "Not set";
 }
 
@@ -335,7 +374,7 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                     gift.effect_mode === "temporary"
                       ? gift.cooldown_minutes === 0
                         ? "No cooldown"
-                        : `${gift.cooldown_minutes} min cooldown`
+                        : `${adminMinutesLabel(gift.cooldown_minutes)} cooldown`
                       : "No cooldown"
                   }`}
                 />
@@ -563,6 +602,14 @@ function GiftForm({
   const selectedRaces = new Set(gift?.races?.map((item) => item.race_id) ?? []);
   const selectedRoles = new Set(gift?.roles?.map((item) => item.order_job_id) ?? []);
 
+  const durationParts =
+    gift?.duration_minutes && gift.duration_minutes > 0
+      ? adminTimeParts(gift.duration_minutes)
+      : { value: "", unit: "minutes" as const };
+
+  const cooldownParts =
+    adminTimeParts(gift?.cooldown_minutes ?? 360);
+
   return (
     <AdminActionForm action={action} className="mt-5">
       {gift ? <input className="admin_gifts_page_input_gift_id_3" type="hidden" name="giftId" value={gift.id} /> : null}
@@ -646,42 +693,49 @@ function GiftForm({
           </select>
         </Field>
 
-        <Field label="Duration (minutes)">
-          <input
-            type="number"
-            min={1}
-            step={1}
-            name="durationMinutes"
-            placeholder="Required when Timed"
-            defaultValue={
-              gift?.duration_minutes && gift.duration_minutes > 0
-                ? gift.duration_minutes
-                : ""
-            }
-            className={[((inputClass)), "admin_gifts_page_input_duration_minutes"].filter(Boolean).join(" ")}
-          />
+        <Field label="Duration">
+          <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">
+            <input
+              type="number"
+              min={1}
+              step={1}
+              name="durationValue"
+              placeholder="Required when Timed"
+              defaultValue={durationParts.value}
+              className={[((inputClass)), "admin_gifts_page_input_duration_value"].filter(Boolean).join(" ")}
+            />
+            <select
+              name="durationUnit"
+              defaultValue={durationParts.unit}
+              className={[((inputClass)), "admin_gifts_page_select_duration_unit"].filter(Boolean).join(" ")}
+            >
+              <option value="minutes">Minutes</option>
+              <option value="hours">Hours</option>
+              <option value="days">Days</option>
+            </select>
+          </div>
         </Field>
 
-        <Field label="Cooldown (minutes)">
-          <input
-            type="number"
-            min={0}
-            step={1}
-            name="cooldownMinutes"
-            list="feat-cooldown-options"
-            defaultValue={gift?.cooldown_minutes ?? 360}
-            className={[((inputClass)), "admin_gifts_page_input_cooldown_minutes"].filter(Boolean).join(" ")}
-          />
-          <datalist id="feat-cooldown-options">
-            <option className="admin_gifts_page_option_0" value="0" label="No cooldown" />
-            <option className="admin_gifts_page_option_30" value="30" label="30 minutes" />
-            <option className="admin_gifts_page_option_60" value="60" label="1 hour" />
-            <option className="admin_gifts_page_option_120" value="120" label="2 hours" />
-            <option className="admin_gifts_page_option_240" value="240" label="4 hours" />
-            <option className="admin_gifts_page_option_360" value="360" label="6 hours" />
-            <option className="admin_gifts_page_option_720" value="720" label="12 hours" />
-            <option className="admin_gifts_page_option_1440" value="1440" label="24 hours" />
-          </datalist>
+        <Field label="Cooldown">
+          <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">
+            <input
+              type="number"
+              min={0}
+              step={1}
+              name="cooldownValue"
+              defaultValue={cooldownParts.value}
+              className={[((inputClass)), "admin_gifts_page_input_cooldown_value"].filter(Boolean).join(" ")}
+            />
+            <select
+              name="cooldownUnit"
+              defaultValue={cooldownParts.unit}
+              className={[((inputClass)), "admin_gifts_page_select_cooldown_unit"].filter(Boolean).join(" ")}
+            >
+              <option value="minutes">Minutes</option>
+              <option value="hours">Hours</option>
+              <option value="days">Days</option>
+            </select>
+          </div>
         </Field>
 
         <Field label="Current Health change on use (fixed)">
