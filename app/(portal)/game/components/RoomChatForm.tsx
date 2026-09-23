@@ -3019,19 +3019,25 @@ function ignoreSpellingWord() {
                   </p>
                 ) : null}
                 <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-c5a36f))] game_components_roomchatform_p_text_17">
-                  Success:{" "}
-                  {selectedGift.effectMode === "passive"
-                    ? "No roll - Passive Feat"
-                    : selectedGift.successDie
-                      ? `d${selectedGift.successDie}${
-                          selectedGift.successAttribute
-                            ? ` + ${ATTRIBUTE_LABELS[selectedGift.successAttribute]}`
-                            : ""
-                        } >= ${selectedGift.successThreshold}`
-                      : "Automatic"}
+                  {selectedGift.mechanicsShape
+                    ? selectedGift.effectMode === "passive"
+                      ? "Passive · Shape-style Self profile is always active while owned"
+                      : "Shape-style mechanics · use the mechanical profile below"
+                    : `Success: ${
+                        selectedGift.effectMode === "passive"
+                          ? "No roll - Passive Feat"
+                          : selectedGift.successDie
+                            ? `d${selectedGift.successDie}${
+                                selectedGift.successAttribute
+                                  ? ` + ${ATTRIBUTE_LABELS[selectedGift.successAttribute]}`
+                                  : ""
+                              } >= ${selectedGift.successThreshold}`
+                            : "Automatic"
+                      }`}
                 </p>
 
-                {(selectedGift.healthDice ||
+                {!selectedGift.mechanicsShape &&
+                (selectedGift.healthDice ||
                   selectedGift.healthDelta !== 0 ||
                   selectedGift.maxHealthModifier !== 0) ? (
                   <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-aa8c61))] game_components_roomchatform_p_text_18">
@@ -3054,7 +3060,8 @@ function ignoreSpellingWord() {
                   </p>
                 ) : null}
 
-                {(selectedGift.damageDice ||
+                {!selectedGift.mechanicsShape &&
+                (selectedGift.damageDice ||
                   selectedGift.musclesModifier ||
                   selectedGift.reflexesModifier ||
                   selectedGift.vigourModifier ||

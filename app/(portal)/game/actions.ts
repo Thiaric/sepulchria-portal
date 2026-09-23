@@ -1951,6 +1951,62 @@ export async function activateRoomGift(
       };
     }
 
+    const persistentLegacyModifiers = {
+      muscles: Number(gift.muscles_modifier ?? 0),
+      reflexes: Number(gift.reflexes_modifier ?? 0),
+      vigour: Number(gift.vigour_modifier ?? 0),
+      shrewd: Number(gift.shrewd_modifier ?? 0),
+      brains: Number(gift.brains_modifier ?? 0),
+      presence: Number(gift.presence_modifier ?? 0),
+      maxHealth: Number(gift.max_health_modifier ?? 0),
+    };
+
+    const hasPersistentLegacyModifiers =
+      Number(gift.duration_minutes ?? 0) > 0 &&
+      Object.values(persistentLegacyModifiers).some(
+        (value) => value !== 0,
+      );
+
+    if (hasPersistentLegacyModifiers) {
+      const { error: effectError } = await admin
+        .from("character_effects")
+        .insert({
+          target_character_id: target.id,
+          source_type: "feat",
+          source_definition_id: gift.id,
+          mechanics_definition_id: null,
+          source_instance_id: activation.id,
+          source_character_id: character.id,
+          source_name: gift.name,
+          source_level: 1,
+          effect_nature: "beneficial",
+          conditions: [],
+          muscles_modifier: persistentLegacyModifiers.muscles,
+          reflexes_modifier: persistentLegacyModifiers.reflexes,
+          vigour_modifier: persistentLegacyModifiers.vigour,
+          brains_modifier: persistentLegacyModifiers.brains,
+          shrewd_modifier: persistentLegacyModifiers.shrewd,
+          presence_modifier: persistentLegacyModifiers.presence,
+          max_health_modifier: persistentLegacyModifiers.maxHealth,
+          starts_at: activation.activated_at,
+          expires_at: activation.expires_at,
+          dispellable: true,
+        });
+
+      if (effectError) {
+        await admin
+          .from("gift_activations")
+          .delete()
+          .eq("id", activation.id);
+
+        return {
+          ok: false,
+          message:
+            `Unable to apply temporary Feat modifiers: ${effectError.message}`,
+        };
+      }
+    }
+
     const effectSummary: string[] = [successRoll.summary];
 
     if (gift.health_dice) {
@@ -3484,7 +3540,7 @@ export async function useRoomItem(
       const rolled = randomInt(1, die + 1);
       const total = rolled + modifier;
 
-      const { error: pendingError } = await admin
+      const { data: pendingAction, error: pendingError } = await admin
         .from("opposed_actions")
         .insert({
           room_id: character.current_room_id,
@@ -3505,10 +3561,17 @@ export async function useRoomItem(
           damage_type: item.damage_type ?? null,
           damage_flat: 0,
           damage_attribute: null,
-        });
+        })
+        .select("id")
+        .single();
 
-      if (pendingError) {
-        return { ok: false, message: pendingError.message };
+      if (pendingError || !pendingAction) {
+        return {
+          ok: false,
+          message:
+            pendingError?.message ??
+            "Unable to create opposed Item action.",
+        };
       }
 
       const attributeText = attribute
@@ -3544,8 +3607,20 @@ message_type: "action",
         });
 
       if (messageError) {
+        const rollback = await admin
+          .from("opposed_actions")
+          .delete()
+          .eq("id", pendingAction.id)
+          .eq("status", "pending");
+
+        if (rollback.error) {
+          throw new Error(
+            `Opposed Item announcement failed and rollback also failed: ${messageError.message} / ${rollback.error.message}`,
+          );
+        }
+
         throw new Error(
-          `Opposed Item created, but the room announcement failed: ${messageError.message}`,
+          `Opposed Item was not created because the room announcement failed: ${messageError.message}`,
         );
       }
 

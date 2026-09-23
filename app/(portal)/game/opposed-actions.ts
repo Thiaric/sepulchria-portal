@@ -716,6 +716,37 @@ export async function counterOpposedAction(
       };
     }
 
+    const { data: attackerLocation, error: attackerLocationError } =
+      await admin
+        .from("characters")
+        .select("current_room_id")
+        .eq("id", pending.attacker_character_id)
+        .maybeSingle();
+
+    if (attackerLocationError) {
+      throw new Error(attackerLocationError.message);
+    }
+
+    if (
+      character.current_room_id !== pending.room_id ||
+      attackerLocation?.current_room_id !== pending.room_id
+    ) {
+      await admin
+        .from("opposed_actions")
+        .update({
+          status: "expired",
+          resolved_at: new Date().toISOString(),
+        })
+        .eq("id", pending.id)
+        .eq("status", "pending");
+
+      return {
+        ok: false,
+        message:
+          "That Action ended because one of the Characters left the Location.",
+      };
+    }
+
     if (Date.parse(pending.expires_at) <= Date.now()) {
       await admin
         .from("opposed_actions")

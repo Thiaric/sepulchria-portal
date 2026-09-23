@@ -38,9 +38,8 @@ export async function getCharacterShapeAccess(characterId:string,shapeId:string)
     assignment=>assignment.acquisition_source==="order",
   );
 
-  const manualLevelOverride=assignments.some(
+  const assignmentLevelOverride=assignments.some(
     assignment=>
-      assignment.acquisition_source==="staff" &&
       assignment.level_override===true,
   );
 
@@ -51,7 +50,7 @@ export async function getCharacterShapeAccess(characterId:string,shapeId:string)
 
   if(
     !orderGranted &&
-    !manualLevelOverride &&
+    !assignmentLevelOverride &&
     Number(shape.level)>effectiveWarping.affinity
   ){
     reasons.push(`Requires Affinity ${shape.level}`);
@@ -113,6 +112,6 @@ export async function getCharacterShapeAccess(characterId:string,shapeId:string)
     warpsUsed,
     warpsRemaining,
     orderGranted,
-    override:manualLevelOverride,
+    override:assignmentLevelOverride,
   };
 }

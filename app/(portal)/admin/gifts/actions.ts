@@ -666,6 +666,23 @@ function validateShapeStylePayload(
     );
   }
 
+  const passiveMaxHp =
+    String(
+      payload.self_max_hp_change ??
+        "",
+    ).trim();
+
+  if (
+    payload.duration_unit === "until_dispelled" &&
+    payload.feat_id &&
+    passiveMaxHp &&
+    !/^[+-]?[0-9]+$/.test(passiveMaxHp)
+  ) {
+    throw new Error(
+      "Passive Feat Max HP change must be a fixed whole number, not dice.",
+    );
+  }
+
   const persistent =
     payload.self_conditions.length ||
     payload.other_conditions.length ||

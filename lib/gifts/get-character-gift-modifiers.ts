@@ -77,7 +77,8 @@ export async function getCharacterGiftAttributeModifiers(
           brains_modifier,
           shrewd_modifier,
           presence_modifier,
-          max_health_modifier
+          max_health_modifier,
+          mechanics:shapes!shapes_feat_id_fkey(id)
         )
       `)
       .eq(
@@ -110,6 +111,15 @@ export async function getCharacterGiftAttributeModifiers(
       gift.effect_mode !==
         "passive"
     ) {
+      continue;
+    }
+
+    const mechanics =
+      one<any>(
+        gift.mechanics as any,
+      );
+
+    if (mechanics) {
       continue;
     }
 
