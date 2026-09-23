@@ -119,10 +119,20 @@ function readStaffSectionRoles(
   );
 }
 
-function isValidOptionalUrl(
+function isValidOptionalImagePath(
   value: string,
 ): boolean {
   if (!value) {
+    return true;
+  }
+
+  // Local files from Next.js public/ are referenced from the site root.
+  // Example: public/icons/forum/market.png -> /icons/forum/market.png
+  if (
+    value.startsWith("/") &&
+    !value.startsWith("//") &&
+    !value.includes("\\")
+  ) {
     return true;
   }
 
@@ -372,15 +382,15 @@ function validateSectionForm(
     );
   }
 
-  if (!isValidOptionalUrl(iconUrl)) {
+  if (!isValidOptionalImagePath(iconUrl)) {
     onError(
-      "The icon URL must be a valid HTTP or HTTPS address.",
+      "The icon must be a local path beginning with / or a valid HTTP/HTTPS URL.",
     );
   }
 
-  if (!isValidOptionalUrl(bannerUrl)) {
+  if (!isValidOptionalImagePath(bannerUrl)) {
     onError(
-      "The banner URL must be a valid HTTP or HTTPS address.",
+      "The banner must be a local path beginning with / or a valid HTTP/HTTPS URL.",
     );
   }
 

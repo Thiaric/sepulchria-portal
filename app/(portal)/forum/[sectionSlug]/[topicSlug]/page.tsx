@@ -670,10 +670,13 @@ export default async function TopicPage({
           `,
         )
         .in("post_id", postIds)
-        .eq(
-  "action",
-  "delete_post",
-)
+        .in(
+          "action",
+          [
+            "delete_post",
+            "restore_post",
+          ],
+        )
         .order("created_at", {
           ascending: false,
         })
@@ -696,15 +699,33 @@ const moderationLogs =
 const moderationReasonMap =
   new Map<string, string>();
 
+const moderatedDeletedPostIds =
+  new Set<string>();
+
+const latestModerationActionByPost =
+  new Set<string>();
+
 for (const log of moderationLogs) {
   if (
     !log.post_id ||
-    moderationReasonMap.has(
+    latestModerationActionByPost.has(
       log.post_id,
     )
   ) {
     continue;
   }
+
+  latestModerationActionByPost.add(
+    log.post_id,
+  );
+
+  if (log.action !== "delete_post") {
+    continue;
+  }
+
+  moderatedDeletedPostIds.add(
+    log.post_id,
+  );
 
   const reason =
     log.details?.reason?.trim();
@@ -1013,8 +1034,17 @@ race_colour:
     ]),
   );
 
+  const visiblePosts =
+    posts.filter(
+      (post) =>
+        !post.deleted_at ||
+        moderatedDeletedPostIds.has(
+          post.id,
+        ),
+    );
+
   const mappedPosts: ForumTopicPost[] =
-    posts.map((post) => {
+    visiblePosts.map((post) => {
       const postImages: ForumPostImage[] =
         images
           .filter(

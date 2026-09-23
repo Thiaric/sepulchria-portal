@@ -694,16 +694,15 @@ export default async function EditForumSectionPage({
 
             <div className="mt-6 grid gap-5 md:grid-cols-2 admin_forum_sections_sectionid_page_div_container_5">
               <FieldGroup
-                label="Icon URL"
+                label="Icon path or URL"
                 htmlFor="forum-section-icon"
-                description="Optional HTTP or HTTPS address for the section icon."
+                description="Use a local public path such as /icons/forum/example.png or a full HTTP/HTTPS URL."
               >
                 <input
                   id="forum-section-icon"
                   name="icon_url"
-                  type="url"
-                  inputMode="url"
-                  placeholder="https://..."
+                  type="text"
+                  placeholder="/icons/forum/example.png"
                   defaultValue={
                     section.icon_url ??
                     ""
@@ -713,16 +712,15 @@ export default async function EditForumSectionPage({
               </FieldGroup>
 
               <FieldGroup
-                label="Banner URL"
+                label="Banner path or URL"
                 htmlFor="forum-section-banner"
-                description="Optional background image displayed behind the section."
+                description="Use a local public path such as /banners/forum/example.png or a full HTTP/HTTPS URL."
               >
                 <input
                   id="forum-section-banner"
                   name="banner_url"
-                  type="url"
-                  inputMode="url"
-                  placeholder="https://..."
+                  type="text"
+                  placeholder="/banners/forum/example.png"
                   defaultValue={
                     section.banner_url ??
                     ""

@@ -496,13 +496,13 @@ function CompactForumSection({
 
   return (
     <Link
-      href={`/forum/${section.slug}`}
-      className={`group relative block overflow-hidden px-5 py-2 transition sm:px-6 ${
-        hasUnreadTopics
-          ? "bg-[rgb(var(--sep-colour-1d140d))] shadow-[inset_3px_0_0_#a87532]"
-          : "hover:bg-[rgb(var(--sep-colour-1a130e))]"
-      }`}
-    >
+  href={`/forum/${section.slug}`}
+  className={`section_slug_forum_link group relative block overflow-hidden px-5 py-2 transition sm:px-6 hover:bg-[rgb(var(--sep-skin-c1))]/70 ${
+    hasUnreadTopics
+      ? "bg-[rgb(var(--sep-colour-1d140d))] shadow-[inset_3px_0_0_#a87532]"
+      : ""
+  }`}
+>
       {section.banner_url ? (
         <div className="absolute inset-0 forum_page_div_container_7">
           <Image
@@ -532,7 +532,7 @@ function CompactForumSection({
                 alt=""
                 fill
                 sizes="56px"
-                className="object-contain p-2"
+                className="object-contain"
                 unoptimized
               />
             ) : (

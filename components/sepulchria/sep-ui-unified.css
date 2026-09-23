@@ -3254,44 +3254,9 @@ a[class*="group relative grid gap-4 border transition"]:hover {
    Every non-Cinder skin derives the topic hover from its own C1.
    ===================================================================== */
 
-:is(
-  html[data-portal-skin]:not([data-portal-skin="sepulchria"]),
-  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
-)
-[data-portal-shell]
-[data-forum-topic-row="true"]:hover {
-  background-color:
-    color-mix(
-      in srgb,
-      rgb(var(--sep-skin-c1)) 11%,
-      rgb(var(--sep-colour-100c09))
-    ) !important;
 
-  border-color:
-    rgb(var(--sep-skin-c1) / .44) !important;
 
-  box-shadow:
-    inset 2px 0 0 rgb(var(--sep-skin-c1) / .30) !important;
-}
 
-/* Unread topic rows keep a slightly stronger hover so their unread state
-   remains visually distinct while still following the active skin. */
-:is(
-  html[data-portal-skin]:not([data-portal-skin="sepulchria"]),
-  body[data-portal-skin]:not([data-portal-skin="sepulchria"])
-)
-[data-portal-shell]
-[data-forum-topic-row="true"][class*="bg-[rgb(var(--sep-colour-1b130d))]"]:hover {
-  background-color:
-    color-mix(
-      in srgb,
-      rgb(var(--sep-skin-c1)) 14%,
-      rgb(var(--sep-colour-1b130d))
-    ) !important;
-
-  border-color:
-    rgb(var(--sep-skin-c1) / .58) !important;
-}
 
 
 /* =====================================================================
