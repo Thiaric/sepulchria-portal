@@ -10,6 +10,10 @@ import PostModerationPanel from "@/components/forum/post-moderation-panel";
 
 import { richTextToPlainText } from "@/lib/rich-text";
 
+import {
+  formatAurethDate,
+} from "@/lib/world/calendar";
+
 export type ForumPostCharacter = {
   id: string;
   display_name: string | null;
@@ -73,6 +77,7 @@ type TopicPostProps = {
   canReport: boolean;
   canModerate: boolean;
   topicLocked: boolean;
+  ongame: boolean;
 };
 
 function getCharacterName(
@@ -118,20 +123,37 @@ function getCharacterInitials(
     .toUpperCase();
 }
 
-function formatDate(value: string): string {
+function formatDate(
+  value: string,
+  ongame = false,
+): string {
   const date = new Date(value);
 
   if (Number.isNaN(date.getTime())) {
     return value;
   }
 
-  return new Intl.DateTimeFormat("en-GB", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(date);
+  const realDate =
+    new Intl.DateTimeFormat(
+      "en-GB",
+      {
+        timeZone:
+          "Europe/London",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      },
+    ).format(date);
+
+  if (!ongame) {
+    return realDate;
+  }
+
+  return `${formatAurethDate(
+    date,
+  )} (${realDate})`;
 }
 
 function shortenText(
@@ -176,6 +198,7 @@ export default function TopicPost({
   canReport,
   canModerate,
   topicLocked,
+  ongame,
 }: TopicPostProps) {
   const authorName =
     post.is_anonymous &&
@@ -262,7 +285,7 @@ export default function TopicPost({
                 <ForumCharacterLink
                   characterId={post.author_character?.id}
                   disabled={!linkAuthorToProfile}
-                  className="break-words transition hover:text-[rgb(var(--sep-colour-efd4a0))]"
+                  className="relative -top-[2px] break-words transition hover:text-[rgb(var(--sep-colour-efd4a0))]"
                   ariaLabel={`View ${authorName}'s character sheet`}
                 >
                   {post.is_anonymous
@@ -320,21 +343,25 @@ export default function TopicPost({
               ) : null}
 
               {post.edited_at &&
-              !isDeleted ? (
-                <span className="text-[8px] italic text-[rgb(var(--sep-colour-6d6255))] components_forum_topic_post_span_text_3">
-                  Edited{" "}
-                  {formatDate(
-                    post.edited_at,
-                  )}
-                </span>
-              ) : null}
+!isDeleted ? (
+  <span className="text-[8px] italic text-[rgb(var(--sep-colour-6d6255))] components_forum_topic_post_span_text_3">
+    Edited{" "}
+    {formatDate(
+      post.edited_at,
+      ongame,
+    )}
+  </span>
+) : null}
             </div>
 
             <time
               dateTime={post.created_at}
               className="text-[8px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-6f6251))]"
             >
-              {formatDate(post.created_at)}
+              {formatDate(
+  post.created_at,
+  ongame,
+)}
             </time>
           </header>
 

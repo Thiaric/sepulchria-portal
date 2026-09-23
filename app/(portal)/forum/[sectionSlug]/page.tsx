@@ -10,6 +10,9 @@ import {
   canViewOrderTopic,
   getForumViewerContext,
 } from "@/lib/forum/order-forum-access";
+import {
+  formatAurethDate,
+} from "@/lib/world/calendar";
 
 type ForumSection = {
   id: string;
@@ -138,20 +141,37 @@ function getSingleRelation<T>(
   return value;
 }
 
-function formatDate(value: string): string {
+function formatDate(
+  value: string,
+  ongame = false,
+): string {
   const date = new Date(value);
 
   if (Number.isNaN(date.getTime())) {
     return value;
   }
 
-  return new Intl.DateTimeFormat("en-GB", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(date);
+  const realDate =
+    new Intl.DateTimeFormat(
+      "en-GB",
+      {
+        timeZone:
+          "Europe/London",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      },
+    ).format(date);
+
+  if (!ongame) {
+    return realDate;
+  }
+
+  return `${formatAurethDate(
+    date,
+  )} (${realDate})`;
 }
 
 function getCharacterName(
@@ -788,25 +808,29 @@ export default async function ForumSectionPage({
                     <div className="divide-y divide-[rgb(var(--sep-colour-60482e))]/30 forum_sectionslug_page_div_container_19">
                       {pinnedTopics.map(
                         (topic) => (
-                          <TopicRow
-                            key={
-                              topic.id
-                            }
-                            topic={topic}
-                            sectionSlug={
-                              section.slug
-                            }
-                            isUnread={isTopicUnread(
-                              topic,
-                            )}
-                            viewerUserId={
-                              user?.id ??
-                              null
-                            }
-                            isStaff={
-                              isStaff
-                            }
-                          />
+                         <TopicRow
+  key={
+    topic.id
+  }
+  topic={topic}
+  sectionSlug={
+    section.slug
+  }
+  isUnread={isTopicUnread(
+    topic,
+  )}
+  viewerUserId={
+    user?.id ??
+    null
+  }
+  isStaff={
+    isStaff
+  }
+  ongame={
+    section.section_type ===
+    "ongame"
+  }
+/>
                         ),
                       )}
                     </div>
@@ -829,24 +853,28 @@ export default async function ForumSectionPage({
                       {regularTopics.map(
                         (topic) => (
                           <TopicRow
-                            key={
-                              topic.id
-                            }
-                            topic={topic}
-                            sectionSlug={
-                              section.slug
-                            }
-                            isUnread={isTopicUnread(
-                              topic,
-                            )}
-                            viewerUserId={
-                              user?.id ??
-                              null
-                            }
-                            isStaff={
-                              isStaff
-                            }
-                          />
+  key={
+    topic.id
+  }
+  topic={topic}
+  sectionSlug={
+    section.slug
+  }
+  isUnread={isTopicUnread(
+    topic,
+  )}
+  viewerUserId={
+    user?.id ??
+    null
+  }
+  isStaff={
+    isStaff
+  }
+  ongame={
+    section.section_type ===
+    "ongame"
+  }
+/>
                         ),
                       )}
                     </div>
@@ -959,12 +987,14 @@ function TopicRow({
   isUnread,
   viewerUserId,
   isStaff,
+  ongame,
 }: {
   topic: ForumTopic;
   sectionSlug: string;
   isUnread: boolean;
   viewerUserId: string | null;
   isStaff: boolean;
+  ongame: boolean;
 }) {
   const canRevealAnonymousIdentity =
     topic.is_anonymous &&
@@ -1079,8 +1109,9 @@ function TopicRow({
 
             {" · "}
             {formatDate(
-              topic.created_at,
-            )}
+  topic.created_at,
+  ongame,
+)}
           </p>
         </div>
       </Link>
@@ -1114,8 +1145,9 @@ function TopicRow({
 
         <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-8e806e))] forum_sectionslug_page_p_text_16">
           {formatDate(
-            topic.last_post_at,
-          )}
+  topic.last_post_at,
+  ongame,
+)}
         </p>
       </div>
     </article>

@@ -18,7 +18,9 @@ import type {
   DirectMessage,
   PrivateMessageMode,
 } from "@/types/messages";
-
+import {
+  formatAurethDate,
+} from "@/lib/world/calendar";
 import {
   deletePrivateMessages,
 } from "../../actions";
@@ -63,7 +65,7 @@ function MessageModeBadge({
         ongame
           ? "border-[rgb(var(--sep-colour-9b7446))]/70 bg-[rgb(var(--sep-colour-312215))] text-[rgb(var(--sep-colour-e2bd82))]"
           : "border-[rgb(var(--sep-colour-687083))]/70 bg-[rgb(var(--sep-colour-22252c))] text-[rgb(var(--sep-colour-c6ccd8))]"
-      }`)), "messages_id_components_conversationmessagelist_span_text"].filter(Boolean).join(" ")}
+      }`)), "ml-2 messages_id_components_conversationmessagelist_span_text"].filter(Boolean).join(" ")}
     >
       {ongame
         ? "On-game"
@@ -108,6 +110,31 @@ function dateEnd(
   )
     ? null
     : result;
+}
+
+function formatPrivateMessageDate(
+  createdAt: string,
+  mode: PrivateMessageMode,
+) {
+  const date =
+    new Date(createdAt);
+
+  const realDate =
+    date.toLocaleString(
+      "en-GB",
+      {
+        timeZone:
+          "Europe/London",
+      },
+    );
+
+  if (mode !== "ongame") {
+    return realDate;
+  }
+
+  return `${formatAurethDate(
+    date,
+  )} (${realDate})`;
 }
 
 export function ConversationMessageList({
@@ -756,12 +783,11 @@ export function ConversationMessageList({
 
                       <div className="flex flex-wrap items-center justify-end gap-1.5 messages_id_components_conversationmessagelist_div_container_12">
                         <time className="text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-776b5c))]">
-                          {new Date(
-                            message.created_at,
-                          ).toLocaleString(
-                            "en-GB",
-                          )}
-                        </time>
+  {formatPrivateMessageDate(
+    message.created_at,
+    message.message_mode,
+  )}
+</time>
 
                         {!message.optimistic ? <a
                           href={`/messages/forward/${message.id}`}

@@ -38,6 +38,32 @@ const ICONS: Record<string, string> = {
   hail: "/icons/weather/hail.png",
 };
 
+const REAL_WEEKDAYS = [
+  
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+] as const;
+
+const REAL_MONTHS = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+] as const;
+
 type CalendarEvent = {
   id: string;
   title: string;
@@ -390,6 +416,7 @@ function Calendar({
     viewDate.getUTCMonth();
 
   const firstWeekday =
+  (
     new Date(
       Date.UTC(
         realYear,
@@ -397,7 +424,8 @@ function Calendar({
         1,
         12,
       ),
-    ).getUTCDay();
+    ).getUTCDay() + 6
+  ) % 7;
 
   const eventCountByDate =
     new Map<string, number>();
@@ -485,9 +513,12 @@ function Calendar({
         </div>
 
         <div className="text-center components_world_world_indicator_div_container_4">
-          <p className="font-serif text-lg text-[rgb(var(--sep-colour-dfc79c))] components_world_world_indicator_p_text">
-            {aureth.monthName}
-          </p>
+          <p
+  title={REAL_MONTHS[realMonth]}
+  className="cursor-help font-serif text-lg text-[rgb(var(--sep-colour-dfc79c))] components_world_world_indicator_p_text"
+>
+  {aureth.monthName}
+</p>
           <p className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806f59))] components_world_world_indicator_p_text_2">
             {aureth.year} ADN
           </p>
@@ -523,19 +554,19 @@ function Calendar({
 
       <div className="mt-2 grid grid-cols-7 ... gap-px border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-60482e))]/25 components_world_world_indicator_div_container_7">
         {AURETH_WEEKDAYS.map(
-          (weekday) => (
-            <div
-              key={weekday}
-              title={weekday}
-              className="bg-[rgb(var(--sep-colour-100c09))] px-0.5 py-2 text-center text-[7px] uppercase tracking-[0.04em] text-[rgb(var(--sep-colour-796a56))] components_world_world_indicator_div_container_8"
-            >
-              {weekday.slice(
-                0,
-                3,
-              )}
-            </div>
-          ),
-        )}
+  (weekday, index) => (
+    <div
+      key={weekday}
+      title={REAL_WEEKDAYS[index]}
+      className="cursor-help bg-[rgb(var(--sep-colour-100c09))] px-0.5 py-2 text-center text-[7px] uppercase tracking-[0.04em] text-[rgb(var(--sep-colour-796a56))] components_world_world_indicator_div_container_8"
+    >
+      {weekday.slice(
+        0,
+        3,
+      )}
+    </div>
+  ),
+)}
 
         {cells.map(
           (
@@ -1160,13 +1191,18 @@ export function WorldIndicator({
                 </p>
 
                 <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 pr-10 components_world_world_indicator_div_container_14">
-  <h2 className="font-serif text-base text-[rgb(var(--sep-colour-e2cda4))] components_world_world_indicator_h2_heading">
-    {fullDate}
-  </h2>
-
-  <span className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8f7b60))] components_world_world_indicator_span_text_4">
-    {time}
-  </span>
+  <h2
+  title={new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/London",
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(gameDate)}
+  className="cursor-help font-serif text-base text-[rgb(var(--sep-colour-e2cda4))] components_world_world_indicator_h2_heading"
+>
+  {fullDate} · {time}
+</h2>
 </div>
 
                 <div className="mt-3 grid gap-3 md:grid-cols-[minmax(0,1fr)_140px] components_world_world_indicator_div_container_15">

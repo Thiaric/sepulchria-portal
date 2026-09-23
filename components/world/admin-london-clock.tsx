@@ -55,23 +55,28 @@ function londonParts(date: Date) {
 
 export function AdminLondonClock() {
   const [now, setNow] =
-    useState(() => new Date());
+  useState<Date | null>(null);
 
   useEffect(() => {
-    const timer =
-      window.setInterval(() => {
-        setNow(new Date());
-      }, 1_000);
+  setNow(new Date());
 
-    return () => {
-      window.clearInterval(timer);
-    };
-  }, []);
+  const timer =
+    window.setInterval(() => {
+      setNow(new Date());
+    }, 1_000);
+
+  return () => {
+    window.clearInterval(timer);
+  };
+}, []);
 
   const parts = useMemo(
-    () => londonParts(now),
-    [now],
-  );
+  () =>
+    now
+      ? londonParts(now)
+      : null,
+  [now],
+);
 
   /*
    * The server action expects an ISO-compatible
@@ -83,7 +88,7 @@ export function AdminLondonClock() {
    * display regardless of BST/GMT.
    */
   const submitValue =
-    now.toISOString();
+  now?.toISOString() ?? "";
 
   return (
     <div className="mt-5 components_world_admin_london_clock_div_container">
@@ -105,10 +110,10 @@ export function AdminLondonClock() {
             </p>
 
             <p className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-e1cba3))] components_world_admin_london_clock_p_text_3">
-              {parts.day}/
-              {parts.month}/
-              {parts.year}
-            </p>
+  {parts
+    ? `${parts.day}/${parts.month}/${parts.year}`
+    : "—"}
+</p>
           </div>
 
           <div className="sm:text-right components_world_admin_london_clock_div_container_5">
@@ -117,10 +122,10 @@ export function AdminLondonClock() {
             </p>
 
             <p className="mt-1 font-serif text-2xl tabular-nums text-[rgb(var(--sep-colour-efd5a8))] components_world_admin_london_clock_p_text_5">
-              {parts.hour}:
-              {parts.minute}:
-              {parts.second}
-            </p>
+  {parts
+    ? `${parts.hour}:${parts.minute}:${parts.second}`
+    : "—:—:—"}
+</p>
           </div>
         </div>
 

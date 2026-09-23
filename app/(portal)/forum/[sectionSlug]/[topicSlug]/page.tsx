@@ -1456,6 +1456,11 @@ race_colour:
                   topic.is_locked &&
                   !isStaff
                 }
+
+                 ongame={
+    section.section_type ===
+    "ongame"
+  }
               />
             );
           },
