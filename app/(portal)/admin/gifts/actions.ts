@@ -644,6 +644,7 @@ function shapeStylePayload(
 
 function validateShapeStylePayload(
   payload: any,
+  effectMode: string,
 ) {
   if (
     (payload.target_mode === "other" ||
@@ -673,8 +674,7 @@ function validateShapeStylePayload(
     ).trim();
 
   if (
-    payload.duration_unit === "until_dispelled" &&
-    payload.feat_id &&
+    effectMode === "passive" &&
     passiveMaxHp &&
     !/^[+-]?[0-9]+$/.test(passiveMaxHp)
   ) {
@@ -727,7 +727,10 @@ async function syncGiftMechanics(
 ) {
   const supabase = await createClient();
   const payload = shapeStylePayload(formData, giftId, values);
-  validateShapeStylePayload(payload);
+  validateShapeStylePayload(
+    payload,
+    values.effect_mode,
+  );
 
   const existing = await supabase
     .from("shapes")

@@ -14,8 +14,10 @@ import {
 
 import { sendRoomMessage } from "../actions";
 import {
+  commitShapeCast,
   prepareDispelEffect,
   resolveImmediateShapeCast,
+  rollbackFailedShapeCast,
 } from "../warping-actions";
 import { getShapeAccessForCurrentCharacter } from "../warping-progression-actions";
 
@@ -998,6 +1000,10 @@ export function WarpingPanel({
     setBusy(true);
     setMsg("");
 
+    let castId = "";
+    let irreversibleResolutionAttempted = false;
+    let castCommitted = false;
+
     try {
       const au =
         await db.auth.getUser();
@@ -1105,7 +1111,6 @@ export function WarpingPanel({
         );
       }
 
-      let castId = "";
       let itemChargeRemaining:
         number | null = null;
 
@@ -1282,6 +1287,7 @@ export function WarpingPanel({
           );
 
         if (!immediate.ok) {
+          irreversibleResolutionAttempted = true;
           throw Error(
             immediate.message ||
               "Automatic Shape effects could not be applied.",
@@ -1290,6 +1296,10 @@ export function WarpingPanel({
 
         immediateResolutionMessage =
           immediate.message;
+
+        if (immediate.message) {
+          irreversibleResolutionAttempted = true;
+        }
       }
 
       let preparedDispelMessage =
@@ -1324,6 +1334,7 @@ export function WarpingPanel({
           );
 
         if (!prepared.ok) {
+          irreversibleResolutionAttempted = true;
           throw Error(
             prepared.message ||
               "Unable to prepare Dispel.",
@@ -1332,6 +1343,13 @@ export function WarpingPanel({
 
         preparedDispelMessage =
           prepared.message;
+
+        if (
+          prepared.message ===
+          "Effect dispelled."
+        ) {
+          irreversibleResolutionAttempted = true;
+        }
       }
 
       const targetNames = wt
@@ -1935,6 +1953,20 @@ return [
         );
       }
 
+      castCommitted = true;
+
+      const committed =
+        await commitShapeCast(
+          castId,
+        );
+
+      if (!committed.ok) {
+        console.error(
+          "Unable to mark Shape cast resolved:",
+          committed.message,
+        );
+      }
+
       setTargets([]);
       setWritten("");
       setTargetChoice(
@@ -1958,11 +1990,44 @@ return [
 
       await load();
     } catch (e) {
-      setMsg(
+      const originalMessage =
         e instanceof Error
           ? e.message
-          : "Warp failed.",
-      );
+          : "Warp failed.";
+
+      if (
+        castId &&
+        !castCommitted &&
+        !irreversibleResolutionAttempted
+      ) {
+        const rollback =
+          await rollbackFailedShapeCast(
+            castId,
+          );
+
+        if (rollback.ok) {
+          setMsg(
+            `${originalMessage} · ${rollback.message}`,
+          );
+          await load();
+        } else {
+          setMsg(
+            `${originalMessage} · Automatic rollback failed: ${rollback.message}`,
+          );
+        }
+      } else if (
+        castId &&
+        !castCommitted &&
+        irreversibleResolutionAttempted
+      ) {
+        setMsg(
+          `${originalMessage} · The Warp was not refunded because its mechanics may already have been applied.`,
+        );
+      } else {
+        setMsg(
+          originalMessage,
+        );
+      }
     } finally {
       setBusy(false);
     }

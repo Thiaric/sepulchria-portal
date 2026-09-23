@@ -12,6 +12,73 @@ import {
 } from "@/lib/death/death-system";
 
 export type WarpingActionState={ok:boolean;message:string;submittedAt?:number};
+
+async function ownedCharacterId(){
+ const db=await createClient(),au=await db.auth.getUser();
+ if(!au.data.user)throw Error("Authentication required.");
+ const q=await admin().from("characters").select("id").eq("user_id",au.data.user.id).maybeSingle();
+ if(q.error||!q.data)throw Error(q.error?.message??"Character not found.");
+ return String(q.data.id);
+}
+
+export async function rollbackFailedShapeCast(
+ castId:string,
+):Promise<WarpingActionState>{
+ try{
+  if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(castId)){
+   throw Error("Invalid Shape cast.");
+  }
+  const characterId=await ownedCharacterId();
+  const q=await admin().rpc("rollback_failed_shape_cast",{
+   p_cast_id:castId,
+   p_character_id:characterId,
+  });
+  if(q.error)throw Error(q.error.message);
+  const result=(q.data??{}) as any;
+  return{
+   ok:result.rolled_back===true,
+   message:result.rolled_back===true
+    ?"Warp cancelled and its Warp / Item charge was restored."
+    :String(result.reason??"This Warp could not be safely rolled back."),
+   submittedAt:Date.now(),
+  };
+ }catch(e){
+  return{
+   ok:false,
+   message:e instanceof Error?e.message:"Unable to roll back failed Warp.",
+  };
+ }
+}
+
+export async function commitShapeCast(
+ castId:string,
+):Promise<WarpingActionState>{
+ try{
+  if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(castId)){
+   throw Error("Invalid Shape cast.");
+  }
+  const characterId=await ownedCharacterId();
+  const q=await admin()
+   .from("shape_casts")
+   .update({status:"resolved"})
+   .eq("id",castId)
+   .eq("caster_character_id",characterId)
+   .eq("status","resolving")
+   .select("id")
+   .maybeSingle();
+  if(q.error)throw Error(q.error.message);
+  return{
+   ok:Boolean(q.data),
+   message:q.data?"Warp committed.":"Warp was already finalised.",
+   submittedAt:Date.now(),
+  };
+ }catch(e){
+  return{
+   ok:false,
+   message:e instanceof Error?e.message:"Unable to finalise Warp.",
+  };
+ }
+}
 const ATTR:Record<string,string>={muscles:"muscles",reflexes:"reflexes",vigor:"vigor",vigour:"vigor",brains:"brains",shrewd:"shrewd",presence:"presence_score",presence_score:"presence_score"};
 const SAVE:Record<string,string>={dodge:"reflexes",defend:"vigor",resist_vigour:"vigor",resist_vigor:"vigor",resist_shrewd:"shrewd",resist_brains:"brains",resist_presence:"presence_score"};
 const LABEL:Record<string,string>={reflexes:"Reflexes",vigor:"Vigour",muscles:"Muscles",brains:"Brains",shrewd:"Shrewd",presence_score:"Presence"};
