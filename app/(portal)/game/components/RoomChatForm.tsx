@@ -2,6 +2,7 @@
 
 import {
   useActionState,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -503,6 +504,38 @@ export default function RoomChatForm({
   const [utilityLoadingMode, setUtilityLoadingMode] =
     useState<"attributes" | "feat" | "items" | null>(null);
   const [utilityLoadError, setUtilityLoadError] = useState<string | null>(null);
+
+  const refreshRoomItems = useCallback(async () => {
+    try {
+      const result = await loadRoomItems();
+      setItems(result as ChatItem[]);
+      setItemsLoaded(true);
+    } catch (error) {
+      setUtilityLoadError(
+        error instanceof Error
+          ? error.message
+          : "Unable to refresh Items.",
+      );
+    } finally {
+      router.refresh();
+    }
+  }, [router]);
+
+  const refreshRoomFeats = useCallback(async () => {
+    try {
+      const result = await loadRoomFeats();
+      setGifts(result as ChatGift[]);
+      setFeatsLoaded(true);
+    } catch (error) {
+      setUtilityLoadError(
+        error instanceof Error
+          ? error.message
+          : "Unable to refresh Feats.",
+      );
+    } finally {
+      router.refresh();
+    }
+  }, [router]);
 
   const gameChatRestriction=useSanctionCapability("game_chat");
 
@@ -1064,12 +1097,12 @@ export default function RoomChatForm({
       itemState.ok &&
       itemState.submittedAt
     ) {
-      router.refresh();
+      void refreshRoomItems();
     }
   }, [
     itemState.ok,
     itemState.submittedAt,
-    router,
+    refreshRoomItems,
   ]);
 
   const [selectedGiftId, setSelectedGiftId] =
@@ -1367,12 +1400,12 @@ const visibleSpellingIssues =
       giftState.ok &&
       giftState.submittedAt
     ) {
-      router.refresh();
+      void refreshRoomFeats();
     }
   }, [
     giftState.ok,
     giftState.submittedAt,
-    router,
+    refreshRoomFeats,
   ]);
 
   useEffect(() => {
@@ -1380,12 +1413,12 @@ const visibleSpellingIssues =
       giftUseState.ok &&
       giftUseState.submittedAt
     ) {
-      router.refresh();
+      void refreshRoomFeats();
     }
   }, [
     giftUseState.ok,
     giftUseState.submittedAt,
-    router,
+    refreshRoomFeats,
   ]);
 
   function clearMessageComposerAfterSubmit() {
@@ -3151,6 +3184,7 @@ function ignoreSpellingWord() {
                     gift={selectedGift}
                     viewerCharacterId={viewerCharacterId}
                     presentCharacters={ordinaryTargetCharacters}
+                    onResolved={refreshRoomFeats}
                   />
                 ) : selectedGift.effectMode === "passive" ? (
                   <button

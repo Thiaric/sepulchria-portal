@@ -159,10 +159,12 @@ export function MechanicalFeatPanel({
   gift,
   viewerCharacterId,
   presentCharacters,
+  onResolved,
 }: {
   gift: Gift;
   viewerCharacterId: string;
   presentCharacters: PresentCharacter[];
+  onResolved?: () => void | Promise<void>;
 }) {
   const router = useRouter();
 
@@ -204,8 +206,15 @@ export function MechanicalFeatPanel({
   }, [gift.characterGiftId, targetMode, viewerCharacterId]);
 
   useEffect(() => {
-    if (state.ok && state.submittedAt) router.refresh();
-  }, [router, state.ok, state.submittedAt]);
+    if (!state.ok || !state.submittedAt) return;
+
+    if (onResolved) {
+      void onResolved();
+      return;
+    }
+
+    router.refresh();
+  }, [onResolved, router, state.ok, state.submittedAt]);
 
   const candidates = useMemo(
     () => [

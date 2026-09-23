@@ -1914,6 +1914,18 @@ return [
         }
       }
 
+      /*
+       * Automatic/self Shape mechanics are resolved before the room message
+       * is posted. Include that returned result so rolled Healing/Damage and
+       * applied effects are visible in chat instead of showing only the dice
+       * expression (for example "Healing [2d6]").
+       */
+      if (immediateResolutionMessage) {
+        parts.push(
+          immediateResolutionMessage,
+        );
+      }
+
       const castText =
         parts
           .filter(Boolean)
