@@ -3,7 +3,7 @@
 import { useActionState,useCallback,useEffect,useMemo,useState,useTransition } from "react";
 import { openPortalModal } from "@/components/portal/portal-modal-button";
 import { MechanicalFeatPanel } from "./MechanicalFeatPanel";
-import { createNpc,loadNpcControlData,sendNpcMessage,sendNpcWhisper,type NpcControlData,updateNpc } from "../npc-actions";
+import { createNpc,loadNpcControlData,sendNpcMessage,type NpcControlData,updateNpc } from "../npc-actions";
 import {
   loadNpcMechanicsData,
   npcWarpShape,
@@ -18,7 +18,6 @@ import {
   npcCounterOpposedAction,
   npcResolveIncomingShape,
   npcResolveIncomingDispel,
-  npcGiveItem,
 } from "../npc-mechanics-actions";
 import { activateRoomGift,useRoomGift,useRoomItem,sendRoomAttributeCheck } from "../actions";
 import { startAttributeOpposedAction,startUnarmedAttack,startWeaponOpposedAttack } from "../opposed-actions";
@@ -131,7 +130,7 @@ export function NpcControlPanel({roomId}:{roomId:string}){
   const [postText,setPostText]=useState(""); const [status,setStatus]=useState("");
   const [pending,startTransition]=useTransition();
   const [mechanics,setMechanics]=useState<any>({ok:false,gifts:[],items:[],shapes:[],targets:[]});
-  const [mechanicsMode,setMechanicsMode]=useState<"attribute"|"feat"|"item"|"shape"|"combat"|"whisper"|"give"|null>(null);
+  const [mechanicsMode,setMechanicsMode]=useState<"attribute"|"feat"|"item"|"shape"|"combat"|null>(null);
   const [mechanicsStatus,setMechanicsStatus]=useState("");
   const [selectedGift,setSelectedGift]=useState("");
   const [selectedItem,setSelectedItem]=useState("");
@@ -140,11 +139,6 @@ export function NpcControlPanel({roomId}:{roomId:string}){
   const [shapeTargets,setShapeTargets]=useState<string[]>([]);
   const [shapeWritten,setShapeWritten]=useState("");
   const [attributeAction,setAttributeAction]=useState("use_muscles");
-  const [whisperTarget,setWhisperTarget]=useState("");
-  const [whisperText,setWhisperText]=useState("");
-  const [giveTarget,setGiveTarget]=useState("");
-  const [giveItem,setGiveItem]=useState("");
-  const [giveQuantity,setGiveQuantity]=useState(1);
   const [featState,featAction]=useActionState(npcUseRoomGift,{ok:false,message:""});
   const [activateFeatState,activateFeatAction]=useActionState(npcActivateRoomGift,{ok:false,message:""});
   const [itemState,itemAction]=useActionState(npcUseRoomItem,{ok:false,message:""});
@@ -157,7 +151,7 @@ export function NpcControlPanel({roomId}:{roomId:string}){
   const inThisRoom=selected?.current_room_id===roomId;
 
   const loadMechanics=useCallback(async()=>{
-    if(!selected||!inThisRoom||!selected.is_location_active||!selected.character_id){
+    if(!selected||!inThisRoom||!selected.character_id){
       setMechanics({ok:false,gifts:[],items:[],shapes:[],targets:[]});
       return;
     }
@@ -168,17 +162,6 @@ export function NpcControlPanel({roomId}:{roomId:string}){
       setSelectedItem(next.items?.[0]?.record_id??"");
       setSelectedShape(next.shapes?.[0]?.id??"");
       setMechanicsTarget("");
-      setWhisperTarget("");
-      setGiveTarget("");
-      setGiveItem(
-        next.items?.find(
-          (item:any)=>
-            !item.parent_container_id&&
-            !item.is_equipped&&
-            item.transfer_policy==="free"&&
-            !item.is_quest_item,
-        )?.record_id??"",
-      );
       setShapeTargets([]);
       setMechanicsStatus("");
     }else{
@@ -236,46 +219,6 @@ export function NpcControlPanel({roomId}:{roomId:string}){
     });
   }
 
-  function whisper(){
-    if(!selected)return;
-    startTransition(async()=>{
-      const result=await sendNpcWhisper({
-        roomId,
-        npcId:selected.id,
-        targetCharacterId:whisperTarget,
-        message:whisperText,
-      });
-      setMechanicsStatus(result.message);
-      if(result.ok)setWhisperText("");
-    });
-  }
-
-  function giveItemToCharacter(){
-    if(!selected)return;
-    const item=mechanics.items?.find(
-      (entry:any)=>entry.record_id===giveItem,
-    );
-    if(!item){
-      setMechanicsStatus("Choose an Item.");
-      return;
-    }
-    startTransition(async()=>{
-      const result=await npcGiveItem({
-        npcId:selected.id,
-        roomId,
-        targetCharacterId:giveTarget,
-        recordKind:item.record_kind,
-        recordId:item.record_id,
-        quantity:giveQuantity,
-      });
-      setMechanicsStatus(result.message);
-      if(result.ok){
-        setGiveQuantity(1);
-        await loadMechanics();
-      }
-    });
-  }
-
   const inputClass="mt-1 block w-full border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-2 text-[10px] normal-case tracking-normal text-[rgb(var(--sep-colour-d6c4a8))]";
   const buttonClass="border border-[rgb(var(--sep-colour-60482e))]/55 px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-c4a675))]";
 
@@ -297,7 +240,7 @@ export function NpcControlPanel({roomId}:{roomId:string}){
 
     {!selected?<p className="text-[9px] text-[rgb(var(--sep-colour-8f8170))]">Select an NPC to use its actions.</p>:null}
 
-    {selected&&selected.character_id&&inThisRoom&&selected.is_location_active&&<div className="border-t border-[rgb(var(--sep-colour-60482e))]/35 pt-3">
+    {selected&&selected.character_id&&inThisRoom&&<div className="border-t border-[rgb(var(--sep-colour-60482e))]/35 pt-3">
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
         <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b99765))]">NPC Actions</p>
         <button type="button" onClick={()=>void loadMechanics()} className={buttonClass}>Refresh assigned mechanics</button>
@@ -306,7 +249,7 @@ export function NpcControlPanel({roomId}:{roomId:string}){
       {!mechanics.ok&&mechanicsStatus?<p className="mb-2 text-[9px] text-red-300">{mechanicsStatus}</p>:null}
 
       <div className="flex flex-wrap gap-2">
-        {(["attribute","feat","item","shape","combat","whisper","give"] as const).map(m=><button key={m} type="button" onClick={()=>{setMechanicsMode(mechanicsMode===m?null:m);setMechanicsStatus("");}} className={buttonClass}>{m==="give"?"Give Item":m}</button>)}
+        {(["attribute","feat","item","shape","combat"] as const).map(m=><button key={m} type="button" onClick={()=>{setMechanicsMode(mechanicsMode===m?null:m);setMechanicsStatus("");}} className={buttonClass}>{m}</button>)}
       </div>
 
       {mechanicsMode==="attribute"&&<div className="mt-3 grid gap-2 sm:grid-cols-[1fr_1fr_auto]">
@@ -436,73 +379,6 @@ export function NpcControlPanel({roomId}:{roomId:string}){
         </div>
       </div>}
 
-      {mechanicsMode==="whisper"&&<div className="mt-3 grid gap-2">
-        <select value={whisperTarget} onChange={e=>setWhisperTarget(e.target.value)} className={inputClass}>
-          <option value="">Whisper to...</option>
-          {(mechanics.targets??[]).filter((target:any)=>target.is_system!==true).map((target:any)=>
-            <option key={target.id} value={target.id}>{target.display_name}</option>
-          )}
-        </select>
-        <textarea
-          value={whisperText}
-          onChange={e=>setWhisperText(e.target.value)}
-          rows={3}
-          maxLength={4000}
-          placeholder={whisperTarget?"Write the NPC whisper...":"Choose a Character first..."}
-          className={inputClass+" resize-y"}
-        />
-        <div className="flex justify-end">
-          <button
-            type="button"
-            disabled={pending||!whisperTarget||!whisperText.trim()}
-            onClick={whisper}
-            className="border border-[rgb(var(--sep-colour-8d6d3e))]/70 bg-[rgb(var(--sep-colour-21190f))] px-4 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d8bf91))] disabled:opacity-40"
-          >
-            Whisper as NPC
-          </button>
-        </div>
-      </div>}
-
-      {mechanicsMode==="give"&&<div className="mt-3 grid gap-2 sm:grid-cols-[1fr_1fr_90px_auto]">
-        <select value={giveItem} onChange={e=>setGiveItem(e.target.value)} className={inputClass}>
-          <option value="">Choose Item...</option>
-          {(mechanics.items??[])
-            .filter((item:any)=>
-              !item.parent_container_id&&
-              !item.is_equipped&&
-              item.transfer_policy==="free"&&
-              !item.is_quest_item
-            )
-            .map((item:any)=>
-              <option key={`${item.record_kind}:${item.record_id}`} value={item.record_id}>
-                {item.name}{Number(item.quantity??1)>1?` ×${item.quantity}`:""}
-              </option>
-            )}
-        </select>
-        <select value={giveTarget} onChange={e=>setGiveTarget(e.target.value)} className={inputClass}>
-          <option value="">Give to Character...</option>
-          {(mechanics.targets??[]).filter((target:any)=>target.is_system!==true).map((target:any)=>
-            <option key={target.id} value={target.id}>{target.display_name}</option>
-          )}
-        </select>
-        <input
-          type="number"
-          min={1}
-          step={1}
-          value={giveQuantity}
-          onChange={e=>setGiveQuantity(Math.max(1,Number.parseInt(e.target.value||"1",10)||1))}
-          className={inputClass}
-        />
-        <button
-          type="button"
-          disabled={pending||!giveItem||!giveTarget}
-          onClick={giveItemToCharacter}
-          className="mt-1 border border-[rgb(var(--sep-colour-8d6d3e))]/70 px-3 py-2 text-[8px] uppercase disabled:opacity-40"
-        >
-          Give Item
-        </button>
-      </div>}
-
       {[attributeState,opposedState,featState,activateFeatState,itemState,unarmedState,weaponState].map((x:any)=>x?.message).filter(Boolean).slice(-1).map((m:string)=><p key={m} className="mt-2 text-[9px] text-[rgb(var(--sep-colour-c6ad86))]">{m}</p>)}
       {mechanicsStatus&&<p className="mt-2 text-[9px] text-[rgb(var(--sep-colour-c6ad86))]">{mechanicsStatus}</p>}
     </div>}
@@ -511,8 +387,8 @@ export function NpcControlPanel({roomId}:{roomId:string}){
 
     {selected&&<div className="border-t border-[rgb(var(--sep-colour-60482e))]/35 pt-3">
       <p className="mb-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b99765))]">Post as {selected.name}</p>
-      <textarea value={postText} disabled={pending||!selected.is_active||!selected.is_location_active||!inThisRoom} onChange={e=>setPostText(e.target.value)} rows={3} placeholder={!selected.is_active?"Activate this NPC first.":!selected.is_location_active?"Set this NPC Active in Locations first.":!inThisRoom?"Bring this NPC to this Location first.":`Write as ${selected.name}...`} className="block w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[11px] text-[rgb(var(--sep-colour-d6c4a8))] disabled:opacity-45"/>
-      <div className="mt-2 flex justify-end"><button type="button" disabled={pending||!postText.trim()||!selected.is_active||!selected.is_location_active||!inThisRoom} onClick={post} className="border border-[rgb(var(--sep-colour-8d6d3e))]/70 bg-[rgb(var(--sep-colour-21190f))] px-4 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d8bf91))] disabled:opacity-40">Post as NPC</button></div>
+      <textarea value={postText} disabled={pending||!selected.is_active||!inThisRoom} onChange={e=>setPostText(e.target.value)} rows={3} placeholder={!selected.is_active?"Activate this NPC first.":!inThisRoom?"Bring this NPC to this Location first.":`Write as ${selected.name}...`} className="block w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[11px] text-[rgb(var(--sep-colour-d6c4a8))] disabled:opacity-45"/>
+      <div className="mt-2 flex justify-end"><button type="button" disabled={pending||!postText.trim()||!selected.is_active||!inThisRoom} onClick={post} className="border border-[rgb(var(--sep-colour-8d6d3e))]/70 bg-[rgb(var(--sep-colour-21190f))] px-4 py-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-d8bf91))] disabled:opacity-40">Post as NPC</button></div>
     </div>}
 
     {status&&<p className="text-[9px] text-[rgb(var(--sep-colour-c6ad86))]">{status}</p>}

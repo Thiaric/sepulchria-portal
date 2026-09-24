@@ -102,49 +102,12 @@ export function CharacterOrderIdentity({
         return;
       }
 
-      let relation =
+      const relation =
         data
           ? one(
               data.order as Relation<OrderIdentity>,
             )
           : null;
-
-      if (!relation) {
-        const {
-          data: npcData,
-          error: npcError,
-        } = await supabase
-          .from("npcs")
-          .select(`
-            order:orders(
-              id,
-              name,
-              slug,
-              icon_url,
-              colour
-            )
-          `)
-          .eq(
-            "character_id",
-            characterId,
-          )
-          .maybeSingle();
-
-        if (cancelled) {
-          return;
-        }
-
-        if (npcError) {
-          console.error(
-            "Unable to load NPC Order identity:",
-            npcError.message,
-          );
-        } else if (npcData) {
-          relation = one(
-            npcData.order as Relation<OrderIdentity>,
-          );
-        }
-      }
 
       setOrder(relation);
       setLoaded(true);

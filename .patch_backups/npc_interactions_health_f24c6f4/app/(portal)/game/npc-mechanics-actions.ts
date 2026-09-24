@@ -41,10 +41,9 @@ async function requireStaffNpc(npcId:string,roomId:string){
     .eq("is_system",false)
     .maybeSingle();
   if(speaker.error||!speaker.data)throw new Error(speaker.error?.message??"Staff Character not found.");
-  const q=await a.from("npcs").select("id,name,pronouns,portrait_url,description,current_room_id,is_active,is_location_active,character_id,race:races(id,name,icon_url)").eq("id",npcId).maybeSingle();
+  const q=await a.from("npcs").select("id,name,pronouns,portrait_url,description,current_room_id,is_active,character_id,race:races(id,name,icon_url)").eq("id",npcId).maybeSingle();
   if(q.error||!q.data)throw new Error(q.error?.message??"NPC not found.");
   if(!q.data.is_active)throw new Error("This NPC is inactive.");
-  if(!q.data.is_location_active)throw new Error("This NPC is not Active in Locations.");
   if(q.data.current_room_id!==roomId)throw new Error("Bring this NPC to this Location first.");
   if(!q.data.character_id)throw new Error("This NPC has no mechanics Character record.");
   const c=await a.from("characters").select("id,display_name,current_room_id,status,is_system,muscles,reflexes,vigor,brains,shrewd,presence_score,life_state").eq("id",q.data.character_id).maybeSingle();
@@ -101,69 +100,6 @@ export async function npcStartWeaponOpposedAttack(previous:any,formData:FormData
 
 export async function npcCounterOpposedAction(previous:any,formData:FormData){
   return counterOpposedAction(previous,formData);
-}
-
-export async function npcGiveItem(input:{
-  npcId:string;
-  roomId:string;
-  targetCharacterId:string;
-  recordKind:string;
-  recordId:string;
-  quantity:number;
-}){
-  try{
-    const {a,character}=await requireStaffNpc(input.npcId,input.roomId);
-    const targetId=String(input.targetCharacterId??"").trim();
-    const recordKind=String(input.recordKind??"").trim();
-    const recordId=String(input.recordId??"").trim();
-    const quantity=Math.max(1,Math.trunc(Number(input.quantity??1)));
-
-    if(!targetId)throw new Error("Choose a Character.");
-    if(!["standard","unique"].includes(recordKind))throw new Error("Invalid Item type.");
-    if(!recordId)throw new Error("Choose an Item.");
-
-    const target=await a
-      .from("characters")
-      .select("id,display_name,current_room_id,status,is_system")
-      .eq("id",targetId)
-      .maybeSingle();
-
-    if(target.error||!target.data||target.data.status!=="approved"||target.data.is_system){
-      throw new Error(target.error?.message??"Choose an ordinary Character.");
-    }
-
-    if(target.data.current_room_id!==input.roomId){
-      throw new Error("The Character must be in the same Location.");
-    }
-
-    const db=await createClient();
-    const result=await (db as any).rpc(
-      "give_npc_inventory_record_as_staff",
-      {
-        p_source_character_id:character.id,
-        p_record_kind:recordKind,
-        p_record_id:recordId,
-        p_target_character_id:targetId,
-        p_quantity:quantity,
-      },
-    );
-
-    if(result.error)throw new Error(result.error.message);
-
-    revalidatePath("/game");
-    revalidatePath("/character");
-    revalidatePath("/characters");
-
-    return {
-      ok:true,
-      message:`Item given to ${target.data.display_name}.`,
-    };
-  }catch(e){
-    return {
-      ok:false,
-      message:e instanceof Error?e.message:"Unable to give Item.",
-    };
-  }
 }
 export async function npcResolveIncomingShape(previous:any,formData:FormData){
   return resolveIncomingShape(previous,formData);
@@ -238,8 +174,8 @@ export async function loadNpcMechanicsData(input:{npcId:string;roomId:string}){
         )
       `).eq("character_id",character.id),
       a.from("character_shapes").select(`shape_id,shape:shapes(*)`).eq("character_id",character.id),
-      a.from("character_items").select("id,item_id,quantity,container_instance_id").eq("character_id",character.id),
-      a.from("character_item_instances").select("id,item_id,custom_name,charges_remaining,container_instance_id,transfer_policy_override,is_quest_item_override").eq("owner_character_id",character.id).eq("vault_status","owned"),
+      a.from("character_items").select("id,item_id,quantity").eq("character_id",character.id),
+      a.from("character_item_instances").select("id,item_id,custom_name,charges_remaining").eq("owner_character_id",character.id).eq("vault_status","owned"),
       a.from("character_equipment").select("character_item_id,item_instance_id,slot_key").eq("character_id",character.id),
       a.from("character_presence").select(`character_id,appear_offline,last_seen_at,character:characters!character_presence_character_id_fkey(id,display_name,status,is_system,life_state)`).eq("room_id",input.roomId).gte("last_seen_at",activeSince),
     ]);
@@ -269,7 +205,6 @@ export async function loadNpcMechanicsData(input:{npcId:string;roomId:string}){
         return {
           record_kind:"standard",record_id:row.id,item_id:row.item_id,name:master?.name??"Unknown Item",quantity:Number(row.quantity??1),
           is_usable:master?.is_usable===true,is_equipped:Boolean(slot),equipped_slot:slot,target_mode:master?.target_mode??"self",
-          parent_container_id:row.container_instance_id??null,transfer_policy:master?.transfer_policy??"bound",is_quest_item:master?.is_quest_item===true,
           category_slug:category?.slug??null,resolution_mode:master?.resolution_mode??"automatic",damage_dice:master?.damage_dice??null,damage_type:master?.damage_type??null,
         };
       }),
@@ -280,8 +215,6 @@ export async function loadNpcMechanicsData(input:{npcId:string;roomId:string}){
         return {
           record_kind:"unique",record_id:row.id,item_id:row.item_id,name:row.custom_name?.trim()||master?.name||"Unknown Item",quantity:1,
           charges_remaining:row.charges_remaining??null,is_usable:master?.is_usable===true,is_equipped:Boolean(slot),equipped_slot:slot,
-          parent_container_id:row.container_instance_id??null,transfer_policy:row.transfer_policy_override??master?.transfer_policy??"bound",
-          is_quest_item:(row.is_quest_item_override??master?.is_quest_item)===true,
           target_mode:master?.target_mode??"self",category_slug:category?.slug??null,resolution_mode:master?.resolution_mode??"automatic",
           damage_dice:master?.damage_dice??null,damage_type:master?.damage_type??null,
         };
@@ -358,44 +291,11 @@ export async function loadNpcMechanicsData(input:{npcId:string;roomId:string}){
       .map((x:any)=>one(x.shape) as any)
       .filter((x:any)=>x&&x.is_active===true);
 
-    const rawTargets=(presenceResult.data??[])
+    const targets=(presenceResult.data??[])
       .filter((x:any)=>x.appear_offline!==true)
       .map((x:any)=>one(x.character) as any)
-      .filter((x:any)=>x&&x.status==="approved"&&x.id!==character.id);
-
-    const systemTargetIds=rawTargets
-      .filter((x:any)=>x.is_system===true)
-      .map((x:any)=>x.id);
-
-    const activeNpcResult=systemTargetIds.length
-      ? await a
-          .from("npcs")
-          .select("character_id")
-          .in("character_id",systemTargetIds)
-          .eq("current_room_id",input.roomId)
-          .eq("is_active",true)
-          .eq("is_location_active",true)
-      : {data:[],error:null};
-
-    if(activeNpcResult.error)throw new Error(activeNpcResult.error.message);
-
-    const activeNpcIds=new Set(
-      (activeNpcResult.data??[])
-        .map((row:any)=>String(row.character_id)),
-    );
-
-    const targets=rawTargets
-      .filter(
-        (x:any)=>
-          x.is_system!==true||
-          activeNpcIds.has(String(x.id)),
-      )
-      .map((x:any)=>({
-        id:x.id,
-        display_name:x.display_name,
-        life_state:x.life_state,
-        is_system:x.is_system===true,
-      }));
+      .filter((x:any)=>x&&x.status==="approved"&&x.id!==character.id)
+      .map((x:any)=>({id:x.id,display_name:x.display_name,life_state:x.life_state}));
 
     return {ok:true,characterId:character.id,gifts,items,shapes,targets};
   }catch(e){

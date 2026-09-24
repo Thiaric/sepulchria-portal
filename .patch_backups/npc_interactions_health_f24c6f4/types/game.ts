@@ -28,7 +28,6 @@ export type CharacterSummary = {
 export type PresentRoomCharacter = {
   id: string;
   display_name: string;
-  is_system?: boolean;
 };
 
 export type CharacterCondition = {

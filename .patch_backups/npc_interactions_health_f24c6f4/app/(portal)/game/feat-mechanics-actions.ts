@@ -73,10 +73,9 @@ export async function useMechanicalFeat(
 
       const npcLink=await admin
         .from("npcs")
-        .select("id,character_id,current_room_id,is_active,is_location_active")
+        .select("id,character_id,current_room_id,is_active")
         .eq("character_id",npcActorId)
         .eq("is_active",true)
-        .eq("is_location_active",true)
         .maybeSingle();
 
       if(npcLink.error||!npcLink.data){

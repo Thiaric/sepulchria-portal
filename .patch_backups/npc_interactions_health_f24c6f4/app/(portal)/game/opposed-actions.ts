@@ -103,7 +103,7 @@ async function ownedCharacter(formData?: FormData) {
     const staff = await getStaffSession();
     if (!staff || !["owner","admin","master"].includes(staff.role)) throw new Error("NPC combat requires Master/Admin/Owner access.");
     const admin = privilegedClient();
-    const link = await admin.from("npcs").select("id,character_id,is_active,is_location_active,current_room_id").eq("character_id",npcActorId).eq("is_active",true).eq("is_location_active",true).maybeSingle();
+    const link = await admin.from("npcs").select("id,character_id,is_active,current_room_id").eq("character_id",npcActorId).eq("is_active",true).maybeSingle();
     if (link.error || !link.data) throw new Error(link.error?.message ?? "NPC not found.");
     const row = await admin.from("characters").select("id,display_name,current_room_id,muscles,reflexes,vigor,brains,shrewd,presence_score,life_state").eq("id",npcActorId).eq("is_system",true).maybeSingle();
     if (row.error || !row.data) throw new Error(row.error?.message ?? "NPC Character not found.");
@@ -168,34 +168,13 @@ async function roomTarget(roomId: string, targetId: string) {
   const admin = privilegedClient();
   const { data, error } = await admin
     .from("characters")
-    .select("id, display_name, current_room_id, status, life_state, is_system")
+    .select("id, display_name, current_room_id, status, life_state")
     .eq("id", targetId)
     .eq("status", "approved")
     .maybeSingle();
 
   if (error || !data || data.current_room_id !== roomId) {
     throw new Error("That Character is not available at this Location.");
-  }
-
-  if (data.is_system) {
-    const {
-      data: npc,
-      error: npcError,
-    } = await admin
-      .from("npcs")
-      .select("id")
-      .eq("character_id", data.id)
-      .eq("current_room_id", roomId)
-      .eq("is_active", true)
-      .eq("is_location_active", true)
-      .maybeSingle();
-
-    if (npcError || !npc) {
-      throw new Error(
-        npcError?.message ??
-          "That NPC is not active in this Location.",
-      );
-    }
   }
 
   if (data.life_state === "dead") {

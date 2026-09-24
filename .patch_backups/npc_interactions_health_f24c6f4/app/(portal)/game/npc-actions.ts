@@ -106,11 +106,10 @@ export async function sendNpcMessage(input:{roomId:string;npcId:string;message:s
     if(character.current_room_id!==input.roomId) return {ok:false,message:"You must be in this Location to post as an NPC."};
     const message=String(input.message??"").trim();
     if(!message||message.length>4000) return {ok:false,message:"NPC message must contain 1–4000 characters."};
-    const r=await admin.from("npcs").select(`id,character_id,name,pronouns,portrait_url,description,current_room_id,is_active,is_location_active,race:races(id,name,icon_url)`).eq("id",input.npcId).maybeSingle();
+    const r=await admin.from("npcs").select(`id,character_id,name,pronouns,portrait_url,description,current_room_id,is_active,race:races(id,name,icon_url)`).eq("id",input.npcId).maybeSingle();
     if(r.error||!r.data) return {ok:false,message:r.error?.message??"NPC not found."};
     const npc=r.data;
     if(!npc.is_active) return {ok:false,message:"This NPC is inactive."};
-    if(!npc.is_location_active) return {ok:false,message:"This NPC is not Active in Locations."};
     if(npc.current_room_id!==input.roomId) return {ok:false,message:"This NPC is not currently in this Location."};
     const race=Array.isArray(npc.race)?npc.race[0]??null:npc.race??null;
     const snapshot={id:npc.id,character_id:npc.character_id??npc.id,name:npc.name,pronouns:npc.pronouns??null,portrait_url:npc.portrait_url??null,description:npc.description??null,race:race?{id:race.id,name:race.name,icon_url:race.icon_url??null}:null};
@@ -120,105 +119,3 @@ export async function sendNpcMessage(input:{roomId:string;npcId:string;message:s
     return result.error?{ok:false,message:`Unable to post as NPC: ${result.error.message}`}:{ok:true,message:`Posted as ${npc.name}.`};
   }catch(error){return {ok:false,message:error instanceof Error?error.message:"Unable to post as NPC."};}
 }
-
-export async function sendNpcWhisper(input:{
-  roomId:string;
-  npcId:string;
-  targetCharacterId:string;
-  message:string;
-}){
-  try{
-    const {admin,user,character}=await requireNpcStaff();
-
-    if(character.current_room_id!==input.roomId){
-      return {ok:false,message:"You must be in this Location to whisper as an NPC."};
-    }
-
-    const message=String(input.message??"").trim();
-    const targetCharacterId=String(input.targetCharacterId??"").trim();
-
-    if(!message||message.length>4000){
-      return {ok:false,message:"NPC whisper must contain 1–4000 characters."};
-    }
-
-    if(!targetCharacterId){
-      return {ok:false,message:"Choose a Character to whisper to."};
-    }
-
-    const [npcResult,targetResult]=await Promise.all([
-      admin.from("npcs")
-        .select(`id,character_id,name,pronouns,portrait_url,description,current_room_id,is_active,is_location_active,race:races(id,name,icon_url)`)
-        .eq("id",input.npcId)
-        .maybeSingle(),
-      admin.from("characters")
-        .select("id,display_name,current_room_id,status,is_system")
-        .eq("id",targetCharacterId)
-        .maybeSingle(),
-    ]);
-
-    if(npcResult.error||!npcResult.data){
-      return {ok:false,message:npcResult.error?.message??"NPC not found."};
-    }
-
-    const npc=npcResult.data;
-
-    if(!npc.is_active){
-      return {ok:false,message:"This NPC is inactive."};
-    }
-
-    if(!npc.is_location_active){
-      return {ok:false,message:"This NPC is not Active in Locations."};
-    }
-
-    if(npc.current_room_id!==input.roomId){
-      return {ok:false,message:"This NPC is not currently in this Location."};
-    }
-
-    if(
-      targetResult.error||
-      !targetResult.data||
-      targetResult.data.status!=="approved"||
-      targetResult.data.is_system
-    ){
-      return {ok:false,message:targetResult.error?.message??"Choose an ordinary Character."};
-    }
-
-    if(targetResult.data.current_room_id!==input.roomId){
-      return {ok:false,message:"That Character is not currently in this Location."};
-    }
-
-    const race=Array.isArray(npc.race)?npc.race[0]??null:npc.race??null;
-    const snapshot={
-      id:npc.id,
-      character_id:npc.character_id??npc.id,
-      name:npc.name,
-      pronouns:npc.pronouns??null,
-      portrait_url:npc.portrait_url??null,
-      description:npc.description??null,
-      race:race?{id:race.id,name:race.name,icon_url:race.icon_url??null}:null,
-    };
-
-    const result=await admin.from("room_messages").insert({
-      room_id:input.roomId,
-      character_id:character.id,
-      message,
-      message_type:"whisper",
-      whisper_recipient_character_id:targetCharacterId,
-      speaker_type:"npc",
-      npc_id:npc.id,
-      npc_snapshot:snapshot,
-      sent_by_user_id:user.id,
-      client_nonce:crypto.randomUUID(),
-    });
-
-    return result.error
-      ? {ok:false,message:`Unable to whisper as NPC: ${result.error.message}`}
-      : {ok:true,message:`Whispered to ${targetResult.data.display_name} as ${npc.name}.`};
-  }catch(error){
-    return {
-      ok:false,
-      message:error instanceof Error?error.message:"Unable to whisper as NPC.",
-    };
-  }
-}
-

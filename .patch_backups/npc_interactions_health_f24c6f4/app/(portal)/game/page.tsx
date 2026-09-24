@@ -228,8 +228,7 @@ async function GameContent() {
         character_id,
         character:characters!character_presence_character_id_fkey(
           id,
-          display_name,
-          is_system
+          display_name
         )
       `)
       .eq("room_id", room.id)
@@ -517,14 +516,12 @@ async function GameContent() {
           id: relation.id,
           display_name:
             relation.display_name,
-          is_system:
-            relation.is_system === true,
         };
       })
       .filter(
         (
           entry,
-        ): entry is NonNullable<typeof entry> =>
+        ): entry is PresentRoomCharacter =>
           entry !== null,
       )
       .sort((first, second) =>

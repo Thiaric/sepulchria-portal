@@ -95,38 +95,6 @@ export async function POST(
     );
   }
 
-  const targetAdmin =
-    createAdminClient();
-
-  const {
-    data: npcTarget,
-    error: npcTargetError,
-  } = await targetAdmin
-    .from("npcs")
-    .select("id")
-    .eq("character_id", other)
-    .maybeSingle();
-
-  if (npcTargetError) {
-    return NextResponse.json(
-      {
-        error:
-          npcTargetError.message,
-      },
-      { status: 500 },
-    );
-  }
-
-  if (npcTarget) {
-    return NextResponse.json(
-      {
-        error:
-          "NPCs cannot take part in Item Exchanges. Use Give Item instead.",
-      },
-      { status: 400 },
-    );
-  }
-
   try {
     await Promise.all([
       assertOrdinaryInteractionTargetAllowed({

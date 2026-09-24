@@ -136,68 +136,16 @@ function CharacterIdentityIcons({
         raceName={race?.name ?? null}
       />
 
-      <CharacterOrderIdentity
-        characterId={author.id}
-        variant="chat"
-      />
-    </div>
-  );
-}
-
-
-type ChatHealth = {
-  current: number;
-  max: number;
-};
-
-function ChatHealthBar({
-  health,
-}: {
-  health: ChatHealth | undefined;
-}) {
-  if (!health) {
-    return null;
-  }
-
-  const max =
-    Math.max(1, health.max);
-  const current =
-    Math.max(
-      0,
-      Math.min(
-        health.current,
-        max,
-      ),
-    );
-  const percentage =
-    Math.max(
-      0,
-      Math.min(
-        100,
-        (current / max) * 100,
-      ),
-    );
-
-  return (
-    <div
-      className="mt-1 w-11"
-      title={`Health ${current} / ${max}`}
-      aria-label={`Health ${current} of ${max}`}
-    >
-      <div className="h-1.5 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-160d0b))]">
-        <div
-          className="h-full bg-[rgb(var(--sep-colour-b36b55))] transition-[width] duration-300"
-          style={{
-            width: `${percentage}%`,
-          }}
+      {!isNpc ? (
+        <CharacterOrderIdentity
+          characterId={author.id}
+          variant="chat"
         />
-      </div>
-      <div className="mt-0.5 text-center text-[6px] leading-3 text-[rgb(var(--sep-colour-8f8170))]">
-        {current}/{max}
-      </div>
+      ) : null}
     </div>
   );
 }
+
 
 function mergeMessages(
   currentMessages: RoomMessage[],
@@ -1072,10 +1020,6 @@ const [chatFrames,setChatFrames]=useState<
   Record<string,string>
 >({});
 
-const [chatHealth,setChatHealth]=useState<
-  Record<string,ChatHealth>
->({});
-
 const chatCharacterIdsKey =
   Array.from(
     new Set(
@@ -1162,132 +1106,6 @@ const messageIdsKey =
     .map((message) => message.id)
     .sort()
     .join(",");
-
-useEffect(() => {
-  let active = true;
-  let timer: number | null = null;
-
-  async function refreshChatHealth() {
-    const ids =
-      chatCharacterIdsKey
-        .split(",")
-        .filter(Boolean);
-
-    if (!ids.length) {
-      if (active) {
-        setChatHealth({});
-      }
-      return;
-    }
-
-    const supabase =
-      createClient();
-
-    const {
-      data: rows,
-      error,
-    } = await supabase
-      .from("characters")
-      .select("id,current_health")
-      .in("id", ids);
-
-    if (error) {
-      console.error(
-        "Unable to load chat Health:",
-        error.message,
-      );
-      return;
-    }
-
-    const results =
-      await Promise.all(
-        (rows ?? []).map(
-          async (row) => {
-            const {
-              data: maxHealth,
-              error: maxError,
-            } = await supabase.rpc(
-              "get_character_current_max_health",
-              {
-                p_character_id:
-                  row.id,
-              },
-            );
-
-            if (maxError) {
-              console.error(
-                "Unable to load chat maximum Health:",
-                maxError.message,
-              );
-              return null;
-            }
-
-            const max =
-              Math.max(
-                1,
-                Number(
-                  maxHealth ?? 1,
-                ),
-              );
-
-            const current =
-              Math.max(
-                0,
-                Math.min(
-                  Number(
-                    row.current_health ??
-                      max,
-                  ),
-                  max,
-                ),
-              );
-
-            return [
-              String(row.id),
-              {
-                current,
-                max,
-              } satisfies ChatHealth,
-            ] as const;
-          },
-        ),
-      );
-
-    if (!active) {
-      return;
-    }
-
-    const next: Record<string,ChatHealth> = {};
-
-    for (const entry of results) {
-      if (entry) {
-        next[entry[0]] = entry[1];
-      }
-    }
-
-    setChatHealth(next);
-  }
-
-  void refreshChatHealth();
-
-  timer =
-    window.setInterval(
-      () => {
-        void refreshChatHealth();
-      },
-      10_000,
-    );
-
-  return () => {
-    active = false;
-
-    if (timer !== null) {
-      window.clearInterval(
-        timer,
-      );
-    }
-  };
-}, [chatCharacterIdsKey]);
 
   const scrollContainerRef =
     useRef<HTMLDivElement>(null);
@@ -2427,9 +2245,7 @@ for(const row of priceResult.data??[]){
                 const author: CharacterSummary | null =
                   npcSnapshot
                     ? {
-                        id:
-                          npcSnapshot.character_id ??
-                          npcSnapshot.id,
+                        id: npcSnapshot.id,
                         first_name: npcSnapshot.name,
                         display_name: npcSnapshot.name,
                         portrait_url: npcSnapshot.portrait_url,
@@ -2674,16 +2490,6 @@ for(const row of priceResult.data??[]){
                             isNpc={isNpcMessage}
                           />
                         </div>
-
-                        <ChatHealthBar
-                          health={
-                            metadataCharacterId
-                              ? chatHealth[
-                                  metadataCharacterId
-                                ]
-                              : undefined
-                          }
-                        />
 
                         <time
                           dateTime={
@@ -2939,16 +2745,6 @@ for(const row of priceResult.data??[]){
                           isNpc={isNpcMessage}
                         />
                       </div>
-
-                      <ChatHealthBar
-                        health={
-                          metadataCharacterId
-                            ? chatHealth[
-                                metadataCharacterId
-                              ]
-                            : undefined
-                        }
-                      />
 
                       <time
                         dateTime={item.created_at}

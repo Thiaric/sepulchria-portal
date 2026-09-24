@@ -334,8 +334,7 @@ export default function RoomChatForm({
           character_id,
           character:characters!character_presence_character_id_fkey(
             id,
-            display_name,
-            is_system
+            display_name
           )
         `)
         .eq(
@@ -387,14 +386,12 @@ export default function RoomChatForm({
                 String(
                   relation.display_name,
                 ),
-              is_system:
-                relation.is_system === true,
             } satisfies PresentRoomCharacter;
           })
           .filter(
             (
               entry,
-            ): entry is NonNullable<typeof entry> =>
+            ): entry is PresentRoomCharacter =>
               entry !== null &&
               entry.id !==
                 viewerCharacterId,

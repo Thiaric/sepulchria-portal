@@ -393,12 +393,6 @@ export function ItemExchangePanel({
   const mine = offers.filter((offer) => offer.character_id === myId);
   const theirs = offers.filter((offer) => offer.character_id !== myId);
 
-  const exchangeCharacters =
-    presentCharacters.filter(
-      (character) =>
-        character.is_system !== true,
-    );
-
   const mineRemnants =
     trade && myId
       ? Number(trade.character_one_id === myId ? trade.character_one_remnants : trade.character_two_remnants) || 0
@@ -864,7 +858,7 @@ export function ItemExchangePanel({
             <div className="mt-3 grid gap-2 game_components_itemexchangepanel_div_container_17">
               <select className={[((field)), "game_components_itemexchangepanel_select_select_4"].filter(Boolean).join(" ")} value={tradeTarget} onChange={(e) => setTradeTarget(e.target.value)}>
                 <option className="game_components_itemexchangepanel_option_option_7" value="">Exchange with...</option>
-                {exchangeCharacters.map((character) => (
+                {presentCharacters.map((character) => (
                   <option className="game_components_itemexchangepanel_option_option_8" key={character.id} value={character.id}>{character.display_name}</option>
                 ))}
               </select>
