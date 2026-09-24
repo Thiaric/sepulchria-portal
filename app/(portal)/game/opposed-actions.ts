@@ -211,8 +211,32 @@ async function roomMessage(
   message: string,
 ) {
   const supabase = await createClient();
+  const admin = privilegedClient();
 
-  const { error } = await supabase
+  const {
+    data: npcActor,
+    error: npcActorError,
+  } = await admin
+    .from("npcs")
+    .select("id")
+    .eq("character_id", characterId)
+    .eq("current_room_id", roomId)
+    .eq("is_active", true)
+    .eq("is_location_active", true)
+    .maybeSingle();
+
+  if (npcActorError) {
+    throw new Error(
+      `Unable to verify NPC room-message actor: ${npcActorError.message}`,
+    );
+  }
+
+  const messageClient =
+    npcActor
+      ? admin
+      : supabase;
+
+  const { error } = await messageClient
     .from("room_messages")
     .insert({
       room_id: roomId,

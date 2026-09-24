@@ -118,7 +118,14 @@ async function mine(formData?:FormData){
  return q.data;
 }
 async function eff(c:any,k:string){const key=ATTR[k]??k;const e=await getEffectiveCharacterAttributes(c.id,{muscles:c.muscles,reflexes:c.reflexes,vigor:c.vigor,brains:c.brains,shrewd:c.shrewd,presence_score:c.presence_score});return Number((e as any)[key]??0)}
-async function message(room:string,cid:string,text:string){const db=await createClient();const q=await db.from("room_messages").insert({room_id:room,character_id:cid,message:text,message_type:"action",client_nonce:crypto.randomUUID()});if(q.error)throw Error(q.error.message)}
+async function message(room:string,cid:string,text:string){
+ const db=await createClient(),a=admin();
+ const npc=await a.from("npcs").select("id").eq("character_id",cid).eq("current_room_id",room).eq("is_active",true).eq("is_location_active",true).maybeSingle();
+ if(npc.error)throw Error(`Unable to verify NPC room-message actor: ${npc.error.message}`);
+ const writer=npc.data?a:db;
+ const q=await writer.from("room_messages").insert({room_id:room,character_id:cid,message:text,message_type:"action",client_nonce:crypto.randomUUID()});
+ if(q.error)throw Error(q.error.message)
+}
 async function healthSnapshot(characterId:string){
  const a=admin();const q=await a.from("characters").select("muscles,reflexes,vigor,brains,shrewd,presence_score,current_health").eq("id",characterId).single();
  if(q.error||!q.data)throw Error(q.error?.message??"Unable to load Health.");

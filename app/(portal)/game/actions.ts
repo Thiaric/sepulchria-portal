@@ -366,6 +366,37 @@ async function resolveGiftTarget({
   };
 }
 
+async function getRoomMessageInsertClient(
+  supabase: SupabaseClient,
+  characterId: string,
+  roomId: string,
+): Promise<SupabaseClient> {
+  const admin =
+    createPrivilegedClient();
+
+  const {
+    data: npcActor,
+    error: npcActorError,
+  } = await admin
+    .from("npcs")
+    .select("id")
+    .eq("character_id", characterId)
+    .eq("current_room_id", roomId)
+    .eq("is_active", true)
+    .eq("is_location_active", true)
+    .maybeSingle();
+
+  if (npcActorError) {
+    throw new Error(
+      `Unable to verify NPC room-message actor: ${npcActorError.message}`,
+    );
+  }
+
+  return npcActor
+    ? (admin as unknown as SupabaseClient)
+    : supabase;
+}
+
 async function insertGiftUseMessage({
   supabase,
   characterId,
@@ -400,7 +431,14 @@ async function insertGiftUseMessage({
     .filter(Boolean)
     .join(" · ");
 
-  const { error } = await supabase
+  const messageClient =
+    await getRoomMessageInsertClient(
+      supabase,
+      characterId,
+      roomId,
+    );
+
+  const { error } = await messageClient
     .from("room_messages")
     .insert({
       room_id: roomId,
@@ -2971,7 +3009,14 @@ export async function sendRoomAttributeCheck(
     const clientNonce =
       readValidNonce(formData);
 
-    const { error } = await supabase
+    const messageClient =
+      await getRoomMessageInsertClient(
+        supabase,
+        character.id,
+        character.current_room_id,
+      );
+
+    const { error } = await messageClient
       .from("room_messages")
       .insert({
         room_id:
@@ -3359,8 +3404,15 @@ export async function useRoomItem(
       return { ok: false, message: "Choose an Item." };
     }
 
+    const npcActorId =
+      String(
+        formData.get(
+          "npc_actor_character_id",
+        ) ?? "",
+      ).trim();
+
     const { supabase, character } = await getOwnedCharacter({
-        actorCharacterId: String(formData.get("npc_actor_character_id") ?? "").trim() || null,
+        actorCharacterId: npcActorId || null,
       });
 
     if (!character.current_room_id) {
@@ -3369,6 +3421,13 @@ export async function useRoomItem(
         message: "Your character has no current room.",
       };
     }
+
+    const roomMessageClient =
+      await getRoomMessageInsertClient(
+        supabase,
+        character.id,
+        character.current_room_id,
+      );
 
     let itemId: string | null = null;
 
@@ -3699,7 +3758,7 @@ export async function useRoomItem(
         resist_presence: "Resist (Presence)",
       };
 
-      const { error: messageError } = await supabase
+      const { error: messageError } = await roomMessageClient
         .from("room_messages")
         .insert({
           room_id: character.current_room_id,
@@ -3846,7 +3905,7 @@ message_type: "action",
         }
       }
 
-      const { error: failedMessageError } = await supabase
+      const { error: failedMessageError } = await roomMessageClient
         .from("room_messages")
         .insert({
           room_id: character.current_room_id,
@@ -3910,10 +3969,6 @@ message_type: "action",
             actualTargetId,
           )
         : null;
-
-    const npcActorId = String(
-      formData.get("npc_actor_character_id") ?? "",
-    ).trim();
 
     const rpcResult = npcActorId
       ? await supabase.rpc(
@@ -4207,7 +4262,7 @@ message_type: "action",
           ? " on the selected target"
           : "";
 
-    const { error: messageError } = await supabase
+    const { error: messageError } = await roomMessageClient
       .from("room_messages")
       .insert({
         room_id: character.current_room_id,
