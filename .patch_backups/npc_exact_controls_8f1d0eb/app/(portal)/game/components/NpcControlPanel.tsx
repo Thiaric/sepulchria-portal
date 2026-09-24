@@ -1,26 +1,12 @@
 "use client";
 
 import { useActionState,useCallback,useEffect,useMemo,useState,useTransition } from "react";
-import { openPortalModal } from "@/components/portal/portal-modal-button";
 import { createNpc,loadNpcControlData,sendNpcMessage,type NpcControlData,updateNpc } from "../npc-actions";
 import { loadNpcMechanicsData,npcWarpShape } from "../npc-mechanics-actions";
 import { activateRoomGift,useRoomGift,useRoomItem,sendRoomAttributeCheck } from "../actions";
 import { startAttributeOpposedAction,startUnarmedAttack,startWeaponOpposedAttack } from "../opposed-actions";
 
 const EMPTY:NpcControlData={npcs:[],races:[],orders:[]};
-function NpcTargetButtons({targets,selected,onSelect,allowSelf=false,selfId=""}:{targets:any[];selected:string;onSelect:(id:string)=>void;allowSelf?:boolean;selfId?:string}){
-  const cls=(active:boolean)=>[
-    "border px-3 py-2 text-[9px] transition",
-    active
-      ? "border-[rgb(var(--sep-skin-c1))] bg-[rgb(var(--sep-skin-c1))]/25 text-[rgb(var(--sep-skin-c2))] shadow-[inset_0_0_0_2px_rgb(var(--sep-skin-c1)),0_0_10px_rgb(var(--sep-skin-c1)/0.25)]"
-      : "border-[rgb(var(--sep-colour-60482e))]/55",
-  ].join(" ");
-  return <div className="mt-2 flex flex-wrap gap-2">
-    {allowSelf&&selfId?<button type="button" aria-pressed={selected===selfId} onClick={()=>onSelect(selected===selfId?"":selfId)} className={cls(selected===selfId)}>{selected===selfId?"✓ ":""}Self</button>:null}
-    {targets.map((t:any)=><button key={t.id} type="button" aria-pressed={selected===t.id} onClick={()=>onSelect(selected===t.id?"":t.id)} className={cls(selected===t.id)}>{selected===t.id?"✓ ":""}{t.display_name}</button>)}
-  </div>;
-}
-
 
 export function NpcControlPanel({roomId}:{roomId:string}){
   const [data,setData]=useState<NpcControlData>(EMPTY);
@@ -127,16 +113,16 @@ export function NpcControlPanel({roomId}:{roomId:string}){
     <div className="flex flex-wrap items-center gap-2">
       <select value={selectedId} onChange={e=>{setSelectedId(e.target.value);setStatus("");setMechanicsMode(null);}} className="min-w-[220px] flex-1 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d6c4a8))]">
         <option value="">Select NPC</option>
-        {data.npcs.map(n=><option key={n.id} value={n.id}>{n.name}{n.current_room_id===roomId?" â€” here":n.current_room_name?` â€” ${n.current_room_name}`:" â€” no location"}{!n.is_active?" â€” inactive":""}</option>)}
+        {data.npcs.map(n=><option key={n.id} value={n.id}>{n.name}{n.current_room_id===roomId?" — here":n.current_room_name?` — ${n.current_room_name}`:" — no location"}{!n.is_active?" — inactive":""}</option>)}
       </select>
       {selected?<button type="button" onClick={beginEdit} className={buttonClass}>Edit NPC</button>:null}
       <button type="button" onClick={beginCreate} className={buttonClass}>New NPC</button>
     </div>
 
     {selected&&<div className="flex flex-wrap items-center gap-2 text-[9px] text-[rgb(var(--sep-colour-8f8170))]">
-      <span>{selected.name}</span><span>Â·</span><span>{selected.race?.name??"No Ancestry"}</span>
-      {selected.order?.name?<><span>Â·</span><span>{selected.order.name}</span></>:null}
-      <span>Â·</span><span>{inThisRoom?"Present here":selected.current_room_name??"No location"}</span>
+      <span>{selected.name}</span><span>·</span><span>{selected.race?.name??"No Ancestry"}</span>
+      {selected.order?.name?<><span>·</span><span>{selected.order.name}</span></>:null}
+      <span>·</span><span>{inThisRoom?"Present here":selected.current_room_name??"No location"}</span>
     </div>}
 
     {!selected?<p className="text-[9px] text-[rgb(var(--sep-colour-8f8170))]">Select an NPC to use its actions.</p>:null}
@@ -157,7 +143,10 @@ export function NpcControlPanel({roomId}:{roomId:string}){
         <select value={attributeAction} onChange={e=>setAttributeAction(e.target.value)} className={inputClass}>
           <option value="use_muscles">Use Muscles</option><option value="use_reflexes">Use Reflexes</option><option value="use_brains">Use Brains</option><option value="use_shrewd">Use Shrewd</option><option value="use_presence">Use Presence</option>
         </select>
-        <NpcTargetButtons targets={mechanics.targets??[]} selected={mechanicsTarget} onSelect={setMechanicsTarget}/>
+        <select value={mechanicsTarget} onChange={e=>setMechanicsTarget(e.target.value)} className={inputClass}>
+          <option value="">No target / Fate</option>
+          {mechanics.targets?.map((t:any)=><option key={t.id} value={t.id}>{t.display_name}</option>)}
+        </select>
         <form action={mechanicsTarget?opposedAction:attributeServerAction}>
           <input type="hidden" name="npc_actor_character_id" value={selected.character_id??""}/>
           {mechanicsTarget
@@ -170,9 +159,12 @@ export function NpcControlPanel({roomId}:{roomId:string}){
       {mechanicsMode==="feat"&&<div className="mt-3 grid gap-2 sm:grid-cols-[1fr_1fr_auto]">
         <select value={selectedGift} onChange={e=>setSelectedGift(e.target.value)} className={inputClass}>
           <option value="">{mechanics.gifts?.length?"Choose Feat":"No Feats assigned"}</option>
-          {mechanics.gifts?.map((g:any)=><option key={g.characterGiftId} value={g.characterGiftId}>{g.name} Â· {g.effect_mode}</option>)}
+          {mechanics.gifts?.map((g:any)=><option key={g.characterGiftId} value={g.characterGiftId}>{g.name} · {g.effect_mode}</option>)}
         </select>
-        {(()=>{const g=mechanics.gifts?.find((x:any)=>x.characterGiftId===selectedGift);if(!g||g.target_mode==="self")return <p className="mt-2 text-[9px] text-[rgb(var(--sep-colour-9e8b70))]">Target: Self</p>;return <NpcTargetButtons targets={mechanics.targets??[]} selected={mechanicsTarget} onSelect={setMechanicsTarget} allowSelf={g.target_mode==="either"} selfId={selected.character_id??""}/>;})()}
+        <select value={mechanicsTarget} onChange={e=>setMechanicsTarget(e.target.value)} className={inputClass}>
+          <option value="">Self / automatic</option>
+          {mechanics.targets?.map((t:any)=><option key={t.id} value={t.id}>{t.display_name}</option>)}
+        </select>
         <form action={(mechanics.gifts?.find((g:any)=>g.characterGiftId===selectedGift)?.effect_mode==="temporary")?activateFeatAction:featAction}>
           <input type="hidden" name="npc_actor_character_id" value={selected.character_id??""}/>
           <input type="hidden" name="character_gift_id" value={selectedGift}/>
@@ -184,9 +176,12 @@ export function NpcControlPanel({roomId}:{roomId:string}){
       {mechanicsMode==="item"&&<div className="mt-3 grid gap-2 sm:grid-cols-[1fr_1fr_auto]">
         <select value={selectedItem} onChange={e=>setSelectedItem(e.target.value)} className={inputClass}>
           <option value="">{mechanics.items?.length?"Choose Item":"No Items assigned"}</option>
-          {mechanics.items?.map((i:any)=><option key={`${i.record_kind}:${i.record_id}`} value={i.record_id}>{i.name}{i.is_equipped?` Â· equipped ${i.equipped_slot??""}`:""}{!i.is_usable?" Â· not usable":""}</option>)}
+          {mechanics.items?.map((i:any)=><option key={`${i.record_kind}:${i.record_id}`} value={i.record_id}>{i.name}{i.is_equipped?` · equipped ${i.equipped_slot??""}`:""}{!i.is_usable?" · not usable":""}</option>)}
         </select>
-        {(()=>{const i=mechanics.items?.find((x:any)=>x.record_id===selectedItem);if(!i||i.target_mode==="self")return <p className="mt-2 text-[9px] text-[rgb(var(--sep-colour-9e8b70))]">Target: Self</p>;return <NpcTargetButtons targets={mechanics.targets??[]} selected={mechanicsTarget} onSelect={setMechanicsTarget} allowSelf={i.target_mode==="either"} selfId={selected.character_id??""}/>;})()}
+        <select value={mechanicsTarget} onChange={e=>setMechanicsTarget(e.target.value)} className={inputClass}>
+          <option value="">Self / automatic</option>
+          {mechanics.targets?.map((t:any)=><option key={t.id} value={t.id}>{t.display_name}</option>)}
+        </select>
         <form action={itemAction}>
           {(()=>{const i=mechanics.items?.find((x:any)=>x.record_id===selectedItem);return <>
             <input type="hidden" name="npc_actor_character_id" value={selected.character_id??""}/>
@@ -201,14 +196,21 @@ export function NpcControlPanel({roomId}:{roomId:string}){
       {mechanicsMode==="shape"&&<div className="mt-3 grid gap-2">
         <select value={selectedShape} onChange={e=>setSelectedShape(e.target.value)} className={inputClass}>
           <option value="">{mechanics.shapes?.length?"Choose Shape":"No Shapes assigned"}</option>
-          {mechanics.shapes?.map((x:any)=><option key={x.id} value={x.id}>{x.name} Â· Level {x.level}</option>)}
+          {mechanics.shapes?.map((x:any)=><option key={x.id} value={x.id}>{x.name} · Level {x.level}</option>)}
         </select>
-        {(()=>{const sh=mechanics.shapes?.find((x:any)=>x.id===selectedShape);if(!sh)return null;if(sh.target_mode==="written")return <input value={shapeWritten} onChange={e=>setShapeWritten(e.target.value)} placeholder="Written / Fate target" className={inputClass}/>;if(sh.target_mode==="self")return <p className="mt-2 text-[9px] text-[rgb(var(--sep-colour-9e8b70))]">Target: Self · automatic</p>;return <NpcTargetButtons targets={mechanics.targets??[]} selected={mechanicsTarget} onSelect={setMechanicsTarget} allowSelf={sh.target_mode==="either"||sh.allow_self===true} selfId={selected.character_id??""}/>;})()}
+        <select value={mechanicsTarget} onChange={e=>setMechanicsTarget(e.target.value)} className={inputClass}>
+          <option value="">Choose target</option>
+          {mechanics.targets?.map((t:any)=><option key={t.id} value={t.id}>{t.display_name}</option>)}
+        </select>
+        <input value={shapeWritten} onChange={e=>setShapeWritten(e.target.value)} placeholder="Written/Fate target, when required" className={inputClass}/>
         <button type="button" disabled={!selectedShape||pending} onClick={()=>startTransition(async()=>{const r=await npcWarpShape({npcId:selected.id,roomId,shapeId:selectedShape,targetIds:mechanicsTarget?[mechanicsTarget]:[],writtenTarget:shapeWritten});setMechanicsStatus(r.message);})} className="border border-[rgb(var(--sep-colour-8d6d3e))]/70 px-3 py-2 text-[8px] uppercase disabled:opacity-40">Warp Shape</button>
       </div>}
 
       {mechanicsMode==="combat"&&<div className="mt-3 grid gap-2">
-        <NpcTargetButtons targets={mechanics.targets??[]} selected={mechanicsTarget} onSelect={setMechanicsTarget}/>
+        <select value={mechanicsTarget} onChange={e=>setMechanicsTarget(e.target.value)} className={inputClass}>
+          <option value="">Choose target</option>
+          {mechanics.targets?.map((t:any)=><option key={t.id} value={t.id}>{t.display_name}</option>)}
+        </select>
         <div className="flex flex-wrap gap-2">
           <form action={unarmedAction}>
             <input type="hidden" name="npc_actor_character_id" value={selected.character_id??""}/>
@@ -260,9 +262,9 @@ export function NpcControlPanel({roomId}:{roomId:string}){
         {!creating?<label className="mt-3 flex items-center gap-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8f8170))]"><input type="checkbox" checked={active} onChange={e=>setActive(e.target.checked)}/>Active</label>:null}
 
         {!creating&&selected?.character_id?<div className="mt-4 flex flex-wrap gap-2 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-3">
-          <button type="button" onClick={()=>openPortalModal({label:`Manage ${selected.name}`,title:`Manage ${selected.name}`,icon:selected.portrait_url??"/icons/characters.png",href:`/admin/characters/${selected.character_id}`})} className={buttonClass}>Stats & Feats</button>
-          <button type="button" onClick={()=>openPortalModal({label:`${selected.name} · Items`,title:`${selected.name} · Items`,icon:selected.portrait_url??"/icons/characters.png",href:`/admin/characters/${selected.character_id}/inventory`})} className={buttonClass}>Items</button>
-          <button type="button" onClick={()=>openPortalModal({label:`${selected.name} · Shapes`,title:`${selected.name} · Shapes`,icon:selected.portrait_url??"/icons/characters.png",href:`/admin/characters/${selected.character_id}/warping`})} className={buttonClass}>Shapes</button>
+          <a href={`/admin/characters/${selected.character_id}`} className={buttonClass}>Stats & Feats</a>
+          <a href={`/admin/characters/${selected.character_id}/inventory`} className={buttonClass}>Items</a>
+          <a href={`/admin/characters/${selected.character_id}/warping`} className={buttonClass}>Shapes</a>
         </div>:null}
 
         <div className="mt-5 flex justify-end gap-2">

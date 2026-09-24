@@ -48,73 +48,150 @@ export async function loadNpcMechanicsData(input:{npcId:string;roomId:string}){
     const {a,character}=await requireStaffNpc(input.npcId,input.roomId);
     const activeSince=new Date(Date.now()-5*60_000).toISOString();
 
-    const [giftsResult,shapesResult,standardResult,uniqueResult,equipmentResult,presenceResult]=await Promise.all([
-      a.from("character_gifts").select(`id,gift:gifts(*)`).eq("character_id",character.id),
-      a.from("character_shapes").select(`shape_id,shape:shapes(*)`).eq("character_id",character.id),
-      a.from("character_items").select("id,item_id,quantity").eq("character_id",character.id),
-      a.from("character_item_instances").select("id,item_id,custom_name,charges_remaining").eq("owner_character_id",character.id).eq("vault_status","owned"),
-      a.from("character_equipment").select("character_item_id,item_instance_id,slot_key").eq("character_id",character.id),
-      a.from("character_presence").select(`character_id,appear_offline,last_seen_at,character:characters!character_presence_character_id_fkey(id,display_name,status,is_system,life_state)`).eq("room_id",input.roomId).gte("last_seen_at",activeSince),
+    const [giftsResult,standardResult,uniqueResult,equipmentResult,shapesResult,presenceResult]=await Promise.all([
+      a.from("character_gifts")
+        .select(`id,gift:gifts(id,name,description,effect_mode,target_mode,is_active)`)
+        .eq("character_id",character.id),
+      a.from("character_items")
+        .select("id,item_id,quantity")
+        .eq("character_id",character.id),
+      a.from("character_item_instances")
+        .select("id,item_id,custom_name,charges_remaining")
+        .eq("owner_character_id",character.id)
+        .eq("vault_status","owned"),
+      a.from("character_equipment")
+        .select("character_item_id,item_instance_id,slot_key")
+        .eq("character_id",character.id),
+      a.from("character_shapes")
+        .select(`shape_id,shape:shapes(id,name,level,target_mode,target_scope,max_targets,is_active,is_dispel,price_key)`)
+        .eq("character_id",character.id),
+      a.from("character_presence")
+        .select("character_id,appear_offline,last_seen_at")
+        .eq("room_id",input.roomId)
+        .gte("last_seen_at",activeSince),
     ]);
 
-    const error=giftsResult.error??shapesResult.error??standardResult.error??uniqueResult.error??equipmentResult.error??presenceResult.error;
-    if(error)throw new Error(error.message);
+    const firstError =
+      giftsResult.error ??
+      standardResult.error ??
+      uniqueResult.error ??
+      equipmentResult.error ??
+      shapesResult.error ??
+      presenceResult.error;
+
+    if(firstError)throw new Error(firstError.message);
 
     const standard=standardResult.data??[];
     const unique=uniqueResult.data??[];
-    const itemIds=[...new Set([...standard.map((x:any)=>x.item_id),...unique.map((x:any)=>x.item_id)].filter(Boolean))];
+    const itemIds=[...new Set([
+      ...standard.map((x:any)=>x.item_id),
+      ...unique.map((x:any)=>x.item_id),
+    ].filter(Boolean))];
 
     const masterResult=itemIds.length
-      ? await a.from("items").select(`*,category:item_categories(*)`).in("id",itemIds)
+      ? await a.from("items")
+          .select(`id,name,is_usable,target_mode,resolution_mode,damage_dice,damage_type,category:item_categories(slug)`)
+          .in("id",itemIds)
       : {data:[],error:null};
+
     if(masterResult.error)throw new Error(masterResult.error.message);
 
     const masters=new Map((masterResult.data??[]).map((x:any)=>[x.id,x]));
     const equipment=equipmentResult.data??[];
-    const standardSlots=new Map(equipment.filter((x:any)=>x.character_item_id).map((x:any)=>[x.character_item_id,x.slot_key]));
-    const uniqueSlots=new Map(equipment.filter((x:any)=>x.item_instance_id).map((x:any)=>[x.item_instance_id,x.slot_key]));
+    const standardEquipment=new Map(
+      equipment.filter((x:any)=>x.character_item_id).map((x:any)=>[x.character_item_id,x.slot_key]),
+    );
+    const uniqueEquipment=new Map(
+      equipment.filter((x:any)=>x.item_instance_id).map((x:any)=>[x.item_instance_id,x.slot_key]),
+    );
 
     const items=[
       ...standard.map((row:any)=>{
         const master:any=masters.get(row.item_id);
+        const slot=standardEquipment.get(row.id)??null;
         const category=one(master?.category??null);
-        const slot=standardSlots.get(row.id)??null;
         return {
-          record_kind:"standard",record_id:row.id,item_id:row.item_id,name:master?.name??"Unknown Item",quantity:Number(row.quantity??1),
-          is_usable:master?.is_usable===true,is_equipped:Boolean(slot),equipped_slot:slot,target_mode:master?.target_mode??"self",
-          category_slug:category?.slug??null,resolution_mode:master?.resolution_mode??"automatic",damage_dice:master?.damage_dice??null,damage_type:master?.damage_type??null,
+          record_kind:"standard",
+          record_id:row.id,
+          item_id:row.item_id,
+          name:master?.name??"Unknown Item",
+          quantity:Number(row.quantity??0),
+          is_usable:master?.is_usable===true,
+          target_mode:master?.target_mode??"self",
+          resolution_mode:master?.resolution_mode??"automatic",
+          damage_dice:master?.damage_dice??null,
+          damage_type:master?.damage_type??null,
+          category_slug:category?.slug??null,
+          is_equipped:Boolean(slot),
+          equipped_slot:slot,
         };
       }),
       ...unique.map((row:any)=>{
         const master:any=masters.get(row.item_id);
+        const slot=uniqueEquipment.get(row.id)??null;
         const category=one(master?.category??null);
-        const slot=uniqueSlots.get(row.id)??null;
         return {
-          record_kind:"unique",record_id:row.id,item_id:row.item_id,name:row.custom_name?.trim()||master?.name||"Unknown Item",quantity:1,
-          charges_remaining:row.charges_remaining??null,is_usable:master?.is_usable===true,is_equipped:Boolean(slot),equipped_slot:slot,
-          target_mode:master?.target_mode??"self",category_slug:category?.slug??null,resolution_mode:master?.resolution_mode??"automatic",
-          damage_dice:master?.damage_dice??null,damage_type:master?.damage_type??null,
+          record_kind:"unique",
+          record_id:row.id,
+          item_id:row.item_id,
+          name:row.custom_name?.trim()||master?.name||"Unknown Item",
+          quantity:1,
+          charges_remaining:row.charges_remaining??null,
+          is_usable:master?.is_usable===true,
+          target_mode:master?.target_mode??"self",
+          resolution_mode:master?.resolution_mode??"automatic",
+          damage_dice:master?.damage_dice??null,
+          damage_type:master?.damage_type??null,
+          category_slug:category?.slug??null,
+          is_equipped:Boolean(slot),
+          equipped_slot:slot,
         };
       }),
-    ];
+    ].filter((x:any)=>x.item_id);
+
+    const presentIds=[...new Set(
+      (presenceResult.data??[])
+        .filter((x:any)=>x.appear_offline!==true)
+        .map((x:any)=>x.character_id)
+        .filter((id:string)=>id&&id!==character.id),
+    )];
+
+    const targetsResult=presentIds.length
+      ? await a.from("characters")
+          .select("id,display_name,life_state")
+          .in("id",presentIds)
+          .eq("status","approved")
+          .eq("is_system",false)
+          .order("display_name")
+      : {data:[],error:null};
+
+    if(targetsResult.error)throw new Error(targetsResult.error.message);
 
     const gifts=(giftsResult.data??[])
-      .map((x:any)=>{const g=one(x.gift) as any;return g?{characterGiftId:x.id,...g}:null;})
-      .filter((x:any)=>x&&x.is_active!==false);
+      .map((x:any)=>({characterGiftId:x.id,...one(x.gift)}))
+      .filter((x:any)=>x?.is_active!==false&&x?.name);
 
     const shapes=(shapesResult.data??[])
-      .map((x:any)=>one(x.shape) as any)
-      .filter((x:any)=>x&&x.is_active===true);
+      .map((x:any)=>one(x.shape))
+      .filter((x:any)=>x?.is_active===true&&x?.id);
 
-    const targets=(presenceResult.data??[])
-      .filter((x:any)=>x.appear_offline!==true)
-      .map((x:any)=>one(x.character) as any)
-      .filter((x:any)=>x&&x.status==="approved"&&x.is_system!==true&&x.id!==character.id)
-      .map((x:any)=>({id:x.id,display_name:x.display_name,life_state:x.life_state}));
-
-    return {ok:true,characterId:character.id,gifts,items,shapes,targets};
+    return {
+      ok:true,
+      characterId:character.id,
+      gifts,
+      items,
+      shapes,
+      targets:targetsResult.data??[],
+    };
   }catch(e){
-    return {ok:false,message:e instanceof Error?e.message:"Unable to load NPC mechanics.",gifts:[],items:[],shapes:[],targets:[]};
+    return {
+      ok:false,
+      message:e instanceof Error?e.message:"Unable to load NPC mechanics.",
+      gifts:[],
+      items:[],
+      shapes:[],
+      targets:[],
+    };
   }
 }
 
@@ -122,7 +199,7 @@ export async function npcWarpShape(input:{npcId:string;roomId:string;shapeId:str
   try{
     const {a,userId,npc,character}=await requireStaffNpc(input.npcId,input.roomId);
     const access=await getCharacterShapeAccess(character.id,input.shapeId);
-    if(!access.allowed)return {ok:false,message:access.reasons.join(" Â· ")||"This Shape cannot currently be Warped."};
+    if(!access.allowed)return {ok:false,message:access.reasons.join(" · ")||"This Shape cannot currently be Warped."};
 
     const sq=await a.from("shapes").select("*").eq("id",input.shapeId).maybeSingle();
     if(sq.error||!sq.data)return {ok:false,message:sq.error?.message??"Shape not found."};
@@ -174,7 +251,7 @@ export async function npcWarpShape(input:{npcId:string;roomId:string;shapeId:str
     await a.from("shape_casts").update({status:"resolved"}).eq("id",castId);
     const names=(await a.from("characters").select("id,display_name").in("id",targetIds)).data??[];
     const targetText=isWritten?written:(self?"Self":names.map((x:any)=>x.display_name).join(", "));
-    await npcMessage(a,npc,userId,input.roomId,`â—† ${s.name} Â· Shape Level ${s.level} Â· Target: ${targetText}${resolved?` Â· ${resolved}`:""}`);
+    await npcMessage(a,npc,userId,input.roomId,`◆ ${s.name} · Shape Level ${s.level} · Target: ${targetText}${resolved?` · ${resolved}`:""}`);
     revalidatePath("/game");
     return {ok:true,message:`${s.name} warped.`};
   }catch(e){

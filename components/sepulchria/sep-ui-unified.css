@@ -3259,7 +3259,7 @@ a[class*="group relative grid gap-4 border transition"]:hover {
   body[data-portal-skin]
 ) [data-portal-shell] [data-message-conversation-row="true"]:hover {
   background-color:
-  rgb(var(--sep-skin-c2) / 0.54) !important;
+  rgb(var(--sep-skin-c1) / 0.54) !important;
 
   border-color:
     rgb(var(--sep-skin-c1, 169 138 96) / .52) !important;

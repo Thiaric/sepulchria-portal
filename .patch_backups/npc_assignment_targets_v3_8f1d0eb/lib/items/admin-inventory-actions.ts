@@ -466,26 +466,13 @@ export async function assignVaultItemToCharacter(formData: FormData) {
       error: targetCharacterError,
     } = await supabase
       .from("characters")
-      .select("id, is_system")
+      .select("id")
       .eq("id", characterId)
+      .eq("is_system", false)
       .maybeSingle();
 
     if (targetCharacterError || !targetCharacter) {
-      throw new Error("Character not found.");
-    }
-
-    if (targetCharacter.is_system) {
-      const { data: linkedNpc, error: linkedNpcError } = await supabase
-        .from("npcs")
-        .select("id")
-        .eq("character_id", characterId)
-        .maybeSingle();
-
-      if (linkedNpcError || !linkedNpc) {
-        throw new Error(
-          "System characters cannot receive Vault Items unless they belong to an NPC.",
-        );
-      }
+      throw new Error("System characters cannot receive Vault Items.");
     }
 
     const { error } = await supabase.rpc("admin_vault_assign_unique_item", {
