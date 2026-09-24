@@ -619,7 +619,6 @@ export function AdminCharacterEditForm({
         </div>
       ) : null}
 
-      {!allowMissingAge ? (
       <section className="mb-5 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4 components_admin_admin_character_edit_form_section_section">
         <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] components_admin_admin_character_edit_form_p_text">
           Age
@@ -672,7 +671,6 @@ export function AdminCharacterEditForm({
         
       </section>
 
-      ) : null}
       {children}
 
       <style jsx global>{`

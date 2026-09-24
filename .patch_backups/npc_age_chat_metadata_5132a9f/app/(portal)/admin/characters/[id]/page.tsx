@@ -11,7 +11,6 @@ import {
 import { CharacterReviewFields } from "@/components/admin/character-review-fields";
 import { CharacterConditionsEditor } from "@/components/characters/character-conditions-editor";
 import { NpcEquipmentAdmin } from "@/components/admin/npc-equipment-admin";
-import { NpcAdminAgeField } from "@/components/admin/npc-admin-age-field";
 import Image from "next/image";
 import {
   PortalModalButton,
@@ -39,8 +38,6 @@ type CharacterStatus =
 type CodexOption = {
   id: string;
   name: string;
-  min_age: number | null;
-  max_age: number | null;
 };
 
 type CodexRelation =
@@ -303,7 +300,7 @@ export default async function AdminCharacterPage({
 
     supabase
       .from("races")
-      .select("id, name, min_age, max_age")
+      .select("id, name")
       .order("name"),
 
     supabase
@@ -437,20 +434,6 @@ export default async function AdminCharacterPage({
   ),
 );
 
-const ancestryOwnedGiftIds =
-  new Set(
-    (selectedAncestryGiftResult.data ?? [])
-      .filter(
-        (entry) =>
-          entry.acquisition_source ===
-          "ancestry",
-      )
-      .map(
-        (entry) =>
-          entry.gift_id,
-      ),
-  );
-
 const selectedAncestryGiftIds =
   ancestryGiftOptions
     .filter(
@@ -459,9 +442,7 @@ const selectedAncestryGiftIds =
         gift.raceIds.includes(
           character.race_id,
         ) &&
-        ancestryOwnedGiftIds.has(
-          gift.id,
-        ),
+        ownedGiftIds.has(gift.id),
     )
     .map((gift) => gift.id);
 
@@ -840,14 +821,6 @@ const selectedAncestryGiftIds =
                 name="returnTo"
                 value={`/admin/characters/${character.id}`}
               />
-
-              {isNpc ? (
-                <NpcAdminAgeField
-                  initialAge={character.age}
-                  initialRaceId={character.race_id ?? ""}
-                  races={races}
-                />
-              ) : null}
 
               <div className="space-y-5 admin_characters_id_page_div_container_7">
                 <div className="grid gap-4 sm:grid-cols-2 admin_characters_id_page_div_container_8">
@@ -1514,10 +1487,9 @@ const selectedAncestryGiftIds =
 
                             <button
                               type="submit"
-                              formAction={removeNpcFeatAdministration.bind(
-                                null,
-                                assignment.id,
-                              )}
+                              name="assignmentId"
+                              value={assignment.id}
+                              formAction={removeNpcFeatAdministration}
                               className="border border-red-900/60 px-3 py-1.5 text-[8px] uppercase tracking-[0.12em] text-red-400"
                             >
                               Remove

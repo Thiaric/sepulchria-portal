@@ -437,20 +437,6 @@ export default async function AdminCharacterPage({
   ),
 );
 
-const ancestryOwnedGiftIds =
-  new Set(
-    (selectedAncestryGiftResult.data ?? [])
-      .filter(
-        (entry) =>
-          entry.acquisition_source ===
-          "ancestry",
-      )
-      .map(
-        (entry) =>
-          entry.gift_id,
-      ),
-  );
-
 const selectedAncestryGiftIds =
   ancestryGiftOptions
     .filter(
@@ -459,9 +445,7 @@ const selectedAncestryGiftIds =
         gift.raceIds.includes(
           character.race_id,
         ) &&
-        ancestryOwnedGiftIds.has(
-          gift.id,
-        ),
+        ownedGiftIds.has(gift.id),
     )
     .map((gift) => gift.id);
 

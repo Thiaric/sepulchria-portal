@@ -73,7 +73,6 @@ type InsertedRoomMessage = {
   npc_id: string | null;
   npc_snapshot: {
     id: string;
-    character_id?: string | null;
     name: string;
     pronouns: string | null;
     portrait_url: string | null;
@@ -87,21 +86,6 @@ type RealtimeConnectionStatus =
   | "connecting"
   | "connected"
   | "disconnected";
-
-function roomMessageSubjectCharacterId(
-  message: RoomMessage,
-): string | null {
-  if (message.speaker_type === "npc") {
-    return (
-      message.npc_snapshot?.character_id ??
-      message.npc_snapshot?.id ??
-      message.npc_id ??
-      null
-    );
-  }
-
-  return message.character_id;
-}
 
 function normaliseRelation<T>(
   value: T | T[] | null,
@@ -1021,11 +1005,11 @@ const chatCharacterIdsKey =
   Array.from(
     new Set(
       liveMessages
-        .map(roomMessageSubjectCharacterId)
-        .filter(
-          (value): value is string =>
-            Boolean(value),
-        ),
+        .map(
+          (message) =>
+            message.character_id,
+        )
+        .filter(Boolean),
     ),
   )
     .sort()
@@ -1461,16 +1445,7 @@ const messageIdsKey =
     const supabase=createClient();
 
     async function loadShapeTags(){
-      const ids=Array.from(
-        new Set(
-          liveMessages
-            .map(roomMessageSubjectCharacterId)
-            .filter(
-              (value): value is string =>
-                Boolean(value),
-            ),
-        ),
-      );
+      const ids=Array.from(new Set(liveMessages.map(message=>message.character_id).filter(Boolean)));
 
       if(!ids.length){
         if(active)setActiveShapeTags({});
@@ -2252,19 +2227,6 @@ for(const row of priceResult.data??[]){
                       }
                     : controllerAuthor;
 
-                const metadataCharacterId =
-                  isNpcMessage
-                    ? (
-                        npcSnapshot?.character_id ??
-                        npcSnapshot?.id ??
-                        item.npc_id ??
-                        null
-                      )
-                    : (
-                        author?.id ??
-                        item.character_id
-                      );
-
                 const recipient =
                   normaliseRelation(
                     item.whisperRecipient,
@@ -2591,18 +2553,18 @@ for(const row of priceResult.data??[]){
                             </span>
                           )}
 
-                          {metadataCharacterId
+                          {!isNpcMessage && author
                             ? shapeTagHeaderText(
-                                metadataCharacterId,
+                                author.id,
                                 privateLocationTheme
                                   ? privateLocationTheme.offgameTextColour
                                   : "rgb(var(--sep-colour-d3c2aa))",
                               )
                             : null}
 
-                          {metadataCharacterId
+                          {!isNpcMessage && author
                             ? resurrectionMalusHeaderText(
-                                metadataCharacterId,
+                                author.id,
                                 privateLocationTheme
                                   ? privateLocationTheme.offgameTextColour
                                   : "rgb(var(--sep-colour-d3c2aa))",
@@ -2619,8 +2581,8 @@ for(const row of priceResult.data??[]){
   privateLocationTheme
     ? privateLocationTheme.offgameTextColour
     : "rgb(var(--sep-colour-d3c2aa))",
-  metadataCharacterId
-    ? activeShapeTags[metadataCharacterId]?.conditions ?? []
+  author
+    ? activeShapeTags[author.id]?.conditions ?? []
     : [],
 )}
 
@@ -2820,28 +2782,28 @@ for(const row of priceResult.data??[]){
                         </span>
                       ) : null}
 
-                      {metadataCharacterId
-                        ? shapeTagHeaderText(metadataCharacterId)
+                      {!isNpcMessage && author
+                        ? shapeTagHeaderText(author.id)
                         : null}
 
-                      {metadataCharacterId
-                        ? resurrectionMalusHeaderText(
-                            metadataCharacterId,
-                          )
+                      {!isNpcMessage && author
+                        ? resurrectionMalusHeaderText(author.id)
                         : null}
 
-                      {conditionSnapshotHeaderText(
-                        [
-                          ...(item.condition_snapshot ?? []),
-                          ...(messageEffectConditions[item.id] ?? []).map(
-                            (label) => ({ label }),
-                          ),
-                        ],
-                        undefined,
-                        metadataCharacterId
-                          ? activeShapeTags[metadataCharacterId]?.conditions ?? []
-                          : [],
-                      )}
+                      {!isNpcMessage
+  ? conditionSnapshotHeaderText(
+      [
+        ...(item.condition_snapshot ?? []),
+        ...(messageEffectConditions[item.id] ?? []).map(
+          (label) => ({ label }),
+        ),
+      ],
+      undefined,
+      author
+        ? activeShapeTags[author.id]?.conditions ?? []
+        : [],
+    )
+  : null}
 
                       <br />
 

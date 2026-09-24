@@ -49,7 +49,6 @@ export type RoomConditionSnapshot = {
 
 export type NpcMessageSnapshot = {
   id: string;
-  character_id?: string | null;
   name: string;
   pronouns: string | null;
   portrait_url: string | null;

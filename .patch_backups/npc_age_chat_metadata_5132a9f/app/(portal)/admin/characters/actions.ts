@@ -2584,7 +2584,6 @@ export async function assignNpcFeatAdministration(
 }
 
 export async function removeNpcFeatAdministration(
-  assignmentIdInput: string,
   formData: FormData,
 ) {
   await requireStaffCapability(
@@ -2598,7 +2597,7 @@ export async function removeNpcFeatAdministration(
 
   const assignmentId =
     readRequiredUuid(
-      assignmentIdInput,
+      formData.get("assignmentId"),
     );
 
   const admin =

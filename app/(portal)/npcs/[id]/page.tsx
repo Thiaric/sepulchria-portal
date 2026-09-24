@@ -12,6 +12,7 @@ import {
 import { CharacterShapesDisplay } from "@/components/characters/character-shapes-display";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { PublicCharacterAgeDetail } from "@/components/characters/public-character-age-detail";
 
 function one<T>(value: T | T[] | null): T | null {
   return Array.isArray(value) ? value[0] ?? null : value;
@@ -93,15 +94,16 @@ export default async function NpcSheetPage({
       current_room_id,
       order:orders(id,name),
       character:characters!npcs_character_id_fkey(
-        id,
-        first_name,
-        surname,
-        display_name,
-        pronouns,
-        gender,
-        sexual_orientation,
-        birthplace,
-        origin,
+  id,
+  first_name,
+  surname,
+  display_name,
+  pronouns,
+  gender,
+  sexual_orientation,
+  age,
+  birthplace,
+  origin,
         physical_description,
         personality,
         biography,
@@ -208,9 +210,16 @@ export default async function NpcSheetPage({
 
                 <div className="mt-3 grid gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 sm:grid-cols-2 lg:grid-cols-3">
                   <Detail label="Gender" value={formatGender(character.gender)} />
-                  <Detail label="Pronouns" value={character.pronouns || npc.pronouns} />
-                  <Detail label="Sexual orientation" value={character.sexual_orientation} />
-                  <Detail label="Birthplace" value={character.birthplace} />
+<Detail label="Pronouns" value={character.pronouns || npc.pronouns} />
+<Detail label="Sexual orientation" value={character.sexual_orientation} />
+
+<div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 [&_dt]:text-[7px] [&_dt]:uppercase [&_dt]:tracking-[0.19em] [&_dt]:text-[rgb(var(--sep-colour-796448))] [&_dd]:mt-1 [&_dd]:text-[11px] [&_dd]:leading-5 [&_dd]:text-[rgb(var(--sep-colour-cab89b))]">
+  <PublicCharacterAgeDetail
+    characterId={character.id}
+  />
+</div>
+
+<Detail label="Birthplace" value={character.birthplace} />
                   <Detail label="Origin" value={character.origin} />
                   <Detail label="Title" value={character.title || "NPC"} />
                   <Detail label="Ancestry" value={race?.name} />
