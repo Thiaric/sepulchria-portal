@@ -160,13 +160,11 @@ export function MechanicalFeatPanel({
   viewerCharacterId,
   presentCharacters,
   onResolved,
-  actorCharacterId,
 }: {
   gift: Gift;
   viewerCharacterId: string;
   presentCharacters: PresentCharacter[];
   onResolved?: () => void | Promise<void>;
-  actorCharacterId?: string;
 }) {
   const router = useRouter();
 
@@ -258,14 +256,6 @@ const cooldown =
 
   return (
     <div className="mt-3 border border-[rgb(var(--sep-colour-765937))]/45 bg-[rgb(var(--sep-colour-15100d))] p-3">
-      {actorCharacterId ? (
-        <input
-          type="hidden"
-          name="npc_actor_character_id"
-          value={actorCharacterId}
-          readOnly
-        />
-      ) : null}
       <input
         type="hidden"
         name="mechanics_target_ids"

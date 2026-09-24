@@ -4,12 +4,10 @@ import { revalidatePath } from "next/cache";
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
-import { getStaffSession } from "@/lib/auth/require-staff";
 
 import {
   prepareDispelEffect,
   resolveImmediateShapeCast,
-  resolveImmediateShapeCastForNpc,
 } from "./warping-actions";
 
 export type MechanicalFeatActionState = {
@@ -60,64 +58,21 @@ export async function useMechanicalFeat(
 
     if (authError || !user) throw new Error("Authentication required.");
 
-    const npcActorId=field(formData,"npc_actor_character_id");
+    const {
+      data: character,
+      error: characterError,
+    } = await admin
+      .from("characters")
+      .select("id,display_name,current_room_id,status,is_system,life_state")
+      .eq("user_id", user.id)
+      .maybeSingle();
 
-    let character:any=null;
+    if (characterError || !character) {
+      throw new Error(characterError?.message ?? "Character not found.");
+    }
 
-    if(npcActorId){
-      const staff=await getStaffSession();
-
-      if(!staff||!["owner","admin","master"].includes(staff.role)){
-        throw new Error("NPC Feats require Master/Admin/Owner access.");
-      }
-
-      const npcLink=await admin
-        .from("npcs")
-        .select("id,character_id,current_room_id,is_active")
-        .eq("character_id",npcActorId)
-        .eq("is_active",true)
-        .maybeSingle();
-
-      if(npcLink.error||!npcLink.data){
-        throw new Error(npcLink.error?.message??"NPC not found.");
-      }
-
-      const npcCharacter=await admin
-        .from("characters")
-        .select("id,display_name,current_room_id,status,is_system,life_state")
-        .eq("id",npcActorId)
-        .eq("is_system",true)
-        .maybeSingle();
-
-      if(npcCharacter.error||!npcCharacter.data){
-        throw new Error(npcCharacter.error?.message??"NPC Character not found.");
-      }
-
-      if(npcCharacter.data.status!=="approved"){
-        throw new Error("This NPC cannot use Feats.");
-      }
-
-      if(npcCharacter.data.current_room_id!==npcLink.data.current_room_id){
-        throw new Error("NPC Location is out of sync.");
-      }
-
-      character=npcCharacter.data;
-    }else{
-      const characterResult=await admin
-        .from("characters")
-        .select("id,display_name,current_room_id,status,is_system,life_state")
-        .eq("user_id",user.id)
-        .maybeSingle();
-
-      if(characterResult.error||!characterResult.data){
-        throw new Error(characterResult.error?.message??"Character not found.");
-      }
-
-      if(characterResult.data.status!=="approved"||characterResult.data.is_system){
-        throw new Error("This Character cannot use Feats.");
-      }
-
-      character=characterResult.data;
+    if (character.status !== "approved" || character.is_system) {
+      throw new Error("This Character cannot use Feats.");
     }
 
     if (character.life_state !== "alive") {
@@ -354,9 +309,7 @@ export async function useMechanicalFeat(
 
     if (targetInsert.error) throw new Error(targetInsert.error.message);
 
-    const immediate = npcActorId
-      ? await resolveImmediateShapeCastForNpc(cast.data.id,character.id)
-      : await resolveImmediateShapeCast(cast.data.id);
+    const immediate = await resolveImmediateShapeCast(cast.data.id);
     if (!immediate.ok) {
       throw new Error(
         immediate.message || "Feat mechanics could not be resolved.",

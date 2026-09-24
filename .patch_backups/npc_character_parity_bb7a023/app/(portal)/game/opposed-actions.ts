@@ -107,21 +107,8 @@ async function ownedCharacter(formData?: FormData) {
     if (link.error || !link.data) throw new Error(link.error?.message ?? "NPC not found.");
     const row = await admin.from("characters").select("id,display_name,current_room_id,muscles,reflexes,vigor,brains,shrewd,presence_score,life_state").eq("id",npcActorId).eq("is_system",true).maybeSingle();
     if (row.error || !row.data) throw new Error(row.error?.message ?? "NPC Character not found.");
-
-    if (row.data.life_state !== "alive") {
-      throw new Error(
-        row.data.life_state === "dead"
-          ? "Dead Characters cannot attack, use Attributes, or respond to opposed Actions."
-          : "Characters at Death's Threshold cannot perform normal Actions.",
-      );
-    }
-
     if (!row.data.current_room_id) throw new Error("NPC is not at a Location.");
-
-    return {
-      supabase,
-      character:row.data as OwnedCharacter,
-    };
+    return {supabase:admin as any,character:row.data as OwnedCharacter};
   }
 
   const { data, error } = await supabase

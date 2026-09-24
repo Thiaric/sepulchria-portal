@@ -242,7 +242,7 @@ export function NpcControlPanel({roomId}:{roomId:string}){
             <form action={(g.effectMode??g.effect_mode)==="temporary"?activateFeatAction:featAction}>
               <input type="hidden" name="npc_actor_character_id" value={selected.character_id??""}/>
               <input type="hidden" name="character_gift_id" value={g.characterGiftId}/>
-              <input type="hidden" name="gift_target_character_id" value={mechanicsTarget===selected.character_id?"":mechanicsTarget}/>
+              <input type="hidden" name="gift_target_character_id" value={mechanicsTarget}/>
               <button
                 disabled={targetMode==="other"&&!mechanicsTarget}
                 className="mt-1 border border-[rgb(var(--sep-colour-8d6d3e))]/70 px-3 py-2 text-[8px] uppercase disabled:opacity-40"
@@ -269,7 +269,7 @@ export function NpcControlPanel({roomId}:{roomId:string}){
             <input type="hidden" name="npc_actor_character_id" value={selected.character_id??""}/>
             <input type="hidden" name="item_record_kind" value={i?.record_kind??""}/>
             <input type="hidden" name="item_record_id" value={i?.record_id??""}/>
-            <input type="hidden" name="item_target_character_id" value={mechanicsTarget===selected.character_id?"":mechanicsTarget}/>
+            <input type="hidden" name="item_target_character_id" value={mechanicsTarget}/>
           </>})()}
           <button disabled={!selectedItem||!mechanics.items?.find((x:any)=>x.record_id===selectedItem)?.is_usable} className="mt-1 border border-[rgb(var(--sep-colour-8d6d3e))]/70 px-3 py-2 text-[8px] uppercase disabled:opacity-40">Use Item</button>
         </form>

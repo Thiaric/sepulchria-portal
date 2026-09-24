@@ -580,38 +580,7 @@ async function touchPresence(
 ): Promise<void> {
   const now = new Date().toISOString();
 
-  /*
-   * NPC mechanics run through a hidden system Character.
-   * The authenticated player's Supabase client cannot insert/update
-   * character_presence for that system Character because RLS correctly
-   * treats it as another character.
-   *
-   * Detect only that NPC-backed system-Character case and use the
-   * existing privileged server client for the presence heartbeat.
-   * Ordinary Characters keep using the authenticated client exactly
-   * as before.
-   */
-  const admin = createPrivilegedClient();
-
-  const npcCheck = await admin
-    .from("npcs")
-    .select("id")
-    .eq("character_id", characterId)
-    .eq("is_active", true)
-    .maybeSingle();
-
-  if (npcCheck.error) {
-    throw new Error(
-      `Unable to verify NPC presence actor: ${npcCheck.error.message}`,
-    );
-  }
-
-  const presenceClient: SupabaseClient =
-    npcCheck.data
-      ? (admin as unknown as SupabaseClient)
-      : supabase;
-
-  const { data: updatedPresence, error: updateError } = await presenceClient
+  const { data: updatedPresence, error: updateError } = await supabase
     .from("character_presence")
     .update({
       room_id: roomId,
@@ -629,7 +598,7 @@ async function touchPresence(
     return;
   }
 
-  const { error: insertError } = await presenceClient
+  const { error: insertError } = await supabase
     .from("character_presence")
     .insert({
       character_id: characterId,
@@ -644,7 +613,7 @@ async function touchPresence(
   }
 
   if (insertError?.code === "23505") {
-    const { error: retryError } = await presenceClient
+    const { error: retryError } = await supabase
       .from("character_presence")
       .update({
         room_id: roomId,
@@ -3892,7 +3861,7 @@ message_type: "action",
     ).trim();
 
     const rpcResult = npcActorId
-      ? await supabase.rpc(
+      ? await createPrivilegedClient().rpc(
           "use_character_inventory_record_targeted_as_staff",
           {
             p_source_character_id: character.id,

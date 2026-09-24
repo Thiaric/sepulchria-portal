@@ -2,7 +2,6 @@
 
 import { useActionState,useCallback,useEffect,useMemo,useState,useTransition } from "react";
 import { openPortalModal } from "@/components/portal/portal-modal-button";
-import { MechanicalFeatPanel } from "./MechanicalFeatPanel";
 import { createNpc,loadNpcControlData,sendNpcMessage,type NpcControlData,updateNpc } from "../npc-actions";
 import {
   loadNpcMechanicsData,
@@ -202,60 +201,18 @@ export function NpcControlPanel({roomId}:{roomId:string}){
         </form>
       </div>}
 
-      {mechanicsMode==="feat"&&<div className="mt-3">
-        <select value={selectedGift} onChange={e=>{setSelectedGift(e.target.value);setMechanicsTarget("");}} className={inputClass}>
+      {mechanicsMode==="feat"&&<div className="mt-3 grid gap-2 sm:grid-cols-[1fr_1fr_auto]">
+        <select value={selectedGift} onChange={e=>setSelectedGift(e.target.value)} className={inputClass}>
           <option value="">{mechanics.gifts?.length?"Choose Feat":"No Feats assigned"}</option>
-          {mechanics.gifts?.map((g:any)=><option key={g.characterGiftId} value={g.characterGiftId}>{g.name} · {g.effectMode??g.effect_mode}</option>)}
+          {mechanics.gifts?.map((g:any)=><option key={g.characterGiftId} value={g.characterGiftId}>{g.name} · {g.effect_mode}</option>)}
         </select>
-
-        {(()=>{
-          const g=mechanics.gifts?.find((x:any)=>x.characterGiftId===selectedGift);
-          if(!g)return null;
-
-          if(g.mechanicsShape && (g.effectMode??g.effect_mode)!=="passive"){
-            return <form className="mt-2">
-              <input type="hidden" name="character_gift_id" value={g.characterGiftId}/>
-              <input type="hidden" name="npc_actor_character_id" value={selected.character_id??""}/>
-              <MechanicalFeatPanel
-                gift={g}
-                viewerCharacterId={selected.character_id??""}
-                presentCharacters={mechanics.targets??[]}
-                actorCharacterId={selected.character_id??""}
-                onResolved={loadMechanics}
-              />
-            </form>;
-          }
-
-          const targetMode=g.targetMode??g.target_mode??"self";
-
-          return <div className="mt-2 grid gap-2 sm:grid-cols-[1fr_auto]">
-            {targetMode==="self"
-              ? <p className="mt-2 text-[9px] text-[rgb(var(--sep-colour-9e8b70))]">Target: Self</p>
-              : <NpcTargetButtons
-                  targets={mechanics.targets??[]}
-                  selected={mechanicsTarget}
-                  onSelect={setMechanicsTarget}
-                  allowSelf={targetMode==="either"}
-                  selfId={selected.character_id??""}
-                />}
-
-            <form action={(g.effectMode??g.effect_mode)==="temporary"?activateFeatAction:featAction}>
-              <input type="hidden" name="npc_actor_character_id" value={selected.character_id??""}/>
-              <input type="hidden" name="character_gift_id" value={g.characterGiftId}/>
-              <input type="hidden" name="gift_target_character_id" value={mechanicsTarget===selected.character_id?"":mechanicsTarget}/>
-              <button
-                disabled={targetMode==="other"&&!mechanicsTarget}
-                className="mt-1 border border-[rgb(var(--sep-colour-8d6d3e))]/70 px-3 py-2 text-[8px] uppercase disabled:opacity-40"
-              >
-                {(g.effectMode??g.effect_mode)==="passive"
-                  ?"Show Feat"
-                  :(g.effectMode??g.effect_mode)==="temporary"
-                    ?"Activate Feat"
-                    :"Use Feat"}
-              </button>
-            </form>
-          </div>;
-        })()}
+        {(()=>{const g=mechanics.gifts?.find((x:any)=>x.characterGiftId===selectedGift);if(!g||g.target_mode==="self")return <p className="mt-2 text-[9px] text-[rgb(var(--sep-colour-9e8b70))]">Target: Self</p>;return <NpcTargetButtons targets={mechanics.targets??[]} selected={mechanicsTarget} onSelect={setMechanicsTarget} allowSelf={g.target_mode==="either"} selfId={selected.character_id??""}/>;})()}
+        <form action={(mechanics.gifts?.find((g:any)=>g.characterGiftId===selectedGift)?.effect_mode==="temporary")?activateFeatAction:featAction}>
+          <input type="hidden" name="npc_actor_character_id" value={selected.character_id??""}/>
+          <input type="hidden" name="character_gift_id" value={selectedGift}/>
+          <input type="hidden" name="gift_target_character_id" value={mechanicsTarget}/>
+          <button disabled={!selectedGift} className="mt-1 border border-[rgb(var(--sep-colour-8d6d3e))]/70 px-3 py-2 text-[8px] uppercase disabled:opacity-40">Use Feat</button>
+        </form>
       </div>}
 
       {mechanicsMode==="item"&&<div className="mt-3 grid gap-2 sm:grid-cols-[1fr_1fr_auto]">
@@ -269,7 +226,7 @@ export function NpcControlPanel({roomId}:{roomId:string}){
             <input type="hidden" name="npc_actor_character_id" value={selected.character_id??""}/>
             <input type="hidden" name="item_record_kind" value={i?.record_kind??""}/>
             <input type="hidden" name="item_record_id" value={i?.record_id??""}/>
-            <input type="hidden" name="item_target_character_id" value={mechanicsTarget===selected.character_id?"":mechanicsTarget}/>
+            <input type="hidden" name="item_target_character_id" value={mechanicsTarget}/>
           </>})()}
           <button disabled={!selectedItem||!mechanics.items?.find((x:any)=>x.record_id===selectedItem)?.is_usable} className="mt-1 border border-[rgb(var(--sep-colour-8d6d3e))]/70 px-3 py-2 text-[8px] uppercase disabled:opacity-40">Use Item</button>
         </form>

@@ -3892,7 +3892,7 @@ message_type: "action",
     ).trim();
 
     const rpcResult = npcActorId
-      ? await supabase.rpc(
+      ? await createPrivilegedClient().rpc(
           "use_character_inventory_record_targeted_as_staff",
           {
             p_source_character_id: character.id,

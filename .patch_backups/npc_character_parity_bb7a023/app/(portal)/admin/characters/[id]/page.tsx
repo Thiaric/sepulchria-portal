@@ -21,9 +21,7 @@ import {
 import { createClient } from "@/lib/supabase/server";
 
 import {
-  assignNpcFeatAdministration,
   deleteCharacterAdministration,
-  removeNpcFeatAdministration,
   updateCharacterAdministration,
 } from "../actions";
 
@@ -351,7 +349,6 @@ export default async function AdminCharacterPage({
         name,
         description,
         ancestry_choice_group,
-        is_general,
         eligibility:gift_races(
           race_id,
           race:races(id, name)
@@ -367,7 +364,7 @@ export default async function AdminCharacterPage({
 
     supabase
   .from("character_gifts")
-  .select("id,gift_id,acquisition_source,expires_at")
+  .select("gift_id")
   .eq("character_id", id),
   ]);
 
@@ -423,44 +420,6 @@ const selectedAncestryGiftIds =
         ownedGiftIds.has(gift.id),
     )
     .map((gift) => gift.id);
-
-  const giftById=new Map(
-    (ancestryGiftResult.data??[]).map((gift:any)=>[
-      gift.id,
-      {
-        id:gift.id,
-        name:gift.name,
-        isGeneral:gift.is_general===true,
-        raceNames:(gift.eligibility??[])
-          .map((entry:any)=>{
-            const race=Array.isArray(entry.race)
-              ? entry.race[0]??null
-              : entry.race;
-            return race?.name??null;
-          })
-          .filter(Boolean),
-      },
-    ]),
-  );
-
-  const npcAssignableGifts=
-    character.is_system
-      ? [...giftById.values()]
-          .filter((gift:any)=>!ownedGiftIds.has(gift.id))
-          .sort((a:any,b:any)=>a.name.localeCompare(b.name))
-      : [];
-
-  const npcStaffFeatAssignments=
-    character.is_system
-      ? (selectedAncestryGiftResult.data??[])
-          .filter((assignment:any)=>assignment.acquisition_source==="staff")
-          .map((assignment:any)=>({
-            id:assignment.id,
-            name:(giftById.get(assignment.gift_id) as any)?.name??"Unknown Feat",
-          }))
-          .sort((a:any,b:any)=>a.name.localeCompare(b.name))
-      : [];
-
   const race =
     normaliseRelation(
       character.race,
@@ -1408,69 +1367,6 @@ const selectedAncestryGiftIds =
     twoColumns
   />
 </div>
-                {character.is_system ? (
-                  <div className="mt-4 border border-[rgb(var(--sep-colour-765937))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4">
-                    <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
-                      NPC direct Feat assignment
-                    </p>
-
-                    <p className="mt-2 text-xs leading-5 text-[rgb(var(--sep-colour-8f8271))]">
-                      Assign any active Feat directly to this NPC, including General Feats and Feats linked to another Ancestry.
-                    </p>
-
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      <input type="hidden" name="characterId" value={character.id}/>
-                      <select
-                        name="giftId"
-                        defaultValue=""
-                        className="min-w-[240px] flex-1 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2.5 text-xs text-[rgb(var(--sep-colour-d7c4a5))]"
-                      >
-                        <option value="" disabled>Select any active Feat</option>
-                        {npcAssignableGifts.map((gift) => (
-                          <option key={gift.id} value={gift.id}>
-                            {gift.name}
-                            {gift.isGeneral
-                              ? " · General"
-                              : gift.raceNames.length
-                                ? ` · ${gift.raceNames.join(" / ")}`
-                                : ""}
-                          </option>
-                        ))}
-                      </select>
-
-                      <button
-                        type="submit"
-                        formAction={assignNpcFeatAdministration}
-                        className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-4 py-2.5 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd6a8))]"
-                      >
-                        Assign Feat
-                      </button>
-                    </div>
-
-                    {npcStaffFeatAssignments.length ? (
-                      <div className="mt-4 space-y-2">
-                        {npcStaffFeatAssignments.map((assignment) => (
-                          <div key={assignment.id} className="flex items-center justify-between gap-3 border border-[rgb(var(--sep-colour-59432c))]/35 px-3 py-2">
-                            <span className="text-xs text-[rgb(var(--sep-colour-cab28a))]">
-                              {assignment.name}
-                            </span>
-
-                            <button
-                              type="submit"
-                              name="assignmentId"
-                              value={assignment.id}
-                              formAction={removeNpcFeatAdministration}
-                              className="border border-red-900/60 px-3 py-1.5 text-[8px] uppercase tracking-[0.12em] text-red-400"
-                            >
-                              Remove
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    ) : null}
-                  </div>
-                ) : null}
-
 
                 <CharacterReviewFields
                   initialStatus={
