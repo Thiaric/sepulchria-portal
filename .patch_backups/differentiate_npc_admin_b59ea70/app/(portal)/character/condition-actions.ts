@@ -167,6 +167,30 @@ async function getContext(
     );
   }
 
+  const {
+    data: ownCharacter,
+    error: ownError,
+  } = await supabase
+    .from("characters")
+    .select(
+      "id, display_name, current_room_id, status",
+    )
+    .eq(
+      "user_id",
+      user.id,
+    )
+    .maybeSingle();
+
+  if (
+    ownError ||
+    !ownCharacter
+  ) {
+    throw new Error(
+      ownError?.message ??
+        "Character not found.",
+    );
+  }
+
   const targetId =
     requestedCharacterId.trim();
 
@@ -179,10 +203,35 @@ async function getContext(
   const admin =
     privilegedClient();
 
-  if (scope === "admin") {
-    const staff =
-      await getStaffSession();
+  if (scope === "self") {
+    if (
+      targetId !==
+      ownCharacter.id
+    ) {
+      throw new Error(
+        "You can only manage your own Conditions.",
+      );
+    }
 
+    return {
+      admin,
+      actorUserId: user.id,
+      characterId:
+        ownCharacter.id,
+      characterName:
+        ownCharacter
+          .display_name,
+      createdByRole:
+        "player",
+    };
+  }
+
+  const staff =
+    await getStaffSession();
+
+  if (
+    scope === "admin"
+  ) {
     if (
       !staff ||
       !isConditionStaffRole(
@@ -210,36 +259,13 @@ async function getContext(
 
     if (
       targetError ||
-      !target
+      !target ||
+      target.is_system
     ) {
       throw new Error(
         targetError?.message ??
-          "Character or NPC not found.",
+          "Character not found.",
       );
-    }
-
-    if (target.is_system) {
-      const {
-        data: npc,
-        error: npcError,
-      } = await admin
-        .from("npcs")
-        .select("id")
-        .eq(
-          "character_id",
-          target.id,
-        )
-        .maybeSingle();
-
-      if (
-        npcError ||
-        !npc
-      ) {
-        throw new Error(
-          npcError?.message ??
-            "NPC not found.",
-        );
-      }
     }
 
     return {
@@ -254,61 +280,6 @@ async function getContext(
         staff.role,
     };
   }
-
-  const {
-    data: ownCharacter,
-    error: ownError,
-  } = await supabase
-    .from("characters")
-    .select(
-      "id, display_name, current_room_id, status, is_system",
-    )
-    .eq(
-      "user_id",
-      user.id,
-    )
-    .eq(
-      "is_system",
-      false,
-    )
-    .maybeSingle();
-
-  if (
-    ownError ||
-    !ownCharacter
-  ) {
-    throw new Error(
-      ownError?.message ??
-        "Your Character was not found.",
-    );
-  }
-
-  if (scope === "self") {
-    if (
-      targetId !==
-      ownCharacter.id
-    ) {
-      throw new Error(
-        "You can only manage your own Conditions.",
-      );
-    }
-
-    return {
-      admin,
-      actorUserId:
-        user.id,
-      characterId:
-        ownCharacter.id,
-      characterName:
-        ownCharacter
-          .display_name,
-      createdByRole:
-        "player",
-    };
-  }
-
-  const staff =
-    await getStaffSession();
 
   if (
     targetId ===
@@ -371,51 +342,16 @@ async function getContext(
     targetError ||
     !target ||
     target.status !==
-      "approved"
+      "approved" ||
+    target.is_system
   ) {
     throw new Error(
       targetError?.message ??
-        "Character or NPC not found.",
+        "Character not found.",
     );
   }
 
-  if (target.is_system) {
-    const {
-      data: npc,
-      error: npcError,
-    } = await admin
-      .from("npcs")
-      .select(
-        "id, current_room_id, is_active, is_location_active",
-      )
-      .eq(
-        "character_id",
-        target.id,
-      )
-      .maybeSingle();
-
-    if (
-      npcError ||
-      !npc ||
-      npc.is_active !== true ||
-      npc.is_location_active !== true
-    ) {
-      throw new Error(
-        npcError?.message ??
-          "NPC not found or not active in Locations.",
-      );
-    }
-
-    if (
-      npc.current_room_id !==
-      ownCharacter
-        .current_room_id
-    ) {
-      throw new Error(
-        "That NPC is not in this Location.",
-      );
-    }
-  } else if (
+  if (
     target.current_room_id !==
     ownCharacter
       .current_room_id

@@ -531,15 +531,6 @@ export function AdminCharacterEditForm({
     event: FormEvent<HTMLFormElement>,
   ) {
     /*
-     * NPCs use native React Server Action submission so button-specific
-     * formAction handlers and the main Save action are not swallowed by
-     * the Character-only Age pre-submit pipeline.
-     */
-    if (allowMissingAge) {
-      return;
-    }
-
-    /*
      * NPC/system Characters must use the form's native React Server Action
      * submission. The form contains buttons with their own formAction
      * (direct NPC Feat assign/remove), and intercepting the submit here
@@ -643,12 +634,12 @@ export function AdminCharacterEditForm({
           }
           step={1}
           disabled={
-            !allowMissingAge &&
+            loadingAge ||
+            !selectedRace ||
             (
-              loadingAge ||
-              !selectedRace ||
               selectedRace.min_age ===
-                null
+                null &&
+              !allowMissingAge
             )
           }
           className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] disabled:cursor-not-allowed disabled:opacity-45 components_admin_admin_character_edit_form_input_age"

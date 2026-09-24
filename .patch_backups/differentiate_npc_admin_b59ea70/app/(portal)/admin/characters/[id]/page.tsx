@@ -20,7 +20,6 @@ import {
   requireAdminSection,
 } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
-import { createAdminClient } from "@/lib/supabase/admin";
 
 import {
   assignNpcFeatAdministration,
@@ -109,7 +108,6 @@ type CharacterRow = {
   relationships: string | null;
   offgame: string | null;
   title: string | null;
-  age: number | null;
   race_id: string | null;
   staff_notes: string | null;
   rejection_reason: string | null;
@@ -268,7 +266,6 @@ export default async function AdminCharacterPage({
         relationships,
         offgame,
         title,
-        age,
         race_id,
         staff_notes,
         rejection_reason,
@@ -339,24 +336,6 @@ export default async function AdminCharacterPage({
   const character =
     characterResult.data as unknown as
       CharacterRow;
-
-  const npcIdentityResult =
-    await createAdminClient()
-      .from("npcs")
-      .select("id, character_id")
-      .eq("character_id", id)
-      .maybeSingle();
-
-  if (npcIdentityResult.error) {
-    throw new Error(
-      `Unable to determine whether this record is an NPC: ${npcIdentityResult.error.message}`,
-    );
-  }
-
-  const isNpc =
-    Boolean(
-      npcIdentityResult.data,
-    );
 
   const races =
     (racesResult.data ??
@@ -466,14 +445,14 @@ const selectedAncestryGiftIds =
   );
 
   const npcAssignableGifts=
-    isNpc
+    character.is_system
       ? [...giftById.values()]
           .filter((gift:any)=>!ownedGiftIds.has(gift.id))
           .sort((a:any,b:any)=>a.name.localeCompare(b.name))
       : [];
 
   const npcStaffFeatAssignments=
-    isNpc
+    character.is_system
       ? (selectedAncestryGiftResult.data??[])
           .filter((assignment:any)=>assignment.acquisition_source==="staff")
           .map((assignment:any)=>({
@@ -601,16 +580,12 @@ const selectedAncestryGiftIds =
           <PortalModalButton
   payload={{
     label: getDisplayName(character),
-    title: isNpc
-      ? `${getDisplayName(character)}'s NPC sheet`
-      : `${getDisplayName(character)}'s character sheet`,
+    title: `${getDisplayName(character)}'s character sheet`,
     icon:
       character.portrait_url ??
       "/icons/characters.png",
     href:
-      isNpc
-        ? `/npcs/${character.id}`
-        : `/characters/${character.public_slug}?from=admin`,
+      `/characters/${character.public_slug}?from=admin`,
   }}
   className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-4 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-ac9879))] transition hover:border-[rgb(var(--sep-colour-987344))] hover:text-[rgb(var(--sep-colour-e7cca0))]"
 >
@@ -677,7 +652,7 @@ const selectedAncestryGiftIds =
 
             <div className="p-6 sm:p-8 admin_characters_id_page_div_admin_character_summary_5">
               <p className="text-[9px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-8c704b))] admin_characters_id_page_p_admin_character_summary_5">
-                {isNpc ? "NPC administration" : "Character administration"}
+                Character administration
               </p>
 
               <h2 className="mt-2 font-serif text-4xl text-[rgb(var(--sep-colour-ead5ac))] admin_characters_id_page_h2_admin_character_summary">
@@ -806,7 +781,7 @@ const selectedAncestryGiftIds =
                   updateCharacterAdministration
                 }
                 allowMissingAge={
-                  isNpc
+                  character.is_system
                 }
                 className="mt-6"
               >
@@ -841,7 +816,7 @@ const selectedAncestryGiftIds =
                     <input
                       type="text"
                       name="surname"
-                      required={!isNpc}
+                      required={!character.is_system}
                       maxLength={80}
                       defaultValue={
                         character.surname
@@ -880,7 +855,7 @@ const selectedAncestryGiftIds =
                   <AdminField label="Gender">
                     <select
                       name="gender"
-                      required={!isNpc}
+                      required={!character.is_system}
                       defaultValue={
                         character.gender ??
                         ""
@@ -1438,7 +1413,7 @@ const selectedAncestryGiftIds =
     twoColumns
   />
 </div>
-                {isNpc ? (
+                {character.is_system ? (
                   <div className="mt-4 border border-[rgb(var(--sep-colour-765937))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4">
                     <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
                       NPC direct Feat assignment
@@ -1558,7 +1533,7 @@ const selectedAncestryGiftIds =
               </button>
               </AdminCharacterEditForm>
 
-              {isNpc &&
+              {character.is_system &&
               canManageEconomy ? (
                 <NpcEquipmentAdmin
                   characterId={

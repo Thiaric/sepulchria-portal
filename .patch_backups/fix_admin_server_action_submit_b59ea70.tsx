@@ -41,6 +41,9 @@ export function AdminCharacterEditForm({
   const formRef =
     useRef<HTMLFormElement>(null);
 
+  const allowOriginalSubmit =
+    useRef(false);
+
   const [attributeError, setAttributeError] =
     useState<string | null>(null);
 
@@ -530,22 +533,9 @@ export function AdminCharacterEditForm({
   async function handleSubmit(
     event: FormEvent<HTMLFormElement>,
   ) {
-    /*
-     * NPCs use native React Server Action submission so button-specific
-     * formAction handlers and the main Save action are not swallowed by
-     * the Character-only Age pre-submit pipeline.
-     */
-    if (allowMissingAge) {
-      return;
-    }
-
-    /*
-     * NPC/system Characters must use the form's native React Server Action
-     * submission. The form contains buttons with their own formAction
-     * (direct NPC Feat assign/remove), and intercepting the submit here
-     * swallows those button-specific actions.
-     */
-    if (allowMissingAge) {
+    if (allowOriginalSubmit.current) {
+      allowOriginalSubmit.current =
+        false;
       return;
     }
 
@@ -578,17 +568,17 @@ export function AdminCharacterEditForm({
     }
 
     /*
-     * Age + ancestry have now passed server-side validation.
-     *
-     * Do NOT call form.requestSubmit() here. This form's action is a
-     * React/Next Server Action; re-submitting the DOM form from inside
-     * the async submit handler can complete the age pre-save without
-     * reliably invoking updateCharacterAdministration.
-     *
-     * Invoke the supplied Server Action directly with the same FormData.
-     * Its existing redirect/revalidation behaviour remains unchanged.
+     * Age + ancestry have now passed
+     * server-side validation and been
+     * saved together. Let the existing
+     * administration action perform all
+     * its normal status/history/profile
+     * work unchanged.
      */
-    await action(formData);
+    allowOriginalSubmit.current =
+      true;
+
+    form.requestSubmit();
   }
 
   return (
@@ -643,12 +633,12 @@ export function AdminCharacterEditForm({
           }
           step={1}
           disabled={
-            !allowMissingAge &&
+            loadingAge ||
+            !selectedRace ||
             (
-              loadingAge ||
-              !selectedRace ||
               selectedRace.min_age ===
-                null
+                null &&
+              !allowMissingAge
             )
           }
           className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] disabled:cursor-not-allowed disabled:opacity-45 components_admin_admin_character_edit_form_input_age"

@@ -170,54 +170,29 @@ export async function saveAdminCharacterAge(
     const supabase =
       createAdminClient();
 
-    const [
-      targetCharacterResult,
-      npcIdentityResult,
-    ] = await Promise.all([
-      supabase
-        .from("characters")
-        .select("is_system")
-        .eq("id", characterId)
-        .maybeSingle(),
-
-      supabase
-        .from("npcs")
-        .select("id")
-        .eq(
-          "character_id",
-          characterId,
-        )
-        .maybeSingle(),
-    ]);
-
-    const targetCharacter =
-      targetCharacterResult.data;
+    const {
+      data: targetCharacter,
+      error: targetCharacterError,
+    } = await supabase
+      .from("characters")
+      .select("is_system")
+      .eq("id", characterId)
+      .maybeSingle();
 
     if (
-      targetCharacterResult.error ||
+      targetCharacterError ||
       !targetCharacter
     ) {
       return {
         ok: false,
         error:
-          targetCharacterResult.error?.message ??
+          targetCharacterError?.message ??
           "Character not found.",
       };
     }
 
-    if (npcIdentityResult.error) {
-      return {
-        ok: false,
-        error:
-          `Unable to inspect NPC identity: ${npcIdentityResult.error.message}`,
-      };
-    }
-
-    const isNpcCharacter =
-      targetCharacter.is_system === true &&
-      Boolean(
-        npcIdentityResult.data,
-      );
+    const isSystemCharacter =
+      targetCharacter.is_system === true;
 
     if (
       selectedGiftIds.length >
@@ -233,7 +208,7 @@ export async function saveAdminCharacterAge(
     if (
       (
         !ageRaw &&
-        !isNpcCharacter
+        !isSystemCharacter
       ) ||
       (
         ageRaw &&
@@ -279,7 +254,7 @@ export async function saveAdminCharacterAge(
 
     if (
       race.min_age === null &&
-      !isNpcCharacter
+      !isSystemCharacter
     ) {
       return {
         ok: false,

@@ -117,10 +117,9 @@ export async function saveAdminCharacterAge(
     }
 > {
   try {
-    const staff =
-      await requireStaffCapability(
-        "character_age_admin",
-      );
+    await requireStaffCapability(
+      "character_age_admin",
+    );
 
     const characterId =
       readUuid(
@@ -170,54 +169,29 @@ export async function saveAdminCharacterAge(
     const supabase =
       createAdminClient();
 
-    const [
-      targetCharacterResult,
-      npcIdentityResult,
-    ] = await Promise.all([
-      supabase
-        .from("characters")
-        .select("is_system")
-        .eq("id", characterId)
-        .maybeSingle(),
-
-      supabase
-        .from("npcs")
-        .select("id")
-        .eq(
-          "character_id",
-          characterId,
-        )
-        .maybeSingle(),
-    ]);
-
-    const targetCharacter =
-      targetCharacterResult.data;
+    const {
+      data: targetCharacter,
+      error: targetCharacterError,
+    } = await supabase
+      .from("characters")
+      .select("is_system")
+      .eq("id", characterId)
+      .maybeSingle();
 
     if (
-      targetCharacterResult.error ||
+      targetCharacterError ||
       !targetCharacter
     ) {
       return {
         ok: false,
         error:
-          targetCharacterResult.error?.message ??
+          targetCharacterError?.message ??
           "Character not found.",
       };
     }
 
-    if (npcIdentityResult.error) {
-      return {
-        ok: false,
-        error:
-          `Unable to inspect NPC identity: ${npcIdentityResult.error.message}`,
-      };
-    }
-
-    const isNpcCharacter =
-      targetCharacter.is_system === true &&
-      Boolean(
-        npcIdentityResult.data,
-      );
+    const isSystemCharacter =
+      targetCharacter.is_system === true;
 
     if (
       selectedGiftIds.length >
@@ -233,7 +207,7 @@ export async function saveAdminCharacterAge(
     if (
       (
         !ageRaw &&
-        !isNpcCharacter
+        !isSystemCharacter
       ) ||
       (
         ageRaw &&
@@ -279,7 +253,7 @@ export async function saveAdminCharacterAge(
 
     if (
       race.min_age === null &&
-      !isNpcCharacter
+      !isSystemCharacter
     ) {
       return {
         ok: false,
@@ -588,28 +562,75 @@ export async function saveAdminCharacterAge(
      */
 
     /*
-     * Load every existing Feat ownership row for the Character.
-     *
-     * This is important when Ancestry changes: restricting this lookup
-     * to the NEW Ancestry would leave old Ancestry Feats behind.
-     *
-     * We only REMOVE rows whose acquisition_source is "ancestry";
-     * staff/general/other ownership remains untouched.
+     * First load every Gift which belongs to
+     * this Ancestry's selectable pool.
+     */
+    const {
+      data:
+        eligibleAncestryRows,
+      error:
+        eligibleAncestryError,
+    } = await supabase
+      .from("gift_races")
+      .select(
+        "gift_id",
+      )
+      .eq(
+        "race_id",
+        raceId,
+      );
+
+    if (
+      eligibleAncestryError
+    ) {
+      return {
+        ok: false,
+        error:
+          eligibleAncestryError.message,
+      };
+    }
+
+    const eligibleAncestryGiftIds =
+      Array.from(
+        new Set(
+          (
+            eligibleAncestryRows ??
+            []
+          ).map(
+            (row) =>
+              row.gift_id,
+          ),
+        ),
+      );
+
+    /*
+     * Load the character's existing ownership
+     * of those feats, regardless of source.
      */
     const existingGiftResult =
-      await supabase
-        .from(
-          "character_gifts",
-        )
-        .select(`
-          id,
-          gift_id,
-          acquisition_source
-        `)
-        .eq(
-          "character_id",
-          characterId,
-        );
+      eligibleAncestryGiftIds.length >
+      0
+        ? await supabase
+            .from(
+              "character_gifts",
+            )
+            .select(`
+              id,
+              gift_id,
+              acquisition_source
+            `)
+            .eq(
+              "character_id",
+              characterId,
+            )
+            .in(
+              "gift_id",
+              eligibleAncestryGiftIds,
+            )
+        : {
+            data: [],
+            error: null,
+          };
 
     if (
       existingGiftResult.error
@@ -640,8 +661,6 @@ export async function saveAdminCharacterAge(
     const assignmentsToRemove =
       existingAssignments.filter(
         (assignment) =>
-          assignment.acquisition_source ===
-            "ancestry" &&
           !selectedGiftIdSet.has(
             assignment.gift_id,
           ),
@@ -709,49 +728,6 @@ export async function saveAdminCharacterAge(
     }
 
     /*
-     * If an Ancestry Feat remains selected while Ancestry changes,
-     * keep the ownership row but update its source Ancestry.
-     */
-    if (
-      selectedGiftIds.length >
-      0
-    ) {
-      const {
-        error:
-          sourceRaceUpdateError,
-      } = await supabase
-        .from(
-          "character_gifts",
-        )
-        .update({
-          source_race_id:
-            raceId,
-        })
-        .eq(
-          "character_id",
-          characterId,
-        )
-        .eq(
-          "acquisition_source",
-          "ancestry",
-        )
-        .in(
-          "gift_id",
-          selectedGiftIds,
-        );
-
-      if (
-        sourceRaceUpdateError
-      ) {
-        return {
-          ok: false,
-          error:
-            sourceRaceUpdateError.message,
-        };
-      }
-    }
-
-    /*
      * Work out which selected feats already existed.
      *
      * Those rows stay untouched.
@@ -792,6 +768,14 @@ export async function saveAdminCharacterAge(
       0
     ) {
       const {
+        data: {
+          user,
+        },
+      } =
+        await supabase.auth
+          .getUser();
+
+      const {
         data:
           insertedAssignments,
         error:
@@ -816,7 +800,8 @@ export async function saveAdminCharacterAge(
                 raceId,
 
               assigned_by:
-                staff.userId,
+                user?.id ??
+                null,
             }),
           ),
         )

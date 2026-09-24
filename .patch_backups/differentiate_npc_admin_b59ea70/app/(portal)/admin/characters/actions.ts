@@ -313,28 +313,6 @@ export async function updateCharacterAdministration(
   const isSystemCharacter =
     targetMeta.is_system === true;
 
-  const {
-    data: linkedNpc,
-    error: linkedNpcError,
-  } = await admin
-    .from("npcs")
-    .select("id")
-    .eq(
-      "character_id",
-      characterId,
-    )
-    .maybeSingle();
-
-  if (linkedNpcError) {
-    throw new Error(
-      `Unable to inspect NPC identity: ${linkedNpcError.message}`,
-    );
-  }
-
-  const isNpcCharacter =
-    isSystemCharacter &&
-    Boolean(linkedNpc);
-
   const raceId =
     readOptionalUuid(
       formData.get("raceId"),
@@ -369,7 +347,7 @@ export async function updateCharacterAdministration(
     !firstName ||
     (
       !surname &&
-      !isNpcCharacter
+      !isSystemCharacter
     )
   ) {
     throw new Error(
@@ -394,7 +372,7 @@ export async function updateCharacterAdministration(
     );
 
   if (
-    !isNpcCharacter &&
+    !isSystemCharacter &&
     (
       !gender ||
       ![
@@ -831,7 +809,7 @@ currentOrderVigourModifier =
 
     if (
       !surname &&
-      !isNpcCharacter
+      !isSystemCharacter
     ) {
       missingFields.push(
         "surname",
@@ -1124,7 +1102,7 @@ currentHealth =
       surname:
         surname ??
         (
-          isNpcCharacter
+          isSystemCharacter
             ? ""
             : surname
         ),
@@ -1405,7 +1383,7 @@ currentHealth =
    * pre-submit pipeline. Save their Age + Ancestry Feats here, inside
    * the same server-side administration flow as the rest of the sheet.
    */
-  if (isNpcCharacter) {
+  if (isSystemCharacter) {
     const npcAgeAndFeatResult =
       await saveAdminCharacterAge(
         formData,
@@ -1464,14 +1442,31 @@ currentHealth =
     }
   }
 
-  if (isNpcCharacter) {
+  if (isSystemCharacter) {
     const npcDisplayName =
       [firstName, surname]
         .filter(Boolean)
         .join(" ")
         .trim() ||
       firstName;
-const {
+
+    const {
+      error: displayNameSyncError,
+    } = await admin
+      .from("characters")
+      .update({
+        display_name: npcDisplayName,
+      })
+      .eq("id", characterId)
+      .eq("is_system", true);
+
+    if (displayNameSyncError) {
+      throw new Error(
+        `NPC Character saved, but its display name could not be synchronised: ${displayNameSyncError.message}`,
+      );
+    }
+
+    const {
       error: npcSyncError,
     } = await admin
       .from("npcs")
