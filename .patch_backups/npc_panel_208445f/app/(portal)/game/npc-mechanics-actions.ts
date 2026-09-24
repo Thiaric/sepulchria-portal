@@ -46,152 +46,24 @@ async function npcMessage(a:any,npc:any,userId:string,roomId:string,message:stri
 export async function loadNpcMechanicsData(input:{npcId:string;roomId:string}){
   try{
     const {a,character}=await requireStaffNpc(input.npcId,input.roomId);
-    const activeSince=new Date(Date.now()-5*60_000).toISOString();
-
-    const [giftsResult,standardResult,uniqueResult,equipmentResult,shapesResult,presenceResult]=await Promise.all([
-      a.from("character_gifts")
-        .select(`id,gift:gifts(id,name,description,effect_mode,target_mode,is_active)`)
-        .eq("character_id",character.id),
-      a.from("character_items")
-        .select("id,item_id,quantity")
-        .eq("character_id",character.id),
-      a.from("character_item_instances")
-        .select("id,item_id,custom_name,charges_remaining")
-        .eq("owner_character_id",character.id)
-        .eq("vault_status","owned"),
-      a.from("character_equipment")
-        .select("character_item_id,item_instance_id,slot_key")
-        .eq("character_id",character.id),
-      a.from("character_shapes")
-        .select(`shape_id,shape:shapes(id,name,level,target_mode,target_scope,max_targets,is_active,is_dispel,price_key)`)
-        .eq("character_id",character.id),
-      a.from("character_presence")
-        .select("character_id,appear_offline,last_seen_at")
-        .eq("room_id",input.roomId)
-        .gte("last_seen_at",activeSince),
+    const [gifts,inv,shapes,targets]=await Promise.all([
+      a.from("character_gifts").select(`id,gift:gifts(id,name,description,effect_mode,target_mode,is_active)`).eq("character_id",character.id),
+      a.rpc("get_public_character_inventory",{p_character_id:character.id}),
+      a.from("character_shapes").select(`shape_id,shape:shapes(id,name,level,target_mode,target_scope,max_targets,is_active,is_dispel,price_key)`).eq("character_id",character.id),
+      a.from("characters").select("id,display_name").eq("current_room_id",input.roomId).eq("status","approved").eq("is_system",false).order("display_name"),
     ]);
-
-    const firstError =
-      giftsResult.error ??
-      standardResult.error ??
-      uniqueResult.error ??
-      equipmentResult.error ??
-      shapesResult.error ??
-      presenceResult.error;
-
-    if(firstError)throw new Error(firstError.message);
-
-    const standard=standardResult.data??[];
-    const unique=uniqueResult.data??[];
-    const itemIds=[...new Set([
-      ...standard.map((x:any)=>x.item_id),
-      ...unique.map((x:any)=>x.item_id),
-    ].filter(Boolean))];
-
-    const masterResult=itemIds.length
-      ? await a.from("items")
-          .select(`id,name,is_usable,target_mode,resolution_mode,damage_dice,damage_type,category:item_categories(slug)`)
-          .in("id",itemIds)
-      : {data:[],error:null};
-
-    if(masterResult.error)throw new Error(masterResult.error.message);
-
-    const masters=new Map((masterResult.data??[]).map((x:any)=>[x.id,x]));
-    const equipment=equipmentResult.data??[];
-    const standardEquipment=new Map(
-      equipment.filter((x:any)=>x.character_item_id).map((x:any)=>[x.character_item_id,x.slot_key]),
-    );
-    const uniqueEquipment=new Map(
-      equipment.filter((x:any)=>x.item_instance_id).map((x:any)=>[x.item_instance_id,x.slot_key]),
-    );
-
-    const items=[
-      ...standard.map((row:any)=>{
-        const master:any=masters.get(row.item_id);
-        const slot=standardEquipment.get(row.id)??null;
-        const category=one(master?.category??null);
-        return {
-          record_kind:"standard",
-          record_id:row.id,
-          item_id:row.item_id,
-          name:master?.name??"Unknown Item",
-          quantity:Number(row.quantity??0),
-          is_usable:master?.is_usable===true,
-          target_mode:master?.target_mode??"self",
-          resolution_mode:master?.resolution_mode??"automatic",
-          damage_dice:master?.damage_dice??null,
-          damage_type:master?.damage_type??null,
-          category_slug:category?.slug??null,
-          is_equipped:Boolean(slot),
-          equipped_slot:slot,
-        };
-      }),
-      ...unique.map((row:any)=>{
-        const master:any=masters.get(row.item_id);
-        const slot=uniqueEquipment.get(row.id)??null;
-        const category=one(master?.category??null);
-        return {
-          record_kind:"unique",
-          record_id:row.id,
-          item_id:row.item_id,
-          name:row.custom_name?.trim()||master?.name||"Unknown Item",
-          quantity:1,
-          charges_remaining:row.charges_remaining??null,
-          is_usable:master?.is_usable===true,
-          target_mode:master?.target_mode??"self",
-          resolution_mode:master?.resolution_mode??"automatic",
-          damage_dice:master?.damage_dice??null,
-          damage_type:master?.damage_type??null,
-          category_slug:category?.slug??null,
-          is_equipped:Boolean(slot),
-          equipped_slot:slot,
-        };
-      }),
-    ].filter((x:any)=>x.item_id);
-
-    const presentIds=[...new Set(
-      (presenceResult.data??[])
-        .filter((x:any)=>x.appear_offline!==true)
-        .map((x:any)=>x.character_id)
-        .filter((id:string)=>id&&id!==character.id),
-    )];
-
-    const targetsResult=presentIds.length
-      ? await a.from("characters")
-          .select("id,display_name,life_state")
-          .in("id",presentIds)
-          .eq("status","approved")
-          .eq("is_system",false)
-          .order("display_name")
-      : {data:[],error:null};
-
-    if(targetsResult.error)throw new Error(targetsResult.error.message);
-
-    const gifts=(giftsResult.data??[])
-      .map((x:any)=>({characterGiftId:x.id,...one(x.gift)}))
-      .filter((x:any)=>x?.is_active!==false&&x?.name);
-
-    const shapes=(shapesResult.data??[])
-      .map((x:any)=>one(x.shape))
-      .filter((x:any)=>x?.is_active===true&&x?.id);
-
+    const err=gifts.error??inv.error??shapes.error??targets.error;
+    if(err)throw new Error(err.message);
     return {
       ok:true,
       characterId:character.id,
-      gifts,
-      items,
-      shapes,
-      targets:targetsResult.data??[],
+      gifts:(gifts.data??[]).map((x:any)=>({characterGiftId:x.id,...one(x.gift)})).filter((x:any)=>x.is_active!==false),
+      items:(inv.data??[]).filter((x:any)=>x.is_usable===true||x.is_equipped===true),
+      shapes:(shapes.data??[]).map((x:any)=>one(x.shape)).filter((x:any)=>x?.is_active===true),
+      targets:(targets.data??[]).filter((x:any)=>x.id!==character.id),
     };
   }catch(e){
-    return {
-      ok:false,
-      message:e instanceof Error?e.message:"Unable to load NPC mechanics.",
-      gifts:[],
-      items:[],
-      shapes:[],
-      targets:[],
-    };
+    return {ok:false,message:e instanceof Error?e.message:"Unable to load NPC mechanics.",gifts:[],items:[],shapes:[],targets:[]};
   }
 }
 
