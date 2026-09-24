@@ -851,31 +851,35 @@ const selectedAncestryGiftIds =
 
               <div className="space-y-5 admin_characters_id_page_div_container_7">
                 <div className="grid gap-4 sm:grid-cols-2 admin_characters_id_page_div_container_8">
-                  <AdminField label="First name">
-                    <input
-                      type="text"
-                      name="firstName"
-                      required
-                      maxLength={80}
-                      defaultValue={
-                        character.first_name
-                      }
-                      className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_characters_id_page_input_first_name"
-                    />
-                  </AdminField>
+                  {!isNpc ? (
+                    <>
+                      <AdminField label="First name">
+                        <input
+                          type="text"
+                          name="firstName"
+                          required
+                          maxLength={80}
+                          defaultValue={
+                            character.first_name
+                          }
+                          className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_characters_id_page_input_first_name"
+                        />
+                      </AdminField>
 
-                  <AdminField label="Surname">
-                    <input
-                      type="text"
-                      name="surname"
-                      required={!isNpc}
-                      maxLength={80}
-                      defaultValue={
-                        character.surname
-                      }
-                      className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_characters_id_page_input_surname"
-                    />
-                  </AdminField>
+                      <AdminField label="Surname">
+                        <input
+                          type="text"
+                          name="surname"
+                          required
+                          maxLength={80}
+                          defaultValue={
+                            character.surname
+                          }
+                          className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_characters_id_page_input_surname"
+                        />
+                      </AdminField>
+                    </>
+                  ) : null}
 
                   <AdminField label="Public title">
                     <input

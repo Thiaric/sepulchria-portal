@@ -288,11 +288,44 @@ export async function useMechanicalFeat(
 
       if (targetError) throw new Error(targetError.message);
 
+      const systemTargetIds =
+        (targetRows ?? [])
+          .filter((target) => target.is_system)
+          .map((target) => String(target.id));
+
+      const activeNpcTargetIds = new Set<string>();
+
+      if (systemTargetIds.length > 0) {
+        const {
+          data: npcTargets,
+          error: npcTargetsError,
+        } = await admin
+          .from("npcs")
+          .select("character_id")
+          .in("character_id", systemTargetIds)
+          .eq("is_active", true)
+          .eq("is_location_active", true)
+          .eq("current_room_id", character.current_room_id);
+
+        if (npcTargetsError) {
+          throw new Error(npcTargetsError.message);
+        }
+
+        for (const npc of npcTargets ?? []) {
+          if (npc.character_id) {
+            activeNpcTargetIds.add(String(npc.character_id));
+          }
+        }
+      }
+
       for (const target of targetRows ?? []) {
         if (
           target.current_room_id !== character.current_room_id ||
           target.status !== "approved" ||
-          target.is_system
+          (
+            target.is_system &&
+            !activeNpcTargetIds.has(String(target.id))
+          )
         ) {
           throw new Error(
             "One or more selected targets cannot currently be targeted.",

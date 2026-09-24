@@ -326,13 +326,35 @@ async function resolveGiftTarget({
     targetError ||
     !target ||
     target.status !== "approved" ||
-    target.is_system ||
     target.current_room_id !== roomId
   ) {
     throw new Error(
       targetError?.message ??
         "That character cannot currently be targeted.",
     );
+  }
+
+  if (target.is_system) {
+    const admin = createPrivilegedClient();
+
+    const {
+      data: npcTarget,
+      error: npcTargetError,
+    } = await admin
+      .from("npcs")
+      .select("id")
+      .eq("character_id", target.id)
+      .eq("is_active", true)
+      .eq("is_location_active", true)
+      .eq("current_room_id", roomId)
+      .maybeSingle();
+
+    if (npcTargetError || !npcTarget) {
+      throw new Error(
+        npcTargetError?.message ??
+          "That character cannot currently be targeted.",
+      );
+    }
   }
 
   return {

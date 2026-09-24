@@ -126,7 +126,7 @@ export function NpcControlPanel({roomId}:{roomId:string}){
   const [creating,setCreating]=useState(false);
   const [editorOpen,setEditorOpen]=useState(false);
   const [name,setName]=useState(""); const [pronouns,setPronouns]=useState("");
-  const [portraitUrl,setPortraitUrl]=useState(""); const [description,setDescription]=useState("");
+  const [portraitUrl,setPortraitUrl]=useState("");
   const [raceId,setRaceId]=useState(""); const [orderId,setOrderId]=useState(""); const [active,setActive]=useState(true); const [locationActive,setLocationActive]=useState(true);
   const [postText,setPostText]=useState(""); const [status,setStatus]=useState("");
   const [pending,startTransition]=useTransition();
@@ -199,26 +199,26 @@ export function NpcControlPanel({roomId}:{roomId:string}){
   useEffect(()=>{
     if(creating||!selected)return;
     setName(selected.name);setPronouns(selected.pronouns??"");setPortraitUrl(selected.portrait_url??"");
-    setDescription(selected.description??"");setRaceId(selected.race_id??"");setOrderId(selected.order_id??"");setActive(selected.is_active);setLocationActive(selected.is_location_active);
+    setRaceId(selected.race_id??"");setOrderId(selected.order_id??"");setActive(selected.is_active);setLocationActive(selected.is_location_active);
   },[creating,selected]);
 
   function beginCreate(){
     setCreating(true);setEditorOpen(true);setName("");setPronouns("");setPortraitUrl("");
-    setDescription("");setRaceId("");setOrderId("");setActive(true);setLocationActive(true);setStatus("");
+    setRaceId("");setOrderId("");setActive(true);setLocationActive(true);setStatus("");
   }
   function beginEdit(){
     if(!selected)return;
     setCreating(false);setName(selected.name);setPronouns(selected.pronouns??"");setPortraitUrl(selected.portrait_url??"");
-    setDescription(selected.description??"");setRaceId(selected.race_id??"");setOrderId(selected.order_id??"");setActive(selected.is_active);setLocationActive(selected.is_location_active);
+    setRaceId(selected.race_id??"");setOrderId(selected.order_id??"");setActive(selected.is_active);setLocationActive(selected.is_location_active);
     setEditorOpen(true);setStatus("");
   }
   function closeEditor(){setEditorOpen(false);setCreating(false);}
   function save(){
     startTransition(async()=>{
       const result=creating
-        ? await createNpc({roomId,name,pronouns,portraitUrl,description,raceId,orderId})
+        ? await createNpc({roomId,name,pronouns,portraitUrl,raceId,orderId})
         : selected
-          ? await updateNpc({npcId:selected.id,roomId,name,pronouns,portraitUrl,description,raceId,orderId,isActive:active,isLocationActive:locationActive,moveHere:selected.current_room_id!==roomId})
+          ? await updateNpc({npcId:selected.id,roomId,name,pronouns,portraitUrl,raceId,orderId,isActive:active,isLocationActive:locationActive,moveHere:selected.current_room_id!==roomId})
           : {ok:false,message:"Select an NPC."};
       setStatus(result.message);
       if(result.ok){
@@ -534,8 +534,6 @@ export function NpcControlPanel({roomId}:{roomId:string}){
           <label className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8f8170))]">Pronouns<input value={pronouns} onChange={e=>setPronouns(e.target.value)} className={inputClass}/></label>
           <label className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8f8170))] sm:col-span-2">Portrait URL<input value={portraitUrl} onChange={e=>setPortraitUrl(e.target.value)} className={inputClass}/></label>
         </div>
-
-        <label className="mt-3 block text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8f8170))]">Description<textarea value={description} onChange={e=>setDescription(e.target.value)} rows={4} className={inputClass+" resize-y"}/></label>
 
         {!creating?<div className="mt-3 flex flex-wrap gap-4">
           <label className="flex items-center gap-2 text-[8px] uppercase"><input type="checkbox" checked={active} onChange={e=>setActive(e.target.checked)}/>NPC record active</label>

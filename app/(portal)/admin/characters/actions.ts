@@ -366,16 +366,14 @@ export async function updateCharacterAdministration(
     );
 
   if (
-    !firstName ||
+    !isNpcCharacter &&
     (
-      !surname &&
-      !isNpcCharacter
+      !firstName ||
+      !surname
     )
   ) {
     throw new Error(
-      isSystemCharacter
-        ? "NPC name is required."
-        : "First name and surname are required.",
+      "First name and surname are required.",
     );
   }
 
@@ -734,6 +732,16 @@ export async function updateCharacterAdministration(
     );
   }
 
+  const effectiveFirstName =
+    isNpcCharacter
+      ? character.first_name
+      : firstName;
+
+  const effectiveSurname =
+    isNpcCharacter
+      ? character.surname
+      : surname;
+
   const raceIds = [
   character.race_id,
   raceId,
@@ -823,14 +831,14 @@ currentOrderVigourModifier =
     const missingFields:
       string[] = [];
 
-    if (!firstName) {
+    if (!effectiveFirstName) {
       missingFields.push(
         "first name",
       );
     }
 
     if (
-      !surname &&
+      !effectiveSurname &&
       !isNpcCharacter
     ) {
       missingFields.push(
@@ -1120,14 +1128,10 @@ currentHealth =
 
   const candidatePayload:
     Record<string, unknown> = {
-      first_name: firstName,
+      first_name:
+        effectiveFirstName,
       surname:
-        surname ??
-        (
-          isNpcCharacter
-            ? ""
-            : surname
-        ),
+        effectiveSurname,
       pronouns,
       gender,
       sexual_orientation:

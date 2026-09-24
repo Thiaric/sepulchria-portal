@@ -71,29 +71,29 @@ export async function loadNpcControlData(roomId:string):Promise<NpcControlData>{
   };
 }
 
-export async function createNpc(input:{roomId:string;name:string;pronouns?:string;portraitUrl?:string;description?:string;raceId?:string;orderId?:string}){
+export async function createNpc(input:{roomId:string;name:string;pronouns?:string;portraitUrl?:string;raceId?:string;orderId?:string}){
   try{
     const {admin,user}=await requireNpcStaff(); await assertRoom(admin,input.roomId);
     const name=cleanName(input.name), npcId=crypto.randomUUID();
-    const raceId=clean(input.raceId,64), orderId=clean(input.orderId,64), description=clean(input.description,2000), portraitUrl=clean(input.portraitUrl,800), pronouns=clean(input.pronouns,80);
-    const cr=await admin.from("characters").insert({id:npcId,user_id:null,first_name:name,surname:"",pronouns,portrait_url:portraitUrl,physical_description:description??"NPC",personality:"Staff-controlled NPC.",biography:description??"Staff-controlled NPC.",public_slug:`npc-${npcId.replace(/-/g,"")}`,status:"approved",approved_at:new Date().toISOString(),current_room_id:input.roomId,race_id:raceId,title:"NPC",is_system:true,muscles:3,reflexes:3,vigor:3,brains:3,shrewd:3,presence_score:3,current_health:30});
+    const raceId=clean(input.raceId,64), orderId=clean(input.orderId,64), portraitUrl=clean(input.portraitUrl,800), pronouns=clean(input.pronouns,80);
+    const cr=await admin.from("characters").insert({id:npcId,user_id:null,first_name:name,surname:"",pronouns,portrait_url:portraitUrl,physical_description:"NPC",personality:"Staff-controlled NPC.",biography:"Staff-controlled NPC.",public_slug:`npc-${npcId.replace(/-/g,"")}`,status:"approved",approved_at:new Date().toISOString(),current_room_id:input.roomId,race_id:raceId,title:"NPC",is_system:true,muscles:3,reflexes:3,vigor:3,brains:3,shrewd:3,presence_score:3,current_health:30});
     if(cr.error) return {ok:false,message:`Unable to create NPC mechanics record: ${cr.error.message}`};
-    const result=await admin.from("npcs").insert({id:npcId,character_id:npcId,name,pronouns,portrait_url:portraitUrl,description,race_id:raceId,order_id:orderId,current_room_id:input.roomId,is_active:true,is_location_active:true,created_by_user_id:user.id,updated_by_user_id:user.id});
+    const result=await admin.from("npcs").insert({id:npcId,character_id:npcId,name,pronouns,portrait_url:portraitUrl,description:null,race_id:raceId,order_id:orderId,current_room_id:input.roomId,is_active:true,is_location_active:true,created_by_user_id:user.id,updated_by_user_id:user.id});
     if(result.error){await admin.from("characters").delete().eq("id",npcId).eq("is_system",true);return {ok:false,message:`Unable to create NPC: ${result.error.message}`};}
     return {ok:true,message:`${name} created in this Location.`};
   }catch(error){return {ok:false,message:error instanceof Error?error.message:"Unable to create NPC."};}
 }
 
-export async function updateNpc(input:{npcId:string;roomId:string;name:string;pronouns?:string;portraitUrl?:string;description?:string;raceId?:string;orderId?:string;isActive:boolean;isLocationActive:boolean;moveHere:boolean}){
+export async function updateNpc(input:{npcId:string;roomId:string;name:string;pronouns?:string;portraitUrl?:string;raceId?:string;orderId?:string;isActive:boolean;isLocationActive:boolean;moveHere:boolean}){
   try{
     const {admin,user}=await requireNpcStaff(); await assertRoom(admin,input.roomId);
-    const name=cleanName(input.name),raceId=clean(input.raceId,64),orderId=clean(input.orderId,64),portraitUrl=clean(input.portraitUrl,800),pronouns=clean(input.pronouns,80),description=clean(input.description,2000);
+    const name=cleanName(input.name),raceId=clean(input.raceId,64),orderId=clean(input.orderId,64),portraitUrl=clean(input.portraitUrl,800),pronouns=clean(input.pronouns,80);
     const cur=await admin.from("npcs").select("character_id").eq("id",input.npcId).maybeSingle();
     if(cur.error||!cur.data) return {ok:false,message:cur.error?.message??"NPC not found."};
-    const update:any={name,pronouns,portrait_url:portraitUrl,description,race_id:raceId,order_id:orderId,is_active:input.isActive,is_location_active:input.isLocationActive,updated_by_user_id:user.id,updated_at:new Date().toISOString()};
+    const update:any={name,pronouns,portrait_url:portraitUrl,race_id:raceId,order_id:orderId,is_active:input.isActive,is_location_active:input.isLocationActive,updated_by_user_id:user.id,updated_at:new Date().toISOString()};
     if(input.moveHere) update.current_room_id=input.roomId;
     const result=await admin.from("npcs").update(update).eq("id",input.npcId); if(result.error) return {ok:false,message:`Unable to update NPC: ${result.error.message}`};
-    const cu:any={first_name:name,pronouns,portrait_url:portraitUrl,physical_description:description??"NPC",biography:description??"Staff-controlled NPC.",race_id:raceId,updated_at:new Date().toISOString()}; if(input.moveHere) cu.current_room_id=input.roomId;
+    const cu:any={first_name:name,surname:"",pronouns,portrait_url:portraitUrl,race_id:raceId,updated_at:new Date().toISOString()}; if(input.moveHere) cu.current_room_id=input.roomId;
     const linked=await admin.from("characters").update(cu).eq("id",cur.data.character_id??input.npcId).eq("is_system",true);
     if(linked.error) return {ok:false,message:`NPC saved, but mechanics sync failed: ${linked.error.message}`};
     return {ok:true,message:`${name} updated.`};
