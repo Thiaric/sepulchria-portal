@@ -155,7 +155,7 @@ export function useSpellingIssues(
              */
           }
         },
-        550,
+        1500,
       );
 
     return () => {

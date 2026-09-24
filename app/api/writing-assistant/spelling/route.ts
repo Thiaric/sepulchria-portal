@@ -8,9 +8,9 @@ import {
 import { createClient } from "@/lib/supabase/server";
 
 const MAX_TEXT_LENGTH = 50_000;
-const MAX_UNIQUE_WORDS = 2_500;
-const MAX_ISSUES = 250;
-const MAX_SUGGESTIONS = 12;
+const MAX_UNIQUE_WORDS = 1000;
+const MAX_ISSUES = 150;
+const MAX_SUGGESTIONS = 5;
 
 /*
  * Words which are legitimate inside the Sepulchria setting and would
@@ -32,6 +32,14 @@ const SEPULCHRIA_WORDS = [
 ];
 
 const checker = nspell(enGb);
+
+const spellingCache = new Map<
+  string,
+  {
+    correct: boolean;
+    suggestions: string[];
+  }
+>();
 
 for (const word of SEPULCHRIA_WORDS) {
   checker.add(word);
@@ -262,35 +270,32 @@ export async function POST(
     [];
 
   for (
-    const word of
-    extractUniqueWords(safeText)
-  ) {
-    if (
-  shouldSkipWord(word) ||
-  isCorrectWord(word)
+  const word of
+  extractUniqueWords(safeText)
 ) {
-  continue;
-}
+  if (shouldSkipWord(word)) {
+    continue;
+  }
 
-    const suggestions = Array.from(
-  new Set([
-    ...adjacentSwapCorrections(word),
-    ...checker.suggest(word),
-  ]),
-)
-  .filter(
-    (suggestion) =>
-      suggestion.length > 0 &&
-      suggestion.length <= 64,
-  )
-  .slice(
-    0,
-    MAX_SUGGESTIONS,
-  );
+  const cacheKey =
+    word.toLocaleLowerCase(
+      "en-GB",
+    );
+
+  const cached =
+    spellingCache.get(
+      cacheKey,
+    );
+
+  if (cached) {
+    if (cached.correct) {
+      continue;
+    }
 
     issues.push({
       word,
-      suggestions,
+      suggestions:
+        cached.suggestions,
     });
 
     if (
@@ -299,7 +304,61 @@ export async function POST(
     ) {
       break;
     }
+
+    continue;
   }
+
+  if (isCorrectWord(word)) {
+    spellingCache.set(
+      cacheKey,
+      {
+        correct: true,
+        suggestions: [],
+      },
+    );
+
+    continue;
+  }
+
+  const suggestions =
+    Array.from(
+      new Set([
+        ...adjacentSwapCorrections(
+          word,
+        ),
+        ...checker.suggest(word),
+      ]),
+    )
+      .filter(
+        (suggestion) =>
+          suggestion.length > 0 &&
+          suggestion.length <= 64,
+      )
+      .slice(
+        0,
+        MAX_SUGGESTIONS,
+      );
+
+  spellingCache.set(
+    cacheKey,
+    {
+      correct: false,
+      suggestions,
+    },
+  );
+
+  issues.push({
+    word,
+    suggestions,
+  });
+
+  if (
+    issues.length >=
+    MAX_ISSUES
+  ) {
+    break;
+  }
+}
 
   return NextResponse.json({
     issues,

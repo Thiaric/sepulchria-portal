@@ -149,5 +149,32 @@ export async function enterOwnOrderHeadquarters() {
     );
   }
 
+  const now =
+  new Date().toISOString();
+
+const {
+  error: presenceError,
+} = await supabase
+  .from("character_presence")
+  .upsert(
+    {
+      character_id:
+        character.id,
+      room_id:
+        headquarters.room_id,
+      last_seen_at: now,
+    },
+    {
+      onConflict:
+        "character_id",
+    },
+  );
+
+if (presenceError) {
+  throw new Error(
+    `Unable to update presence: ${presenceError.message}`,
+  );
+}
+
   redirect("/game");
 }
