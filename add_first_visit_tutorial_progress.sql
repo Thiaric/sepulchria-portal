@@ -27,6 +27,7 @@ create table if not exists public.user_tutorial_progress (
         'skins',
         'notifications',
         'private-messages',
+        'messages-conversation',
         'instant-chat',
         'ancestries',
         'ancestry-detail',

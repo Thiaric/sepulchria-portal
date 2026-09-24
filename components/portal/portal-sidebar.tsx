@@ -2790,6 +2790,22 @@ export function PortalSidebar({
             <PlayerSanctionsSidebarLink />
 
             {renderLegalSafetyMenu()}
+
+            {modalWindows.length === 0 ? (
+              <button
+                type="button"
+                onClick={() => {
+                  window.dispatchEvent(
+                    new Event(
+                      "sepulchria:play-tutorial",
+                    ),
+                  );
+                }}
+                className="mt-2 flex items-center py-0.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9f8b70))] transition hover:text-[rgb(var(--sep-colour-d8bf91))]"
+              >
+                Play Tutorial
+              </button>
+            ) : null}
           </div>
         </div>
       </aside>
@@ -2879,6 +2895,40 @@ function PublicPageModal({
     useRef<ResizeState | null>(
       null,
     );
+
+  const iframeRef =
+    useRef<HTMLIFrameElement | null>(
+      null,
+    );
+
+  const modalTutorialPath =
+    item.href
+      .split("#", 1)[0]
+      .split("?", 1)[0];
+
+  const modalHasTutorial =
+    modalTutorialPath === "/characters" ||
+    modalTutorialPath === "/store" ||
+    modalTutorialPath === "/messages" ||
+    modalTutorialPath === "/ancestries" ||
+    modalTutorialPath.startsWith("/ancestries/") ||
+    modalTutorialPath === "/associations" ||
+    modalTutorialPath.startsWith("/associations/") ||
+    modalTutorialPath === "/orders" ||
+    modalTutorialPath.startsWith("/orders/") ||
+    modalTutorialPath === "/warping" ||
+    modalTutorialPath === "/feats" ||
+    modalTutorialPath === "/character" ||
+    modalTutorialPath === "/forum" ||
+    modalTutorialPath.startsWith("/forum/") ||
+    modalTutorialPath === "/market" ||
+    modalTutorialPath.startsWith("/market/") ||
+    modalTutorialPath === "/missions" ||
+    modalTutorialPath === "/polls" ||
+    modalTutorialPath === "/ranking" ||
+    modalTutorialPath === "/rules" ||
+    modalTutorialPath === "/codex" ||
+    modalTutorialPath === "/crafting";
 
   /*
    * Build embedded modal URLs without corrupting hash anchors.
@@ -3269,6 +3319,24 @@ function PublicPageModal({
           </div>
 
           <div className="flex items-center gap-1 components_portal_portal_sidebar_div_container_20">
+            {!collapsed && modalHasTutorial ? (
+              <button
+                type="button"
+                onClick={() => {
+                  iframeRef.current
+                    ?.contentWindow
+                    ?.dispatchEvent(
+                      new Event(
+                        "sepulchria:play-tutorial",
+                      ),
+                    );
+                }}
+                className="mr-1 h-7 border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-17110d))] px-3 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-bd9d6d))] transition hover:border-[rgb(var(--sep-colour-967342))] hover:text-[rgb(var(--sep-colour-f1d7a5))]"
+              >
+                Play Tutorial
+              </button>
+            ) : null}
+
             <button
               type="button"
               onClick={() => {
@@ -3352,6 +3420,7 @@ function PublicPageModal({
               : "relative flex min-h-0 flex-1 flex-col")), "components_portal_portal_sidebar_div_container_21"].filter(Boolean).join(" ")}
         >
           <iframe
+            ref={iframeRef}
             src={iframeSrc}
             title={item.label}
             onLoad={(event) => {

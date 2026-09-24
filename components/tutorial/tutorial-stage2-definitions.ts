@@ -210,6 +210,37 @@ export const STAGE2_TOURS = {
       }
     ]
   },
+  "messages-conversation": {
+    "key": "messages-conversation",
+    "label": "Message Conversation",
+    "steps": [
+      {
+        "selector": ".messages_id_page_main_main, .messages_components_group_conversation_view_main_main",
+        "title": "A Private Conversation",
+        "body": "This is a persistent private-message conversation. It remains available in your Messages until you archive or delete it."
+      },
+      {
+        "selector": ".messages_id_page_div_container_3, .messages_components_group_conversation_view_header_header",
+        "title": "Conversation Details",
+        "body": "The conversation header identifies who you are speaking with. From here you can also archive or delete the conversation when those actions are available."
+      },
+      {
+        "selector": ".messages_id_components_conversationmessagelist_section_section",
+        "title": "Search and Filter Messages",
+        "body": "Use the controls above the history to search the conversation, filter On-game and Off-game messages, narrow by date, or manage selected messages."
+      },
+      {
+        "selector": ".messages_id_components_conversationmessagelist_div_container_6",
+        "title": "Message History",
+        "body": "The conversation history is kept here. On-game correspondence belongs to the story; Off-game messages are player-to-player communication."
+      },
+      {
+        "selector": ".messages_components_messagecomposer_form_action",
+        "title": "Write a Reply",
+        "body": "Choose whether the reply is On-game or Off-game, write the message, and send it. On-game messages are character correspondence; Off-game messages are written by the player."
+      }
+    ]
+  },
   "instant-chat": {
     "key": "instant-chat",
     "label": "Instant Chat",

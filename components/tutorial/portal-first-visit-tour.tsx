@@ -339,7 +339,15 @@ function candidateTours(pathname: string): TourDefinition[] {
   if (/^\/areas\/[^/]+$/.test(pathname)) { result.push(TOURS.area); return result; }
   if (pathname === "/characters") { result.push(TOURS["characters-directory"]); return result; }
   if (pathname === "/store") { result.push(TOURS.store); return result; }
-  if (pathname === "/messages" || pathname.startsWith("/messages/")) { result.push(TOURS["private-messages"]); return result; }
+  if (pathname === "/messages") {
+    result.push(TOURS["private-messages"]);
+    return result;
+  }
+
+  if (/^\/messages\/[^/]+$/.test(pathname)) {
+    result.push(TOURS["messages-conversation"]);
+    return result;
+  }
   if (pathname === "/ancestries") { result.push(TOURS.ancestries); return result; }
   if (/^\/ancestries\/[^/]+$/.test(pathname)) { result.push(TOURS["ancestry-detail"]); return result; }
   if (pathname === "/associations") { result.push(TOURS.associations); return result; }
@@ -709,28 +717,55 @@ export function PortalFirstVisitTour() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [activeTour, complete]);
 
-  const replayControl =
-    ready &&
-    userId &&
-    !activeTour &&
-    applicableTours.length > 0 ? (
-      <div className="fixed right-3 top-[calc(env(safe-area-inset-top)+5rem)] z-[20050] flex max-w-[min(92vw,430px)] flex-wrap justify-end gap-1.5 sm:right-5">
-        {applicableTours.map((tour) => (
-          <button
-            key={tour.key}
-            type="button"
-            onClick={() => void startTour(tour)}
-            className="border border-[rgb(var(--sep-colour-8b693e))]/80 bg-[rgb(var(--sep-colour-17110d))]/95 px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-d9bd88))] shadow-[0_8px_24px_rgba(0,0,0,0.45)] backdrop-blur transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-2d1f14))] hover:text-[rgb(var(--sep-colour-f2d49f))]"
-          >
-            {applicableTours.length === 1
-              ? "Play Tutorial"
-              : `Play ${tour.label}`}
-          </button>
-        ))}
-      </div>
-    ) : null;
+  useEffect(() => {
+    function handlePlayTutorial() {
+      if (
+        !ready ||
+        !userId ||
+        activeTour ||
+        startingRef.current
+      ) {
+        return;
+      }
 
-  if (!activeTour || !steps.length) return replayControl;
+      /*
+       * Transient header-widget tours are added first. The current
+       * page/context tour is appended afterwards; on /game, a
+       * Location-specific tour is appended after the general one.
+       * Replay therefore follows the most specific current context.
+       */
+      const tour =
+        applicableTours[
+          applicableTours.length - 1
+        ];
+
+      if (!tour) {
+        return;
+      }
+
+      void startTour(tour);
+    }
+
+    window.addEventListener(
+      "sepulchria:play-tutorial",
+      handlePlayTutorial,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "sepulchria:play-tutorial",
+        handlePlayTutorial,
+      );
+    };
+  }, [
+    activeTour,
+    applicableTours,
+    ready,
+    startTour,
+    userId,
+  ]);
+
+  if (!activeTour || !steps.length) return null;
 
   const step = steps[stepIndex];
   if (!step) return null;
