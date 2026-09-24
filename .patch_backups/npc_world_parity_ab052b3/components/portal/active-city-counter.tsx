@@ -44,7 +44,6 @@ type CharacterSummary = {
   display_name: string | null;
   portrait_url: string | null;
   public_slug: string;
-  is_system: boolean;
   title: string | null;
   occupation: string | null;
     order_memberships:
@@ -220,7 +219,6 @@ export function ActiveCityCounter({
   display_name,
   portrait_url,
   public_slug,
-  is_system,
   title,
   occupation,
 
@@ -989,7 +987,7 @@ const room =
                                 label: displayName,
                                 title: `Open ${displayName}'s character sheet`,
                                 icon: "/icons/characters.png",
-                                href: person.is_system?`/npcs/${person.id}`:`/characters/${person.public_slug}`,
+                                href: `/characters/${person.public_slug}`,
                               });
                             }}
                             title={`Open ${displayName}'s character sheet`}
@@ -1028,7 +1026,7 @@ const room =
                                     label: displayName,
                                     title: `Open ${displayName}'s character sheet`,
                                     icon: "/icons/characters.png",
-                                    href: person.is_system?`/npcs/${person.id}`:`/characters/${person.public_slug}`,
+                                    href: `/characters/${person.public_slug}`,
                                   });
                                 }}
                                 title={`Open ${displayName}'s character sheet`}
@@ -1138,8 +1136,7 @@ const room =
                                   >
                                     You
                                   </span>
-                                ) : !person.is_system &&
-                      !communication.blocked &&
+                                ) : !communication.blocked &&
                       !blockedCharacterIds.has(
                                     person.id,
                                   ) ? (
@@ -1177,7 +1174,7 @@ const room =
                                       label: displayName,
                                       title: `Open ${displayName}'s character sheet`,
                                       icon: "/icons/characters.png",
-                                      href: person.is_system?`/npcs/${person.id}`:`/characters/${person.public_slug}`,
+                                      href: `/characters/${person.public_slug}`,
                                     });
                                   }}
                                   aria-label={`Open ${displayName}'s character sheet`}

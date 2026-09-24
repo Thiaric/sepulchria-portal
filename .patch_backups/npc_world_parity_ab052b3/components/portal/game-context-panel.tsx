@@ -38,7 +38,6 @@ type CharacterSummary = {
   display_name: string | null;
   portrait_url: string | null;
   public_slug: string;
-  is_system: boolean;
   title: string | null;
 
   race:
@@ -147,7 +146,6 @@ export function GameContextPanel({
   display_name,
   portrait_url,
                 public_slug,
-                is_system,
                 title,
 
                 race:races!characters_race_id_fkey(
@@ -466,7 +464,7 @@ export function GameContextPanel({
           icon:
             person.portrait_url ??
             "/icons/characters.png",
-          href: person.is_system?`/npcs/${person.id}`:`/characters/${person.public_slug}?from=game`,
+          href: `/characters/${person.public_slug}?from=game`,
         })
       }
       className="block w-full text-left components_portal_game_context_panel_button_action"
@@ -500,7 +498,6 @@ export function GameContextPanel({
 
     <div className="absolute bottom-[4px] right-2 z-10 flex items-center gap-1 components_portal_game_context_panel_div_container_12">
       {person.id !== currentCharacterId &&
-      !person.is_system &&
       !blockedCharacterIds.has(person.id) &&
       !communication.blocked ? (
         <MessageCharacterModalButton

@@ -6,7 +6,7 @@ import { getStaffSession } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 import { getCharacterShapeAccess } from "@/lib/warping/shape-access";
 import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
-import { resolveImmediateShapeCastForNpc, resolveIncomingShape, resolveIncomingDispel } from "./warping-actions";
+import { resolveImmediateShapeCastForNpc } from "./warping-actions";
 import {
   activateRoomGift,
   useRoomGift,
@@ -17,7 +17,6 @@ import {
   startAttributeOpposedAction,
   startUnarmedAttack,
   startWeaponOpposedAttack,
-  counterOpposedAction,
 } from "./opposed-actions";
 
 function admin(){
@@ -97,62 +96,6 @@ export async function npcStartUnarmedAttack(previous:any,formData:FormData){
 export async function npcStartWeaponOpposedAttack(previous:any,formData:FormData){
   return startWeaponOpposedAttack(previous,formData);
 }
-
-export async function npcCounterOpposedAction(previous:any,formData:FormData){
-  return counterOpposedAction(previous,formData);
-}
-export async function npcResolveIncomingShape(previous:any,formData:FormData){
-  return resolveIncomingShape(previous,formData);
-}
-export async function npcResolveIncomingDispel(previous:any,formData:FormData){
-  return resolveIncomingDispel(previous,formData);
-}
-export async function loadNpcPendingResponses(input:{npcId:string;roomId:string}){
-  try{
-    const {a,character}=await requireStaffNpc(input.npcId,input.roomId);
-    const attrs=await getEffectiveCharacterAttributes(character.id,{
-      muscles:character.muscles,reflexes:character.reflexes,vigor:character.vigor,
-      brains:character.brains,shrewd:character.shrewd,presence_score:character.presence_score,
-    });
-    const [opposed,shapeTargets,dispels]=await Promise.all([
-      a.from("opposed_actions")
-        .select(`id,action_label,attack_total,allowed_counters,expires_at,attacker:characters!opposed_actions_attacker_character_id_fkey(display_name)`)
-        .eq("target_character_id",character.id).eq("status","pending")
-        .gt("expires_at",new Date().toISOString()).order("created_at",{ascending:true}),
-      a.from("shape_cast_targets")
-        .select(`id,target_character_id,other_effect_choice,outcome,cast:shape_casts!shape_cast_targets_cast_id_fkey(id,room_id,caster:characters!shape_casts_caster_character_id_fkey(id,display_name),shape:shapes!shape_casts_shape_id_fkey(*))`)
-        .eq("target_character_id",character.id).eq("outcome","pending").order("created_at",{ascending:true}),
-      a.from("shape_casts")
-        .select(`id,room_id,dispel_effect_id,dispel_target_character_id,caster:characters!shape_casts_caster_character_id_fkey(id,display_name),shape:shapes!shape_casts_shape_id_fkey(*)`)
-        .eq("dispel_target_character_id",character.id).not("dispel_effect_id","is",null).order("created_at",{ascending:true}),
-    ]);
-    const error=opposed.error??shapeTargets.error??dispels.error;
-    if(error)throw new Error(error.message);
-
-    const shapes=(shapeTargets.data??[]).flatMap((row:any)=>{
-      const cast=one(row.cast) as any,caster=one(cast?.caster) as any,shape=one(cast?.shape) as any;
-      if(!shape||!caster||cast?.room_id!==input.roomId||caster.id===character.id)return [];
-      const profile=row.target_character_id===caster.id?"self":shape.other_alternative_enabled&&row.other_effect_choice==="harmful"?"other_alt":"other";
-      const mode=shape[`${profile}_resolution_mode`]??shape.resolution_mode??"save";
-      if(mode!=="save")return [];
-      const saves=Array.isArray(shape[`${profile}_save_options`])?shape[`${profile}_save_options`]:(Array.isArray(shape.save_options)?shape.save_options:[]);
-      return [{id:row.id,kind:shape.is_feat_backing?"Feat":"Shape",name:shape.name,casterName:caster.display_name??"Someone",saveOptions:saves}];
-    });
-
-    const dispelRows=(dispels.data??[]).flatMap((row:any)=>{
-      const shape=one(row.shape) as any,caster=one(row.caster) as any;
-      if(!shape?.is_dispel||row.room_id!==input.roomId)return [];
-      const profile=row.dispel_target_character_id===caster?.id?"self":"other";
-      const saves=Array.isArray(shape[`${profile}_save_options`])?shape[`${profile}_save_options`]:(Array.isArray(shape.save_options)?shape.save_options:[]);
-      return [{id:row.id,name:shape.name,casterName:caster?.display_name??"Someone",saveOptions:saves}];
-    });
-
-    return {ok:true,attributes:attrs,opposed:opposed.data??[],shapes,dispels:dispelRows};
-  }catch(error){
-    return {ok:false,message:error instanceof Error?error.message:"Unable to load NPC reactions.",attributes:null,opposed:[],shapes:[],dispels:[]};
-  }
-}
-
 
 export async function loadNpcMechanicsData(input:{npcId:string;roomId:string}){
   try{
@@ -294,7 +237,7 @@ export async function loadNpcMechanicsData(input:{npcId:string;roomId:string}){
     const targets=(presenceResult.data??[])
       .filter((x:any)=>x.appear_offline!==true)
       .map((x:any)=>one(x.character) as any)
-      .filter((x:any)=>x&&x.status==="approved"&&x.id!==character.id)
+      .filter((x:any)=>x&&x.status==="approved"&&x.is_system!==true&&x.id!==character.id)
       .map((x:any)=>({id:x.id,display_name:x.display_name,life_state:x.life_state}));
 
     return {ok:true,characterId:character.id,gifts,items,shapes,targets};

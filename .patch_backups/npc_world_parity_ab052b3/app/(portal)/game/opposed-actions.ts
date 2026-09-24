@@ -717,7 +717,7 @@ export async function counterOpposedAction(
   formData: FormData,
 ): Promise<ActionState> {
   try {
-    const { supabase, character } = await ownedCharacter(formData);
+    const { supabase, character } = await ownedCharacter();
     const actionId = field(formData, "opposed_action_id");
     const rawCounterKind = field(formData, "counter_kind");
     const doNothing = rawCounterKind === "__do_nothing__";

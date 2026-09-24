@@ -95,28 +95,7 @@ function dice(x:string|null){
  let t=0;for(let i=0;i<n;i++)t+=randomInt(1,d+1);return t*sign
 }
 function expiry(s:any){if(s.is_instantaneous)return new Date().toISOString();if(s.duration_unit==="until_dispelled")return null;const n=Math.max(1,Number(s.duration_amount??1));const m=s.duration_unit==="minutes"?60000:s.duration_unit==="hours"?3600000:86400000;return new Date(Date.now()+n*m).toISOString()}
-async function mine(formData?:FormData){
- const db=await createClient(),au=await db.auth.getUser();
- if(!au.data.user)throw Error("Authentication required.");
- const npcActorId=field(formData??new FormData(),"npc_actor_character_id");
- if(npcActorId){
-  const {getStaffSession}=await import("@/lib/auth/require-staff");
-  const staff=await getStaffSession();
-  if(!staff||!["owner","admin","master"].includes(staff.role))throw Error("NPC reactions require Master/Admin/Owner access.");
-  const a=admin();
-  const link=await a.from("npcs").select("id,current_room_id,is_active,is_location_active").eq("character_id",npcActorId).eq("is_active",true).eq("is_location_active",true).maybeSingle();
-  if(link.error||!link.data)throw Error(link.error?.message??"Active NPC not found.");
-  const q=await a.from("characters").select("id,display_name,current_room_id,muscles,reflexes,vigor,brains,shrewd,presence_score,life_state").eq("id",npcActorId).eq("is_system",true).maybeSingle();
-  if(q.error||!q.data)throw Error(q.error?.message??"NPC Character not found.");
-  if(q.data.current_room_id!==link.data.current_room_id)throw Error("NPC Location is out of sync.");
-  if(q.data.life_state!=="alive")throw Error(q.data.life_state==="dead"?"Dead Characters cannot Warp Shapes or respond with Saves.":"Characters at Death's Threshold cannot Warp Shapes or respond with Saves.");
-  return q.data;
- }
- const q=await db.from("characters").select("id,display_name,current_room_id,muscles,reflexes,vigor,brains,shrewd,presence_score,life_state").eq("user_id",au.data.user.id).maybeSingle();
- if(q.error||!q.data)throw Error("Character not found.");
- if(q.data.life_state!=="alive")throw Error(q.data.life_state==="dead"?"Dead Characters cannot Warp Shapes or respond with Saves.":"Characters at Death's Threshold cannot Warp Shapes or respond with Saves.");
- return q.data;
-}
+async function mine(){const db=await createClient(),au=await db.auth.getUser();if(!au.data.user)throw Error("Authentication required.");const q=await db.from("characters").select("id,display_name,current_room_id,muscles,reflexes,vigor,brains,shrewd,presence_score,life_state").eq("user_id",au.data.user.id).maybeSingle();if(q.error||!q.data)throw Error("Character not found.");if(q.data.life_state!=="alive")throw Error(q.data.life_state==="dead"?"Dead Characters cannot Warp Shapes or respond with Saves.":"Characters at Death's Threshold cannot Warp Shapes or respond with Saves.");return q.data}
 async function eff(c:any,k:string){const key=ATTR[k]??k;const e=await getEffectiveCharacterAttributes(c.id,{muscles:c.muscles,reflexes:c.reflexes,vigor:c.vigor,brains:c.brains,shrewd:c.shrewd,presence_score:c.presence_score});return Number((e as any)[key]??0)}
 async function message(room:string,cid:string,text:string){const db=await createClient();const q=await db.from("room_messages").insert({room_id:room,character_id:cid,message:text,message_type:"action",client_nonce:crypto.randomUUID()});if(q.error)throw Error(q.error.message)}
 async function healthSnapshot(characterId:string){
@@ -581,7 +560,7 @@ export async function resolveImmediateShapeCastForNpc(
 }
 
 export async function resolveIncomingShape(_p:WarpingActionState,f:FormData):Promise<WarpingActionState>{try{
- const c=await mine(f),id=field(f,"shape_cast_target_id"),choice=field(f,"save_choice"),t=await target(id,c.id),cast=one(t.cast),s=one(cast?.shape),caster=one(cast?.caster);if(!cast||!s||!caster)throw Error("Effect data unavailable.");
+ const c=await mine(),id=field(f,"shape_cast_target_id"),choice=field(f,"save_choice"),t=await target(id,c.id),cast=one(t.cast),s=one(cast?.shape),caster=one(cast?.caster);if(!cast||!s||!caster)throw Error("Effect data unavailable.");
  const kind=s.is_feat_backing?"Feat":"Shape";
 
  const profile=effectProfile(s,t,caster.id),resolution=profileResolution(s,profile);
@@ -628,7 +607,7 @@ export async function prepareDispelEffect(_p:WarpingActionState,f:FormData):Prom
 }catch(e){return{ok:false,message:e instanceof Error?e.message:"Unable to prepare Dispel."}}}
 
 export async function resolveIncomingDispel(_p:WarpingActionState,f:FormData):Promise<WarpingActionState>{try{
- const c=await mine(f),castId=field(f,"dispel_cast_id"),choice=field(f,"save_choice"),a=admin();
+ const c=await mine(),castId=field(f,"dispel_cast_id"),choice=field(f,"save_choice"),a=admin();
  const cq=await a.from("shape_casts").select(`id,room_id,caster_character_id,dispel_target_character_id,dispel_effect_id,caster:characters!shape_casts_caster_character_id_fkey(id,display_name,muscles,reflexes,vigor,brains,shrewd,presence_score),shape:shapes!shape_casts_shape_id_fkey(*)`).eq("id",castId).eq("dispel_target_character_id",c.id).maybeSingle();
  const cast:any=cq.data,s=one(cast?.shape),caster=one(cast?.caster);if(cq.error||!cast||!s?.is_dispel||!caster)throw Error("Incoming Dispel not found.");
  const effectId=String(cast.dispel_effect_id??"");if(!effectId)throw Error("This Dispel is already resolved.");

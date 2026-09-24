@@ -14,10 +14,6 @@ import {
   npcStartAttributeOpposedAction,
   npcStartUnarmedAttack,
   npcStartWeaponOpposedAttack,
-  loadNpcPendingResponses,
-  npcCounterOpposedAction,
-  npcResolveIncomingShape,
-  npcResolveIncomingDispel,
 } from "../npc-mechanics-actions";
 import { activateRoomGift,useRoomGift,useRoomItem,sendRoomAttributeCheck } from "../actions";
 import { startAttributeOpposedAction,startUnarmedAttack,startWeaponOpposedAttack } from "../opposed-actions";
@@ -57,66 +53,6 @@ function NpcMultiTargetButtons({targets,selected,onChange,maxTargets,allowSelf=f
     {targets.map((t:any)=><button key={t.id} type="button" aria-pressed={selected.includes(t.id)} onClick={()=>toggle(t.id)} className={cls(selected.includes(t.id))}>{selected.includes(t.id)?"✓ ":""}{t.display_name}</button>)}
   </div>;
 }
-const NPC_COUNTER_LABELS:Record<string,string>={
-  dodge:"Dodge — Reflexes",defend:"Defend — Vigour",
-  resist_vigour:"Resist — Vigour",resist_vigor:"Resist — Vigour",
-  resist_shrewd:"Resist — Shrewd",resist_brains:"Resist — Brains",resist_presence:"Resist — Presence",
-};
-const NPC_COUNTER_ATTR:Record<string,string>={
-  dodge:"reflexes",defend:"vigor",resist_vigour:"vigor",resist_vigor:"vigor",
-  resist_shrewd:"shrewd",resist_brains:"brains",resist_presence:"presence_score",
-};
-
-function NpcIncomingResponses({npcId,actorCharacterId,roomId}:{npcId:string;actorCharacterId:string;roomId:string}){
-  const [data,setData]=useState<any>({ok:true,attributes:null,opposed:[],shapes:[],dispels:[]});
-  const [opposedState,opposedAction]=useActionState(npcCounterOpposedAction,{ok:false,message:""});
-  const [shapeState,shapeAction]=useActionState(npcResolveIncomingShape,{ok:false,message:""});
-  const [dispelState,dispelAction]=useActionState(npcResolveIncomingDispel,{ok:false,message:""});
-
-  const reload=useCallback(async()=>setData(await loadNpcPendingResponses({npcId,roomId})),[npcId,roomId]);
-  useEffect(()=>{void reload();const timer=window.setInterval(()=>void reload(),2500);return()=>window.clearInterval(timer);},[reload,opposedState.submittedAt,shapeState.submittedAt,dispelState.submittedAt]);
-
-  const mod=(key:string)=>{const n=Number(data.attributes?.[NPC_COUNTER_ATTR[key]]??0);return `${n>=0?"+":""}${n}`;};
-  if(!data.opposed?.length&&!data.shapes?.length&&!data.dispels?.length)return null;
-
-  return <div className="mt-3 space-y-2 border-t border-[rgb(var(--sep-colour-60482e))]/35 pt-3">
-    <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b99765))]">Incoming Reactions</p>
-    {data.opposed?.map((entry:any)=>{
-      const attacker=Array.isArray(entry.attacker)?entry.attacker[0]:entry.attacker;
-      return <section key={entry.id} className="border border-[rgb(var(--sep-colour-986a37))]/60 bg-[rgb(var(--sep-colour-20140c))] p-3">
-        <p className="font-serif text-sm text-[rgb(var(--sep-colour-efd2a0))]">{attacker?.display_name??"Someone"} — {entry.action_label}</p>
-        <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-a18d6e))]">Action total: {entry.attack_total}</p>
-        <form action={opposedAction} className="mt-2 flex flex-wrap gap-2">
-          <input type="hidden" name="npc_actor_character_id" value={actorCharacterId}/>
-          <input type="hidden" name="opposed_action_id" value={entry.id}/>
-          {(entry.allowed_counters??[]).map((counter:string)=><button key={counter} type="submit" name="counter_kind" value={counter} className="border border-[rgb(var(--sep-colour-765937))] px-3 py-2 text-[8px] uppercase">{NPC_COUNTER_LABELS[counter]??counter} ({mod(counter)})</button>)}
-          <button type="submit" name="counter_kind" value="__do_nothing__" className="border border-[rgb(var(--sep-colour-765937))] px-3 py-2 text-[8px] uppercase">Do nothing</button>
-        </form>
-      </section>;
-    })}
-    {data.shapes?.map((entry:any)=><section key={entry.id} className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-20140c))] p-3">
-      <p className="font-serif text-sm text-[rgb(var(--sep-colour-efd2a0))]">{entry.casterName} — {entry.name}</p>
-      <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-a18d6e))]">Incoming {entry.kind}</p>
-      <form action={shapeAction} className="mt-2 flex flex-wrap gap-2">
-        <input type="hidden" name="npc_actor_character_id" value={actorCharacterId}/>
-        <input type="hidden" name="shape_cast_target_id" value={entry.id}/>
-        {(entry.saveOptions??[]).map((save:string)=><button key={save} type="submit" name="save_choice" value={save} className="border border-[rgb(var(--sep-colour-765937))] px-3 py-2 text-[8px] uppercase">{NPC_COUNTER_LABELS[save]??save} ({mod(save)})</button>)}
-        <button type="submit" name="save_choice" value="__do_nothing__" className="border border-[rgb(var(--sep-colour-765937))] px-3 py-2 text-[8px] uppercase">Do nothing</button>
-      </form>
-    </section>)}
-    {data.dispels?.map((entry:any)=><section key={entry.id} className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-20140c))] p-3">
-      <p className="font-serif text-sm text-[rgb(var(--sep-colour-efd2a0))]">{entry.casterName} — {entry.name}</p>
-      <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-a18d6e))]">Incoming Dispel</p>
-      <form action={dispelAction} className="mt-2 flex flex-wrap gap-2">
-        <input type="hidden" name="npc_actor_character_id" value={actorCharacterId}/>
-        <input type="hidden" name="dispel_cast_id" value={entry.id}/>
-        {(entry.saveOptions??[]).map((save:string)=><button key={save} type="submit" name="save_choice" value={save} className="border border-[rgb(var(--sep-colour-765937))] px-3 py-2 text-[8px] uppercase">{NPC_COUNTER_LABELS[save]??save} ({mod(save)})</button>)}
-        <button type="submit" name="save_choice" value="__do_nothing__" className="border border-[rgb(var(--sep-colour-765937))] px-3 py-2 text-[8px] uppercase">Do nothing</button>
-      </form>
-    </section>)}
-  </div>;
-}
-
 
 
 export function NpcControlPanel({roomId}:{roomId:string}){
@@ -126,7 +62,7 @@ export function NpcControlPanel({roomId}:{roomId:string}){
   const [editorOpen,setEditorOpen]=useState(false);
   const [name,setName]=useState(""); const [pronouns,setPronouns]=useState("");
   const [portraitUrl,setPortraitUrl]=useState(""); const [description,setDescription]=useState("");
-  const [raceId,setRaceId]=useState(""); const [orderId,setOrderId]=useState(""); const [active,setActive]=useState(true); const [locationActive,setLocationActive]=useState(true);
+  const [raceId,setRaceId]=useState(""); const [orderId,setOrderId]=useState(""); const [active,setActive]=useState(true);
   const [postText,setPostText]=useState(""); const [status,setStatus]=useState("");
   const [pending,startTransition]=useTransition();
   const [mechanics,setMechanics]=useState<any>({ok:false,gifts:[],items:[],shapes:[],targets:[]});
@@ -182,17 +118,17 @@ export function NpcControlPanel({roomId}:{roomId:string}){
   useEffect(()=>{
     if(creating||!selected)return;
     setName(selected.name);setPronouns(selected.pronouns??"");setPortraitUrl(selected.portrait_url??"");
-    setDescription(selected.description??"");setRaceId(selected.race_id??"");setOrderId(selected.order_id??"");setActive(selected.is_active);setLocationActive(selected.is_location_active);
+    setDescription(selected.description??"");setRaceId(selected.race_id??"");setOrderId(selected.order_id??"");setActive(selected.is_active);
   },[creating,selected]);
 
   function beginCreate(){
     setCreating(true);setEditorOpen(true);setName("");setPronouns("");setPortraitUrl("");
-    setDescription("");setRaceId("");setOrderId("");setActive(true);setLocationActive(true);setStatus("");
+    setDescription("");setRaceId("");setOrderId("");setActive(true);setStatus("");
   }
   function beginEdit(){
     if(!selected)return;
     setCreating(false);setName(selected.name);setPronouns(selected.pronouns??"");setPortraitUrl(selected.portrait_url??"");
-    setDescription(selected.description??"");setRaceId(selected.race_id??"");setOrderId(selected.order_id??"");setActive(selected.is_active);setLocationActive(selected.is_location_active);
+    setDescription(selected.description??"");setRaceId(selected.race_id??"");setOrderId(selected.order_id??"");setActive(selected.is_active);
     setEditorOpen(true);setStatus("");
   }
   function closeEditor(){setEditorOpen(false);setCreating(false);}
@@ -201,7 +137,7 @@ export function NpcControlPanel({roomId}:{roomId:string}){
       const result=creating
         ? await createNpc({roomId,name,pronouns,portraitUrl,description,raceId,orderId})
         : selected
-          ? await updateNpc({npcId:selected.id,roomId,name,pronouns,portraitUrl,description,raceId,orderId,isActive:active,isLocationActive:locationActive,moveHere:selected.current_room_id!==roomId})
+          ? await updateNpc({npcId:selected.id,roomId,name,pronouns,portraitUrl,description,raceId,orderId,isActive:active,moveHere:selected.current_room_id!==roomId})
           : {ok:false,message:"Select an NPC."};
       setStatus(result.message);
       if(result.ok){
@@ -383,8 +319,6 @@ export function NpcControlPanel({roomId}:{roomId:string}){
       {mechanicsStatus&&<p className="mt-2 text-[9px] text-[rgb(var(--sep-colour-c6ad86))]">{mechanicsStatus}</p>}
     </div>}
 
-    {selected&&selected.character_id&&inThisRoom&&selected.is_location_active?<NpcIncomingResponses npcId={selected.id} actorCharacterId={selected.character_id} roomId={roomId}/>:null}
-
     {selected&&<div className="border-t border-[rgb(var(--sep-colour-60482e))]/35 pt-3">
       <p className="mb-2 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-b99765))]">Post as {selected.name}</p>
       <textarea value={postText} disabled={pending||!selected.is_active||!inThisRoom} onChange={e=>setPostText(e.target.value)} rows={3} placeholder={!selected.is_active?"Activate this NPC first.":!inThisRoom?"Bring this NPC to this Location first.":`Write as ${selected.name}...`} className="block w-full resize-y border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-[11px] text-[rgb(var(--sep-colour-d6c4a8))] disabled:opacity-45"/>
@@ -413,10 +347,7 @@ export function NpcControlPanel({roomId}:{roomId:string}){
 
         <label className="mt-3 block text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8f8170))]">Description<textarea value={description} onChange={e=>setDescription(e.target.value)} rows={4} className={inputClass+" resize-y"}/></label>
 
-        {!creating?<div className="mt-3 flex flex-wrap gap-4">
-          <label className="flex items-center gap-2 text-[8px] uppercase"><input type="checkbox" checked={active} onChange={e=>setActive(e.target.checked)}/>NPC record active</label>
-          <label className="flex items-center gap-2 text-[8px] uppercase"><input type="checkbox" checked={locationActive} onChange={e=>setLocationActive(e.target.checked)}/>Active in Locations</label>
-        </div>:null}
+        {!creating?<label className="mt-3 flex items-center gap-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8f8170))]"><input type="checkbox" checked={active} onChange={e=>setActive(e.target.checked)}/>Active</label>:null}
 
         {!creating&&selected?.character_id?<div className="mt-4 flex flex-wrap gap-2 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-3">
           <button type="button" onClick={()=>openPortalModal({label:`Manage ${selected.name}`,title:`Manage ${selected.name}`,icon:selected.portrait_url??"/icons/characters.png",href:`/admin/characters/${selected.character_id}`})} className={buttonClass}>Stats & Feats</button>
