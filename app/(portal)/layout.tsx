@@ -25,6 +25,7 @@ import { getUnreadForumCount } from "@/lib/forum/get-unread-forum-count";
 import { getWorldState } from "@/lib/world/get-world-state";
 import { ExperienceLogoutGuard } from "@/components/experience/experience-logout-guard";
 import { CosmeticRuntime } from "@/components/cosmetics/cosmetic-runtime";
+import { PortalFirstVisitTour } from "@/components/tutorial/portal-first-visit-tour";
 import { getEquippedCosmetics } from "@/lib/cosmetics/get-equipped-cosmetic";
 import { cssImageUrl } from "@/components/cosmetics/cosmetic-frame-overlay";
 
@@ -201,6 +202,7 @@ async function PortalLayoutContent({
 
             <PortalInteractionLayer />
             <CosmeticRuntime />
+            <PortalFirstVisitTour />
 
             <div className="shrink-0 layout_div_container_3">
               <PortalHeader
@@ -1034,6 +1036,7 @@ function EmbeddedPortalLayout({
               instant-chat frames, forum frames, action/whisper cosmetics, etc.
             */}
             <CosmeticRuntime />
+            <PortalFirstVisitTour />
 
             <div
               data-portal-shell

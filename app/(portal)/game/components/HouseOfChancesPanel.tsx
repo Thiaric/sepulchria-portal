@@ -140,7 +140,10 @@ export function HouseOfChancesPanel({
   }
 
   return (
-    <details className="group shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))] game_components_houseofchancespanel_details_details">
+    <details
+      data-tour-area="house-of-chances"
+      className="group shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))] game_components_houseofchancespanel_details_details"
+    >
       <summary className="sticky top-0 z-30 flex cursor-pointer list-none items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-59432c))]/30 bg-[linear-gradient(90deg,rgb(var(--sep-colour-100c09)),rgb(var(--sep-colour-17110d)),rgb(var(--sep-colour-100c09)))] px-3 py-2 [&::-webkit-details-marker]:hidden game_components_houseofchancespanel_summary_summary">
         <div className="flex min-w-0 items-center gap-3 game_components_houseofchancespanel_div_container">
           

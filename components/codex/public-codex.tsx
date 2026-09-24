@@ -270,11 +270,11 @@ useEffect(() => {
                   </span>
 
                   <span className="min-w-0">
-                    <span className="block text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756550))]">
+                    <span className="block text-[7px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-756550))] codex_chapter_colour">
                       Chapter {chapter.chapter_number}
                     </span>
 
-                    <span className="mt-0.5 block font-serif text-[12px] leading-4">
+                    <span className="mt-0.5 block font-serif text-[12px] leading-4 codex_chapter_name_colour">
                       {chapter.title}
                     </span>
                   </span>

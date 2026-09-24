@@ -135,7 +135,10 @@ export function GatheringPanel({
   }
 
   return (
-    <details className="group shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))] game_components_gatheringpanel_details_details">
+    <details
+      data-tour-area="gathering"
+      className="group shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))] game_components_gatheringpanel_details_details"
+    >
       <summary className="sticky top-0 z-30 flex cursor-pointer list-none items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-59432c))]/30 bg-[linear-gradient(90deg,rgb(var(--sep-colour-100c09)),rgb(var(--sep-colour-17110d)),rgb(var(--sep-colour-100c09)))] px-3 py-2 [&::-webkit-details-marker]:hidden game_components_gatheringpanel_summary_summary">
         <div className="min-w-0 game_components_gatheringpanel_div_container">
           <p className="text-[7px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] game_components_gatheringpanel_p_text">

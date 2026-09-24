@@ -75,6 +75,7 @@ export function OddJobsPanel({ jobs }: { jobs: OddJobStateRow[] }) {
   return (
     <details
       data-sep-interaction-ignore="true"
+      data-tour-area="odd-jobs"
       className="group shrink-0 border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-0d0907))] game_components_oddjobspanel_details_details"
     >
       <summary
