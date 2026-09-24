@@ -16,6 +16,7 @@ type TourStep = {
   selector: string;
   title: string;
   body: string;
+  prepare?: string;
 };
 
 type TourDefinition = {
@@ -80,31 +81,66 @@ const TOURS: Record<string, TourDefinition> = {
     steps: [
       {
         selector: ".game_page_article_article",
-        title: "A Location",
+        title: "Your Current Location",
         body:
-          "This is the live play area for your current Location. Special Location features appear above the chronicle when the place supports them.",
+          "This is the live play area for the Location your character currently occupies. Location-specific systems appear above the Chronicle when this place supports them.",
       },
       {
         selector: ".game_page_div_container_10",
         title: "The Chronicle",
         body:
-          "The central chronicle records what characters say and do. Mechanical actions, rolls, whispers and other system output also appear here when relevant.",
+          "The Chronicle records what characters say and do. Rolls, mechanical actions, whispers and system output also appear here when relevant.",
       },
       {
         selector: "[data-room-chat-composer]",
         title: "Write and Act",
         body:
-          "Use the composer to speak and describe actions. The Location controls also let you whisper, roll dice, use Attributes, attack, use Feats and Items, Warp, manage Conditions and access other actions available to your character.",
+          "Use the composer to speak and describe actions. Its gameplay controls give access to whispers, dice, Attributes, attacks, Feats, Items, Warping, Conditions and the other actions available to your character.",
       },
       {
-        selector: ".portal-right-shell",
-        title: "Who Is Here",
+        selector: "[data-skin-widget=\"current-location\"]",
+        title: "Current Location Card",
         body:
-          "The right panel shows who is present and useful Location context. Character names can open their sheets, and available exits or Location information appear here when relevant.",
+          "At the top of the right context panel you can always see the Area and exact Location your character currently occupies, together with the Location image."
       },
+      {
+        selector: ".components_portal_room_info_button_button_info",
+        title: "Location Info",
+        body:
+          "Press Info whenever you want more than the Location name. It opens the Location information window with the Location image, its full description and, where available, information about the wider Area."
+      },
+      {
+        selector: ".components_portal_game_context_panel_section_section",
+        title: "Present in This Location",
+        body:
+          "This section lists the characters currently present in the same Location. The counter shows how many are visible to you."
+      },
+      {
+        selector: ".components_portal_game_context_panel_div_container_5",
+        title: "A Present Character",
+        body:
+          "Select a character row to open that character's sheet. Presence state and public Ancestry/Order identity are shown here; other controls can appear when messaging or staff management is available."
+      },
+      {
+        selector: ".components_portal_game_context_panel_div_container_12",
+        title: "Character Quick Actions",
+        body:
+          "Quick controls on a present character can let you send a private message or, for staff with permission, open management tools."
+      },
+      {
+        selector: ".components_portal_game_context_panel_section_section_2",
+        title: "Journey To",
+        body:
+          "The bottom of the context panel lists the passages that can currently be used to leave this Location. The number beside Journey to shows how many exits are available."
+      },
+      {
+        selector: ".components_portal_game_context_panel_button_action_3",
+        title: "Move to Another Location",
+        body:
+          "Choose an exit to move your character through that passage. The Chronicle and right-side context then refresh for the new Location."
+      }
     ],
   },
-
   "house-of-chances": {
     key: "house-of-chances",
     label: "House of Chances",
@@ -225,29 +261,52 @@ const TOURS: Record<string, TourDefinition> = {
 
   "character-sheet": {
     key: "character-sheet",
-    label: "Character Sheet",
+    label: "Character Sheet · In Short",
     steps: [
       {
         selector: '[data-cosmetic-surface="sheet"]',
         title: "Your Character Sheet",
         body:
-          "This is the central record for your character: identity, status, mechanics, possessions, history and everything that belongs specifically to them.",
+          "The Character Sheet is the complete record of your character. Every tab covers a different part of their identity, possessions, mechanics or history.",
       },
       {
         selector: '.character-sheet-tabs nav[aria-label="Character sheet sections"]',
-        title: "Sheet Sections",
+        title: "Character Sheet Tabs",
         body:
-          "Use these tabs to move between the short profile, full profile, Inventory, Ledger, Trophies, Feats, Warping, off-game information, your Log and editing tools available to you.",
+          "Use these tabs to move between In Short, Profile, Inventory, Ledger, Trophies, Feats, Warping, Offgame, Log and Edit. Each tab has its own tutorial the first time you visit it.",
       },
       {
-        selector: '[data-character-sheet-panel="short"]',
-        title: "In Short",
+        selector: '[data-character-sheet-panel="short"] .character_page_div_container_9',
+        title: "Portrait and Status",
         body:
-          "The opening tab gives you the quick version of your character: portrait, identity, Conditions, life state, core profile details and mechanical information.",
+          "The portrait identifies your character visually. Your own sheet also shows the current approval/status state beneath it.",
       },
+      {
+        selector: '[data-character-sheet-panel="short"] .character_page_div_container_13',
+        title: "Identity",
+        body:
+          "This part of In Short contains the core public identity information used throughout the portal.",
+      },
+      {
+        selector: ".components_characters_character_remnants_wallet_section_section",
+        title: "Remnants",
+        body:
+          "Your current Remnant balance is visible on the sheet. The Ledger tab contains the transaction history behind that balance.",
+      },
+      {
+        selector: ".components_characters_character_music_player",
+        title: "Character Music",
+        body:
+          "If the character has music configured, the player lets you play, pause, seek and control its volume while respecting the Portal sound controls.",
+      },
+      {
+        selector: ".components_characters_character_mechanics_display",
+        title: "Core Mechanics",
+        body:
+          "The mechanics panel summarises the Attributes and other mechanical values used during play.",
+      }
     ],
   },
-
   crafting: {
     key: "crafting",
     label: "Crafting",
@@ -458,10 +517,19 @@ function availableSteps(tour: TourDefinition): TourStep[] {
 
   for (const step of tour.steps) {
     const target = findTarget(step.selector);
-    if (!target) continue;
 
-    const details = target.closest("details");
-    if (details) details.open = true;
+    if (!target && !step.prepare) {
+      continue;
+    }
+
+    if (target) {
+      const details =
+        target.closest("details");
+
+      if (details) {
+        details.open = true;
+      }
+    }
 
     steps.push(step);
   }
@@ -493,6 +561,11 @@ export function PortalFirstVisitTour() {
   const [stepIndex, setStepIndex] = useState(0);
   const [rect, setRect] = useState<SpotlightRect | null>(null);
   const startingRef = useRef(false);
+
+  const preparedStepRef =
+    useRef<Set<string>>(
+      new Set(),
+    );
 
   const [
     contextVersion,
@@ -622,6 +695,7 @@ export function PortalFirstVisitTour() {
         return next;
       });
 
+      preparedStepRef.current.clear();
       setActiveTour(tour);
       setSteps(usableSteps);
       setStepIndex(0);
@@ -657,6 +731,7 @@ export function PortalFirstVisitTour() {
   const complete = useCallback(async () => {
     const tour = activeTour;
 
+    preparedStepRef.current.clear();
     setActiveTour(null);
     setSteps([]);
     setStepIndex(0);
@@ -696,7 +771,54 @@ export function PortalFirstVisitTour() {
     let raf = 0;
 
     function updateRect() {
-      const target = findTarget(step.selector);
+      const prepareKey =
+  `${activeTour!.key}:${stepIndex}`;
+
+      if (
+        step.prepare &&
+        !preparedStepRef.current.has(
+          prepareKey,
+        )
+      ) {
+        preparedStepRef.current.add(
+          prepareKey,
+        );
+
+        if (
+          step.prepare ===
+          "open-calendar-event"
+        ) {
+          const eventDay =
+            findTarget(
+              ".sep-calendar-event-day",
+            ) as HTMLButtonElement | null;
+
+          eventDay?.click();
+        }
+
+        if (
+          step.prepare ===
+          "open-first-inventory-category"
+        ) {
+          const categoryToggle =
+            findTarget(
+              ".components_characters_character_inventory_browser_button_action_4",
+            ) as HTMLButtonElement | null;
+
+          categoryToggle?.click();
+        }
+
+        window.setTimeout(
+          updateRect,
+          120,
+        );
+        return;
+      }
+
+      const target =
+        findTarget(
+          step.selector,
+        );
 
       if (!target) {
         if (stepIndex < steps.length - 1) {
@@ -837,7 +959,54 @@ export function PortalFirstVisitTour() {
   const step = steps[stepIndex];
   if (!step) return null;
 
-  const last = stepIndex === steps.length - 1;
+  const last =
+    stepIndex ===
+    steps.length - 1;
+
+  const tutorialPosition =
+    (() => {
+      if (
+        typeof window ===
+          "undefined" ||
+        !rect
+      ) {
+        return {
+          right: "1.5rem",
+          bottom: "1.5rem",
+        };
+      }
+
+      const targetCentreX =
+        rect.left +
+        rect.width / 2;
+
+      const targetCentreY =
+        rect.top +
+        rect.height / 2;
+
+      const targetOnRight =
+        targetCentreX >
+        window.innerWidth / 2;
+
+      const targetOnBottom =
+        targetCentreY >
+        window.innerHeight / 2;
+
+      return {
+        left: targetOnRight
+          ? "1rem"
+          : undefined,
+        right: targetOnRight
+          ? undefined
+          : "1rem",
+        top: targetOnBottom
+          ? "1rem"
+          : undefined,
+        bottom: targetOnBottom
+          ? undefined
+          : "1rem",
+      };
+    })();
 
   return (
     <>
@@ -866,8 +1035,10 @@ export function PortalFirstVisitTour() {
       <aside
         role="dialog"
         aria-modal="true"
+        data-sep-tutorial-dialog="true"
         aria-label={`${activeTour.label} tutorial`}
-        className="fixed bottom-4 right-4 z-[2147483002] w-[calc(100vw-2rem)] max-w-[390px] border border-[rgb(var(--sep-colour-8d693e))] bg-[rgb(var(--sep-colour-100c09))] p-4 shadow-[0_18px_55px_rgba(0,0,0,0.72)] sm:bottom-6 sm:right-6 sm:p-5"
+        style={tutorialPosition}
+        className="fixed z-[2147483002] w-[calc(100vw-2rem)] max-w-[390px] border border-[rgb(var(--sep-colour-8d693e))] bg-[rgb(var(--sep-colour-100c09))] p-4 shadow-[0_18px_55px_rgba(0,0,0,0.72)] sm:p-5"
       >
         <div className="flex items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-60482e))]/40 pb-2.5">
           <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-9a7445))]">

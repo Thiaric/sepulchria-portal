@@ -832,6 +832,12 @@ export function NotificationBell() {
         ) ||
         panelRef.current?.contains(
           target,
+        ) ||
+        (
+          target instanceof Element &&
+          target.closest(
+            '[data-sep-tutorial-dialog="true"]',
+          )
         )
       ) {
         return;
