@@ -1469,18 +1469,11 @@ currentHealth =
   }
 
   if (isNpcCharacter) {
-    const npcDisplayName =
-      [firstName, surname]
-        .filter(Boolean)
-        .join(" ")
-        .trim() ||
-      firstName;
-const {
+    const {
       error: npcSyncError,
     } = await admin
       .from("npcs")
       .update({
-        name: npcDisplayName,
         pronouns,
         portrait_url: portraitUrl,
         description: physicalDescription,

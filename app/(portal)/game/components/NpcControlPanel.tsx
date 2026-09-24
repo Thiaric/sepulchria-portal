@@ -125,7 +125,8 @@ export function NpcControlPanel({roomId}:{roomId:string}){
   const [selectedId,setSelectedId]=useState("");
   const [creating,setCreating]=useState(false);
   const [editorOpen,setEditorOpen]=useState(false);
-  const [name,setName]=useState(""); const [pronouns,setPronouns]=useState("");
+  const [firstName,setFirstName]=useState(""); const [surname,setSurname]=useState("");
+  const [pronouns,setPronouns]=useState("");
   const [portraitUrl,setPortraitUrl]=useState("");
   const [raceId,setRaceId]=useState(""); const [orderId,setOrderId]=useState(""); const [active,setActive]=useState(true); const [locationActive,setLocationActive]=useState(true);
   const [postText,setPostText]=useState(""); const [status,setStatus]=useState("");
@@ -198,17 +199,17 @@ export function NpcControlPanel({roomId}:{roomId:string}){
 
   useEffect(()=>{
     if(creating||!selected)return;
-    setName(selected.name);setPronouns(selected.pronouns??"");setPortraitUrl(selected.portrait_url??"");
+    setFirstName(selected.first_name??"");setSurname(selected.surname??"");setPronouns(selected.pronouns??"");setPortraitUrl(selected.portrait_url??"");
     setRaceId(selected.race_id??"");setOrderId(selected.order_id??"");setActive(selected.is_active);setLocationActive(selected.is_location_active);
   },[creating,selected]);
 
   function beginCreate(){
-    setCreating(true);setEditorOpen(true);setName("");setPronouns("");setPortraitUrl("");
+    setCreating(true);setEditorOpen(true);setFirstName("");setSurname("");setPronouns("");setPortraitUrl("");
     setRaceId("");setOrderId("");setActive(true);setLocationActive(true);setStatus("");
   }
   function beginEdit(){
     if(!selected)return;
-    setCreating(false);setName(selected.name);setPronouns(selected.pronouns??"");setPortraitUrl(selected.portrait_url??"");
+    setCreating(false);setFirstName(selected.first_name??"");setSurname(selected.surname??"");setPronouns(selected.pronouns??"");setPortraitUrl(selected.portrait_url??"");
     setRaceId(selected.race_id??"");setOrderId(selected.order_id??"");setActive(selected.is_active);setLocationActive(selected.is_location_active);
     setEditorOpen(true);setStatus("");
   }
@@ -216,9 +217,9 @@ export function NpcControlPanel({roomId}:{roomId:string}){
   function save(){
     startTransition(async()=>{
       const result=creating
-        ? await createNpc({roomId,name,pronouns,portraitUrl,raceId,orderId})
+        ? await createNpc({roomId,firstName,surname,pronouns,portraitUrl,raceId,orderId})
         : selected
-          ? await updateNpc({npcId:selected.id,roomId,name,pronouns,portraitUrl,raceId,orderId,isActive:active,isLocationActive:locationActive,moveHere:selected.current_room_id!==roomId})
+          ? await updateNpc({npcId:selected.id,roomId,firstName,surname,pronouns,portraitUrl,raceId,orderId,isActive:active,isLocationActive:locationActive,moveHere:selected.current_room_id!==roomId})
           : {ok:false,message:"Select an NPC."};
       setStatus(result.message);
       if(result.ok){
@@ -528,7 +529,8 @@ export function NpcControlPanel({roomId}:{roomId:string}){
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          <label className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8f8170))]">Name<input value={name} onChange={e=>setName(e.target.value)} className={inputClass}/></label>
+          <label className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8f8170))]">First name<input value={firstName} onChange={e=>setFirstName(e.target.value)} className={inputClass}/></label>
+          <label className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8f8170))]">Surname<input value={surname} onChange={e=>setSurname(e.target.value)} className={inputClass}/></label>
           <label className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8f8170))]">Ancestry<select value={raceId} onChange={e=>setRaceId(e.target.value)} className={inputClass}><option value="">None</option>{data.races.map(r=><option key={r.id} value={r.id}>{r.name}</option>)}</select></label>
           <label className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8f8170))]">Order<select value={orderId} onChange={e=>setOrderId(e.target.value)} className={inputClass}><option value="">None</option>{data.orders.map(o=><option key={o.id} value={o.id}>{o.name}</option>)}</select></label>
           <label className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8f8170))]">Pronouns<input value={pronouns} onChange={e=>setPronouns(e.target.value)} className={inputClass}/></label>

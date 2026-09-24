@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 export type NpcRace = { id:string; name:string; icon_url:string|null };
 export type NpcOrder = { id:string; name:string };
 export type StaffNpc = {
-  id:string; name:string; pronouns:string|null; portrait_url:string|null;
+  id:string; name:string; first_name:string; surname:string; pronouns:string|null; portrait_url:string|null;
   description:string|null; current_room_id:string|null; current_room_name:string|null;
   is_active:boolean; is_location_active:boolean; race_id:string|null; race:NpcRace|null;
   order_id:string|null; order:NpcOrder|null; character_id:string|null;
@@ -60,23 +60,49 @@ export async function loadNpcControlData(roomId:string):Promise<NpcControlData>{
   if(npcs.error) throw new Error(`Unable to load NPCs: ${npcs.error.message}`);
   if(races.error) throw new Error(`Unable to load Ancestries: ${races.error.message}`);
   if(orders.error) throw new Error(`Unable to load Orders: ${orders.error.message}`);
+
+  const npcCharacterIds=(npcs.data??[])
+    .map((row:any)=>row.character_id)
+    .filter((id:any):id is string=>typeof id==="string"&&id.length>0);
+
+  const characterNames=npcCharacterIds.length
+    ? await admin.from("characters").select("id,first_name,surname").in("id",npcCharacterIds)
+    : {data:[],error:null};
+
+  if(characterNames.error)
+    throw new Error(`Unable to load NPC Character names: ${characterNames.error.message}`);
+
+  const namesByCharacterId=new Map<string,{first_name:string;surname:string}>(
+    (characterNames.data??[]).map((row:any)=>[
+      String(row.id),
+      {
+        first_name:String(row.first_name??""),
+        surname:String(row.surname??""),
+      },
+    ]),
+  );
+
   return {
     npcs:(npcs.data??[]).map((row:any)=>{
       const race=Array.isArray(row.race)?row.race[0]??null:row.race??null;
       const order=Array.isArray(row.order)?row.order[0]??null:row.order??null;
       const room=Array.isArray(row.room)?row.room[0]??null:row.room??null;
-      return {id:row.id,name:row.name,pronouns:row.pronouns??null,portrait_url:row.portrait_url??null,description:row.description??null,current_room_id:row.current_room_id??null,current_room_name:room?.name??null,is_active:row.is_active===true,is_location_active:row.is_location_active===true,race_id:row.race_id??null,race,order_id:row.order_id??null,order,character_id:row.character_id??null};
+      const identity=namesByCharacterId.get(row.character_id)??{first_name:row.name??"",surname:""};
+      return {id:row.id,name:row.name,first_name:identity.first_name,surname:identity.surname,pronouns:row.pronouns??null,portrait_url:row.portrait_url??null,description:row.description??null,current_room_id:row.current_room_id??null,current_room_name:room?.name??null,is_active:row.is_active===true,is_location_active:row.is_location_active===true,race_id:row.race_id??null,race,order_id:row.order_id??null,order,character_id:row.character_id??null};
     }),
     races:(races.data??[]) as NpcRace[], orders:(orders.data??[]) as NpcOrder[],
   };
 }
 
-export async function createNpc(input:{roomId:string;name:string;pronouns?:string;portraitUrl?:string;raceId?:string;orderId?:string}){
+export async function createNpc(input:{roomId:string;firstName:string;surname?:string;pronouns?:string;portraitUrl?:string;raceId?:string;orderId?:string}){
   try{
     const {admin,user}=await requireNpcStaff(); await assertRoom(admin,input.roomId);
-    const name=cleanName(input.name), npcId=crypto.randomUUID();
+    const firstName=cleanName(input.firstName);
+    const surname=clean(input.surname,80)??"";
+    const name=cleanName([firstName,surname].filter(Boolean).join(" "));
+    const npcId=crypto.randomUUID();
     const raceId=clean(input.raceId,64), orderId=clean(input.orderId,64), portraitUrl=clean(input.portraitUrl,800), pronouns=clean(input.pronouns,80);
-    const cr=await admin.from("characters").insert({id:npcId,user_id:null,first_name:name,surname:"",pronouns,portrait_url:portraitUrl,physical_description:"NPC",personality:"Staff-controlled NPC.",biography:"Staff-controlled NPC.",public_slug:`npc-${npcId.replace(/-/g,"")}`,status:"approved",approved_at:new Date().toISOString(),current_room_id:input.roomId,race_id:raceId,title:"NPC",is_system:true,muscles:3,reflexes:3,vigor:3,brains:3,shrewd:3,presence_score:3,current_health:30});
+    const cr=await admin.from("characters").insert({id:npcId,user_id:null,first_name:firstName,surname,pronouns,portrait_url:portraitUrl,physical_description:"NPC",personality:"Staff-controlled NPC.",biography:"Staff-controlled NPC.",public_slug:`npc-${npcId.replace(/-/g,"")}`,status:"approved",approved_at:new Date().toISOString(),current_room_id:input.roomId,race_id:raceId,title:"NPC",is_system:true,muscles:3,reflexes:3,vigor:3,brains:3,shrewd:3,presence_score:3,current_health:30});
     if(cr.error) return {ok:false,message:`Unable to create NPC mechanics record: ${cr.error.message}`};
     const result=await admin.from("npcs").insert({id:npcId,character_id:npcId,name,pronouns,portrait_url:portraitUrl,description:null,race_id:raceId,order_id:orderId,current_room_id:input.roomId,is_active:true,is_location_active:true,created_by_user_id:user.id,updated_by_user_id:user.id});
     if(result.error){await admin.from("characters").delete().eq("id",npcId).eq("is_system",true);return {ok:false,message:`Unable to create NPC: ${result.error.message}`};}
@@ -84,16 +110,19 @@ export async function createNpc(input:{roomId:string;name:string;pronouns?:strin
   }catch(error){return {ok:false,message:error instanceof Error?error.message:"Unable to create NPC."};}
 }
 
-export async function updateNpc(input:{npcId:string;roomId:string;name:string;pronouns?:string;portraitUrl?:string;raceId?:string;orderId?:string;isActive:boolean;isLocationActive:boolean;moveHere:boolean}){
+export async function updateNpc(input:{npcId:string;roomId:string;firstName:string;surname?:string;pronouns?:string;portraitUrl?:string;raceId?:string;orderId?:string;isActive:boolean;isLocationActive:boolean;moveHere:boolean}){
   try{
     const {admin,user}=await requireNpcStaff(); await assertRoom(admin,input.roomId);
-    const name=cleanName(input.name),raceId=clean(input.raceId,64),orderId=clean(input.orderId,64),portraitUrl=clean(input.portraitUrl,800),pronouns=clean(input.pronouns,80);
+    const firstName=cleanName(input.firstName);
+    const surname=clean(input.surname,80)??"";
+    const name=cleanName([firstName,surname].filter(Boolean).join(" "));
+    const raceId=clean(input.raceId,64),orderId=clean(input.orderId,64),portraitUrl=clean(input.portraitUrl,800),pronouns=clean(input.pronouns,80);
     const cur=await admin.from("npcs").select("character_id").eq("id",input.npcId).maybeSingle();
     if(cur.error||!cur.data) return {ok:false,message:cur.error?.message??"NPC not found."};
     const update:any={name,pronouns,portrait_url:portraitUrl,race_id:raceId,order_id:orderId,is_active:input.isActive,is_location_active:input.isLocationActive,updated_by_user_id:user.id,updated_at:new Date().toISOString()};
     if(input.moveHere) update.current_room_id=input.roomId;
     const result=await admin.from("npcs").update(update).eq("id",input.npcId); if(result.error) return {ok:false,message:`Unable to update NPC: ${result.error.message}`};
-    const cu:any={first_name:name,surname:"",pronouns,portrait_url:portraitUrl,race_id:raceId,updated_at:new Date().toISOString()}; if(input.moveHere) cu.current_room_id=input.roomId;
+    const cu:any={first_name:firstName,surname,pronouns,portrait_url:portraitUrl,race_id:raceId,updated_at:new Date().toISOString()}; if(input.moveHere) cu.current_room_id=input.roomId;
     const linked=await admin.from("characters").update(cu).eq("id",cur.data.character_id??input.npcId).eq("is_system",true);
     if(linked.error) return {ok:false,message:`NPC saved, but mechanics sync failed: ${linked.error.message}`};
     return {ok:true,message:`${name} updated.`};
