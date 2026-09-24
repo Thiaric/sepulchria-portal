@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 import { usePathname } from "next/navigation";
+import { STAGE2_TOURS } from "@/components/tutorial/tutorial-stage2-definitions";
 
 import { createClient } from "@/lib/supabase/client";
 
@@ -273,33 +274,130 @@ const TOURS: Record<string, TourDefinition> = {
       },
     ],
   },
+  ...STAGE2_TOURS,
 };
 
+function currentSearchParams() {
+  if (typeof window === "undefined") return new URLSearchParams();
+  return new URLSearchParams(window.location.search);
+}
+
+function findTarget(selector: string): HTMLElement | null {
+  if (typeof document === "undefined") return null;
+  const candidates = Array.from(
+    document.querySelectorAll<HTMLElement>(selector),
+  );
+  for (const candidate of candidates) {
+    const rect = candidate.getBoundingClientRect();
+    if (rect.width >= 4 && rect.height >= 4) return candidate;
+  }
+  return candidates[0] ?? null;
+}
+
+function addIfPresent(
+  tours: TourDefinition[],
+  key: string,
+  selector: string,
+) {
+  if (
+    typeof document !== "undefined" &&
+    document.querySelector(selector)
+  ) {
+    tours.push(TOURS[key]);
+  }
+}
+
+function characterTabKey() {
+  if (typeof document !== "undefined") {
+    const sheet = document.querySelector<HTMLElement>(
+      "[data-character-sheet-active-tab]",
+    );
+    const fromDom = sheet?.dataset.characterSheetActiveTab;
+    if (fromDom) return fromDom;
+  }
+  return currentSearchParams().get("tab") ?? "short";
+}
+
 function candidateTours(pathname: string): TourDefinition[] {
-  if (pathname === "/") return [TOURS["portal-home"]];
-  if (pathname === "/character") return [TOURS["character-sheet"]];
-  if (pathname === "/crafting") return [TOURS.crafting];
+  const result: TourDefinition[] = [];
 
-  if (pathname !== "/game") return [];
+  addIfPresent(result, "weather", ".components_world_world_indicator_div_container_13");
+  addIfPresent(result, "city-people", ".components_portal_active_city_counter_div_people_sepulchria");
+  addIfPresent(result, "skins", ".components_portal_portal_appearance_modal_section_dialog");
+  addIfPresent(result, "notifications", ".components_notifications_notification_bell_div_container_2");
+  addIfPresent(result, "instant-chat", ".components_instant_chat_instant_chat_dock_section_section, .components_instant_chat_instant_chat_dock_section_section_2");
 
-  const result: TourDefinition[] = [TOURS["game-location"]];
-
-  if (document.querySelector('[data-tour-area="house-of-chances"]')) {
-    result.push(TOURS["house-of-chances"]);
+  if (pathname === "/") {
+    result.push(
+      currentSearchParams().get("map") === "sepulchria"
+        ? TOURS["sepulchria-map"]
+        : TOURS["portal-home"],
+    );
+    return result;
   }
 
-  if (document.querySelector('[data-tour-area="odd-jobs"]')) {
-    result.push(TOURS["odd-jobs"]);
+  if (/^\/areas\/[^/]+$/.test(pathname)) { result.push(TOURS.area); return result; }
+  if (pathname === "/characters") { result.push(TOURS["characters-directory"]); return result; }
+  if (pathname === "/store") { result.push(TOURS.store); return result; }
+  if (pathname === "/messages" || pathname.startsWith("/messages/")) { result.push(TOURS["private-messages"]); return result; }
+  if (pathname === "/ancestries") { result.push(TOURS.ancestries); return result; }
+  if (/^\/ancestries\/[^/]+$/.test(pathname)) { result.push(TOURS["ancestry-detail"]); return result; }
+  if (pathname === "/associations") { result.push(TOURS.associations); return result; }
+  if (/^\/associations\/[^/]+$/.test(pathname)) { result.push(TOURS["association-detail"]); return result; }
+  if (pathname === "/orders") { result.push(TOURS.orders); return result; }
+  if (
+    /^\/orders\/[^/]+$/.test(pathname) &&
+    !["/orders/manage", "/orders/submit", "/orders/headquarters"].includes(pathname)
+  ) { result.push(TOURS["order-detail"]); return result; }
+  if (pathname === "/warping") { result.push(TOURS.warping); return result; }
+  if (pathname === "/feats") { result.push(TOURS.feats); return result; }
+
+  if (pathname === "/character") {
+    const tabTours: Record<string, string> = {
+      short: "character-sheet",
+      profile: "character-profile",
+      inventory: "character-inventory",
+      ledger: "character-ledger",
+      trophies: "character-trophies",
+      gifts: "character-feats",
+      warping: "character-warping",
+      offgame: "character-offgame",
+      audit: "character-log",
+      edit: "character-edit",
+    };
+    result.push(TOURS[tabTours[characterTabKey()] ?? "character-sheet"]);
+    return result;
   }
 
-  if (document.querySelector('[data-tour-area="gathering"]')) {
-    result.push(TOURS.gathering);
+  if (pathname === "/forum") { result.push(TOURS.forum); return result; }
+  const forumParts = pathname.split("/").filter(Boolean);
+  if (
+    forumParts[0] === "forum" &&
+    !["manage", "moderation"].includes(forumParts[1] ?? "")
+  ) {
+    if (forumParts.length === 2) { result.push(TOURS["forum-section"]); return result; }
+    if (forumParts.length === 3 && forumParts[2] !== "new") {
+      result.push(TOURS["forum-topic"]);
+      return result;
+    }
   }
 
-  if (document.querySelector('[data-tour-area="breeze-lodgings"]')) {
-    result.push(TOURS["breeze-lodgings"]);
-  }
+  if (pathname === "/market") { result.push(TOURS.market); return result; }
+  if (/^\/market\/[^/]+$/.test(pathname)) { result.push(TOURS["market-shop"]); return result; }
+  if (pathname === "/missions") { result.push(TOURS["daily-missions"]); return result; }
+  if (pathname === "/polls") { result.push(TOURS.polls); return result; }
+  if (pathname === "/ranking") { result.push(TOURS["hall-of-renown"]); return result; }
+  if (pathname === "/rules") { result.push(TOURS["players-handbook"]); return result; }
+  if (pathname === "/codex") { result.push(TOURS.codex); return result; }
+  if (pathname === "/crafting") { result.push(TOURS.crafting); return result; }
 
+  if (pathname !== "/game") return result;
+
+  result.push(TOURS["game-location"]);
+  addIfPresent(result, "house-of-chances", '[data-tour-area="house-of-chances"]');
+  addIfPresent(result, "odd-jobs", '[data-tour-area="odd-jobs"]');
+  addIfPresent(result, "gathering", '[data-tour-area="gathering"]');
+  addIfPresent(result, "breeze-lodgings", '[data-tour-area="breeze-lodgings"]');
   return result;
 }
 
@@ -307,7 +405,7 @@ function availableSteps(tour: TourDefinition): TourStep[] {
   const steps: TourStep[] = [];
 
   for (const step of tour.steps) {
-    const target = document.querySelector<HTMLElement>(step.selector);
+    const target = findTarget(step.selector);
     if (!target) continue;
 
     const details = target.closest("details");
@@ -331,6 +429,48 @@ export function PortalFirstVisitTour() {
   const [stepIndex, setStepIndex] = useState(0);
   const [rect, setRect] = useState<SpotlightRect | null>(null);
   const startingRef = useRef(false);
+
+  const [
+    contextVersion,
+    setContextVersion,
+  ] = useState(0);
+
+  useEffect(() => {
+    let frame = 0;
+
+    const refreshContext = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(() => {
+        setContextVersion((current) => current + 1);
+      });
+    };
+
+    const observer = new MutationObserver(refreshContext);
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: [
+        "class",
+        "open",
+        "aria-expanded",
+        "data-character-sheet-active-tab",
+      ],
+    });
+
+    window.addEventListener("popstate", refreshContext);
+
+    return () => {
+      observer.disconnect();
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("popstate", refreshContext);
+    };
+  }, []);
+
+  const applicableTours = useMemo(
+    () => candidateTours(pathname),
+    [pathname, contextVersion],
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -430,7 +570,7 @@ export function PortalFirstVisitTour() {
     if (!ready || !userId || activeTour || startingRef.current) return;
 
     const timer = window.setTimeout(() => {
-      const next = candidateTours(pathname).find(
+      const next = applicableTours.find(
         (tour) => !seen.has(tour.key),
       );
 
@@ -442,6 +582,7 @@ export function PortalFirstVisitTour() {
     return () => window.clearTimeout(timer);
   }, [
     activeTour,
+    applicableTours,
     pathname,
     ready,
     seen,
@@ -491,7 +632,7 @@ export function PortalFirstVisitTour() {
     let raf = 0;
 
     function updateRect() {
-      const target = document.querySelector<HTMLElement>(step.selector);
+      const target = findTarget(step.selector);
 
       if (!target) {
         if (stepIndex < steps.length - 1) {
@@ -568,7 +709,28 @@ export function PortalFirstVisitTour() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [activeTour, complete]);
 
-  if (!activeTour || !steps.length) return null;
+  const replayControl =
+    ready &&
+    userId &&
+    !activeTour &&
+    applicableTours.length > 0 ? (
+      <div className="fixed right-3 top-[calc(env(safe-area-inset-top)+5rem)] z-[20050] flex max-w-[min(92vw,430px)] flex-wrap justify-end gap-1.5 sm:right-5">
+        {applicableTours.map((tour) => (
+          <button
+            key={tour.key}
+            type="button"
+            onClick={() => void startTour(tour)}
+            className="border border-[rgb(var(--sep-colour-8b693e))]/80 bg-[rgb(var(--sep-colour-17110d))]/95 px-3 py-2 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-d9bd88))] shadow-[0_8px_24px_rgba(0,0,0,0.45)] backdrop-blur transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-2d1f14))] hover:text-[rgb(var(--sep-colour-f2d49f))]"
+          >
+            {applicableTours.length === 1
+              ? "Play Tutorial"
+              : `Play ${tour.label}`}
+          </button>
+        ))}
+      </div>
+    ) : null;
+
+  if (!activeTour || !steps.length) return replayControl;
 
   const step = steps[stepIndex];
   if (!step) return null;

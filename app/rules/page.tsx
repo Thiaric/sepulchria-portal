@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { EmbeddedPortalSkinBridge } from "@/components/portal/embedded-portal-skin-bridge";
+import { PortalFirstVisitTour } from "@/components/tutorial/portal-first-visit-tour";
 
 import { PublicRules } from "@/components/rules/public-rules";
 import { getPublicRules } from "@/lib/rules/get-public-rules";
@@ -42,6 +43,7 @@ export default async function RulesPage({
           : "relative")), "rules_page_div_container"].filter(Boolean).join(" ")}
     >
       <EmbeddedPortalSkinBridge />
+      <PortalFirstVisitTour />
       {!isEmbedded ? (
         <Link
           href="/homepage"
