@@ -433,7 +433,7 @@ export async function getOrderHeadquartersManageData(
       "order_headquarters",
     )
     .select(`
-      id, order_id, room_id, description_changed_at,
+      id, order_id, room_id,
       background_colour, speech_colour, action_colour, system_colour,
       whisper_background_colour, whisper_text_colour,
       offgame_background_colour, offgame_text_colour,
@@ -673,8 +673,6 @@ export async function getOrderHeadquartersManageData(
     description:
       room?.description ??
       null,
-    descriptionChangedAt:
-      hq.description_changed_at ?? null,
     imageUrl:
       room?.image_url ??
       null,

@@ -21146,19 +21146,7 @@ background-image:
 }
 
 
-.private_locations_page_main_main {
-  
-  background-image:
-    linear-gradient(
-      rgb(var(--sep-colour-100d0b) / 80%),
-      rgb(var(--sep-colour-100d0b) / 80%)
-    ),
-    url("/backgrounds/privatelocations_background.png") !important;
-
-  background-size: cover !important;
-  background-position: center !important;
-  background-repeat: no-repeat !important;
-}
+ 
 
 
 .layout_main_main_2:has(.forum_page_main_main, .forum_sectionslug_page_main_main, .forum_sectionslug_topicslug_page_main_main), 
@@ -21251,7 +21239,8 @@ background-image:
 .components_characters_character_inventory_browser_section_section_3,
 .components_characters_character_inventory_browser_section_section,
 .components_characters_character_inventory_browser_section_section_4,
-.components_characters_character_audit_trail_section_section {
+.components_characters_character_audit_trail_section_section,
+.private_locations_page_main_main {
   background: rgb(var(--sep-colour-100c09) / 10%) !important;
 }
 

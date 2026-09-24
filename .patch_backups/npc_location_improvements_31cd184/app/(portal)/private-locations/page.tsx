@@ -15,7 +15,6 @@ import {
   invitePrivateLocation,
   kickPrivateLocationMember,
   updatePrivateLocation,
-  updatePrivateLocationDescription,
 } from "../private-location/actions";
 import {
   hasCharacterFeature,
@@ -115,7 +114,6 @@ export default async function PrivateLocationPage() {
         description: string | null;
         image_url: string | null;
         background_image_url: string | null;
-        description_changed_at?: string | null;
       }
     | null = null;
 
@@ -172,7 +170,7 @@ export default async function PrivateLocationPage() {
       supabase
         .from("private_location_rooms")
         .select(
-          "background_colour, speech_colour, action_colour, system_colour, whisper_background_colour, whisper_text_colour, offgame_background_colour, offgame_text_colour, description_changed_at",
+          "background_colour, speech_colour, action_colour, system_colour, whisper_background_colour, whisper_text_colour, offgame_background_colour, offgame_text_colour",
         )
         .eq("room_id", ownedRoomId)
         .single(),
@@ -230,7 +228,8 @@ export default async function PrivateLocationPage() {
       );
     }
 
-    ownedRoom = roomResult.data ? {...roomResult.data,description_changed_at:themeResult.data?.description_changed_at??null} : null;
+    ownedRoom =
+      roomResult.data;
 
     if (
       ownedRoom &&
@@ -462,13 +461,6 @@ export default async function PrivateLocationPage() {
                 Save location images
               </button>
             </LocationImageSaveForm>
-
-            <form action={updatePrivateLocationDescription} className="grid gap-3 bg-[rgb(var(--sep-colour-17110d))] p-5">
-              <input type="hidden" name="roomId" value={ownedRoom.id}/><h3 className="font-serif text-xl text-[rgb(var(--sep-colour-dfc79c))]">Location description</h3>
-              <textarea name="description" required rows={7} maxLength={20000} defaultValue={ownedRoom.description??""} disabled={Boolean(ownedRoom.description_changed_at&&Date.now()-Date.parse(ownedRoom.description_changed_at)<30*24*60*60*1000)} className="resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2 text-sm leading-6 text-[rgb(var(--sep-colour-d7c4a5))] disabled:opacity-45"/>
-              {ownedRoom.description_changed_at&&Date.now()-Date.parse(ownedRoom.description_changed_at)<30*24*60*60*1000?<p className="text-[8px] leading-4 text-[rgb(var(--sep-colour-c08c79))]">You changed the description on {new Date(ownedRoom.description_changed_at).toLocaleDateString("en-GB").replace(/\//g,":")}, contact staff if a new change is needed.</p>:<p className="text-[8px] leading-4 text-[rgb(var(--sep-colour-6f6252))]">You may change your Private Location description once every 30 days.</p>}
-              <button type="submit" disabled={Boolean(ownedRoom.description_changed_at&&Date.now()-Date.parse(ownedRoom.description_changed_at)<30*24*60*60*1000)} className="border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] px-4 py-2 text-[9px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-efd9aa))] disabled:opacity-40">Save description</button>
-            </form>
 
             <div className="bg-[rgb(var(--sep-colour-17110d))] p-5 private_locations_page_div_access">
               <h3 className="font-serif text-xl text-[rgb(var(--sep-colour-dfc79c))] private_locations_page_h3_access">

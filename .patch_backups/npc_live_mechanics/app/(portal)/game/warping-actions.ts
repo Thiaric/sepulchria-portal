@@ -176,9 +176,8 @@ function effectSummary(r:any){if(!r)return "";const x:string[]=[];
 }
 const SAVE_NAME:Record<string,string>={dodge:"Dodge",defend:"Defend",resist_vigour:"Resist Vigour",resist_vigor:"Resist Vigour",resist_shrewd:"Resist Shrewd",resist_brains:"Resist Brains",resist_presence:"Resist Presence"};
 
-async function resolveImmediateShapeCastAs(
+export async function resolveImmediateShapeCast(
   castId: string,
-  actorCharacterId?: string,
 ): Promise<WarpingActionState> {
   try {
     if (
@@ -189,16 +188,11 @@ async function resolveImmediateShapeCastAs(
       throw Error("Invalid Shape cast.");
     }
 
-    const a = admin();
-    const actorResult = actorCharacterId
-      ? await a.from("characters")
-          .select("id,display_name,current_room_id,muscles,reflexes,vigor,brains,shrewd,presence_score,life_state")
-          .eq("id",actorCharacterId)
-          .eq("is_system",true)
-          .maybeSingle()
-      : null;
-    const caster = actorCharacterId ? actorResult?.data : await mine();
-    if (!caster) throw Error(actorResult?.error?.message ?? "NPC caster not found.");
+    const caster =
+      await mine();
+
+    const a =
+      admin();
 
     const {
       data: castRow,
@@ -543,20 +537,6 @@ async function resolveImmediateShapeCastAs(
           : "Unable to resolve automatic Shape.",
     };
   }
-}
-
-
-export async function resolveImmediateShapeCast(
-  castId: string,
-): Promise<WarpingActionState> {
-  return resolveImmediateShapeCastAs(castId);
-}
-
-export async function resolveImmediateShapeCastForNpc(
-  castId: string,
-  actorCharacterId: string,
-): Promise<WarpingActionState> {
-  return resolveImmediateShapeCastAs(castId, actorCharacterId);
 }
 
 export async function resolveIncomingShape(_p:WarpingActionState,f:FormData):Promise<WarpingActionState>{try{

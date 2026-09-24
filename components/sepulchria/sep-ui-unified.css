@@ -833,11 +833,11 @@ body.portal-skin-scope
     [data-forum-favourite="true"]
   ) {
   background-color:
-    color-mix(
-      in srgb,
-      rgb(var(--sep-colour-100c09)) 58%,
-      black
-    ) !important;
+    rgb(var(--sep-skin-c1) / 0.30) !important;
+  border-color:
+    rgb(var(--sep-skin-c2) / 0.54) !important;
+  box-shadow:
+    inset 2px 0 0 rgb(var(--sep-skin-c1) / 0.26) !important;
 }
 
 [data-portal-shell]
@@ -845,11 +845,11 @@ body.portal-skin-scope
     [data-forum-favourite="true"]
   ):hover {
   background-color:
-    color-mix(
-      in srgb,
-      rgb(var(--sep-colour-15100d)) 66%,
-      black
-    ) !important;
+    rgb(var(--sep-skin-c1) / 0.54) !important;
+  border-color:
+    rgb(var(--sep-skin-c2) / 0.74) !important;
+  box-shadow:
+    inset 2px 0 0 rgb(var(--sep-skin-c2) / 0.34) !important;
 }
 
 
@@ -3245,18 +3245,6 @@ a[class*="group relative grid gap-4 border transition"]:hover {
 }
 
 
-/* =====================================================================
-   FORUM TOPIC ROW HOVER - ARTICLE TARGET FIX
-   =====================================================================
-   Topic rows are <article data-forum-topic-row="true">, not <a>.
-   The previous semantic hover patch therefore never matched them.
-   Cinder keeps its existing hand-tuned hover.
-   Every non-Cinder skin derives the topic hover from its own C1.
-   ===================================================================== */
-
-
-
-
 
 
 /* =====================================================================
@@ -3271,11 +3259,7 @@ a[class*="group relative grid gap-4 border transition"]:hover {
   body[data-portal-skin]
 ) [data-portal-shell] [data-message-conversation-row="true"]:hover {
   background-color:
-    color-mix(
-      in srgb,
-      rgb(var(--sep-skin-c1, 169 138 96)) 10%,
-      rgb(var(--sep-colour-15100d))
-    ) !important;
+  rgb(var(--sep-skin-c2) / 0.54) !important;
 
   border-color:
     rgb(var(--sep-skin-c1, 169 138 96) / .52) !important;

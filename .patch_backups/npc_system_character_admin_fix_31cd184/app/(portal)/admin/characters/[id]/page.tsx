@@ -78,8 +78,7 @@ type OrderMembershipRow = {
 
 type CharacterRow = {
   id: string;
-  user_id: string | null;
-  is_system: boolean;
+  user_id: string;
   public_slug: string;
   first_name: string;
   surname: string;
@@ -237,7 +236,6 @@ export default async function AdminCharacterPage({
       .select(`
         id,
         user_id,
-        is_system,
         public_slug,
         first_name,
         surname,
@@ -770,7 +768,7 @@ const selectedAncestryGiftIds =
                     <input
                       type="text"
                       name="surname"
-                      required={!character.is_system}
+                      required
                       maxLength={80}
                       defaultValue={
                         character.surname
@@ -809,7 +807,7 @@ const selectedAncestryGiftIds =
                   <AdminField label="Gender">
                     <select
                       name="gender"
-                      required={!character.is_system}
+                      required
                       defaultValue={
                         character.gender ??
                         ""

@@ -325,17 +325,6 @@ export async function revokeOrderHeadquartersGuest(formData: FormData) {
   revalidatePath("/game");
 }
 
-const DESCRIPTION_COOLDOWN_MS = 30 * 24 * 60 * 60 * 1000;
-function fmtDescriptionDate(value:string){const d=new Date(value);return [String(d.getDate()).padStart(2,"0"),String(d.getMonth()+1).padStart(2,"0"),d.getFullYear()].join(":");}
-export async function updateOrderHeadquartersDescription(formData:FormData){
-  const roomId=uuid(formData.get("roomId")); const {admin,access}=await requirePermission(roomId,"customize"); const description=text(formData.get("description"),20000);
-  if(!description) throw new Error("The location description cannot be empty.");
-  const q=await admin.from("order_headquarters").select("description_changed_at").eq("room_id",roomId).single(); if(q.error||!q.data) throw new Error(q.error?.message??"Unable to load the Headquarters.");
-  if(!access.isStaff&&q.data.description_changed_at&&Date.now()-Date.parse(q.data.description_changed_at)<DESCRIPTION_COOLDOWN_MS) throw new Error(`You changed the description on ${fmtDescriptionDate(q.data.description_changed_at)}, contact staff if a new change is needed.`);
-  const now=new Date().toISOString(); const r=await admin.from("rooms").update({description,updated_at:now}).eq("id",roomId); if(r.error) throw new Error(r.error.message);
-  const st=await admin.from("order_headquarters").update({description_changed_at:now}).eq("room_id",roomId); if(st.error) throw new Error(st.error.message); revalidatePath("/game");
-}
-
 export async function updateOrderHeadquartersPresentation(formData: FormData) {
   const roomId =
     uuid(formData.get("roomId"));

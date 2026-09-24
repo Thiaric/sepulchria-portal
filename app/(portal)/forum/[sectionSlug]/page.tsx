@@ -640,7 +640,7 @@ export default async function ForumSectionPage({
                     alt=""
                     fill
                     sizes="80px"
-                    className="object-contain p-3"
+                    className="object-contain"
                     unoptimized
                   />
                 ) : (

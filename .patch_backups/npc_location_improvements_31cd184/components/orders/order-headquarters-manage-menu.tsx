@@ -3,7 +3,6 @@
 import {
   inviteOrderHeadquarters,
   revokeOrderHeadquartersGuest,
-  updateOrderHeadquartersDescription,
   updateOrderHeadquartersPresentation,
 } from "@/app/(portal)/orders/headquarters/actions";
 import {
@@ -273,18 +272,6 @@ export function OrderHeadquartersManageMenu({
               </div>
             ) : null}
           </section>
-        ) : null}
-
-        {data.canCustomize ? (
-          <details className="mt-4 border-t border-[rgb(var(--sep-colour-60482e))]/30 pt-3">
-            <summary className="cursor-pointer text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8c704b))]">Location description</summary>
-            <form action={updateOrderHeadquartersDescription} className="mt-3 grid gap-2">
-              <input type="hidden" name="roomId" value={data.roomId}/>
-              <textarea name="description" required rows={6} maxLength={20000} defaultValue={data.description??""} disabled={!data.isStaff&&Boolean(data.descriptionChangedAt&&Date.now()-Date.parse(data.descriptionChangedAt)<30*24*60*60*1000)} className="resize-y border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2 text-xs leading-5 text-[rgb(var(--sep-colour-d7c4a5))] disabled:opacity-45"/>
-              {!data.isStaff&&data.descriptionChangedAt&&Date.now()-Date.parse(data.descriptionChangedAt)<30*24*60*60*1000?<p className="text-[8px] leading-4 text-[rgb(var(--sep-colour-c08c79))]">You changed the description on {new Date(data.descriptionChangedAt).toLocaleDateString("en-GB").replace(/\//g,":")}, contact staff if a new change is needed.</p>:<p className="text-[8px] leading-4 text-[rgb(var(--sep-colour-6f6252))]">Order Leaders may change this description once every 30 days. Staff are not restricted.</p>}
-              <button type="submit" disabled={!data.isStaff&&Boolean(data.descriptionChangedAt&&Date.now()-Date.parse(data.descriptionChangedAt)<30*24*60*60*1000)} className="border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-3 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd6a8))] disabled:opacity-40">Save description</button>
-            </form>
-          </details>
         ) : null}
 
         {data.canCustomize ? (

@@ -89,27 +89,13 @@ function rollDamage(formula: string | null) {
   return result;
 }
 
-async function ownedCharacter(formData?: FormData) {
+async function ownedCharacter() {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!user) throw new Error("Authentication required.");
-
-  const npcActorId = field(formData ?? new FormData(), "npc_actor_character_id");
-  if (npcActorId) {
-    const { getStaffSession } = await import("@/lib/auth/require-staff");
-    const staff = await getStaffSession();
-    if (!staff || !["owner","admin","master"].includes(staff.role)) throw new Error("NPC combat requires Master/Admin/Owner access.");
-    const admin = privilegedClient();
-    const link = await admin.from("npcs").select("id,character_id,is_active,current_room_id").eq("character_id",npcActorId).eq("is_active",true).maybeSingle();
-    if (link.error || !link.data) throw new Error(link.error?.message ?? "NPC not found.");
-    const row = await admin.from("characters").select("id,display_name,current_room_id,muscles,reflexes,vigor,brains,shrewd,presence_score,life_state").eq("id",npcActorId).eq("is_system",true).maybeSingle();
-    if (row.error || !row.data) throw new Error(row.error?.message ?? "NPC Character not found.");
-    if (!row.data.current_room_id) throw new Error("NPC is not at a Location.");
-    return {supabase:admin as any,character:row.data as OwnedCharacter};
-  }
 
   const { data, error } = await supabase
     .from("characters")
@@ -352,7 +338,7 @@ export async function startAttributeOpposedAction(
   formData: FormData,
 ): Promise<ActionState> {
   try {
-    const { character } = await ownedCharacter(formData);
+    const { character } = await ownedCharacter();
 
     const actionCode = field(
       formData,
@@ -432,7 +418,7 @@ export async function startUnarmedAttack(
   formData: FormData,
 ): Promise<ActionState> {
   try {
-    const { character } = await ownedCharacter(formData);
+    const { character } = await ownedCharacter();
     const targetId = field(formData, "opposed_target_character_id");
     const otherTarget = field(formData, "opposed_external_target");
     const modifier = await effective(character, "muscles");
@@ -498,7 +484,7 @@ export async function startWeaponOpposedAttack(
   formData: FormData,
 ): Promise<ActionState> {
   try {
-    const { supabase, character } = await ownedCharacter(formData);
+    const { supabase, character } = await ownedCharacter();
     const recordKind = field(formData, "item_record_kind");
     const recordId = field(formData, "item_record_id");
     const targetId = field(formData, "opposed_target_character_id");

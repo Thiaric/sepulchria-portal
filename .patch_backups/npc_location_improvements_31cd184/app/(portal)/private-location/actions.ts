@@ -1272,16 +1272,6 @@ export async function kickPrivateLocationMember(
   revalidatePath("/");
 }
 
-const PRIVATE_DESCRIPTION_COOLDOWN_MS=30*24*60*60*1000;
-function privateDescriptionDate(value:string){const d=new Date(value);return [String(d.getDate()).padStart(2,"0"),String(d.getMonth()+1).padStart(2,"0"),d.getFullYear()].join(":");}
-export async function updatePrivateLocationDescription(formData:FormData){
-  const roomId=readUuid(formData.get("roomId")); const {admin}=await requireOwner(roomId); const description=readText(formData.get("description"),20000); if(!description) throw new Error("The location description cannot be empty.");
-  const q=await admin.from("private_location_rooms").select("description_changed_at").eq("room_id",roomId).single(); if(q.error||!q.data) throw new Error(q.error?.message??"Unable to load this Private Location.");
-  if(q.data.description_changed_at&&Date.now()-Date.parse(q.data.description_changed_at)<PRIVATE_DESCRIPTION_COOLDOWN_MS) throw new Error(`You changed the description on ${privateDescriptionDate(q.data.description_changed_at)}, contact staff if a new change is needed.`);
-  const now=new Date().toISOString(); const r=await admin.from("rooms").update({description,updated_at:now}).eq("id",roomId); if(r.error) throw new Error(r.error.message);
-  const st=await admin.from("private_location_rooms").update({description_changed_at:now}).eq("room_id",roomId); if(st.error) throw new Error(st.error.message); revalidatePath("/private-locations");revalidatePath("/game");revalidatePath("/");
-}
-
 export async function updatePrivateLocation(
   formData: FormData,
 ) {

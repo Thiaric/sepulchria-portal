@@ -281,33 +281,6 @@ export async function updateCharacterAdministration(
       ),
     );
 
-  const admin =
-    createPrivilegedClient();
-
-  const {
-    data: targetMeta,
-    error: targetMetaError,
-  } = await admin
-    .from("characters")
-    .select("is_system")
-    .eq("id", characterId)
-    .single();
-
-  if (
-    targetMetaError ||
-    !targetMeta
-  ) {
-    throw new Error(
-      `Unable to inspect character type: ${
-        targetMetaError?.message ??
-        "Character not found."
-      }`,
-    );
-  }
-
-  const isSystemCharacter =
-    targetMeta.is_system === true;
-
   const raceId =
     readOptionalUuid(
       formData.get("raceId"),
@@ -338,17 +311,9 @@ export async function updateCharacterAdministration(
       80,
     );
 
-  if (
-    !firstName ||
-    (
-      !surname &&
-      !isSystemCharacter
-    )
-  ) {
+  if (!firstName || !surname) {
     throw new Error(
-      isSystemCharacter
-        ? "NPC name is required."
-        : "First name and surname are required.",
+      "First name and surname are required.",
     );
   }
 
@@ -367,24 +332,7 @@ export async function updateCharacterAdministration(
     );
 
   if (
-    !isSystemCharacter &&
-    (
-      !gender ||
-      ![
-        "male",
-        "female",
-        "non_binary",
-      ].includes(gender)
-    )
-  ) {
-    throw new Error(
-      "A valid gender must be selected.",
-    );
-  }
-
-  if (
-    isSystemCharacter &&
-    gender &&
+    !gender ||
     ![
       "male",
       "female",
@@ -392,7 +340,7 @@ export async function updateCharacterAdministration(
     ].includes(gender)
   ) {
     throw new Error(
-      "Gender must be Male, Female or Non-binary when supplied.",
+      "A valid gender must be selected.",
     );
   }
 
@@ -800,10 +748,7 @@ currentOrderVigourModifier =
       );
     }
 
-    if (
-      !surname &&
-      !isSystemCharacter
-    ) {
+    if (!surname) {
       missingFields.push(
         "surname",
       );
@@ -1092,13 +1037,7 @@ currentHealth =
   const candidatePayload:
     Record<string, unknown> = {
       first_name: firstName,
-      surname:
-        surname ??
-        (
-          isSystemCharacter
-            ? ""
-            : surname
-        ),
+      surname,
       pronouns,
       gender,
       sexual_orientation:

@@ -412,7 +412,6 @@ async function getOwnedCharacter(
   options?: {
     skipCurrentAccessCheck?: boolean;
     allowDeadGhost?: boolean;
-    actorCharacterId?: string | null;
   },
 ): Promise<{
   supabase: SupabaseClient;
@@ -427,31 +426,6 @@ async function getOwnedCharacter(
 
   if (authError || !user) {
     redirect("/auth/login");
-  }
-
-  if (options?.actorCharacterId) {
-    const staff = await getStaffSession();
-    if (!staff || !["owner", "admin", "master"].includes(staff.role)) {
-      throw new Error("NPC actions require Master/Admin/Owner access.");
-    }
-    const admin = createPrivilegedClient();
-    const { data: npcLink, error: npcError } = await admin
-      .from("npcs")
-      .select("id,character_id,current_room_id,is_active")
-      .eq("character_id", options.actorCharacterId)
-      .eq("is_active", true)
-      .maybeSingle();
-    if (npcError || !npcLink) throw new Error(npcError?.message ?? "NPC mechanics record not found.");
-
-    const { data: npcCharacter, error: npcCharacterError } = await admin
-      .from("characters")
-      .select(`id,display_name,current_room_id,status,muscles,reflexes,vigor,brains,shrewd,presence_score,current_health,life_state,dead_until,died_at`)
-      .eq("id", options.actorCharacterId)
-      .eq("is_system", true)
-      .maybeSingle();
-    if (npcCharacterError || !npcCharacter) throw new Error(npcCharacterError?.message ?? "NPC Character record not found.");
-
-    return {supabase, character: npcCharacter as unknown as OwnedCharacter};
   }
 
   const { data: character, error: characterError } = await supabase
@@ -1446,9 +1420,7 @@ export async function useRoomGift(
     ).trim();
 
     const { supabase, character } =
-      await getOwnedCharacter({
-        actorCharacterId: String(formData.get("npc_actor_character_id") ?? "").trim() || null,
-      });
+      await getOwnedCharacter();
 
     if (!character.current_room_id) {
       return { ok: false, message: "Your character has no current room." };
@@ -1701,9 +1673,7 @@ export async function activateRoomGift(
     }
 
     const { supabase, character } =
-      await getOwnedCharacter({
-        actorCharacterId: String(formData.get("npc_actor_character_id") ?? "").trim() || null,
-      });
+      await getOwnedCharacter();
 
     if (!character.current_room_id) {
       return { ok: false, message: "Your character has no current room." };
@@ -2828,9 +2798,7 @@ export async function sendRoomAttributeCheck(
     const {
       supabase,
       character,
-    } = await getOwnedCharacter({
-        actorCharacterId: String(formData.get("npc_actor_character_id") ?? "").trim() || null,
-      });
+    } = await getOwnedCharacter();
 
     if (!character.current_room_id) {
       return {
@@ -3281,9 +3249,7 @@ export async function useRoomItem(
       return { ok: false, message: "Choose an Item." };
     }
 
-    const { supabase, character } = await getOwnedCharacter({
-        actorCharacterId: String(formData.get("npc_actor_character_id") ?? "").trim() || null,
-      });
+    const { supabase, character } = await getOwnedCharacter();
 
     if (!character.current_room_id) {
       return {
@@ -3833,28 +3799,14 @@ message_type: "action",
           )
         : null;
 
-    const npcActorId = String(
-      formData.get("npc_actor_character_id") ?? "",
-    ).trim();
-
-    const rpcResult = npcActorId
-      ? await createPrivilegedClient().rpc(
-          "use_character_inventory_record_targeted_as_staff",
-          {
-            p_source_character_id: character.id,
-            p_record_kind: recordKind,
-            p_record_id: recordId,
-            p_target_character_id: targetCharacterId,
-          },
-        )
-      : await supabase.rpc(
-          "use_own_inventory_record_targeted",
-          {
-            p_record_kind: recordKind,
-            p_record_id: recordId,
-            p_target_character_id: targetCharacterId,
-          },
-        );
+    const rpcResult = await supabase.rpc(
+      "use_own_inventory_record_targeted",
+      {
+        p_record_kind: recordKind,
+        p_record_id: recordId,
+        p_target_character_id: targetCharacterId,
+      },
+    );
 
     let result = rpcResult.data;
 
