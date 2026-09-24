@@ -22,7 +22,7 @@ type GiftRaceLink = {
   race_id: string;
   race: { id: string; name: string } | { id: string; name: string }[] | null;
 };
-type Character = { id: string; display_name: string; is_system: boolean };
+type Character = { id: string; display_name: string };
 
 type Gift = {
   id: string;
@@ -246,8 +246,9 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
 
       supabase
         .from("characters")
-        .select("id, display_name, is_system")
+        .select("id, display_name")
         .eq("status", "approved")
+      .eq("is_system", false)
         .order("display_name", { ascending: true }),
     ]);
 
@@ -469,7 +470,7 @@ export default async function AdminGiftsPage({ searchParams }: Props) {
                     </option>
                     {characters.map((character) => (
                       <option className="admin_gifts_page_option_option" key={character.id} value={character.id}>
-                        {character.display_name}{character.is_system ? " (NPC)" : ""}
+                        {character.display_name}
                       </option>
                     ))}
                   </select>

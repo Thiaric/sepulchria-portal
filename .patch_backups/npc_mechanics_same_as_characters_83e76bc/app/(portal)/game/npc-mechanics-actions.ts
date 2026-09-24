@@ -6,17 +6,6 @@ import { getStaffSession } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 import { getCharacterShapeAccess } from "@/lib/warping/shape-access";
 import { resolveImmediateShapeCastForNpc } from "./warping-actions";
-import {
-  activateRoomGift,
-  useRoomGift,
-  useRoomItem,
-  sendRoomAttributeCheck,
-} from "./actions";
-import {
-  startAttributeOpposedAction,
-  startUnarmedAttack,
-  startWeaponOpposedAttack,
-} from "./opposed-actions";
 
 function admin(){
   const u=process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -32,13 +21,6 @@ async function requireStaffNpc(npcId:string,roomId:string){
   const au=await db.auth.getUser();
   if(!au.data.user)throw new Error("Authentication required.");
   const a=admin();
-  const speaker=await a
-    .from("characters")
-    .select("id")
-    .eq("user_id",au.data.user.id)
-    .eq("is_system",false)
-    .maybeSingle();
-  if(speaker.error||!speaker.data)throw new Error(speaker.error?.message??"Staff Character not found.");
   const q=await a.from("npcs").select("id,name,pronouns,portrait_url,description,current_room_id,is_active,character_id,race:races(id,name,icon_url)").eq("id",npcId).maybeSingle();
   if(q.error||!q.data)throw new Error(q.error?.message??"NPC not found.");
   if(!q.data.is_active)throw new Error("This NPC is inactive.");
@@ -46,69 +28,20 @@ async function requireStaffNpc(npcId:string,roomId:string){
   if(!q.data.character_id)throw new Error("This NPC has no mechanics Character record.");
   const c=await a.from("characters").select("id,display_name,current_room_id,status,is_system").eq("id",q.data.character_id).maybeSingle();
   if(c.error||!c.data||!c.data.is_system)throw new Error(c.error?.message??"NPC mechanics Character not found.");
-  return {a,userId:au.data.user.id,speakerCharacterId:speaker.data.id,npc:q.data,character:c.data};
+  return {a,userId:au.data.user.id,npc:q.data,character:c.data};
 }
 function snapshot(n:any){
   const race=one(n.race);
   return {id:n.id,name:n.name,pronouns:n.pronouns??null,portrait_url:n.portrait_url??null,description:n.description??null,race:race?{id:race.id,name:race.name,icon_url:race.icon_url??null}:null};
 }
-async function npcMessage(a:any,npc:any,userId:string,speakerCharacterId:string,roomId:string,message:string){
+async function npcMessage(a:any,npc:any,userId:string,roomId:string,message:string){
   const r=await a.from("room_messages").insert({
-    room_id:roomId,character_id:speakerCharacterId,message,message_type:"action",
+    room_id:roomId,character_id:npc.character_id,message,message_type:"action",
     speaker_type:"npc",npc_id:npc.id,npc_snapshot:snapshot(npc),
     sent_by_user_id:userId,client_nonce:crypto.randomUUID(),
   });
   if(r.error)throw new Error(r.error.message);
 }
-
-async function publishNpcActionMessages(actorCharacterId:string,since:string){
-  const staff=await getStaffSession();
-  if(!staff||!["owner","admin","master"].includes(staff.role))throw new Error("NPC mechanics require Master/Admin/Owner access.");
-
-  const session=await createClient();
-  const au=await session.auth.getUser();
-  if(!au.data.user)throw new Error("Authentication required.");
-
-  const a=admin();
-  const [npcResult,speakerResult]=await Promise.all([
-    a.from("npcs").select("id,name,pronouns,portrait_url,description,character_id,race:races(id,name,icon_url)").eq("character_id",actorCharacterId).maybeSingle(),
-    a.from("characters").select("id").eq("user_id",au.data.user.id).eq("is_system",false).maybeSingle(),
-  ]);
-
-  if(npcResult.error||!npcResult.data)throw new Error(npcResult.error?.message??"NPC not found.");
-  if(speakerResult.error||!speakerResult.data)throw new Error(speakerResult.error?.message??"Staff Character not found.");
-
-  const update=await a.from("room_messages").update({
-    character_id:speakerResult.data.id,
-    speaker_type:"npc",
-    npc_id:npcResult.data.id,
-    npc_snapshot:snapshot(npcResult.data),
-    sent_by_user_id:au.data.user.id,
-  }).eq("character_id",actorCharacterId).gte("created_at",since);
-
-  if(update.error)throw new Error(update.error.message);
-}
-
-async function wrapNpcRoomAction(action:(previous:any,formData:FormData)=>Promise<any>,previous:any,formData:FormData){
-  const actorCharacterId=String(formData.get("npc_actor_character_id")??"").trim();
-  const since=new Date(Date.now()-2000).toISOString();
-  const result=await action(previous,formData);
-
-  if(result?.ok&&actorCharacterId){
-    await publishNpcActionMessages(actorCharacterId,since);
-    revalidatePath("/game");
-  }
-
-  return result;
-}
-
-export async function npcUseRoomGift(previous:any,formData:FormData){return wrapNpcRoomAction(useRoomGift,previous,formData);}
-export async function npcActivateRoomGift(previous:any,formData:FormData){return wrapNpcRoomAction(activateRoomGift,previous,formData);}
-export async function npcUseRoomItem(previous:any,formData:FormData){return wrapNpcRoomAction(useRoomItem,previous,formData);}
-export async function npcSendRoomAttributeCheck(previous:any,formData:FormData){return wrapNpcRoomAction(sendRoomAttributeCheck,previous,formData);}
-export async function npcStartAttributeOpposedAction(previous:any,formData:FormData){return wrapNpcRoomAction(startAttributeOpposedAction,previous,formData);}
-export async function npcStartUnarmedAttack(previous:any,formData:FormData){return wrapNpcRoomAction(startUnarmedAttack,previous,formData);}
-export async function npcStartWeaponOpposedAttack(previous:any,formData:FormData){return wrapNpcRoomAction(startWeaponOpposedAttack,previous,formData);}
 
 export async function loadNpcMechanicsData(input:{npcId:string;roomId:string}){
   try{
@@ -187,9 +120,9 @@ export async function loadNpcMechanicsData(input:{npcId:string;roomId:string}){
 
 export async function npcWarpShape(input:{npcId:string;roomId:string;shapeId:string;targetIds:string[];writtenTarget?:string}){
   try{
-    const {a,userId,speakerCharacterId,npc,character}=await requireStaffNpc(input.npcId,input.roomId);
+    const {a,userId,npc,character}=await requireStaffNpc(input.npcId,input.roomId);
     const access=await getCharacterShapeAccess(character.id,input.shapeId);
-    if(!access.allowed)return {ok:false,message:access.reasons.join(" · ")||"This Shape cannot currently be Warped."};
+    if(!access.allowed)return {ok:false,message:access.reasons.join(" Â· ")||"This Shape cannot currently be Warped."};
 
     const sq=await a.from("shapes").select("*").eq("id",input.shapeId).maybeSingle();
     if(sq.error||!sq.data)return {ok:false,message:sq.error?.message??"Shape not found."};
@@ -241,7 +174,7 @@ export async function npcWarpShape(input:{npcId:string;roomId:string;shapeId:str
     await a.from("shape_casts").update({status:"resolved"}).eq("id",castId);
     const names=(await a.from("characters").select("id,display_name").in("id",targetIds)).data??[];
     const targetText=isWritten?written:(self?"Self":names.map((x:any)=>x.display_name).join(", "));
-    await npcMessage(a,npc,userId,speakerCharacterId,input.roomId,`◆ Warp [${s.name}] · Level [${s.level}] · ${targetIds.length>1?"Targets":"Target"} [${targetText}]${resolved?` · ${resolved}`:""}`);
+    await npcMessage(a,npc,userId,input.roomId,`â—† ${s.name} Â· Shape Level ${s.level} Â· Target: ${targetText}${resolved?` Â· ${resolved}`:""}`);
     revalidatePath("/game");
     return {ok:true,message:`${s.name} warped.`};
   }catch(e){
