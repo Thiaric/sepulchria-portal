@@ -429,14 +429,35 @@ export function PortalAppearanceModal({
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={close}
-            aria-label="Close Appearance"
-            className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-baa78c))] transition hover:border-[rgb(var(--sep-colour-987344))] components_portal_portal_appearance_modal_button_close_appearance"
-          >
-            ×
-          </button>
+          <div className="flex shrink-0 items-center gap-2">
+            <button
+              type="button"
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent(
+                    "sepulchria:play-tutorial",
+                    {
+                      detail: {
+                        key: "skins",
+                      },
+                    },
+                  ),
+                )
+              }
+              className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-baa78c))] transition hover:border-[rgb(var(--sep-colour-987344))]"
+            >
+              Play Tutorial
+            </button>
+
+            <button
+              type="button"
+              onClick={close}
+              aria-label="Close Appearance"
+              className="border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-sm text-[rgb(var(--sep-colour-baa78c))] transition hover:border-[rgb(var(--sep-colour-987344))] components_portal_portal_appearance_modal_button_close_appearance"
+            >
+              ×
+            </button>
+          </div>
         </header>
 
         <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6 components_portal_portal_appearance_modal_div_container">

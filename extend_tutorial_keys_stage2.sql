@@ -53,6 +53,9 @@ alter table public.user_tutorial_progress
         'polls',
         'hall-of-renown',
         'players-handbook',
-        'codex'
+        'codex',
+        'tickets',
+        'ticket-new',
+        'ticket-detail'
     )
   );

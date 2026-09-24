@@ -46,29 +46,34 @@ const TOURS: Record<string, TourDefinition> = {
         selector: "[data-cosmetic-header-controls]",
         title: "Header Controls",
         body:
-          "From here you can open the Store, check the world and who is online, control sound and skins, read notifications and messages, open your character controls, and log out. Staff may also see administration controls.",
+          "From here you can open the Store, Weather and Calendar, People in Sepulchria, sound, Skins, Notifications, messaging, character controls and account tools. Staff may also see administration controls.",
       },
       {
         selector: ".portal-left-shell",
         title: "Main Navigation",
         body:
-          "The left panel is your main navigation. Use it to reach the city, characters, Codex and rules, social tools, the Market, Crafting, missions, private spaces and other portal sections available to you.",
+          "The left panel is your main navigation. Use it to reach Sepulchria, characters, lore, rules, social tools, the Market, Crafting, Daily Missions and the other sections available to you.",
       },
       {
         selector: "[data-portal-centre-host]",
         title: "Main Area",
         body:
-          "The centre is where the page you are using lives. On the home page this is Aureth's map; elsewhere it becomes your Location, character sheet, Crafting workbench and other interactive areas.",
+          "The centre is where the page you are using lives. On the home page this is Aureth's map; elsewhere it becomes your Location, character sheet, workbench and other interactive areas.",
       },
       {
         selector: ".portal-right-shell",
         title: "Context Panel",
         body:
-          "The right panel changes with what you are doing. In play it shows Location context and people nearby; elsewhere it can show information and shortcuts relevant to the current page.",
+          "The right panel changes with what you are doing. It provides shortcuts, character or Location information, and other context relevant to the page currently open.",
+      },
+      {
+        selector: ".components_portal_compact_city_activity_section",
+        title: "City Activity",
+        body:
+          "City Activity is a live, short-term feed of characters entering and leaving Sepulchria. It refreshes automatically so you can see recent movement through the active city presence system.",
       },
     ],
   },
-
   "game-location": {
     key: "game-location",
     label: "Location",
@@ -252,25 +257,49 @@ const TOURS: Record<string, TourDefinition> = {
           ".crafting_crafting_workbench_div_container, .crafting_crafting_workbench_section_no_recipes_known",
         title: "Crafting",
         body:
-          "Crafting turns ingredients into items using recipes your character has learned. If you know no recipes yet, this page will remain empty until one is learned.",
+          "Crafting turns carried materials into items through recipes your character has learned. If no recipes are known yet, the workbench stays empty until one is learned.",
       },
       {
         selector: ".crafting_crafting_workbench_section_section",
-        title: "Known Recipes",
+        title: "1 · Choose a Recipe",
         body:
-          "Choose a recipe from the Maker's Folio. The list tells you whether the materials required for that recipe are currently available.",
+          "The Maker's Folio lists every recipe your character knows. Select a recipe first. Each entry also tells you whether the required materials are currently available.",
+      },
+      {
+        selector: ".crafting_crafting_workbench_button_action",
+        title: "Recipe Selection",
+        body:
+          "Click a recipe card to load it onto the workbench. The right-hand workbench then changes to that recipe, its required ingredients and its result.",
       },
       {
         selector: ".crafting_crafting_workbench_section_section_2",
-        title: "Ingredients at Hand",
+        title: "2 · Ingredients at Hand",
         body:
-          "This tray contains carried crafting materials. You can drag them, double-click them, or use the workbench's automatic filling controls where available.",
+          "This tray contains crafting materials your character is carrying. Materials relevant to the chosen recipe are highlighted. You can drag them to a matching slot or double-click them to place them.",
       },
       {
         selector: ".crafting_crafting_workbench_section_section_3",
-        title: "The Workbench",
+        title: "3 · The Workbench",
         body:
-          "The workbench shows the selected recipe, its ingredient slots and the item that will be produced. Fill the required slots before crafting.",
+          "The workbench shows the chosen recipe, its description, the item it will produce and whether you have enough materials to complete it.",
+      },
+      {
+        selector: ".crafting_crafting_workbench_div_container_23",
+        title: "4 · Fill Every Ingredient Slot",
+        body:
+          "Every required ingredient has its own slot. Click a slot, drag the matching material onto it, or use Set the Bench to fill all available requirements automatically. The owned/required numbers show whether you have enough.",
+      },
+      {
+        selector: ".crafting_crafting_workbench_div_container_28",
+        title: "5 · Set the Bench and Craft",
+        body:
+          "Set the Bench automatically places the required materials when you own enough. Once every slot is filled and the workbench says Assembly ready, press Craft. The materials are consumed and the crafted result is added through the inventory system.",
+      },
+      {
+        selector: ".crafting_crafting_workbench_div_container_25",
+        title: "Result and Feedback",
+        body:
+          "This area shows the workbench state, the expected result and any success or failure notice after crafting. You can then select another recipe and repeat the process.",
       },
     ],
   },
@@ -399,6 +428,21 @@ function candidateTours(pathname: string): TourDefinition[] {
   if (pathname === "/codex") { result.push(TOURS.codex); return result; }
   if (pathname === "/crafting") { result.push(TOURS.crafting); return result; }
 
+  if (pathname === "/support") {
+    result.push(TOURS.tickets);
+    return result;
+  }
+
+  if (pathname === "/support/new") {
+    result.push(TOURS["ticket-new"]);
+    return result;
+  }
+
+  if (/^\/support\/[^/]+$/.test(pathname)) {
+    result.push(TOURS["ticket-detail"]);
+    return result;
+  }
+
   if (pathname !== "/game") return result;
 
   result.push(TOURS["game-location"]);
@@ -420,6 +464,18 @@ function availableSteps(tour: TourDefinition): TourStep[] {
     if (details) details.open = true;
 
     steps.push(step);
+  }
+
+  if (
+    currentSearchParams().get("embedded") === "1" &&
+    findTarget(".portal-right-shell")
+  ) {
+    steps.push({
+      selector: ".portal-right-shell",
+      title: "Context Panel",
+      body:
+        "This right-side panel belongs to the page open in this modal. It changes with the current section and provides the contextual information and shortcuts available here.",
+    });
   }
 
   return steps;
@@ -718,7 +774,9 @@ export function PortalFirstVisitTour() {
   }, [activeTour, complete]);
 
   useEffect(() => {
-    function handlePlayTutorial() {
+    function handlePlayTutorial(
+      event: Event,
+    ) {
       if (
         !ready ||
         !userId ||
@@ -728,16 +786,25 @@ export function PortalFirstVisitTour() {
         return;
       }
 
-      /*
-       * Transient header-widget tours are added first. The current
-       * page/context tour is appended afterwards; on /game, a
-       * Location-specific tour is appended after the general one.
-       * Replay therefore follows the most specific current context.
-       */
+      const requestedKey =
+        (
+          event as CustomEvent<{
+            key?: string;
+          }>
+        ).detail?.key;
+
       const tour =
-        applicableTours[
-          applicableTours.length - 1
-        ];
+        requestedKey
+          ? applicableTours.find(
+              (candidate) =>
+                candidate.key ===
+                requestedKey,
+            ) ??
+            TOURS[requestedKey]
+          : applicableTours[
+              applicableTours.length -
+                1
+            ];
 
       if (!tour) {
         return;

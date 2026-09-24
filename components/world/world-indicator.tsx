@@ -1175,6 +1175,25 @@ export function WorldIndicator({
                 <button
                   type="button"
                   onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent(
+                        "sepulchria:play-tutorial",
+                        {
+                          detail: {
+                            key: "weather",
+                          },
+                        },
+                      ),
+                    )
+                  }
+                  className="absolute right-12 top-3 flex h-8 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/60 bg-[rgb(var(--sep-colour-17110f))] px-3 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-c8a875))] transition hover:border-[rgb(var(--sep-colour-967342))] hover:text-[rgb(var(--sep-colour-f1d7a5))]"
+                >
+                  Play Tutorial
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
                     setOpen(
                       false,
                     )

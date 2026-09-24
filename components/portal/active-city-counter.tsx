@@ -785,6 +785,25 @@ const room =
                 <button
                   type="button"
                   onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent(
+                        "sepulchria:play-tutorial",
+                        {
+                          detail: {
+                            key: "city-people",
+                          },
+                        },
+                      ),
+                    )
+                  }
+                  className="flex h-7 items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-17110d))] px-3 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-aa9675))] transition hover:border-[rgb(var(--sep-colour-967342))] hover:text-[rgb(var(--sep-colour-f1d7a5))]"
+                >
+                  Play Tutorial
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
                     setOpen(
                       false,
                     )

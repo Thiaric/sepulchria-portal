@@ -1255,6 +1255,27 @@ export function NotificationBell() {
                   </div>
                 </div>
 
+                <div className="mt-2 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      window.dispatchEvent(
+                        new CustomEvent(
+                          "sepulchria:play-tutorial",
+                          {
+                            detail: {
+                              key: "notifications",
+                            },
+                          },
+                        ),
+                      )
+                    }
+                    className="border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-18110d))] px-2.5 py-1.5 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-bca27b))] transition hover:border-[rgb(var(--sep-colour-987344))] hover:text-[rgb(var(--sep-colour-efd6a8))]"
+                  >
+                    Play Tutorial
+                  </button>
+                </div>
+
                 {!muted ? (
                   <div className="mt-3 components_notifications_notification_bell_div_container_6">
                     <input

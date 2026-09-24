@@ -105,19 +105,39 @@ export const STAGE2_TOURS = {
     "label": "Weather & Calendar",
     "steps": [
       {
-        "selector": ".components_world_world_indicator_div_container_13",
-        "title": "Aureth's Time and Weather",
-        "body": "This window expands the compact world indicator from the Portal header. It combines Aureth's calendar, current weather and lunar information."
+        "selector": ".components_world_world_indicator_section_dialog",
+        "title": "Weather & Calendar",
+        "body": "This window combines Aureth's current date and time, the playable calendar, weather, lunar phase and scheduled calendar events."
       },
       {
-        "selector": ".components_world_world_indicator_div_container_18",
-        "title": "World Conditions",
-        "body": "The weather area shows the current conditions and temperature used across the portal's atmospheric systems."
+        "selector": ".components_world_world_indicator_h2_heading",
+        "title": "Aureth Date and Time",
+        "body": "The heading shows the current in-world date and time. Hovering the date also exposes its real-world date equivalent."
       },
       {
-        "selector": ".components_world_world_indicator_div_container_18, .components_world_world_indicator_div_container_23",
-        "title": "Calendar Information",
-        "body": "Use the calendar to understand the current Aureth date and review relevant calendar information and events."
+        "selector": ".components_world_world_indicator_div_container_2",
+        "title": "Move Through the Calendar",
+        "body": "Use « and » to move by year and ‹ and › to move by month. This lets you inspect past or upcoming dates without changing the actual current world date."
+      },
+      {
+        "selector": ".components_world_world_indicator_button_today",
+        "title": "Return to the Current Month",
+        "body": "After browsing another month or year, Current month takes the calendar directly back to the month Aureth is currently in."
+      },
+      {
+        "selector": ".components_world_world_indicator_div_container_7",
+        "title": "Calendar Days, Moons and Events",
+        "body": "Each day shows its Aureth day number and lunar phase. Dates with scheduled events display an event counter; select one of those dates to reveal its event details below the calendar."
+      },
+      {
+        "selector": ".components_world_world_indicator_div_container_19",
+        "title": "Current Weather",
+        "body": "This panel shows the live in-world weather, temperature and weather intensity. The compact weather control in the Portal header reflects the same current conditions."
+      },
+      {
+        "selector": ".components_world_world_indicator_div_container_21",
+        "title": "Current Lunar Phase",
+        "body": "The lunar panel shows the current phase, illumination percentage and day of the lunar cycle. The moon symbol also appears on individual calendar dates."
       }
     ]
   },
@@ -126,19 +146,29 @@ export const STAGE2_TOURS = {
     "label": "People in Sepulchria",
     "steps": [
       {
-        "selector": ".components_portal_active_city_counter_div_people_sepulchria_2",
+        "selector": ".components_portal_active_city_counter_div_people_sepulchria_3",
         "title": "People in Sepulchria",
-        "body": "This live presence view shows characters who are currently active in the city."
+        "body": "This is the live city-presence window. The number in the header is the current number of active characters visible through the presence system."
       },
       {
         "selector": ".components_portal_active_city_counter_div_people_sepulchria_7",
-        "title": "Search the City",
-        "body": "Search by character, Ancestry, Order, Association, Location or status to find the people you are looking for."
+        "title": "Search Active Characters",
+        "body": "Search by character name, Ancestry, Order, Association, visible Location or presence status. The result counter updates immediately as you type."
+      },
+      {
+        "selector": ".components_portal_active_city_counter_div_people_sepulchria_9",
+        "title": "Live Presence Count",
+        "body": "This line tells you how many characters are present or how many match the current search. The list updates as city presence changes."
       },
       {
         "selector": ".components_portal_active_city_counter_div_people_sepulchria_11",
         "title": "Presence Cards",
-        "body": "Each card shows public identity and presence information. Private Location information remains hidden unless you are allowed to see it."
+        "body": "The cards show the active characters that match your filters. Their public identity, status and visible Location information are drawn from the live presence system."
+      },
+      {
+        "selector": ".components_portal_active_city_counter_article_article",
+        "title": "Character Presence Details",
+        "body": "A character card contains the public details available to you and can link into that character's public information. Private Location information remains hidden unless you are allowed to see it."
       }
     ]
   },
@@ -149,17 +179,27 @@ export const STAGE2_TOURS = {
       {
         "selector": ".components_portal_portal_appearance_modal_section_dialog",
         "title": "Portal Appearance",
-        "body": "Portal Skins change the visual appearance of Sepulchria without changing gameplay."
+        "body": "Portal Skins change the portal's visual appearance without changing gameplay. This window shows every skin currently visible to your account."
       },
       {
-        "selector": ".components_portal_portal_appearance_modal_div_container",
-        "title": "Preview Your Skins",
-        "body": "Browse the appearances available to your account. You can preview a skin before deciding whether to use it."
+        "selector": ".components_portal_portal_skin_gallery_div_container_3",
+        "title": "Your Selected Skin",
+        "body": "This block shows the skin currently saved to your account and its real colour swatch."
       },
       {
-        "selector": ".components_portal_portal_appearance_modal_header_drag_move_portal_appearance",
-        "title": "A Movable Window",
-        "body": "On desktop this window can be moved so you can compare a skin preview with the portal beneath it."
+        "selector": ".components_portal_portal_skin_gallery_div_container_7",
+        "title": "Available Skin Cards",
+        "body": "Each card shows a skin's name, description, colour swatch and ownership state such as Current, Purchased, Granted or its purchase price."
+      },
+      {
+        "selector": ".components_portal_portal_skin_gallery_article_article",
+        "title": "A Skin",
+        "body": "A skin card previews that appearance using its actual portal colour variables, so you can compare it with the currently selected skin."
+      },
+      {
+        "selector": ".components_portal_portal_skin_gallery_div_container_13",
+        "title": "Preview and Use Skin",
+        "body": "Preview temporarily applies a skin so you can inspect it across the Portal. Use skin permanently selects an unlocked skin. While previewing, an End preview control appears above the cards so you can return to your saved skin without changing it."
       }
     ]
   },
@@ -168,19 +208,34 @@ export const STAGE2_TOURS = {
     "label": "Notifications",
     "steps": [
       {
-        "selector": ".components_notifications_notification_bell_div_container_2",
+        "selector": ".components_notifications_notification_bell_div_container_4",
         "title": "Notifications",
-        "body": "Notifications collect important off-game updates and shortcuts to activity that may need your attention."
+        "body": "This panel collects active off-game notifications. The heading shows whether notifications are muted or how many active notices are currently loaded."
       },
       {
-        "selector": ".components_notifications_notification_bell_div_container_5",
-        "title": "Notification Controls",
-        "body": "You can mute notification alerts and mark current notifications as read from the top of the panel."
+        "selector": ".components_notifications_notification_bell_button_action_2",
+        "title": "Mute or Unmute Notifications",
+        "body": "Mute stops notification delivery from interrupting you. While muted, new notices remain waiting and can be restored by pressing Unmute."
       },
       {
-        "selector": ".components_notifications_notification_bell_div_container_6",
-        "title": "Your Notification Feed",
-        "body": "Open a notification to go to the relevant part of the portal. Unread counters update as notifications are read."
+        "selector": ".components_notifications_notification_bell_button_action_3",
+        "title": "Mark All Read",
+        "body": "Mark all read clears the unread state from every currently unread notification at once. The button is disabled when there is nothing unread."
+      },
+      {
+        "selector": ".components_notifications_notification_bell_input_field",
+        "title": "Filter Notifications",
+        "body": "Use the search field to filter the loaded notification list. The counter beneath it shows how many notices match the current filter."
+      },
+      {
+        "selector": ".components_notifications_notification_bell_div_container_9",
+        "title": "Notification Feed",
+        "body": "Each notice shows its type, time, title, body and whether it is new. Opening or selecting a notification also marks that individual notice as read."
+      },
+      {
+        "selector": "[data-sep-notification-open=\"true\"]",
+        "title": "Open the Related Area",
+        "body": "Notifications that point somewhere in the Portal include an Open action. It takes you to the relevant page or opens the appropriate Portal modal when that destination is modal-based."
       }
     ]
   },
@@ -399,13 +454,43 @@ export const STAGE2_TOURS = {
     "steps": [
       {
         "selector": ".warping_page_header_header",
-        "title": "Warping",
-        "body": "Warping is the use of the Current through known Shapes. This catalogue contains the active Shapes available in the game world."
+        "title": "Warping and Shapes",
+        "body": "Warping is the shaping of the Current through known Shapes. This catalogue contains the active Shapes available in Sepulchria."
       },
       {
-        "selector": ".warping_page_div_container",
-        "title": "The Shape Catalogue",
-        "body": "Browse Shapes to understand what they do, how they are used and any requirements or mechanics attached to them."
+        "selector": ".components_warping_shapes_catalogue_section_section",
+        "title": "Find a Shape",
+        "body": "Search by name, Word or description, or filter the catalogue by Level, School, Movement, target and effect nature. Reset clears every filter."
+      },
+      {
+        "selector": ".components_warping_shapes_catalogue_article_article",
+        "title": "A Shape",
+        "body": "Each Shape card is a complete rules reference. It brings together the Shape's identity, activation requirements, targeting, resolution and mechanical effects."
+      },
+      {
+        "selector": ".components_warping_shapes_catalogue_p_text_11",
+        "title": "School, Word, Movement, Duration and Price",
+        "body": "The metadata line identifies the Shape's School, Word of Power, Movement and duration. Where a Price applies, hover or inspect it for the named Price associated with shaping it."
+      },
+      {
+        "selector": ".components_warping_shapes_catalogue_div_container_13",
+        "title": "Level, Nature and Target",
+        "body": "These badges show the Shape's Level, whether its effect is beneficial, harmful or mixed, who it can target, and whether it functions as a Dispel."
+      },
+      {
+        "selector": ".components_warping_shapes_catalogue_div_container_14",
+        "title": "Words and Components",
+        "body": "Where configured, the expanded Shape information lists its component Words and whether verbal and movement components are required."
+      },
+      {
+        "selector": ".components_warping_shapes_catalogue_div_container",
+        "title": "Resolution and Effects",
+        "body": "Mechanical profile boxes explain how the Shape resolves against a target. Automatic profiles need no save; Save Required profiles show the DC, allowed saves and what happens on success. Effect badges describe damage, healing, Conditions and Attribute changes."
+      },
+      {
+        "selector": ".components_warping_shapes_catalogue_div_container_21",
+        "title": "Requirements",
+        "body": "The Requirements section tells you what is needed to know or use the Shape, including the required Warping Affinity level and any minimum Attributes."
       }
     ]
   },
@@ -416,12 +501,37 @@ export const STAGE2_TOURS = {
       {
         "selector": ".feats_page_header_header",
         "title": "Feats",
-        "body": "Feats are innate, learned or bestowed capabilities available through sources such as Ancestries, Orders and general assignment."
+        "body": "Feats are innate, learned or bestowed capabilities granted through Ancestries, Order Roles or general assignment."
       },
       {
-        "selector": ".feats_page_div_container",
-        "title": "The Feat Catalogue",
-        "body": "Browse active Feats to understand their descriptions and mechanical effects before using or pursuing them."
+        "selector": ".components_gifts_gifts_catalogue_section_section",
+        "title": "Find a Feat",
+        "body": "Search the catalogue or filter by effect type, target, source type, Ancestry and Order. Reset clears all active filters."
+      },
+      {
+        "selector": ".components_gifts_gifts_catalogue_article_article",
+        "title": "A Feat",
+        "body": "Each Feat card is a rules reference showing what the Feat is, where it comes from, how it targets, how it resolves and what it changes mechanically."
+      },
+      {
+        "selector": ".components_gifts_gifts_catalogue_div_container_7",
+        "title": "Target, Success and Timing",
+        "body": "These boxes explain who the Feat can affect, whether activation is automatic or requires a roll, its duration and any cooldown before it can be used again."
+      },
+      {
+        "selector": ".components_gifts_gifts_catalogue_div_container_8",
+        "title": "Mechanical Effects",
+        "body": "The Effects section lists direct damage, healing, Health changes, Attribute modifiers, Warping Affinity changes and other configured mechanical effects."
+      },
+      {
+        "selector": ".components_gifts_gifts_catalogue_div_container_10",
+        "title": "How the Feat Is Obtained",
+        "body": "Available through tells you whether the Feat comes from an Ancestry, an Order, general assignment, or a combination of those sources."
+      },
+      {
+        "selector": ".components_gifts_gifts_catalogue_article_article .border-t",
+        "title": "Advanced Mechanics",
+        "body": "Some Feats use Shape-backed advanced mechanics. When present, these sections describe target scope, duration, automatic or opposed resolution, and separate Self, Other or harmful-target effects."
       }
     ]
   },
@@ -663,19 +773,39 @@ export const STAGE2_TOURS = {
     "label": "Market Shop",
     "steps": [
       {
-        "selector": ".market_slug_page_section_section",
+        "selector": ".market_slug_page_div_container_4",
         "title": "A Market Shop",
-        "body": "This is a specific shop. The header introduces the shop and shows information relevant to shopping here."
+        "body": "The shop header identifies the shop and shows your currently available Remnants. Purchases and sales use the normal character economy."
       },
       {
-        "selector": ".market_slug_page_div_container, .market_slug_page_main_main",
-        "title": "Browse the Stock",
-        "body": "Review available items, their prices and their details before making a purchase."
+        "selector": ".components_market_market_catalogue_section_section",
+        "title": "Search and Filter the Stock",
+        "body": "Search by item name or description and filter by category, subcategory, quality, item type, price, effects, stock availability and affordability. Reset clears the filters."
       },
       {
-        "selector": ".market_slug_page_main_main button, .market_slug_page_main_main form",
-        "title": "Buy and Sell",
-        "body": "Use the available item controls to complete market actions. Remnant changes are recorded through the normal economy system."
+        "selector": ".components_market_market_catalogue_article_article",
+        "title": "An Item Listing",
+        "body": "Each listing is an actual shop item. It shows the item's image, name, quality, category, description, purchase price and the mechanics relevant to that item."
+      },
+      {
+        "selector": ".components_market_market_catalogue_div_container_6",
+        "title": "Item Properties and Effects",
+        "body": "The badges and details on the item explain properties such as usable or equippable state, equipment slot, charges, cooldown, targeting, success roll, damage and passive or use-based effects."
+      },
+      {
+        "selector": ".components_market_market_catalogue_button_action",
+        "title": "Buying Items",
+        "body": "Choose the quantity beside Buy. The shop calculates the total and prevents the purchase if you cannot afford it or finite stock is too low. A successful purchase adds the item through the inventory system."
+      },
+      {
+        "selector": ".components_market_market_catalogue_button_action_2",
+        "title": "Selling Items",
+        "body": "When a shop buys that item and you own eligible copies, choose how many to sell and press Sell. The listing shows how many sellable copies you own and how many Remnants you will receive."
+      },
+      {
+        "selector": ".components_market_market_catalogue_span_text",
+        "title": "Prices and Stock",
+        "body": "Prices are shown in Remnants. Finite-stock items can sell out, while unlimited listings remain available. Your wallet balance and the item-level totals help you check a transaction before confirming it."
       }
     ]
   },
@@ -770,6 +900,89 @@ export const STAGE2_TOURS = {
         "selector": ".components_rules_public_rules_button_glossary",
         "title": "Glossary",
         "body": "The Glossary is available from the same interface for quick definitions of Sepulchria terminology."
+      }
+    ]
+  },
+  "tickets": {
+    "key": "tickets",
+    "label": "Tickets",
+    "steps": [
+      {
+        "selector": ".support_page_div_ticket_centre",
+        "title": "Ticket Centre",
+        "body": "The Ticket Centre is where you contact Sepulchria staff for support and follow existing requests."
+      },
+      {
+        "selector": "a[href=\"/support/new\"]",
+        "title": "Open a New Ticket",
+        "body": "Use Open New Ticket when you need help with a new issue. You will be able to choose the category, add a subject and describe the problem."
+      },
+      {
+        "selector": ".support_page_div_container_3",
+        "title": "Your Tickets",
+        "body": "Existing tickets are listed here with their reference, category, subject, status and last update time. Unread staff activity is highlighted and counted."
+      },
+      {
+        "selector": ".support_page_div_container_3 a",
+        "title": "Open a Ticket",
+        "body": "Select a ticket to read the full conversation and reply to staff while the ticket remains open."
+      }
+    ]
+  },
+  "ticket-new": {
+    "key": "ticket-new",
+    "label": "Open a Ticket",
+    "steps": [
+      {
+        "selector": ".support_new_page_h1_open_ticket",
+        "title": "Open a Ticket",
+        "body": "Use this form to create a new support request for Sepulchria staff."
+      },
+      {
+        "selector": ".support_new_page_select_category",
+        "title": "Choose the Category",
+        "body": "Choose the category that best matches the request: General Support, Technical Problem, Account, Bug, Rules Question or Payment / Premium."
+      },
+      {
+        "selector": ".support_new_page_input_subject",
+        "title": "Subject",
+        "body": "Give the ticket a concise subject so the issue is easy to identify in the Ticket Centre."
+      },
+      {
+        "selector": ".support_new_page_textarea_body",
+        "title": "Describe the Issue",
+        "body": "Explain what you need help with and include the information staff will need to understand or reproduce the issue."
+      },
+      {
+        "selector": ".support_new_page_button_submit_ticket",
+        "title": "Submit Ticket",
+        "body": "Submit creates the ticket and adds it to your Ticket Centre, where you can follow replies and continue the conversation."
+      }
+    ]
+  },
+  "ticket-detail": {
+    "key": "ticket-detail",
+    "label": "Support Ticket",
+    "steps": [
+      {
+        "selector": ".support_reference_page_div_container_2",
+        "title": "Ticket Details",
+        "body": "The ticket header shows the public reference, category, subject, opening date and current status."
+      },
+      {
+        "selector": ".support_reference_page_div_container_3",
+        "title": "Ticket Conversation",
+        "body": "Messages between you and Sepulchria staff are kept here in chronological order so the full support history remains available."
+      },
+      {
+        "selector": ".support_reference_page_form_reply_support_ticket",
+        "title": "Reply to Staff",
+        "body": "While the ticket is open, write your reply here and press Send Reply. Closed tickets keep their history but no longer accept replies."
+      },
+      {
+        "selector": "a[href=\"/support\"]",
+        "title": "Return to the Ticket Centre",
+        "body": "Use Ticket Centre to return to the full list of your support requests."
       }
     ]
   },
