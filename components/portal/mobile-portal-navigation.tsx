@@ -1680,6 +1680,23 @@ const moreDragging =
                       </div>
                     ) : null}
                   </div>
+                  <button
+  type="button"
+  onClick={() => {
+    closeMore();
+
+    window.setTimeout(() => {
+      window.dispatchEvent(
+        new Event(
+          "sepulchria:play-tutorial",
+        ),
+      );
+    }, 180);
+  }}
+  className="col-span-2 flex min-h-[44px] w-full items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9f8b70))] transition hover:border-[rgb(var(--sep-colour-876a46))] hover:text-[rgb(var(--sep-colour-d8bf91))]"
+>
+  Play Tutorial
+</button>
                 </div>
               </section>
 
