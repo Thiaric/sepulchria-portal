@@ -7,6 +7,7 @@ import {
 } from "react";
 
 import { RichTextContentClient } from "@/components/editor/rich-text-content-client";
+import { CodexNarrationPlayer } from "@/components/codex/codex-narration-player";
 import type { PublicCodexChapter } from "@/lib/codex/get-codex";
 
 type PublicCodexProps = {
@@ -65,36 +66,31 @@ export function PublicCodex({
   );
 
   const [
-    selectedNumber,
-    setSelectedNumber,
-  ] = useState(() => {
-    if (
-      typeof window === "undefined"
-    ) {
-      return (
-        orderedChapters[0]
-          ?.chapter_number ?? 1
-      );
-    }
+  selectedNumber,
+  setSelectedNumber,
+] = useState(
+  orderedChapters[0]?.chapter_number ?? 1,
+);
 
-    const match =
-      window.location.hash.match(
-        /^#chapter-(\d+)$/,
-      );
+useEffect(() => {
+  const match =
+    window.location.hash.match(
+      /^#chapter-(\d+)$/,
+    );
 
-    const fromHash = match
-      ? Number(match[1])
-      : NaN;
+  if (!match) return;
 
-    return orderedChapters.some(
-      (chapter) =>
-        chapter.chapter_number ===
-        fromHash,
-    )
-      ? fromHash
-      : (orderedChapters[0]
-          ?.chapter_number ?? 1);
-  });
+  const fromHash = Number(match[1]);
+
+  const exists = orderedChapters.some(
+    (chapter) =>
+      chapter.chapter_number === fromHash,
+  );
+
+  if (exists) {
+    setSelectedNumber(fromHash);
+  }
+}, [orderedChapters]);
 
   const selectedChapter =
     orderedChapters.find(
@@ -352,22 +348,31 @@ export function PublicCodex({
               .join(" ")}
           >
             <div className="mx-auto max-w-7xl px-4 py-3 sm:px-8 sm:py-5 components_codex_public_codex_div_codex_chapter">
-              <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-5 components_codex_public_codex_div_codex_chapter_2">
-                <p className="shrink-0 text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-997446))] components_codex_public_codex_p_codex_chapter">
-                  Chapter{" "}
-                  {
-                    ROMAN_NUMERALS[
-                      selectedChapter.chapter_number -
-                        1
-                    ]
-                  }
-                </p>
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between lg:gap-6 components_codex_public_codex_div_codex_chapter_2">
+                <div className="flex min-w-0 flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-5">
+                  <p className="shrink-0 text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-997446))] components_codex_public_codex_p_codex_chapter">
+                    Chapter{" "}
+                    {
+                      ROMAN_NUMERALS[
+                        selectedChapter.chapter_number -
+                          1
+                      ]
+                    }
+                  </p>
 
-                <h2 className="font-serif text-lg leading-tight text-[rgb(var(--sep-colour-ead5ac))] sm:text-3xl components_codex_public_codex_h2_codex_chapter">
-                  {
-                    selectedChapter.title
-                  }
-                </h2>
+                  <h2 className="min-w-0 font-serif text-lg leading-tight text-[rgb(var(--sep-colour-ead5ac))] sm:text-3xl components_codex_public_codex_h2_codex_chapter">
+                    {
+                      selectedChapter.title
+                    }
+                  </h2>
+                </div>
+
+                {selectedChapter.read_audio_url?.trim() ? (
+                  <CodexNarrationPlayer
+                    key={selectedChapter.id}
+                    src={selectedChapter.read_audio_url}
+                  />
+                ) : null}
               </div>
             </div>
           </section>

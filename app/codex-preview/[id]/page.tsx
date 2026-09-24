@@ -40,7 +40,8 @@ export default async function CodexPreviewPage({
           slug,
           chapter_number,
           body,
-          sort_order
+          sort_order,
+          read_audio_url
         `,
       )
       .eq("id", id)
@@ -66,6 +67,8 @@ export default async function CodexPreviewPage({
     body: data.body ?? "",
     sort_order:
       data.sort_order ?? 0,
+    read_audio_url:
+      data.read_audio_url ?? null,
   };
 
   return (

@@ -37,6 +37,47 @@ function cleanSlug(
   return cleanText(value).toLowerCase();
 }
 
+function cleanAudioUrl(
+  value: FormDataEntryValue | null,
+): string | null {
+  const raw = cleanText(value);
+
+  if (!raw) {
+    return null;
+  }
+
+  if (raw.startsWith("/")) {
+    return raw;
+  }
+
+  let parsed: URL;
+
+  try {
+    parsed = new URL(raw);
+  } catch {
+    throw new Error(
+      "Read audio URL must be a valid URL.",
+    );
+  }
+
+  if (
+    parsed.protocol !== "https:" &&
+    parsed.protocol !== "http:"
+  ) {
+    throw new Error(
+      "Read audio URL must use http or https.",
+    );
+  }
+
+  if (raw.length > 2000) {
+    throw new Error(
+      "Read audio URL is too long.",
+    );
+  }
+
+  return raw;
+}
+
 function validateSlug(slug: string) {
   if (
     !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(
@@ -187,6 +228,13 @@ export async function createCodexChapter(
     ),
   );
 
+  const readAudioUrl =
+    cleanAudioUrl(
+      formData.get(
+        "read_audio_url",
+      ),
+    );
+
   if (!title || !slug) {
     throw new Error(
       "Title and slug are required.",
@@ -219,6 +267,8 @@ export async function createCodexChapter(
           chapterNumber,
         sort_order: sortOrder,
         body,
+        read_audio_url:
+          readAudioUrl,
         status: "draft",
         created_by:
           staff.userId,
@@ -276,6 +326,13 @@ export async function updateCodexChapter(
     ),
   );
 
+  const readAudioUrl =
+    cleanAudioUrl(
+      formData.get(
+        "read_audio_url",
+      ),
+    );
+
   if (!id) {
     throw new Error(
       "Chapter id is required.",
@@ -312,6 +369,8 @@ export async function updateCodexChapter(
           chapterNumber,
         sort_order: sortOrder,
         body,
+        read_audio_url:
+          readAudioUrl,
         updated_by:
           staff.userId,
         updated_at:

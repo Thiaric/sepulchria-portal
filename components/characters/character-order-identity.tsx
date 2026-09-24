@@ -38,9 +38,11 @@ function one<T>(
 export function CharacterOrderIdentity({
   characterId,
   variant,
+  isSystem,
 }: {
   characterId: string | null | undefined;
   variant: Variant;
+  isSystem?: boolean;
 }) {
   const [order, setOrder] =
     useState<OrderIdentity | null>(
@@ -49,6 +51,45 @@ export function CharacterOrderIdentity({
 
   const [loaded, setLoaded] =
     useState(false);
+
+  const [refreshKey, setRefreshKey] =
+    useState(0);
+
+  useEffect(() => {
+    function handleNpcOrderUpdated(
+      event: Event,
+    ) {
+      const detail =
+        (
+          event as CustomEvent<{
+            characterId?: string;
+          }>
+        ).detail;
+
+      if (
+        characterId &&
+        detail?.characterId ===
+          characterId
+      ) {
+        setRefreshKey(
+          (current) =>
+            current + 1,
+        );
+      }
+    }
+
+    window.addEventListener(
+      "sepulchria:npc-order-updated",
+      handleNpcOrderUpdated,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "sepulchria:npc-order-updated",
+        handleNpcOrderUpdated,
+      );
+    };
+  }, [characterId]);
 
   useEffect(() => {
     let cancelled = false;
@@ -109,7 +150,10 @@ export function CharacterOrderIdentity({
             )
           : null;
 
-      if (!relation) {
+      if (
+        !relation &&
+        isSystem !== false
+      ) {
         const {
           data: npcOrderData,
           error: npcOrderError,
@@ -175,7 +219,11 @@ export function CharacterOrderIdentity({
     return () => {
       cancelled = true;
     };
-  }, [characterId]);
+  }, [
+    characterId,
+    isSystem,
+    refreshKey,
+  ]);
 
   if (variant === "inline") {
     if (!loaded) {

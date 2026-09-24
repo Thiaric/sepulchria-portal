@@ -223,6 +223,18 @@ export function NpcControlPanel({roomId}:{roomId:string}){
           : {ok:false,message:"Select an NPC."};
       setStatus(result.message);
       if(result.ok){
+        if(!creating&&selected?.character_id){
+          window.dispatchEvent(
+            new CustomEvent(
+              "sepulchria:npc-order-updated",
+              {
+                detail:{
+                  characterId:selected.character_id,
+                },
+              },
+            ),
+          );
+        }
         setEditorOpen(false);setCreating(false);
         await refresh();
       }

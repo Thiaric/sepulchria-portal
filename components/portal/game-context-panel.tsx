@@ -489,6 +489,7 @@ export function GameContextPanel({
   <CharacterOrderIdentity
     characterId={person.id}
     variant="mini"
+    isSystem={person.is_system}
   />
 
             <div className="px-1 font-serif text-[11px] leading-4 text-[rgb(var(--sep-colour-dbc397))] transition group-hover:text-[rgb(var(--sep-colour-ecd5a8))] components_portal_game_context_panel_div_container_11">

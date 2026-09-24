@@ -718,6 +718,7 @@ function CharacterIdentityIcons({
       <CharacterOrderIdentity
         characterId={character.id}
         variant="forum"
+        isSystem={false}
       />
     </div>
   );

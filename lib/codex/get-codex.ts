@@ -9,6 +9,7 @@ export type PublicCodexChapter = {
   chapter_number: number;
   body: string;
   sort_order: number;
+  read_audio_url: string | null;
 };
 
 export const getPublicCodexChapters = cache(
@@ -24,7 +25,8 @@ export const getPublicCodexChapters = cache(
           slug,
           chapter_number,
           body,
-          sort_order
+          sort_order,
+          read_audio_url
         `,
       )
       .eq("status", "published")
@@ -50,6 +52,8 @@ export const getPublicCodexChapters = cache(
         chapter.chapter_number as number,
       body: chapter.body ?? "",
       sort_order: chapter.sort_order ?? 0,
+      read_audio_url:
+        chapter.read_audio_url ?? null,
     })) as PublicCodexChapter[];
   },
 );

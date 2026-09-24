@@ -139,6 +139,7 @@ function CharacterIdentityIcons({
       <CharacterOrderIdentity
         characterId={author.id}
         variant="chat"
+        isSystem={isNpc}
       />
     </div>
   );

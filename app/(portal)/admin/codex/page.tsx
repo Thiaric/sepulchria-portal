@@ -145,6 +145,15 @@ export default async function AdminCodexPage() {
               </AdminField>
             </div>
 
+            <AdminField label="Read audio URL">
+  <input
+    name="read_audio_url"
+    type="text"
+    placeholder="/sounds/codex/chapter_1.mp3"
+    className={inputClass}
+  />
+</AdminField>
+
             <AdminField label="Body">
               <RichTextEditor
                 name="body"

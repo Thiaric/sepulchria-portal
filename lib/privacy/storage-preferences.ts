@@ -17,6 +17,8 @@ export const OPTIONAL_PREFERENCE_KEYS = [
   "sepulchria-left-sidebar-collapsed",
   "sepulchria-right-sidebar-collapsed",
   "sepulchria-portal-sound-muted",
+  "sepulchria-codex-read-muted",
+  "sepulchria-codex-read-volume",
   "sepulchria-recent-text-colours",
   "sepulchria-recent-highlight-colours",
   "sepulchria-spelling-user-dictionary",

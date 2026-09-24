@@ -31,6 +31,7 @@ type CodexChapter = {
   chapter_number: number | null;
   sort_order: number;
   body: string;
+  read_audio_url: string | null;
   status: "draft" | "published";
   created_at: string | null;
   updated_at: string | null;
@@ -60,6 +61,7 @@ export default async function AdminCodexEditPage({
           chapter_number,
           sort_order,
           body,
+          read_audio_url,
           status,
           created_at,
           updated_at,
@@ -202,6 +204,21 @@ export default async function AdminCodexEditPage({
                 className={[((inputClass)), "admin_codex_id_page_input_sort_order"].filter(Boolean).join(" ")}
               />
             </AdminField>
+          </section>
+
+          <section className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-120e0b))] p-4 sm:p-5">
+            <AdminField label="Read audio URL">
+  <input
+    name="read_audio_url"
+    type="text"
+    placeholder="/sounds/codex/chapter_1.mp3"
+    className={inputClass}
+  />
+</AdminField>
+
+            <p className="mt-2 text-[9px] leading-5 text-[rgb(var(--sep-colour-746958))]">
+              Direct browser-playable audio URL for the chapter narration.
+            </p>
           </section>
 
           <section className="border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-120e0b))] p-4 sm:p-5 admin_codex_id_page_section_section_2">

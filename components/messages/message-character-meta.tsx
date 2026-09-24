@@ -54,6 +54,7 @@ export function MessageCharacterIcons({
       <CharacterOrderIdentity
         characterId={characterId}
         variant="message"
+        isSystem={false}
       />
     </div>
   );

@@ -1075,6 +1075,9 @@ const room =
                                   person.id
                                 }
                                 variant="inline"
+                                isSystem={
+                                  person.is_system
+                                }
                               />
                             </div>
 

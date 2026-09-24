@@ -35,6 +35,9 @@ type PortalAudioContextValue = {
 const STORAGE_KEY =
   "sepulchria-portal-sound-muted";
 
+const PORTAL_SOUND_EVENT =
+  "sepulchria:portal-sound-muted-changed";
+
 const PIGEON_SOUND_URL =
   "/sounds/private-message-pigeon.mp3";
 
@@ -325,6 +328,17 @@ export function PortalAudioProvider({
             // localStorage can be unavailable.
           }
         }
+
+        window.dispatchEvent(
+          new CustomEvent(
+            PORTAL_SOUND_EVENT,
+            {
+              detail: {
+                muted: nextMuted,
+              },
+            },
+          ),
+        );
 
         /*
          * Live mute for the WebAudio beep WITHOUT suspending the context.
