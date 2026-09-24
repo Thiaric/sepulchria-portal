@@ -28,32 +28,18 @@ function formatGender(value: string | null) {
 function Detail({
   label,
   value,
-  iconUrl = null,
 }: {
   label: string;
   value: string | null | undefined;
-  iconUrl?: string | null;
 }) {
   return (
     <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2">
       <p className="text-[7px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-796448))]">
         {label}
       </p>
-
-      <div className="mt-1 flex min-w-0 items-center gap-2">
-        {iconUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={iconUrl}
-            alt=""
-            className="h-5 w-5 shrink-0 object-contain"
-          />
-        ) : null}
-
-        <p className="min-w-0 break-words text-[11px] leading-5 text-[rgb(var(--sep-colour-cab89b))]">
-          {value?.trim() || "Not recorded"}
-        </p>
-      </div>
+      <p className="mt-1 break-words text-[11px] leading-5 text-[rgb(var(--sep-colour-cab89b))]">
+        {value?.trim() || "Not recorded"}
+      </p>
     </div>
   );
 }
@@ -106,12 +92,7 @@ export default async function NpcSheetPage({
       is_active,
       is_location_active,
       current_room_id,
-      order:orders(
-        id,
-        name,
-        icon_url,
-        colour
-      ),
+      order:orders(id,name),
       character:characters!npcs_character_id_fkey(
   id,
   first_name,
@@ -241,16 +222,8 @@ export default async function NpcSheetPage({
 <Detail label="Birthplace" value={character.birthplace} />
                   <Detail label="Origin" value={character.origin} />
                   <Detail label="Title" value={character.title || "NPC"} />
-                  <Detail
-                    label="Ancestry"
-                    value={race?.name}
-                    iconUrl={race?.icon_url ?? null}
-                  />
-                  <Detail
-                    label="Order"
-                    value={order?.name}
-                    iconUrl={order?.icon_url ?? null}
-                  />
+                  <Detail label="Ancestry" value={race?.name} />
+                  <Detail label="Order" value={order?.name} />
                   <Detail label="Location status" value="Active in Location" />
                 </div>
               </div>

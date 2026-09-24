@@ -186,19 +186,14 @@ function ChatHealthBar({
     >
       <div className="h-1.5 overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-160d0b))]">
         <div
-          className="h-full overflow-hidden transition-[width] duration-300"
+          className="h-full bg-[rgb(var(--sep-colour-b36b55))] transition-[width] duration-300"
           style={{
             width: `${percentage}%`,
           }}
-        >
-          <div
-            className="h-full w-11"
-            style={{
-              background:
-                "linear-gradient(to right, #b8322a 0%, #dd6b2f 33%, #d7b635 66%, #4b9b4b 100%)",
-            }}
-          />
-        </div>
+        />
+      </div>
+      <div className="mt-0.5 text-center text-[6px] leading-3 text-[rgb(var(--sep-colour-8f8170))]">
+        {current}/{max}
       </div>
     </div>
   );

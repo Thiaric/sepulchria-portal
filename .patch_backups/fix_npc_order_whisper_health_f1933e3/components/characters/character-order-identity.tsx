@@ -111,15 +111,22 @@ export function CharacterOrderIdentity({
 
       if (!relation) {
         const {
-          data: npcOrderData,
-          error: npcOrderError,
+          data: npcData,
+          error: npcError,
         } = await supabase
-          .rpc(
-            "get_npc_visual_order",
-            {
-              p_character_id:
-                characterId,
-            },
+          .from("npcs")
+          .select(`
+            order:orders(
+              id,
+              name,
+              slug,
+              icon_url,
+              colour
+            )
+          `)
+          .eq(
+            "character_id",
+            characterId,
           )
           .maybeSingle();
 
@@ -127,41 +134,15 @@ export function CharacterOrderIdentity({
           return;
         }
 
-        if (npcOrderError) {
+        if (npcError) {
           console.error(
-            "Unable to load NPC visual Order:",
-            npcOrderError.message,
+            "Unable to load NPC Order identity:",
+            npcError.message,
           );
-        } else if (npcOrderData) {
-          const npcOrder =
-            npcOrderData as OrderIdentity;
-
-          relation = {
-            id:
-              String(
-                npcOrder.id,
-              ),
-            name:
-              String(
-                npcOrder.name,
-              ),
-            slug:
-              String(
-                npcOrder.slug,
-              ),
-            icon_url:
-              npcOrder.icon_url
-                ? String(
-                    npcOrder.icon_url,
-                  )
-                : null,
-            colour:
-              npcOrder.colour
-                ? String(
-                    npcOrder.colour,
-                  )
-                : null,
-          };
+        } else if (npcData) {
+          relation = one(
+            npcData.order as Relation<OrderIdentity>,
+          );
         }
       }
 
