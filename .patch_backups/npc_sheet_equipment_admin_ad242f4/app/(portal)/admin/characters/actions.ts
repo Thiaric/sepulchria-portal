@@ -650,9 +650,7 @@ export async function updateCharacterAdministration(
     );
 
   const supabase =
-    isSystemCharacter
-      ? admin
-      : await createClient();
+    await createClient();
 
   const {
     data: character,
@@ -1419,52 +1417,6 @@ currentHealth =
     if (instantChatSettingsError) {
       throw new Error(
         `The character was approved, but Instant Chat could not be initialised: ${instantChatSettingsError.message}`,
-      );
-    }
-  }
-
-  if (isSystemCharacter) {
-    const npcDisplayName =
-      [firstName, surname]
-        .filter(Boolean)
-        .join(" ")
-        .trim() ||
-      firstName;
-
-    const {
-      error: displayNameSyncError,
-    } = await admin
-      .from("characters")
-      .update({
-        display_name: npcDisplayName,
-      })
-      .eq("id", characterId)
-      .eq("is_system", true);
-
-    if (displayNameSyncError) {
-      throw new Error(
-        `NPC Character saved, but its display name could not be synchronised: ${displayNameSyncError.message}`,
-      );
-    }
-
-    const {
-      error: npcSyncError,
-    } = await admin
-      .from("npcs")
-      .update({
-        name: npcDisplayName,
-        pronouns,
-        portrait_url: portraitUrl,
-        description: physicalDescription,
-        race_id: raceId,
-        updated_by_user_id: staff.userId,
-        updated_at: now,
-      })
-      .eq("character_id", characterId);
-
-    if (npcSyncError) {
-      throw new Error(
-        `NPC Character saved, but its NPC identity could not be synchronised: ${npcSyncError.message}`,
       );
     }
   }
@@ -2299,133 +2251,6 @@ export async function setCharacterFeatureEntitlement(
   revalidatePath(`/admin/characters/${characterId}`);
   revalidatePath("/", "layout");
 }
-
-function readNpcEquipmentRecordKind(
-  value: FormDataEntryValue | null,
-): "standard" | "unique" {
-  const raw =
-    typeof value === "string"
-      ? value.trim()
-      : "";
-
-  if (raw !== "standard" && raw !== "unique") {
-    throw new Error("Invalid Inventory record type.");
-  }
-
-  return raw;
-}
-
-async function revalidateNpcEquipment(
-  admin: any,
-  characterId: string,
-) {
-  const npc = await admin
-    .from("npcs")
-    .select("id")
-    .eq("character_id", characterId)
-    .maybeSingle();
-
-  revalidatePath(`/admin/characters/${characterId}`);
-  revalidatePath(`/admin/characters/${characterId}/inventory`);
-  revalidatePath("/game");
-
-  if (npc.data?.id) {
-    revalidatePath(`/npcs/${npc.data.id}`);
-  }
-}
-
-export async function equipNpcInventoryItemAdministration(
-  formData: FormData,
-) {
-  await requireStaffCapability("character_economy");
-
-  const characterId =
-    readRequiredUuid(formData.get("characterId"));
-
-  const recordId =
-    readRequiredUuid(formData.get("recordId"));
-
-  const recordKind =
-    readNpcEquipmentRecordKind(formData.get("recordKind"));
-
-  const admin = createPrivilegedClient();
-
-  const npc = await admin
-    .from("npcs")
-    .select("id")
-    .eq("character_id", characterId)
-    .maybeSingle();
-
-  if (npc.error || !npc.data) {
-    throw new Error(
-      npc.error?.message ?? "NPC Character not found.",
-    );
-  }
-
-  const supabase = await createClient();
-
-  const { error } = await (supabase as any).rpc(
-    "equip_npc_inventory_record_as_staff",
-    {
-      p_character_id: characterId,
-      p_record_kind: recordKind,
-      p_record_id: recordId,
-    },
-  );
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  await revalidateNpcEquipment(admin, characterId);
-}
-
-export async function unequipNpcInventoryItemAdministration(
-  formData: FormData,
-) {
-  await requireStaffCapability("character_economy");
-
-  const characterId =
-    readRequiredUuid(formData.get("characterId"));
-
-  const recordId =
-    readRequiredUuid(formData.get("recordId"));
-
-  const recordKind =
-    readNpcEquipmentRecordKind(formData.get("recordKind"));
-
-  const admin = createPrivilegedClient();
-
-  const npc = await admin
-    .from("npcs")
-    .select("id")
-    .eq("character_id", characterId)
-    .maybeSingle();
-
-  if (npc.error || !npc.data) {
-    throw new Error(
-      npc.error?.message ?? "NPC Character not found.",
-    );
-  }
-
-  const supabase = await createClient();
-
-  const { error } = await (supabase as any).rpc(
-    "unequip_npc_inventory_record_as_staff",
-    {
-      p_character_id: characterId,
-      p_record_kind: recordKind,
-      p_record_id: recordId,
-    },
-  );
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  await revalidateNpcEquipment(admin, characterId);
-}
-
 
 export async function assignNpcFeatAdministration(
   formData: FormData,

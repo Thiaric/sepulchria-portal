@@ -512,7 +512,7 @@ export function GameContextPanel({
         <SanctionRestrictionNotice message={communication.message} compact />
       ) : null}
 
-      {canManageCharacters && !person.is_system ? (
+      {canManageCharacters ? (
         <button
           type="button"
           title={`Manage ${displayName}`}

@@ -8,7 +8,7 @@ import {
   applyGiftOwnershipHealthEffects,
   removeGiftOwnershipHealthEffects,
 } from "@/lib/gifts/gift-health-effects";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 
 type RaceAgeOption = {
   id: string;
@@ -54,7 +54,7 @@ export async function getAdminCharacterAgeConfig(
   );
 
   const supabase =
-    createAdminClient();
+    await createClient();
 
   const [
     characterResult,
@@ -166,33 +166,6 @@ export async function saveAdminCharacterAge(
         ),
       );
 
-    const supabase =
-      createAdminClient();
-
-    const {
-      data: targetCharacter,
-      error: targetCharacterError,
-    } = await supabase
-      .from("characters")
-      .select("is_system")
-      .eq("id", characterId)
-      .maybeSingle();
-
-    if (
-      targetCharacterError ||
-      !targetCharacter
-    ) {
-      return {
-        ok: false,
-        error:
-          targetCharacterError?.message ??
-          "Character not found.",
-      };
-    }
-
-    const isSystemCharacter =
-      targetCharacter.is_system === true;
-
     if (
       selectedGiftIds.length >
       2
@@ -205,17 +178,9 @@ export async function saveAdminCharacterAge(
     }
 
     if (
-      (
-        !ageRaw &&
-        !isSystemCharacter
-      ) ||
-      (
-        ageRaw &&
-        (
-          !Number.isInteger(age) ||
-          age < 0
-        )
-      )
+      !ageRaw ||
+      !Number.isInteger(age) ||
+      age < 0
     ) {
       return {
         ok: false,
@@ -224,6 +189,8 @@ export async function saveAdminCharacterAge(
       };
     }
 
+    const supabase =
+      await createClient();
 
     const {
       data: race,
@@ -252,8 +219,7 @@ export async function saveAdminCharacterAge(
     }
 
     if (
-      race.min_age === null &&
-      !isSystemCharacter
+      race.min_age === null
     ) {
       return {
         ok: false,
@@ -263,10 +229,8 @@ export async function saveAdminCharacterAge(
     }
 
     if (
-      ageRaw &&
-      race.min_age !== null &&
       age <
-        race.min_age
+      race.min_age
     ) {
       return {
         ok: false,
@@ -276,7 +240,6 @@ export async function saveAdminCharacterAge(
     }
 
     if (
-      ageRaw &&
       race.max_age !== null &&
       age >
         race.max_age
@@ -502,10 +465,7 @@ export async function saveAdminCharacterAge(
     } = await supabase
       .from("characters")
       .update({
-        age:
-          ageRaw
-            ? age
-            : null,
+        age,
         race_id:
           raceId,
 

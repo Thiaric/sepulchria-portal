@@ -503,10 +503,8 @@ export function AdminCharacterEditForm({
     }
 
     if (
-      selectedRace.min_age !==
-        null &&
       numericAge <
-        selectedRace.min_age
+      selectedRace.min_age
     ) {
       setAgeError(
         `${selectedRace.name} characters must be at least ${selectedRace.min_age} years old.`,
@@ -635,11 +633,8 @@ export function AdminCharacterEditForm({
           disabled={
             loadingAge ||
             !selectedRace ||
-            (
-              selectedRace.min_age ===
-                null &&
-              !allowMissingAge
-            )
+            selectedRace.min_age ===
+              null
           }
           className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] disabled:cursor-not-allowed disabled:opacity-45 components_admin_admin_character_edit_form_input_age"
         />

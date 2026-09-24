@@ -775,7 +775,6 @@ const selectedAncestryGiftIds =
             </h3>
 
             {canEditCharacter ? (
-              <>
               <AdminCharacterEditForm
                 action={
                   updateCharacterAdministration
@@ -1477,6 +1476,15 @@ const selectedAncestryGiftIds =
                 ) : null}
 
 
+                {character.is_system &&
+                canManageEconomy ? (
+                  <NpcEquipmentAdmin
+                    characterId={
+                      character.id
+                    }
+                  />
+                ) : null}
+
                 <CharacterReviewFields
                   initialStatus={
                     character.status
@@ -1532,16 +1540,6 @@ const selectedAncestryGiftIds =
                 Save character record
               </button>
               </AdminCharacterEditForm>
-
-              {character.is_system &&
-              canManageEconomy ? (
-                <NpcEquipmentAdmin
-                  characterId={
-                    character.id
-                  }
-                />
-              ) : null}
-              </>
             ) : (
               <div className="mt-6 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4 text-xs leading-6 text-[rgb(var(--sep-colour-9f917c))] admin_characters_id_page_div_admin_character_review">
                 Moderator access is read-only on character records.

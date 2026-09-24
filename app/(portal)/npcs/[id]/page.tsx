@@ -1,100 +1,268 @@
-"use server";
-
+import Image from "next/image";
 import { notFound } from "next/navigation";
-import { createClient as createAdminClient } from "@supabase/supabase-js";
+
+import { CharacterConditionsDisplay } from "@/components/characters/character-conditions-display";
+import { CharacterGiftsDisplay } from "@/components/characters/character-gifts-display";
+import { CharacterInventoryDisplay } from "@/components/characters/character-inventory-display";
+import { CharacterLifeStateBadge } from "@/components/characters/character-life-state";
+import {
+  CharacterHealthDisplay,
+  CharacterMechanicsDisplay,
+} from "@/components/characters/character-mechanics-display";
+import { CharacterShapesDisplay } from "@/components/characters/character-shapes-display";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
-import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
 
-function admin(){
-  const url=process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key=process.env.SUPABASE_SECRET_KEY;
-  if(!url||!key)throw new Error("Missing Supabase server credentials.");
-  return createAdminClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}});
-}
-function one<T>(value:T|T[]|null):T|null{
-  return Array.isArray(value)?value[0]??null:value;
+function one<T>(value: T | T[] | null): T | null {
+  return Array.isArray(value) ? value[0] ?? null : value;
 }
 
-export default async function NpcSheetPage({params}:{params:Promise<{id:string}>}){
-  const {id}=await params;
-  const session=await createClient();
-  const auth=await session.auth.getUser();
-  if(!auth.data.user)notFound();
+function formatGender(value: string | null) {
+  if (value === "male") return "Male";
+  if (value === "female") return "Female";
+  if (value === "non_binary") return "Non-binary";
+  return null;
+}
 
-  const db=admin();
-  const result=await db
+function Detail({
+  label,
+  value,
+}: {
+  label: string;
+  value: string | null | undefined;
+}) {
+  return (
+    <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2">
+      <p className="text-[7px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-796448))]">
+        {label}
+      </p>
+      <p className="mt-1 break-words text-[11px] leading-5 text-[rgb(var(--sep-colour-cab89b))]">
+        {value?.trim() || "Not recorded"}
+      </p>
+    </div>
+  );
+}
+
+function TextSection({
+  title,
+  content,
+}: {
+  title: string;
+  content: string | null;
+}) {
+  if (!content?.trim()) return null;
+
+  return (
+    <section className="h-full border border-[rgb(var(--sep-colour-6b5032))]/50 bg-[rgb(var(--sep-colour-17110d))] p-4 sm:p-5">
+      <h2 className="font-serif text-xl text-[rgb(var(--sep-skin-c1,var(--sep-colour-dfc79c)))] sm:text-2xl">
+        {title}
+      </h2>
+      <p className="mt-3 whitespace-pre-line break-words text-sm leading-7 text-[rgb(var(--sep-skin-c2,var(--sep-colour-b0a18d)))]">
+        {content}
+      </p>
+    </section>
+  );
+}
+
+export default async function NpcSheetPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+
+  const session = await createClient();
+  const auth = await session.auth.getUser();
+
+  if (!auth.data.user) {
+    notFound();
+  }
+
+  const db = createAdminClient();
+
+  const { data: npc, error } = await db
     .from("npcs")
     .select(`
-      id,name,pronouns,portrait_url,description,current_room_id,is_active,is_location_active,
-      race:races(id,name,icon_url),
+      id,
+      name,
+      pronouns,
+      portrait_url,
+      description,
+      is_active,
+      is_location_active,
+      current_room_id,
       order:orders(id,name),
       character:characters!npcs_character_id_fkey(
-        id,display_name,current_health,muscles,reflexes,vigor,brains,shrewd,presence_score,life_state
+        id,
+        first_name,
+        surname,
+        display_name,
+        pronouns,
+        gender,
+        sexual_orientation,
+        birthplace,
+        origin,
+        physical_description,
+        personality,
+        biography,
+        public_notes,
+        title,
+        current_health,
+        life_state,
+        status,
+        race:races(
+          id,
+          name,
+          slug,
+          icon_url,
+          colour
+        )
       )
     `)
-    .eq("id",id)
-    .eq("is_active",true)
-    .eq("is_location_active",true)
+    .eq("id", id)
+    .eq("is_active", true)
+    .eq("is_location_active", true)
     .maybeSingle();
 
-  if(result.error||!result.data)notFound();
+  if (error || !npc) {
+    notFound();
+  }
 
-  const npc:any=result.data;
-  const character:any=one(npc.character);
-  if(!character)notFound();
+  const character = one(npc.character) as any;
 
-  const attrs=await getEffectiveCharacterAttributes(character.id,{
-    muscles:character.muscles,
-    reflexes:character.reflexes,
-    vigor:character.vigor,
-    brains:character.brains,
-    shrewd:character.shrewd,
-    presence_score:character.presence_score,
-  });
+  if (!character || character.status !== "approved") {
+    notFound();
+  }
 
-  const race:any=one(npc.race);
-  const order:any=one(npc.order);
+  const race = one(character.race) as any;
+  const order = one(npc.order) as any;
 
-  return <div className="mx-auto w-full max-w-4xl p-6">
-    <div className="border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] p-6">
-      <div className="flex flex-col gap-5 sm:flex-row">
-        <div className="h-40 w-32 shrink-0 overflow-hidden border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-100c09))]">
-          {npc.portrait_url
-            ? <img src={npc.portrait_url} alt="" className="h-full w-full object-cover"/>
-            : <div className="flex h-full items-center justify-center font-serif text-4xl text-[rgb(var(--sep-colour-8e7555))]">{npc.name?.charAt(0)??"?"}</div>}
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-876a46))]">NPC</p>
-          <h1 className="mt-1 font-serif text-3xl text-[rgb(var(--sep-colour-e0c79a))]">{npc.name}</h1>
-          <p className="mt-2 text-xs text-[rgb(var(--sep-colour-9d8d78))]">{[race?.name,order?.name,npc.pronouns].filter(Boolean).join(" · ")}</p>
-          {npc.description?<p className="mt-4 whitespace-pre-wrap text-sm leading-6 text-[rgb(var(--sep-colour-b7a68d))]">{npc.description}</p>:null}
-        </div>
-      </div>
+  const fullName =
+    [character.first_name, character.surname]
+      .map((value) => String(value ?? "").trim())
+      .filter(Boolean)
+      .join(" ") ||
+    character.display_name?.trim() ||
+    npc.name;
 
-      <div className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="border border-[rgb(var(--sep-colour-59432c))]/40 p-3">
-          <p className="text-[8px] uppercase text-[rgb(var(--sep-colour-75644f))]">Health</p>
-          <p className="mt-1 font-serif text-xl">{character.current_health??0}</p>
-        </div>
-        <div className="border border-[rgb(var(--sep-colour-59432c))]/40 p-3">
-          <p className="text-[8px] uppercase text-[rgb(var(--sep-colour-75644f))]">State</p>
-          <p className="mt-1 font-serif text-xl">{character.life_state}</p>
-        </div>
-      </div>
+  const portrait =
+    character.portrait_url ||
+    npc.portrait_url ||
+    null;
 
-      <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
-        {[
-          ["Muscles",attrs.muscles],
-          ["Reflexes",attrs.reflexes],
-          ["Vigour",attrs.vigor],
-          ["Brains",attrs.brains],
-          ["Shrewd",attrs.shrewd],
-          ["Presence",attrs.presence_score],
-        ].map(([label,value])=><div key={String(label)} className="border border-[rgb(var(--sep-colour-59432c))]/40 p-3">
-          <p className="text-[8px] uppercase text-[rgb(var(--sep-colour-75644f))]">{label}</p>
-          <p className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d7bd91))]">{String(value??0)}</p>
-        </div>)}
-      </div>
-    </div>
-  </div>;
+  return (
+    <main className="mx-auto w-full max-w-7xl p-4 sm:p-6">
+      <article className="space-y-6">
+        <section>
+          <div className="mb-3">
+            <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-876a46))]">
+              NPC profile
+            </p>
+            <h1 className="mt-1 font-serif text-2xl text-[rgb(var(--sep-colour-ecd9b2))] sm:text-3xl">
+              {fullName}
+            </h1>
+          </div>
+
+          <div className="grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(360px,0.9fr)]">
+            <section className="grid gap-4 border border-[rgb(var(--sep-colour-654b2e))]/50 bg-[rgb(var(--sep-colour-17110d))] p-4 sm:p-5 lg:grid-cols-[180px_minmax(0,1fr)]">
+              <div className="mx-auto w-full max-w-[180px] lg:mx-0">
+                <div className="relative aspect-[3/4] w-full overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-0d0a08))]">
+                  {portrait ? (
+                    <Image
+                      src={portrait}
+                      alt={`Portrait of ${fullName}`}
+                      fill
+                      sizes="180px"
+                      className="object-cover"
+                      priority
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center font-serif text-5xl text-[rgb(var(--sep-colour-5f503f))]">
+                      {fullName.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-2 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5">
+                  <p className="text-[7px] uppercase tracking-[0.19em] text-[rgb(var(--sep-colour-796448))]">
+                    Type
+                  </p>
+                  <p className="mt-1 text-[11px] leading-5 text-[rgb(var(--sep-colour-cab89b))]">
+                    NPC
+                  </p>
+                </div>
+              </div>
+
+              <div className="min-w-0">
+                <div className="border-b border-[rgb(var(--sep-colour-5d452d))]/35 pb-3">
+                  <p className="text-[8px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-876a46))]">
+                    In short
+                  </p>
+                  <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-ecd9b2))]">
+                    {fullName}
+                  </h2>
+
+                  <CharacterConditionsDisplay characterId={character.id} />
+                  <CharacterLifeStateBadge characterId={character.id} />
+                </div>
+
+                <div className="mt-3 grid gap-px bg-[rgb(var(--sep-colour-4f3b28))]/35 sm:grid-cols-2 lg:grid-cols-3">
+                  <Detail label="Gender" value={formatGender(character.gender)} />
+                  <Detail label="Pronouns" value={character.pronouns || npc.pronouns} />
+                  <Detail label="Sexual orientation" value={character.sexual_orientation} />
+                  <Detail label="Birthplace" value={character.birthplace} />
+                  <Detail label="Origin" value={character.origin} />
+                  <Detail label="Title" value={character.title || "NPC"} />
+                  <Detail label="Ancestry" value={race?.name} />
+                  <Detail label="Order" value={order?.name} />
+                  <Detail label="Location status" value="Active in Location" />
+                </div>
+              </div>
+
+              <div className="lg:col-span-2">
+                <CharacterHealthDisplay characterId={character.id} />
+              </div>
+            </section>
+
+            <CharacterMechanicsDisplay characterId={character.id} />
+          </div>
+
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
+            <TextSection
+              title="Physical Description"
+              content={character.physical_description || npc.description}
+            />
+            <TextSection title="Personality" content={character.personality} />
+            <TextSection title="Biography" content={character.biography} />
+            <TextSection title="Public Notes" content={character.public_notes} />
+          </div>
+        </section>
+
+        <section className="border-t border-[rgb(var(--sep-colour-60482e))]/45 pt-6">
+          <CharacterShapesDisplay characterId={character.id} />
+        </section>
+
+        <section className="border-t border-[rgb(var(--sep-colour-60482e))]/45 pt-6">
+          <CharacterGiftsDisplay characterId={character.id} twoColumns />
+        </section>
+
+        <section className="border-t border-[rgb(var(--sep-colour-60482e))]/45 pt-6">
+          <div className="mb-4">
+            <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))]">
+              Possessions
+            </p>
+            <h2 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-dec89f))]">
+              Equipment & Items
+            </h2>
+          </div>
+
+          <CharacterInventoryDisplay
+            characterId={character.id}
+            own={false}
+            showInventoryItems
+          />
+        </section>
+      </article>
+    </main>
+  );
 }
