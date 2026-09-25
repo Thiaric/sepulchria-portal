@@ -466,7 +466,7 @@ export const STAGE2_TOURS = {
       {
         "selector": ".warping_page_header_header",
         "title": "Warping and Shapes",
-        "body": "Warping is the shaping of the Current through known Shapes. This catalogue contains the active Shapes available in Sepulchria."
+        "body": "Warping is the shaping of the Current through known Shapes, effectively Sepulchria's Magic system. This catalogue contains the active Shapes available in Sepulchria."
       },
       {
         "selector": ".components_warping_shapes_catalogue_section_section",

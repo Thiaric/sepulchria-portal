@@ -305,7 +305,7 @@ export function CharacterDirectory({
       >
         <div className="grid gap-2 sm:gap-4 xl:grid-cols-[minmax(220px,1fr)_170px_190px_180px_150px_auto] xl:items-end components_characters_character_directory_div_container_2">
           <label className="block components_characters_character_directory_label_label">
-            <span className="text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))] components_characters_character_directory_span_text">
+            <span className="text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-skin-c1))] components_characters_character_directory_span_text">
               Search
             </span>
 
@@ -805,7 +805,7 @@ function DirectorySelect({
 }) {
   return (
     <label className="block components_characters_character_directory_label_label_2">
-      <span className="text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-876a46))] components_characters_character_directory_span_text_7">
+      <span className="text-[9px] uppercase tracking-[0.22em] text-[rgb(var(--sep-skin-c1))] components_characters_character_directory_span_text_7">
         {label}
       </span>
 

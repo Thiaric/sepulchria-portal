@@ -26,6 +26,7 @@ import { getWorldState } from "@/lib/world/get-world-state";
 import { ExperienceLogoutGuard } from "@/components/experience/experience-logout-guard";
 import { CosmeticRuntime } from "@/components/cosmetics/cosmetic-runtime";
 import { PortalFirstVisitTour } from "@/components/tutorial/portal-first-visit-tour";
+import { MandatoryWelcomeModal } from "@/components/onboarding/mandatory-welcome-modal";
 import { getEquippedCosmetics } from "@/lib/cosmetics/get-equipped-cosmetic";
 import { cssImageUrl } from "@/components/cosmetics/cosmetic-frame-overlay";
 
@@ -149,6 +150,8 @@ async function PortalLayoutContent({
             null
           }
         />
+
+        <MandatoryWelcomeModal />
 
         <PrivateLocationInvitationPopup
           characterId={
