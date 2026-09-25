@@ -58,16 +58,36 @@ export function PendingOpposedActions() {
   const [pendingActions, setPendingActions] = useState<PendingAction[]>([]);
   const [attributes, setAttributes] =
     useState<CharacterAttributes | null>(null);
+  const [characterId, setCharacterId] =
+    useState<string | null>(null);
   const [state, action] = useActionState(counterOpposedAction, initialState);
 
   useEffect(() => {
     let active = true;
 
-    async function load() {
-      const { data: characterId } =
-        await supabase.rpc("my_character_id");
-      if (!active || !characterId) return;
+    void supabase
+      .rpc("my_character_id")
+      .then(({ data }) => {
+        if (active) {
+          setCharacterId(
+            typeof data === "string"
+              ? data
+              : null,
+          );
+        }
+      });
 
+    return () => {
+      active = false;
+    };
+  }, [supabase]);
+
+  useEffect(() => {
+    if (!characterId) return;
+
+    let active = true;
+
+    async function load() {
       const { data } = await supabase
         .from("opposed_actions")
         .select(`
@@ -88,12 +108,22 @@ export function PendingOpposedActions() {
     }
 
     void load();
-    const timer = window.setInterval(() => void load(), 3000);
+
+    const timer = window.setInterval(
+      () => void load(),
+      10_000,
+    );
+
     const channel = supabase
-      .channel(`opposed-actions-${crypto.randomUUID()}`)
+      .channel(`opposed-actions-${characterId}`)
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "opposed_actions" },
+        {
+          event: "*",
+          schema: "public",
+          table: "opposed_actions",
+          filter: `target_character_id=eq.${characterId}`,
+        },
         () => void load(),
       )
       .subscribe();
@@ -103,7 +133,11 @@ export function PendingOpposedActions() {
       window.clearInterval(timer);
       void supabase.removeChannel(channel);
     };
-  }, [supabase, state.submittedAt]);
+  }, [
+    supabase,
+    characterId,
+    state.submittedAt,
+  ]);
 
   useEffect(() => {
     if (!pendingActions.length || attributes) return;

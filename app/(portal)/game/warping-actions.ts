@@ -594,7 +594,7 @@ export async function resolveIncomingShape(_p:WarpingActionState,f:FormData):Pro
  const profile=effectProfile(s,t,caster.id),resolution=profileResolution(s,profile);
  if(resolution.mode!=="save")throw Error(`This ${kind} effect no longer requires a Save.`);
  if(choice==="__do_nothing__"){const r=await apply(t);await admin().from("shape_cast_targets").update({response:"do_nothing",outcome:"success",resolved_at:new Date().toISOString()}).eq("id",id);await message(cast.room_id,c.id,`◆ ${c.display_name} does nothing against ${s.name} · ${kind} succeeds${effectSummary(r)}`);revalidatePath("/game");revalidatePath("/character");return{ok:true,message:`${kind} resolved.`,submittedAt:Date.now()}}
- const saveOptions=resolution.saveOptions;if(!saveOptions.includes(choice))throw Error("That Save is unavailable.");const a=SAVE[choice];if(!a)throw Error("Invalid Save.");const mod=await eff(c,a),r=randomInt(1,21),total=r+mod,dc=11+(resolution.dcAttribute?await eff(caster,resolution.dcAttribute):0),saved=total>=dc;
+ const saveOptions=resolution.saveOptions;if(!saveOptions.includes(choice))throw Error("That Save is unavailable.");const a=SAVE[choice];if(!a)throw Error("Invalid Save.");const [mod,dcMod]=await Promise.all([eff(c,a),resolution.dcAttribute?eff(caster,resolution.dcAttribute):Promise.resolve(0)]),r=randomInt(1,21),total=r+mod,dc=11+dcMod,saved=total>=dc;
  let result:any=null;if(!saved)result=await apply(t);else if(resolution.saveSuccessDamage==="half")result=await apply(t,true);
  await admin().from("shape_cast_targets").update({response:choice,save_roll:r,save_attribute:a,save_attribute_value:mod,save_total:total,dc,outcome:saved?"saved":"success",resolved_at:new Date().toISOString()}).eq("id",id);
  let end=saved?"SUCCESS — no effect":`FAILED — ${kind} succeeds`;if(saved&&resolution.saveSuccessDamage==="half"&&result?.dmg)end=`SUCCESS — half damage ${result.dmg}`;if(!saved)end+=effectSummary(result);
@@ -656,7 +656,7 @@ export async function resolveIncomingDispel(_p:WarpingActionState,f:FormData):Pr
  if(resolution.mode!=="save")throw Error("This Dispel no longer requires a Save.");
  const saveOptions=resolution.saveOptions;if(!saveOptions.includes(choice))throw Error("That Save is unavailable.");
  const sa=SAVE[choice];if(!sa)throw Error("Invalid Save.");
- const mod=await eff(c,sa),roll=randomInt(1,21),total=roll+mod,dc=11+(resolution.dcAttribute?await eff(caster,resolution.dcAttribute):0),saved=total>=dc;
+ const [mod,dcMod]=await Promise.all([eff(c,sa),resolution.dcAttribute?eff(caster,resolution.dcAttribute):Promise.resolve(0)]),roll=randomInt(1,21),total=roll+mod,dc=11+dcMod,saved=total>=dc;
  if(!saved){const now=new Date().toISOString();const u=await a.from("character_effects").update({dispelled_at:now,ended_at:now,dispelled_by_source_type:s.is_feat_backing?"feat":"shape",dispelled_by_source_id:s.is_feat_backing?s.feat_id:s.id}).eq("id",effectId).is("dispelled_at",null).is("ended_at",null);if(u.error)throw Error(u.error.message)}
  const clear=await a.from("shape_casts").update({dispel_effect_id:null}).eq("id",cast.id).eq("dispel_effect_id",effectId);if(clear.error)throw Error(clear.error.message);
  await message(cast.room_id,c.id,`◆ ${c.display_name} uses ${SAVE_NAME[choice]??choice} against ${s.name} Dispel · d20 -> ${roll} + ${LABEL[sa]??sa} (${mod>=0?"+":""}${mod}) = ${total} vs DC ${dc} · ${saved?`SUCCESS — ${effectShape?.name??"effect"} remains active`:`FAILED — ${effectShape?.name??"effect"} dispelled`}`);

@@ -31,25 +31,36 @@ export function PendingShapeResponses(){
  const [rows,setRows]=useState<any[]>([]);
  const [dispelRows,setDispelRows]=useState<any[]>([]);
  const [attributes,setAttributes]=useState<CharacterAttributes|null>(null);
+ const [characterId,setCharacterId]=useState<string|null>(null);
  const [state,action]=useActionState(resolveIncomingShape,initial);
  const [dispelState,dispelAction]=useActionState(resolveIncomingDispel,initial);
 
  useEffect(()=>{
   let live=true;
-  async function load(){
-   const me=await db.rpc("my_character_id");
-   if(!live||!me.data)return;
+  void db.rpc("my_character_id").then(({data})=>{
+   if(live)setCharacterId(typeof data==="string"?data:null);
+  });
+  return()=>{live=false};
+ },[db]);
 
-   const q=await db.from("shape_cast_targets").select(`id,created_at,target_character_id,other_effect_choice,cast:shape_casts!shape_cast_targets_cast_id_fkey(id,caster:characters!shape_casts_caster_character_id_fkey(id,display_name),shape:shapes!shape_casts_shape_id_fkey(*))`).eq("target_character_id",me.data).eq("outcome","pending").order("created_at",{ascending:true});
+ useEffect(()=>{
+  if(!characterId)return;
+  let live=true;
+
+  async function load(){
+   const [q,dq]=await Promise.all([
+    db.from("shape_cast_targets").select(`id,created_at,target_character_id,other_effect_choice,cast:shape_casts!shape_cast_targets_cast_id_fkey(id,caster:characters!shape_casts_caster_character_id_fkey(id,display_name),shape:shapes!shape_casts_shape_id_fkey(*))`).eq("target_character_id",characterId).eq("outcome","pending").order("created_at",{ascending:true}),
+    db.from("shape_casts").select(`id,created_at,dispel_effect_id,dispel_target_character_id,caster:characters!shape_casts_caster_character_id_fkey(id,display_name),shape:shapes!shape_casts_shape_id_fkey(*)`).eq("dispel_target_character_id",characterId).not("dispel_effect_id","is",null).order("created_at",{ascending:true}),
+   ]);
+
    if(!live)return;
+
    setRows((q.data??[]).filter((row:any)=>{
     const cast=one(row.cast),caster=one(cast?.caster),s=one(cast?.shape);
-    if(!s||caster?.id===me.data)return false;
+    if(!s||caster?.id===characterId)return false;
     return resolutionFor(row,s,caster).mode==="save";
    }));
 
-   const dq=await db.from("shape_casts").select(`id,created_at,dispel_effect_id,dispel_target_character_id,caster:characters!shape_casts_caster_character_id_fkey(id,display_name),shape:shapes!shape_casts_shape_id_fkey(*)`).eq("dispel_target_character_id",me.data).not("dispel_effect_id","is",null).order("created_at",{ascending:true});
-   if(!live)return;
    setDispelRows((dq.data??[]).filter((row:any)=>{
     const s=one(row.shape);
     return Boolean(s?.is_dispel);
@@ -57,11 +68,22 @@ export function PendingShapeResponses(){
   }
 
   void load();
-  const timer=window.setInterval(()=>void load(),2500);
-  const targetChannel=db.channel(`shape-target-${crypto.randomUUID()}`).on("postgres_changes",{event:"*",schema:"public",table:"shape_cast_targets"},()=>void load()).subscribe();
-  const dispelChannel=db.channel(`shape-dispel-${crypto.randomUUID()}`).on("postgres_changes",{event:"*",schema:"public",table:"shape_casts"},()=>void load()).subscribe();
+  const timer=window.setInterval(()=>void load(),10_000);
+
+  const targetChannel=db.channel(`shape-target-${characterId}`).on(
+   "postgres_changes",
+   {event:"*",schema:"public",table:"shape_cast_targets",filter:`target_character_id=eq.${characterId}`},
+   ()=>void load(),
+  ).subscribe();
+
+  const dispelChannel=db.channel(`shape-dispel-${characterId}`).on(
+   "postgres_changes",
+   {event:"*",schema:"public",table:"shape_casts",filter:`dispel_target_character_id=eq.${characterId}`},
+   ()=>void load(),
+  ).subscribe();
+
   return()=>{live=false;window.clearInterval(timer);void db.removeChannel(targetChannel);void db.removeChannel(dispelChannel)};
- },[db,state.submittedAt,dispelState.submittedAt]);
+ },[db,characterId,state.submittedAt,dispelState.submittedAt]);
 
  useEffect(()=>{
   if((!rows.length&&!dispelRows.length)||attributes)return;
