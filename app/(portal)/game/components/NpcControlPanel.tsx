@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState,useCallback,useEffect,useMemo,useState,useTransition } from "react";
+import { useFormStatus } from "react-dom";
 import { openPortalModal } from "@/components/portal/portal-modal-button";
 import { MechanicalFeatPanel } from "./MechanicalFeatPanel";
 import { createNpc,loadNpcControlData,sendNpcMessage,sendNpcWhisper,type NpcControlData,updateNpc } from "../npc-actions";
@@ -24,6 +25,7 @@ import { activateRoomGift,useRoomGift,useRoomItem,sendRoomAttributeCheck } from 
 import { startAttributeOpposedAction,startUnarmedAttack,startWeaponOpposedAttack } from "../opposed-actions";
 
 const EMPTY:NpcControlData={npcs:[],races:[],orders:[]};
+function NpcPendingSubmitButton({label,pendingLabel,disabled=false,name,value,className}:{label:string;pendingLabel:string;disabled?:boolean;name?:string;value?:string;className:string}){const {pending,data}=useFormStatus();const mine=pending&&(!name||data?.get(name)===value);return <button type="submit" name={name} value={value} disabled={disabled||pending} className={className}>{mine?pendingLabel:label}</button>}
 function NpcTargetButtons({targets,selected,onSelect,allowSelf=false,selfId=""}:{targets:any[];selected:string;onSelect:(id:string)=>void;allowSelf?:boolean;selfId?:string}){
   const cls=(active:boolean)=>[
     "border px-3 py-2 text-[9px] transition",
@@ -90,8 +92,8 @@ function NpcIncomingResponses({npcId,actorCharacterId,roomId}:{npcId:string;acto
         <form action={opposedAction} className="mt-2 flex flex-wrap gap-2">
           <input type="hidden" name="npc_actor_character_id" value={actorCharacterId}/>
           <input type="hidden" name="opposed_action_id" value={entry.id}/>
-          {(entry.allowed_counters??[]).map((counter:string)=><button key={counter} type="submit" name="counter_kind" value={counter} className="border border-[rgb(var(--sep-colour-765937))] px-3 py-2 text-[8px] uppercase">{NPC_COUNTER_LABELS[counter]??counter} ({mod(counter)})</button>)}
-          <button type="submit" name="counter_kind" value="__do_nothing__" className="border border-[rgb(var(--sep-colour-765937))] px-3 py-2 text-[8px] uppercase">Do nothing</button>
+          {(entry.allowed_counters??[]).map((counter:string)=><NpcPendingSubmitButton key={counter} name="counter_kind" value={counter} label={`${NPC_COUNTER_LABELS[counter]??counter} (${mod(counter)})`} pendingLabel="Responding..." className="border border-[rgb(var(--sep-colour-765937))] px-3 py-2 text-[8px] uppercase disabled:cursor-not-allowed disabled:opacity-40" />)}
+          <NpcPendingSubmitButton name="counter_kind" value="__do_nothing__" label="Do nothing" pendingLabel="Responding..." className="border border-[rgb(var(--sep-colour-765937))] px-3 py-2 text-[8px] uppercase disabled:cursor-not-allowed disabled:opacity-40" />
         </form>
       </section>;
     })}
@@ -101,8 +103,8 @@ function NpcIncomingResponses({npcId,actorCharacterId,roomId}:{npcId:string;acto
       <form action={shapeAction} className="mt-2 flex flex-wrap gap-2">
         <input type="hidden" name="npc_actor_character_id" value={actorCharacterId}/>
         <input type="hidden" name="shape_cast_target_id" value={entry.id}/>
-        {(entry.saveOptions??[]).map((save:string)=><button key={save} type="submit" name="save_choice" value={save} className="border border-[rgb(var(--sep-colour-765937))] px-3 py-2 text-[8px] uppercase">{NPC_COUNTER_LABELS[save]??save} ({mod(save)})</button>)}
-        <button type="submit" name="save_choice" value="__do_nothing__" className="border border-[rgb(var(--sep-colour-765937))] px-3 py-2 text-[8px] uppercase">Do nothing</button>
+        {(entry.saveOptions??[]).map((save:string)=><NpcPendingSubmitButton key={save} name="save_choice" value={save} label={`${NPC_COUNTER_LABELS[save]??save} (${mod(save)})`} pendingLabel="Responding..." className="border border-[rgb(var(--sep-colour-765937))] px-3 py-2 text-[8px] uppercase disabled:cursor-not-allowed disabled:opacity-40" />)}
+        <NpcPendingSubmitButton name="save_choice" value="__do_nothing__" label="Do nothing" pendingLabel="Responding..." className="border border-[rgb(var(--sep-colour-765937))] px-3 py-2 text-[8px] uppercase disabled:cursor-not-allowed disabled:opacity-40" />
       </form>
     </section>)}
     {data.dispels?.map((entry:any)=><section key={entry.id} className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-20140c))] p-3">
@@ -111,8 +113,8 @@ function NpcIncomingResponses({npcId,actorCharacterId,roomId}:{npcId:string;acto
       <form action={dispelAction} className="mt-2 flex flex-wrap gap-2">
         <input type="hidden" name="npc_actor_character_id" value={actorCharacterId}/>
         <input type="hidden" name="dispel_cast_id" value={entry.id}/>
-        {(entry.saveOptions??[]).map((save:string)=><button key={save} type="submit" name="save_choice" value={save} className="border border-[rgb(var(--sep-colour-765937))] px-3 py-2 text-[8px] uppercase">{NPC_COUNTER_LABELS[save]??save} ({mod(save)})</button>)}
-        <button type="submit" name="save_choice" value="__do_nothing__" className="border border-[rgb(var(--sep-colour-765937))] px-3 py-2 text-[8px] uppercase">Do nothing</button>
+        {(entry.saveOptions??[]).map((save:string)=><NpcPendingSubmitButton key={save} name="save_choice" value={save} label={`${NPC_COUNTER_LABELS[save]??save} (${mod(save)})`} pendingLabel="Responding..." className="border border-[rgb(var(--sep-colour-765937))] px-3 py-2 text-[8px] uppercase disabled:cursor-not-allowed disabled:opacity-40" />)}
+        <NpcPendingSubmitButton name="save_choice" value="__do_nothing__" label="Do nothing" pendingLabel="Responding..." className="border border-[rgb(var(--sep-colour-765937))] px-3 py-2 text-[8px] uppercase disabled:cursor-not-allowed disabled:opacity-40" />
       </form>
     </section>)}
   </div>;
@@ -332,7 +334,7 @@ export function NpcControlPanel({roomId}:{roomId:string}){
           {mechanicsTarget
             ? <><input type="hidden" name="opposed_action" value={attributeAction}/><input type="hidden" name="opposed_target_character_id" value={mechanicsTarget}/></>
             : <><input type="hidden" name="check_key" value={attributeAction}/><input type="hidden" name="client_nonce" value={selected.id+"-"+attributeAction+"-"+Date.now()}/></>}
-          <button className="mt-1 border border-[rgb(var(--sep-colour-8d6d3e))]/70 px-3 py-2 text-[8px] uppercase">Roll</button>
+          <NpcPendingSubmitButton label="Roll" pendingLabel="Rolling..." className="mt-1 border border-[rgb(var(--sep-colour-8d6d3e))]/70 px-3 py-2 text-[8px] uppercase disabled:cursor-not-allowed disabled:opacity-40" />
         </form>
       </div>}
 
@@ -377,16 +379,7 @@ export function NpcControlPanel({roomId}:{roomId:string}){
               <input type="hidden" name="npc_actor_character_id" value={selected.character_id??""}/>
               <input type="hidden" name="character_gift_id" value={g.characterGiftId}/>
               <input type="hidden" name="gift_target_character_id" value={mechanicsTarget===selected.character_id?"":mechanicsTarget}/>
-              <button
-                disabled={targetMode==="other"&&!mechanicsTarget}
-                className="mt-1 border border-[rgb(var(--sep-colour-8d6d3e))]/70 px-3 py-2 text-[8px] uppercase disabled:opacity-40"
-              >
-                {(g.effectMode??g.effect_mode)==="passive"
-                  ?"Show Feat"
-                  :(g.effectMode??g.effect_mode)==="temporary"
-                    ?"Activate Feat"
-                    :"Use Feat"}
-              </button>
+              <NpcPendingSubmitButton disabled={targetMode==="other"&&!mechanicsTarget} label={(g.effectMode??g.effect_mode)==="passive"?"Show Feat":(g.effectMode??g.effect_mode)==="temporary"?"Activate Feat":"Use Feat"} pendingLabel={(g.effectMode??g.effect_mode)==="passive"?"Showing...":(g.effectMode??g.effect_mode)==="temporary"?"Activating...":"Using..."} className="mt-1 border border-[rgb(var(--sep-colour-8d6d3e))]/70 px-3 py-2 text-[8px] uppercase disabled:cursor-not-allowed disabled:opacity-40" />
             </form>
           </div>;
         })()}
@@ -405,7 +398,7 @@ export function NpcControlPanel({roomId}:{roomId:string}){
             <input type="hidden" name="item_record_id" value={i?.record_id??""}/>
             <input type="hidden" name="item_target_character_id" value={mechanicsTarget===selected.character_id?"":mechanicsTarget}/>
           </>})()}
-          <button disabled={!selectedItem||!mechanics.items?.find((x:any)=>x.record_id===selectedItem)?.is_usable} className="mt-1 border border-[rgb(var(--sep-colour-8d6d3e))]/70 px-3 py-2 text-[8px] uppercase disabled:opacity-40">Use Item</button>
+          <NpcPendingSubmitButton label="Use Item" pendingLabel="Using..." disabled={!selectedItem||!mechanics.items?.find((x:any)=>x.record_id===selectedItem)?.is_usable} className="mt-1 border border-[rgb(var(--sep-colour-8d6d3e))]/70 px-3 py-2 text-[8px] uppercase disabled:cursor-not-allowed disabled:opacity-40" />
         </form>
       </div>}
 
@@ -437,14 +430,14 @@ export function NpcControlPanel({roomId}:{roomId:string}){
           <form action={unarmedAction}>
             <input type="hidden" name="npc_actor_character_id" value={selected.character_id??""}/>
             <input type="hidden" name="opposed_target_character_id" value={mechanicsTarget}/>
-            <button disabled={!mechanicsTarget} className="border border-[rgb(var(--sep-colour-8d6d3e))]/70 px-3 py-2 text-[8px] uppercase disabled:opacity-40">Unarmed Attack</button>
+            <NpcPendingSubmitButton label="Unarmed Attack" pendingLabel="Attacking..." disabled={!mechanicsTarget} className="border border-[rgb(var(--sep-colour-8d6d3e))]/70 px-3 py-2 text-[8px] uppercase disabled:cursor-not-allowed disabled:opacity-40" />
           </form>
           {mechanics.items?.filter((i:any)=>i.category_slug==="weapon"&&i.is_equipped&&["main_hand","off_hand"].includes(String(i.equipped_slot??""))).map((i:any)=><form key={`${i.record_kind}:${i.record_id}`} action={weaponAction}>
             <input type="hidden" name="npc_actor_character_id" value={selected.character_id??""}/>
             <input type="hidden" name="item_record_kind" value={i.record_kind}/>
             <input type="hidden" name="item_record_id" value={i.record_id}/>
             <input type="hidden" name="opposed_target_character_id" value={mechanicsTarget}/>
-            <button disabled={!mechanicsTarget} className="border border-[rgb(var(--sep-colour-8d6d3e))]/70 px-3 py-2 text-[8px] uppercase disabled:opacity-40">Attack with {i.name}</button>
+            <NpcPendingSubmitButton label={`Attack with ${i.name}`} pendingLabel="Attacking..." disabled={!mechanicsTarget} className="border border-[rgb(var(--sep-colour-8d6d3e))]/70 px-3 py-2 text-[8px] uppercase disabled:cursor-not-allowed disabled:opacity-40" />
           </form>)}
         </div>
       </div>}

@@ -6,6 +6,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { useFormStatus } from "react-dom";
 import { createClient } from "@/lib/supabase/client";
 import type { ActionState, CharacterAttributes } from "@/types/game";
 import { loadMyEffectiveAttributes } from "../deferred-actions";
@@ -44,6 +45,12 @@ const COUNTER_ATTRIBUTES: Record<string, keyof CharacterAttributes> = {
 
 function signed(value: number) {
   return value >= 0 ? `+${value}` : String(value);
+}
+
+function PendingResponseButton({label,name,value,className}:{label:string;name:string;value:string;className:string}) {
+  const { pending, data } = useFormStatus();
+  const mine = pending && data?.get(name) === value;
+  return <button type="submit" name={name} value={value} disabled={pending} className={className}>{mine ? "Responding..." : label}</button>;
 }
 
 export function PendingOpposedActions() {
@@ -146,33 +153,9 @@ export function PendingOpposedActions() {
               />
 
               {pendingAction.allowed_counters.map((counter) => (
-                <button
-                  key={counter}
-                  type="submit"
-                  name="counter_kind"
-                  value={counter}
-                  className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-2a1c11))] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-dfc18f))] transition hover:border-[rgb(var(--sep-colour-a47b48))] game_components_pendingopposedactions_button_counter_kind"
-                >
-                  {COUNTER_LABELS[counter] ?? counter} (
-                  {attributes
-                    ? signed(
-                        Number(
-                          attributes[COUNTER_ATTRIBUTES[counter]] ?? 0,
-                        ),
-                      )
-                    : "…"}
-                  )
-                </button>
+                <PendingResponseButton key={counter} name="counter_kind" value={counter} label={`${COUNTER_LABELS[counter] ?? counter} (${attributes ? signed(Number(attributes[COUNTER_ATTRIBUTES[counter]] ?? 0)) : "…"})`} className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-2a1c11))] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-dfc18f))] transition hover:border-[rgb(var(--sep-colour-a47b48))] disabled:cursor-not-allowed disabled:opacity-40 game_components_pendingopposedactions_button_counter_kind" />
               ))}
-
-              <button
-                type="submit"
-                name="counter_kind"
-                value="__do_nothing__"
-                className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-2a1c11))] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-dfc18f))] transition hover:border-[rgb(var(--sep-colour-a47b48))] game_components_pendingopposedactions_button_do_nothing"
-              >
-                Do nothing
-              </button>
+              <PendingResponseButton name="counter_kind" value="__do_nothing__" label="Do nothing" className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-2a1c11))] px-3 py-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-dfc18f))] transition hover:border-[rgb(var(--sep-colour-a47b48))] disabled:cursor-not-allowed disabled:opacity-40 game_components_pendingopposedactions_button_do_nothing" />
             </form>
           </section>
         );

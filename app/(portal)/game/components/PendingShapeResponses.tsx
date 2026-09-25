@@ -1,5 +1,6 @@
 "use client";
 import {useActionState,useEffect,useMemo,useState} from "react";
+import {useFormStatus} from "react-dom";
 import {createClient} from "@/lib/supabase/client";
 import type {CharacterAttributes} from "@/types/game";
 import {loadMyEffectiveAttributes} from "../deferred-actions";
@@ -9,6 +10,7 @@ const initial:WarpingActionState={ok:false,message:""};
 const L:Record<string,string>={dodge:"Dodge — Reflexes",defend:"Defend — Vigour",resist_vigour:"Resist — Vigour",resist_vigor:"Resist — Vigour",resist_shrewd:"Resist — Shrewd",resist_brains:"Resist — Brains",resist_presence:"Resist — Presence"};
 const A:Record<string,keyof CharacterAttributes>={dodge:"reflexes",defend:"vigor",resist_vigour:"vigor",resist_vigor:"vigor",resist_shrewd:"shrewd",resist_brains:"brains",resist_presence:"presence_score"};
 const sign=(n:number)=>n>=0?`+${n}`:String(n);
+function PendingShapeResponseButton({label,name,value,className}:{label:string;name:string;value:string;className:string}){const {pending,data}=useFormStatus();const mine=pending&&data?.get(name)===value;return <button type="submit" name={name} value={value} disabled={pending} className={className}>{mine?"Responding...":label}</button>}
 
 function one(v:any){return Array.isArray(v)?v[0]:v}
 function profileFor(row:any,s:any,caster:any){
@@ -84,8 +86,8 @@ export function PendingShapeResponses(){
     <p className="mt-1 text-[10px] text-[rgb(var(--sep-colour-b6a58d))] game_components_pendingshaperesponses_p_text_4">{s.description}</p>
     <form action={action} className="mt-3 flex flex-wrap gap-2 game_components_pendingshaperesponses_form_action">
      <input className="game_components_pendingshaperesponses_input_field" type="hidden" name="shape_cast_target_id" value={row.id}/>
-     {resolution.saves.map((x:string)=><button key={x} type="submit" name="save_choice" value={x} className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-2a1c11))] px-3 py-2 text-[8px] uppercase text-[rgb(var(--sep-colour-dfc18f))] game_components_pendingshaperesponses_button_save_choice">{L[x]??x} ({sign(Number(attributes?.[A[x]]??0))})</button>)}
-     <button type="submit" name="save_choice" value="__do_nothing__" className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-2a1c11))] px-3 py-2 text-[8px] uppercase text-[rgb(var(--sep-colour-dfc18f))] game_components_pendingshaperesponses_button_do_nothing">Do nothing</button>
+     {resolution.saves.map((x:string)=><PendingShapeResponseButton key={x} name="save_choice" value={x} label={`${L[x]??x} (${sign(Number(attributes?.[A[x]]??0))})`} className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-2a1c11))] px-3 py-2 text-[8px] uppercase text-[rgb(var(--sep-colour-dfc18f))] disabled:cursor-not-allowed disabled:opacity-40 game_components_pendingshaperesponses_button_save_choice" />)}
+     <PendingShapeResponseButton name="save_choice" value="__do_nothing__" label="Do nothing" className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-2a1c11))] px-3 py-2 text-[8px] uppercase text-[rgb(var(--sep-colour-dfc18f))] disabled:cursor-not-allowed disabled:opacity-40 game_components_pendingshaperesponses_button_do_nothing" />
     </form>
    </section>
   })}
@@ -101,8 +103,8 @@ export function PendingShapeResponses(){
     <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-a18d6e))]">Level {s.level} · choose a Save or Do nothing</p>
     <form action={dispelAction} className="mt-3 flex flex-wrap gap-2">
      <input type="hidden" name="dispel_cast_id" value={row.id}/>
-     {resolution.saves.map((x:string)=><button key={x} type="submit" name="save_choice" value={x} className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-2a1c11))] px-3 py-2 text-[8px] uppercase text-[rgb(var(--sep-colour-dfc18f))]">{L[x]??x} ({sign(Number(attributes?.[A[x]]??0))})</button>)}
-     <button type="submit" name="save_choice" value="__do_nothing__" className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-2a1c11))] px-3 py-2 text-[8px] uppercase text-[rgb(var(--sep-colour-dfc18f))]">Do nothing</button>
+     {resolution.saves.map((x:string)=><PendingShapeResponseButton key={x} name="save_choice" value={x} label={`${L[x]??x} (${sign(Number(attributes?.[A[x]]??0))})`} className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-2a1c11))] px-3 py-2 text-[8px] uppercase text-[rgb(var(--sep-colour-dfc18f))] disabled:cursor-not-allowed disabled:opacity-40" />)}
+     <PendingShapeResponseButton name="save_choice" value="__do_nothing__" label="Do nothing" className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-2a1c11))] px-3 py-2 text-[8px] uppercase text-[rgb(var(--sep-colour-dfc18f))] disabled:cursor-not-allowed disabled:opacity-40" />
     </form>
    </section>
   })}

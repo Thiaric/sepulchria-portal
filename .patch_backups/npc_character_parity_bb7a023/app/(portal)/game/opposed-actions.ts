@@ -858,10 +858,10 @@ export async function counterOpposedAction(
     const outcome = countered
       ? `${counter?.label.toUpperCase()} SUCCESSFUL · ${total} >= ${attackTotal} · No effect`
       : doNothing
-        ? `${pending.action_label} FAILED · No Counter attempted - Attack successful${
+        ? `${pending.action_label} · No Counter attempted - Attack successful${
             damage > 0 ? ` · ${damage} Damage` : ""
           }`
-        : `FAILED - Attack successful · ${attackTotal} > ${total}${
+        : `SAVE FAILED - Attack successful · ${attackTotal} > ${total}${
     damage > 0 ? ` · ${damage} Damage` : ""
   }`;
 

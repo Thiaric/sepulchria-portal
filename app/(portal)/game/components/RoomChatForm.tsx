@@ -2815,13 +2815,12 @@ function ignoreSpellingWord() {
                 <p className={[((`text-xs ${weaponState.ok ? "text-[rgb(var(--sep-colour-9bb58c))]" : "text-[rgb(var(--sep-colour-d58d82))]"}`)), "game_components_roomchatform_p_text_8"].filter(Boolean).join(" ")}>
                   {weaponState.message}
                 </p>
-                <button
-                  type="submit"
+                <PendingActionButton
+                  label="Attack"
+                  pendingLabel="Attacking..."
                   disabled={!weaponTargetId && !weaponExternalTarget.trim()}
                   className="border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40 game_components_roomchatform_button_attack"
-                >
-                  Attack
-                </button>
+                />
               </div>
             </form>
           ) : (
@@ -2876,12 +2875,11 @@ function ignoreSpellingWord() {
               <input className="game_components_roomchatform_input_field_4" type="hidden" name="opposed_target_character_id" value={unarmedTargetId} readOnly />
               <input className="game_components_roomchatform_input_field_5" type="hidden" name="opposed_external_target" value={unarmedExternalTarget} readOnly />
 
-              <button
-                type="submit"
-                className="mt-2 border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] game_components_roomchatform_button_unarmed_attack"
-              >
-                Unarmed Attack
-              </button>
+              <PendingActionButton
+                label="Unarmed Attack"
+                pendingLabel="Attacking..."
+                className="mt-2 border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] disabled:cursor-not-allowed disabled:opacity-40 game_components_roomchatform_button_unarmed_attack"
+              />
 
               {unarmedState.message ? (
                 <p className={[((`mt-2 text-xs ${unarmedState.ok ? "text-[rgb(var(--sep-colour-9bb58c))]" : "text-[rgb(var(--sep-colour-d58d82))]"}`)), "game_components_roomchatform_p_text_12"].filter(Boolean).join(" ")}>
@@ -2944,12 +2942,11 @@ function ignoreSpellingWord() {
               <input className="game_components_roomchatform_input_field_7" type="hidden" name="opposed_target_character_id" value={attributeTargetId} readOnly />
               <input className="game_components_roomchatform_input_field_8" type="hidden" name="opposed_external_target" value={attributeExternalTarget} readOnly />
 
-              <button
-                type="submit"
-                className="mt-2 border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] game_components_roomchatform_button_roll_action"
-              >
-                Roll Action
-              </button>
+              <PendingActionButton
+                label="Roll Action"
+                pendingLabel="Rolling..."
+                className="mt-2 border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] disabled:cursor-not-allowed disabled:opacity-40 game_components_roomchatform_button_roll_action"
+              />
 
               {opposedAttributeState.message ? (
                 <p className={[((`mt-2 text-xs ${opposedAttributeState.ok ? "text-[rgb(var(--sep-colour-9bb58c))]" : "text-[rgb(var(--sep-colour-d58d82))]"}`)), "game_components_roomchatform_p_text_14"].filter(Boolean).join(" ")}>
@@ -3190,14 +3187,7 @@ function ignoreSpellingWord() {
                     onResolved={refreshRoomFeats}
                   />
                 ) : selectedGift.effectMode === "passive" ? (
-                  <button
-                    type="submit"
-                    formAction={giftUseAction}
-                    formNoValidate
-                    className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-21190f))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d6bb8d))] transition hover:border-[rgb(var(--sep-colour-a17a49))] game_components_roomchatform_button_show_feat"
-                  >
-                    Show Feat
-                  </button>
+                  <PendingActionButton label="Show Feat" pendingLabel="Showing..." formAction={giftUseAction} formNoValidate className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-21190f))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d6bb8d))] transition hover:border-[rgb(var(--sep-colour-a17a49))] disabled:cursor-not-allowed disabled:opacity-40 game_components_roomchatform_button_show_feat" />
                 ) : selectedGift.effectMode ===
                 "temporary" ? (
                   selectedGiftIsActive ? (
@@ -3221,32 +3211,10 @@ function ignoreSpellingWord() {
                       )}
                     </button>
                   ) : (
-                    <button
-                      type="submit"
-                      formAction={giftAction}
-                      formNoValidate
-                      disabled={
-                        selectedGift.targetMode === "other" &&
-                        !giftTargetId
-                      }
-                      className="border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] game_components_roomchatform_button_activate_feat"
-                    >
-                      Activate Feat
-                    </button>
+                    <PendingActionButton label="Activate Feat" pendingLabel="Activating..." formAction={giftAction} formNoValidate disabled={selectedGift.targetMode === "other" && !giftTargetId} className="border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40 game_components_roomchatform_button_activate_feat" />
                   )
                 ) : (
-                  <button
-                    type="submit"
-                    formAction={giftUseAction}
-                    formNoValidate
-                    disabled={
-                      selectedGift.targetMode === "other" &&
-                      !giftTargetId
-                    }
-                    className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-21190f))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d6bb8d))] transition hover:border-[rgb(var(--sep-colour-a17a49))] game_components_roomchatform_button_use_feat"
-                  >
-                    Use Feat
-                  </button>
+                  <PendingActionButton label="Use Feat" pendingLabel="Using..." formAction={giftUseAction} formNoValidate disabled={selectedGift.targetMode === "other" && !giftTargetId} className="border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-21190f))] px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d6bb8d))] transition hover:border-[rgb(var(--sep-colour-a17a49))] disabled:cursor-not-allowed disabled:opacity-40 game_components_roomchatform_button_use_feat" />
                 )}
               </div>
             </>
@@ -3545,8 +3513,9 @@ if (
                   {itemState.message}
                 </p>
 
-                <button
-                  type="submit"
+                <PendingActionButton
+                  label="Use Item"
+                  pendingLabel="Using..."
                   disabled={
                     Boolean(
                       selectedItem.cooldownReadyAt &&
@@ -3559,9 +3528,7 @@ if (
                       !itemTargetId)
                   }
                   className="border border-[rgb(var(--sep-colour-85653c))] bg-[rgb(var(--sep-colour-342617))] px-5 py-2.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd4a0))] transition hover:bg-[rgb(var(--sep-colour-4a351f))] disabled:cursor-not-allowed disabled:opacity-40 game_components_roomchatform_button_use_item"
-                >
-                  Use Item
-                </button>
+                />
               </div>
             </>
           ) : (
@@ -3745,14 +3712,7 @@ if (
 
         {canTakeLeave ? (
           <form className="game_components_roomchatform_form_form_2" action={leaveCurrentRoom}>
-            <button
-              type="submit"
-              title="Take Leave"
-              aria-label="Take Leave"
-              className="flex h-6 w-6 items-center justify-center border border-[rgb(var(--sep-colour-8f3f36))] bg-[rgb(var(--sep-colour-351714))] text-[11px] text-[rgb(var(--sep-colour-e6a097))] transition hover:border-[rgb(var(--sep-colour-c65a4d))] hover:text-[rgb(var(--sep-colour-ffd0c9))] game_components_roomchatform_button_take_leave"
-            >
-              <span className="game_components_roomchatform_span_take_leave" aria-hidden="true">↪</span>
-            </button>
+            <PendingActionButton label={<span className="game_components_roomchatform_span_take_leave" aria-hidden="true">↪</span>} pendingLabel="Leaving..." title="Take Leave" ariaLabel="Take Leave" className="flex h-6 min-w-6 items-center justify-center border border-[rgb(var(--sep-colour-8f3f36))] bg-[rgb(var(--sep-colour-351714))] px-1 text-[8px] uppercase text-[rgb(var(--sep-colour-e6a097))] transition hover:border-[rgb(var(--sep-colour-c65a4d))] hover:text-[rgb(var(--sep-colour-ffd0c9))] disabled:cursor-not-allowed disabled:opacity-40 game_components_roomchatform_button_take_leave" />
           </form>
         ) : null}
       </div>
@@ -3795,6 +3755,33 @@ function UtilityPanelHeader({
         Back to Chat
       </button>
     </div>
+  );
+}
+
+function PendingActionButton({
+  label,
+  pendingLabel,
+  disabled = false,
+  formAction,
+  formNoValidate = false,
+  className,
+  title,
+  ariaLabel,
+}: {
+  label: ReactNode;
+  pendingLabel: ReactNode;
+  disabled?: boolean;
+  formAction?: string | ((formData: FormData) => void | Promise<void>);
+  formNoValidate?: boolean;
+  className: string;
+  title?: string;
+  ariaLabel?: string;
+}) {
+  const { pending } = useFormStatus();
+  return (
+    <button type="submit" formAction={formAction} formNoValidate={formNoValidate} disabled={disabled || pending} title={title} aria-label={ariaLabel} className={className}>
+      {pending ? pendingLabel : label}
+    </button>
   );
 }
 

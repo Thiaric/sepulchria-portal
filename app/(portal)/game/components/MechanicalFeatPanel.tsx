@@ -7,6 +7,7 @@ import {
   useState,
 } from "react";
 import { useRouter } from "next/navigation";
+import { useFormStatus } from "react-dom";
 
 import {
   useMechanicalFeat,
@@ -153,6 +154,11 @@ function profileBits(
   }
 
   return bits;
+}
+
+function MechanicalFeatSubmitButton({ action, disabled, cooldown, cooldownRemaining }: { action: (payload: FormData) => void; disabled: boolean; cooldown: boolean; cooldownRemaining: string | null; }) {
+  const { pending } = useFormStatus();
+  return <button type="submit" formAction={action} formNoValidate disabled={disabled || pending} className={`border px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] transition disabled:cursor-not-allowed disabled:opacity-40 ${cooldown ? "border-[rgb(var(--sep-skin-c2))]/35 bg-[rgb(var(--sep-skin-c2))]/10 text-[rgb(var(--sep-skin-c2))]" : "border-[rgb(var(--sep-skin-c1))]/45 bg-[rgb(var(--sep-skin-c1))]/10 text-[rgb(var(--sep-skin-c1))] hover:bg-[rgb(var(--sep-skin-c1))]/15"}`}>{pending ? "Using..." : cooldown ? `Cooldown · ${cooldownRemaining}` : "Use Feat"}</button>;
 }
 
 export function MechanicalFeatPanel({
@@ -404,24 +410,7 @@ const cooldown =
           ) : null}
         </div>
 
-        <button
-          type="submit"
-          formAction={action}
-          formNoValidate
-          disabled={
-            cooldown ||
-            targets.length === 0
-          }
-          className={`border px-4 py-2.5 text-[8px] uppercase tracking-[0.14em] transition ${
-            cooldown
-              ? "cursor-not-allowed border-[rgb(var(--sep-skin-c2))]/35 bg-[rgb(var(--sep-skin-c2))]/10 text-[rgb(var(--sep-skin-c2))]"
-              : "border-[rgb(var(--sep-skin-c1))]/45 bg-[rgb(var(--sep-skin-c1))]/10 text-[rgb(var(--sep-skin-c1))] hover:bg-[rgb(var(--sep-skin-c1))]/15"
-          }`}
-        >
-          {cooldown
-            ? `Cooldown · ${cooldownRemaining}`
-            : "Use Feat"}
-        </button>
+        <MechanicalFeatSubmitButton action={action} disabled={cooldown || targets.length === 0} cooldown={cooldown} cooldownRemaining={cooldownRemaining} />
       </div>
     </div>
   );
