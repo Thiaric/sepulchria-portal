@@ -27,6 +27,11 @@ type FriendEntryRow = {
   created_at: string;
 };
 
+type CodexSummary = {
+  id: string;
+  name: string;
+};
+
 type CharacterRow = {
   id: string;
   first_name: string;
@@ -34,7 +39,43 @@ type CharacterRow = {
   display_name: string | null;
   public_slug: string;
   portrait_url: string | null;
+  race:
+    | CodexSummary
+    | CodexSummary[]
+    | null;
+  association:
+    | CodexSummary
+    | CodexSummary[]
+    | null;
+  order_memberships:
+    | {
+        order:
+          | CodexSummary
+          | CodexSummary[]
+          | null;
+      }[]
+    | null;
 };
+
+type FriendsSearchParams = Promise<
+  Record<string, string | string[] | undefined>
+>;
+
+function firstParam(
+  value: string | string[] | undefined,
+) {
+  return Array.isArray(value)
+    ? value[0] ?? ""
+    : value ?? "";
+}
+
+function normaliseRelation<T>(
+  value: T | T[] | null,
+): T | null {
+  return Array.isArray(value)
+    ? value[0] ?? null
+    : value;
+}
 
 function relationshipLabel(value: string) {
   const labels: Record<string, string> = {
@@ -57,7 +98,36 @@ function displayName(character: CharacterRow) {
   );
 }
 
-export default async function FriendsPage() {
+export default async function FriendsPage({
+  searchParams,
+}: {
+  searchParams: FriendsSearchParams;
+}) {
+  const params = await searchParams;
+
+  const friendSearch =
+    firstParam(params.friendSearch)
+      .trim()
+      .toLocaleLowerCase();
+
+  const friendAncestry =
+    firstParam(params.friendAncestry);
+
+  const friendAssociation =
+    firstParam(params.friendAssociation);
+
+  const friendOrder =
+    firstParam(params.friendOrder);
+
+  const friendRelationship =
+    firstParam(params.friendRelationship);
+
+  const friendScope =
+    firstParam(params.friendScope);
+
+  const embedded =
+    firstParam(params.embedded) === "1";
+
   const supabase = await createClient();
 
   const {
@@ -166,7 +236,16 @@ export default async function FriendsPage() {
   }
 
   const availableCharacters =
-    ((availableCharacterData ?? []) as CharacterRow[])
+    (availableCharacterData ?? [])
+      .map(
+        (row) =>
+          ({
+            ...row,
+            race: null,
+            association: null,
+            order_memberships: null,
+          }) as CharacterRow,
+      )
       .filter(
         (availableCharacter) =>
           !blockedCharacterIds.has(
@@ -205,9 +284,28 @@ export default async function FriendsPage() {
   if (targetIds.length > 0) {
     const { data, error } = await supabase
       .from("characters")
-      .select(
-        "id, first_name, surname, display_name, public_slug, portrait_url",
-      )
+      .select(`
+        id,
+        first_name,
+        surname,
+        display_name,
+        public_slug,
+        portrait_url,
+        race:races!characters_race_id_fkey(
+          id,
+          name
+        ),
+        association:associations!characters_association_id_fkey(
+          id,
+          name
+        ),
+        order_memberships(
+          order:orders!order_memberships_order_id_fkey(
+            id,
+            name
+          )
+        )
+      `)
       .in("id", targetIds)
       .eq("is_system", false);
 
@@ -220,12 +318,183 @@ export default async function FriendsPage() {
     targets.map((target) => [target.id, target]),
   );
 
-  const ingame = entries.filter(
-    (entry) => entry.list_scope === "ingame",
-  );
-  const offgame = entries.filter(
-    (entry) => entry.list_scope === "offgame",
-  );
+  const ancestryOptions =
+    new Map<string, string>();
+
+  const associationOptions =
+    new Map<string, string>();
+
+  const orderOptions =
+    new Map<string, string>();
+
+  for (const target of targets) {
+    const race =
+      normaliseRelation(target.race);
+
+    const association =
+      normaliseRelation(
+        target.association,
+      );
+
+    if (race) {
+      ancestryOptions.set(
+        race.id,
+        race.name,
+      );
+    }
+
+    if (association) {
+      associationOptions.set(
+        association.id,
+        association.name,
+      );
+    }
+
+    for (
+      const membership
+      of target.order_memberships ?? []
+    ) {
+      const order =
+        normaliseRelation(
+          membership.order,
+        );
+
+      if (order) {
+        orderOptions.set(
+          order.id,
+          order.name,
+        );
+      }
+    }
+  }
+
+  const filteredEntries =
+    entries.filter((entry) => {
+      const target =
+        targetById.get(
+          entry.target_character_id,
+        );
+
+      if (!target) {
+        return false;
+      }
+
+      const race =
+        normaliseRelation(target.race);
+
+      const association =
+        normaliseRelation(
+          target.association,
+        );
+
+      const orders =
+        (target.order_memberships ?? [])
+          .map((membership) =>
+            normaliseRelation(
+              membership.order,
+            ),
+          )
+          .filter(
+            (
+              order,
+            ): order is CodexSummary =>
+              order !== null,
+          );
+
+      const searchable =
+        [
+          displayName(target),
+          target.first_name,
+          target.surname,
+          race?.name,
+          association?.name,
+          ...orders.map(
+            (order) => order.name,
+          ),
+          relationshipLabel(
+            entry.relationship_type,
+          ),
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLocaleLowerCase();
+
+      return (
+        (!friendSearch ||
+          searchable.includes(
+            friendSearch,
+          )) &&
+        (!friendAncestry ||
+          race?.id ===
+            friendAncestry) &&
+        (!friendAssociation ||
+          association?.id ===
+            friendAssociation) &&
+        (!friendOrder ||
+          orders.some(
+            (order) =>
+              order.id ===
+              friendOrder,
+          )) &&
+        (!friendRelationship ||
+          entry.relationship_type ===
+            friendRelationship) &&
+        (!friendScope ||
+          entry.list_scope ===
+            friendScope)
+      );
+    });
+
+  const ingame =
+    filteredEntries.filter(
+      (entry) =>
+        entry.list_scope ===
+        "ingame",
+    );
+
+  const offgame =
+    filteredEntries.filter(
+      (entry) =>
+        entry.list_scope ===
+        "offgame",
+    );
+
+  const sortedOptions = (
+    values: Map<string, string>,
+  ) =>
+    Array.from(
+      values,
+      ([id, name]) => ({
+        id,
+        name,
+      }),
+    ).sort((a, b) =>
+      a.name.localeCompare(
+        b.name,
+        "en",
+        {
+          sensitivity: "base",
+        },
+      ),
+    );
+
+  const ancestries =
+    sortedOptions(
+      ancestryOptions,
+    );
+
+  const associations =
+    sortedOptions(
+      associationOptions,
+    );
+
+  const orders =
+    sortedOptions(orderOptions);
+
+  const clearFiltersHref =
+    embedded
+      ? "/friends?embedded=1"
+      : "/friends";
 
   const [
     staffSession,
@@ -353,6 +622,167 @@ export default async function FriendsPage() {
           </button>
         </form>
       </header>
+
+      <form
+        method="get"
+        className="mt-4 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] px-4 py-4 sm:px-5"
+      >
+        {embedded ? (
+          <input
+            type="hidden"
+            name="embedded"
+            value="1"
+          />
+        ) : null}
+
+        <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-[minmax(180px,1fr)_150px_165px_150px_160px_150px_auto_auto] xl:items-end">
+          <label>
+            <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-8c704b))]">
+              Search
+            </span>
+            <input
+              type="search"
+              name="friendSearch"
+              defaultValue={
+                firstParam(
+                  params.friendSearch,
+                )
+              }
+              placeholder="Name, Ancestry, Association, Order..."
+              className="mt-1.5 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-c8b18d))] outline-none placeholder:text-[rgb(var(--sep-colour-665a4c))] focus:border-[rgb(var(--sep-colour-9a7543))]"
+            />
+          </label>
+
+          <FriendFilterSelect
+            label="Ancestry"
+            name="friendAncestry"
+            value={friendAncestry}
+          >
+            <option value="">
+              All Ancestries
+            </option>
+            {ancestries.map(
+              (option) => (
+                <option
+                  key={option.id}
+                  value={option.id}
+                >
+                  {option.name}
+                </option>
+              ),
+            )}
+          </FriendFilterSelect>
+
+          <FriendFilterSelect
+            label="Association"
+            name="friendAssociation"
+            value={
+              friendAssociation
+            }
+          >
+            <option value="">
+              All Associations
+            </option>
+            {associations.map(
+              (option) => (
+                <option
+                  key={option.id}
+                  value={option.id}
+                >
+                  {option.name}
+                </option>
+              ),
+            )}
+          </FriendFilterSelect>
+
+          <FriendFilterSelect
+            label="Order"
+            name="friendOrder"
+            value={friendOrder}
+          >
+            <option value="">
+              All Orders
+            </option>
+            {orders.map(
+              (option) => (
+                <option
+                  key={option.id}
+                  value={option.id}
+                >
+                  {option.name}
+                </option>
+              ),
+            )}
+          </FriendFilterSelect>
+
+          <FriendFilterSelect
+            label="Relationship"
+            name="friendRelationship"
+            value={
+              friendRelationship
+            }
+          >
+            <option value="">
+              All Relationships
+            </option>
+            <option value="friend">
+              Friend
+            </option>
+            <option value="close_friend">
+              Close Friend
+            </option>
+            <option value="family">
+              Family
+            </option>
+            <option value="romance">
+              Romance
+            </option>
+            <option value="lover">
+              Lover
+            </option>
+            <option value="partner">
+              Partner
+            </option>
+            <option value="spouse">
+              Spouse
+            </option>
+          </FriendFilterSelect>
+
+          <FriendFilterSelect
+            label="Section"
+            name="friendScope"
+            value={friendScope}
+          >
+            <option value="">
+              In-Game & Off-Game
+            </option>
+            <option value="ingame">
+              In-Game
+            </option>
+            <option value="offgame">
+              Off-Game
+            </option>
+          </FriendFilterSelect>
+
+          <button
+            type="submit"
+            className="h-[38px] border border-[rgb(var(--sep-colour-765937))]/70 bg-[rgb(var(--sep-colour-271c12))] px-4 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-cfb487))] transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-3b2919))]"
+          >
+            Filter
+          </button>
+
+          <Link
+            href={clearFiltersHref}
+            className="flex h-[38px] items-center justify-center border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-4 text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-9f8b70))] transition hover:border-[rgb(var(--sep-colour-765937))] hover:text-[rgb(var(--sep-colour-d8bf91))]"
+          >
+            Clear
+          </Link>
+        </div>
+
+        <p className="mt-3 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-746450))]">
+          Showing {filteredEntries.length} of {entries.length} Friend List entr{entries.length === 1 ? "y" : "ies"}
+        </p>
+      </form>
 
       <FriendSection
         title="In-Game"
@@ -559,5 +989,33 @@ function FriendSection({
         </p>
       )}
     </section>
+  );
+}
+
+function FriendFilterSelect({
+  label,
+  name,
+  value,
+  children,
+}: {
+  label: string;
+  name: string;
+  value: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <label>
+      <span className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-8c704b))]">
+        {label}
+      </span>
+
+      <select
+        name={name}
+        defaultValue={value}
+        className="mt-1.5 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-c8b18d))] outline-none focus:border-[rgb(var(--sep-colour-9a7543))]"
+      >
+        {children}
+      </select>
+    </label>
   );
 }

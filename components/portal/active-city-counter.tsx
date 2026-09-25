@@ -136,6 +136,23 @@ export function ActiveCityCounter({
   ] = useState<string | null>(null);
 
   const [
+    hasFriendListFeature,
+    setHasFriendListFeature,
+  ] = useState(false);
+
+  const [
+    friendCharacterIds,
+    setFriendCharacterIds,
+  ] = useState<Set<string>>(
+    () => new Set(),
+  );
+
+  const [
+    friendsOnly,
+    setFriendsOnly,
+  ] = useState(false);
+
+  const [
     blockedCharacterIds,
     setBlockedCharacterIds,
   ] = useState<Set<string>>(
@@ -382,6 +399,164 @@ setPresentCharacters(
 
   useEffect(() => {
     if (!currentCharacterId) {
+      setHasFriendListFeature(
+        false,
+      );
+      setFriendCharacterIds(
+        new Set(),
+      );
+      setFriendsOnly(false);
+      return;
+    }
+
+    const supabase =
+      createClient();
+
+    let cancelled = false;
+
+    async function refreshFriendList() {
+      const [
+        entitlementResult,
+        entriesResult,
+      ] = await Promise.all([
+        supabase
+          .from(
+            "character_feature_entitlements",
+          )
+          .select("enabled")
+          .eq(
+            "character_id",
+            currentCharacterId,
+          )
+          .eq(
+            "feature_key",
+            "friend_list",
+          )
+          .maybeSingle(),
+        supabase
+          .from(
+            "character_friend_entries",
+          )
+          .select(
+            "target_character_id",
+          )
+          .eq(
+            "owner_character_id",
+            currentCharacterId,
+          ),
+      ]);
+
+      if (cancelled) {
+        return;
+      }
+
+      if (
+        entitlementResult.error
+      ) {
+        console.error(
+          "Unable to check Friend List access for city presence:",
+          entitlementResult.error.message,
+        );
+        setHasFriendListFeature(
+          false,
+        );
+        setFriendCharacterIds(
+          new Set(),
+        );
+        setFriendsOnly(false);
+        return;
+      }
+
+      const enabled =
+        entitlementResult.data
+          ?.enabled === true;
+
+      setHasFriendListFeature(
+        enabled,
+      );
+
+      if (!enabled) {
+        setFriendCharacterIds(
+          new Set(),
+        );
+        setFriendsOnly(false);
+        return;
+      }
+
+      if (entriesResult.error) {
+        console.error(
+          "Unable to load Friend List for city presence:",
+          entriesResult.error.message,
+        );
+        setFriendCharacterIds(
+          new Set(),
+        );
+        return;
+      }
+
+      setFriendCharacterIds(
+        new Set(
+          (entriesResult.data ?? [])
+            .map((row) =>
+              String(
+                row.target_character_id,
+              ),
+            )
+            .filter(
+              (id) =>
+                id !==
+                currentCharacterId,
+            ),
+        ),
+      );
+    }
+
+    void refreshFriendList();
+
+    const channel = supabase
+      .channel(
+        `active-city-friend-list:${currentCharacterId}`,
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table:
+            "character_friend_entries",
+          filter:
+            `owner_character_id=eq.${currentCharacterId}`,
+        },
+        () => {
+          void refreshFriendList();
+        },
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table:
+            "character_feature_entitlements",
+          filter:
+            `character_id=eq.${currentCharacterId}`,
+        },
+        () => {
+          void refreshFriendList();
+        },
+      )
+      .subscribe();
+
+    return () => {
+      cancelled = true;
+      void supabase.removeChannel(
+        channel,
+      );
+    };
+  }, [currentCharacterId]);
+
+  useEffect(() => {
+    if (!currentCharacterId) {
       setBlockedCharacterIds(
         new Set(),
       );
@@ -594,10 +769,6 @@ setPresentCharacters(
           .trim()
           .toLocaleLowerCase();
 
-      if (!query) {
-        return presentCharacters;
-      }
-
       return presentCharacters.filter(
         (presence) => {
           const person =
@@ -609,26 +780,39 @@ setPresentCharacters(
             return false;
           }
 
+          if (
+            friendsOnly &&
+            !friendCharacterIds.has(
+              person.id,
+            )
+          ) {
+            return false;
+          }
+
+          if (!query) {
+            return true;
+          }
+
           const race =
             normaliseRelation(
               person.race,
             );
 
           const association =
-  normaliseRelation(
-    person.association,
-  );
+            normaliseRelation(
+              person.association,
+            );
 
-const orderNames =
-  (person.order_memberships ?? [])
-    .map((membership) =>
-      normaliseRelation(
-        membership.order,
-      )?.name,
-    )
-    .filter(Boolean);
+          const orderNames =
+            (person.order_memberships ?? [])
+              .map((membership) =>
+                normaliseRelation(
+                  membership.order,
+                )?.name,
+              )
+              .filter(Boolean);
 
-const room =
+          const room =
             normaliseRelation(
               presence.room,
             );
@@ -669,17 +853,17 @@ const room =
             );
 
           const searchableText = [
-  person.display_name,
-  person.title,
-  person.occupation,
-  race?.name,
-  association?.name,
-  ...orderNames,
-  maySeePrivateRoom
-    ? room?.name
-    : null,
-  presence.status,
-]
+            person.display_name,
+            person.title,
+            person.occupation,
+            race?.name,
+            association?.name,
+            ...orderNames,
+            maySeePrivateRoom
+              ? room?.name
+              : null,
+            presence.status,
+          ]
             .filter(Boolean)
             .join(" ")
             .toLocaleLowerCase();
@@ -692,6 +876,8 @@ const room =
     }, [
       presentCharacters,
       searchQuery,
+      friendsOnly,
+      friendCharacterIds,
       isStaff,
       visiblePrivateRoomIdSet,
       allOrderHeadquartersRoomIdSet,
@@ -867,9 +1053,34 @@ const room =
                   ) : null}
                 </label>
 
+                {hasFriendListFeature ? (
+                  <label className="flex h-[38px] shrink-0 cursor-pointer items-center gap-2 border border-[rgb(var(--sep-colour-59432c))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-a9916d))] transition hover:border-[rgb(var(--sep-colour-8f6d42))]">
+                    <input
+                      type="checkbox"
+                      checked={
+                        friendsOnly
+                      }
+                      onChange={(
+                        event,
+                      ) =>
+                        setFriendsOnly(
+                          event.target
+                            .checked,
+                        )
+                      }
+                      className="h-3.5 w-3.5 accent-[rgb(var(--sep-colour-b28149))]"
+                    />
+
+                    <span>
+                      Show friends only
+                    </span>
+                  </label>
+                ) : null}
+
                 <div className="flex shrink-0 items-center justify-between gap-4 sm:justify-end components_portal_active_city_counter_div_people_sepulchria_9">
                   <p className="text-[7px] uppercase tracking-[0.17em] text-[rgb(var(--sep-colour-746450))] components_portal_active_city_counter_p_text">
-                    {searchQuery
+                    {searchQuery ||
+                    friendsOnly
                       ? `${filteredCharacters.length} matching`
                       : `${count} present`}
                   </p>
@@ -913,7 +1124,7 @@ const room =
                 0 ? (
                 <p className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-6 text-center text-[11px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_portal_active_city_counter_p_text_5">
                   No active characters
-                  match your search.
+                  match your current filters.
                 </p>
               ) : null}
 
