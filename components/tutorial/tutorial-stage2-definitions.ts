@@ -512,7 +512,7 @@ export const STAGE2_TOURS = {
       {
         "selector": ".feats_page_header_header",
         "title": "Feats",
-        "body": "Feats are innate, learned or bestowed capabilities granted through Ancestries, Order Roles or general assignment."
+        "body": "Feats are special capabilities that give a character additional ways to act, react or perform beyond their basic traits and skills. Some Feats come naturally from a character’s Ancestry, while others are learned through training or gained through a specific Order Role. Certain Feats may also be granted separately when appropriate. Together, they represent the distinctive abilities, techniques and advantages a character can possess."
       },
       {
         "selector": ".components_gifts_gifts_catalogue_section_section",
