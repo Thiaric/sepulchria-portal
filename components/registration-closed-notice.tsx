@@ -111,7 +111,7 @@ export function RegistrationClosedNotice() {
 <p className="mx-auto mt-3 max-w-xl text-xs leading-6 text-[rgb(var(--sep-colour-8f8271))] components_registration_closed_notice_p_closed_alpha_access_3">
   Applications are reviewed individually and invitations are limited.{" "}
   <span className="text-[rgb(var(--sep-colour-c8a46e))]">
-    <u>The first 50 accepted Alpha players will also receive exclusive Early Alpha features.</u>
+    <u>The first 50 accepted Alpha players will also receive exclusive Early Alpha features, on successful Character creation.</u>
   </span>{" "}
   <button
     type="button"

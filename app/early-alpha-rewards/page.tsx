@@ -13,7 +13,7 @@ export default function EarlyAlphaRewardsPage() {
         </h1>
 
         <p className="mt-4 text-sm leading-7 text-[rgb(var(--sep-colour-b8aa95))]">
-          The first 50 accepted Early Alpha players will receive a selection of special account features as a thank-you for joining Sepulchria during its earliest playable stage.
+          The first 50 accepted Early Alpha players will receive - on Character Creation finalisation - a selection of special account features as a thank-you for joining Sepulchria during its earliest playable stage.
         </p>
 
         <div className="mt-7 space-y-5">
@@ -82,7 +82,7 @@ export default function EarlyAlphaRewardsPage() {
             <div className="mt-4 flex min-h-44 items-center justify-center border border-dashed border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-100c09))] px-5 text-center text-xs text-[rgb(var(--sep-colour-766b5e))]">
               <StoreMusicPreview
   src="https://ykxrkajqolnrsxiellnm.supabase.co/storage/v1/object/sign/music/tracks/exclusivepioneer.mp3?token=eyJraWQiOiI1OTEwNTMyMi04OWE1LTQ1NzUtYmExOC1lYjVlOWUwNDQ3Y2UiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtdXNpYy90cmFja3MvZXhjbHVzaXZlcGlvbmVlci5tcDMiLCJzY29wZSI6ImRvd25sb2FkIiwiaWF0IjoxNzkwMzIzNTkzLCJleHAiOjE4MjE4NTk1OTN9.M0x_amiBlv7nY6enotywxapFSLNOKS9QIcVeD_NFEwE"
-  title="Example Track"
+  title="Pioneer of Sepulchria"
 />
             </div>
           </section>
@@ -191,7 +191,7 @@ export default function EarlyAlphaRewardsPage() {
             </h2>
 
             <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-a99b87))]">
-  Receive an exclusive Sepulchria Store discount code, giving you a reduced price on eligible purchases and a small thank-you for supporting the project during Early Alpha.
+  Receive an exclusive 20% OFF Sepulchria Store discount code, giving you a reduced price on 5 purchases as a small thank-you for supporting the project during Early Alpha.
 </p>
 
             

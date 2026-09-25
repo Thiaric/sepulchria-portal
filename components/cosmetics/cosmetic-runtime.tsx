@@ -313,7 +313,7 @@ export function CosmeticRuntime() {
         inset: -7px;
         border: 12px solid transparent;
         border-image-source: var(--sep-cosmetic-portrait-frame);
-        border-image-slice: 13% 13%;
+        border-image-slice: 10% 10%;
         border-image-width: 1;
         border-image-repeat: stretch;
         pointer-events: none;
@@ -382,11 +382,11 @@ export function CosmeticRuntime() {
         content: "";
         position: absolute;
         z-index: 5;
-        width: 30px;
-        height: 30px;
-        right: -14px;
-        top: 50%;
-        transform: translateY(-50%);
+        width: 40px;
+        height: 40px;
+        right: -34px;
+        top: 48%;
+        transform: translateY(-49%);
         background-image: var(--sep-cosmetic-profile-crest);
         background-size: contain;
         background-position: center;

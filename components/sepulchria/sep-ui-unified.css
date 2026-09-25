@@ -3413,13 +3413,25 @@ body[data-portal-skin="pioneers-land"],
  * keep the existing card styling, but make the card itself nearly opaque
  * so the mannequin/equipment layout does not bleed through the text.
  */
-body.portal-skin-scope
-  [data-sep-equipment-popup="true"]
-  [data-sep-interactive-surface="card"] {
+[data-sep-equipment-popup="true"]
+  [data-sep-interactive-surface="card"],
+[data-sep-equipment-popup="true"]
+  .components_characters_character_inventory_browser_div_container_31 {
+  background:
+    rgb(var(--sep-colour-0e0a08)) !important;
   background-color:
-    rgb(var(--sep-colour-120f0d) / 0.985) !important;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+    rgb(var(--sep-colour-0e0a08)) !important;
+  opacity: 1 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+[data-sep-equipment-picker="true"] {
+  background:
+    rgb(var(--sep-colour-0e0a08)) !important;
+  background-color:
+    rgb(var(--sep-colour-0e0a08)) !important;
+  opacity: 1 !important;
 }
 
 /*
@@ -5512,4 +5524,66 @@ input:autofill {
     margin-top: 6px !important;
     padding-top: 6px !important;
   }
+}
+
+/* ================================================================
+   EQUIPMENT OVERLAYS — ALWAYS SOLID
+   These must never inherit translucent Portal/card backgrounds.
+   ================================================================ */
+
+html[data-portal-skin]
+  [data-sep-equipment-popup="true"],
+body[data-portal-skin]
+  [data-sep-equipment-popup="true"],
+html[data-portal-skin]
+  [data-sep-equipment-picker="true"],
+body[data-portal-skin]
+  [data-sep-equipment-picker="true"] {
+  background: rgb(var(--sep-colour-0e0a08)) !important;
+  background-color: rgb(var(--sep-colour-0e0a08)) !important;
+  opacity: 1 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Item card shown inside an equipment popup */
+html[data-portal-skin]
+  [data-sep-equipment-popup="true"]
+  [data-sep-interactive-surface="card"],
+body[data-portal-skin]
+  [data-sep-equipment-popup="true"]
+  [data-sep-interactive-surface="card"] {
+  background: rgb(var(--sep-colour-0e0a08)) !important;
+  background-color: rgb(var(--sep-colour-0e0a08)) !important;
+  opacity: 1 !important;
+}
+
+/* Everything inside the Choose Item popup needs a solid surface */
+html[data-portal-skin]
+  [data-sep-equipment-picker="true"]
+  .components_characters_character_inventory_browser_div_container_21,
+body[data-portal-skin]
+  [data-sep-equipment-picker="true"]
+  .components_characters_character_inventory_browser_div_container_21 {
+  background: rgb(var(--sep-colour-0e0a08)) !important;
+  background-color: rgb(var(--sep-colour-0e0a08)) !important;
+  opacity: 1 !important;
+}
+
+/* Also force the actual popup wrapper solid */
+html[data-portal-skin]
+  .components_characters_character_inventory_browser_div_container_30,
+body[data-portal-skin]
+  .components_characters_character_inventory_browser_div_container_30,
+html[data-portal-skin]
+  .components_characters_character_inventory_browser_div_container_31,
+body[data-portal-skin]
+  .components_characters_character_inventory_browser_div_container_31,
+html[data-portal-skin]
+  .components_characters_character_inventory_browser_div_container_33,
+body[data-portal-skin]
+  .components_characters_character_inventory_browser_div_container_33 {
+  background: rgb(var(--sep-colour-0e0a08)) !important;
+  background-color: rgb(var(--sep-colour-0e0a08)) !important;
+  opacity: 1 !important;
 }

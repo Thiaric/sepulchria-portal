@@ -74,7 +74,7 @@ export function StoreContextPanel({ admin = false }: { admin?: boolean }) {
   });
 
   return (
-    <div className="flex min-h-0 flex-col components_portal_store_context_panel_div_container">
+    <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden components_portal_store_context_panel_div_container">
       <p className="text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8c704b))] components_portal_store_context_panel_p_text">
         {admin ? "Store Administration" : "Sepulchria Store"}
       </p>
@@ -97,7 +97,7 @@ export function StoreContextPanel({ admin = false }: { admin?: boolean }) {
         ))}
       </div>
 
-      <div className="mt-4 min-h-0 flex-1 space-y-4 overflow-y-auto components_portal_store_context_panel_div_container_3">
+      <div className="mt-4 min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain pr-1 components_portal_store_context_panel_div_container_3">
         {categories.map((group) => {
           const groupProducts = filtered.filter((product) => product.category === group);
           if (!groupProducts.length) return null;

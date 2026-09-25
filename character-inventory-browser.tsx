@@ -1601,7 +1601,6 @@ const isRightSide =
 }
 
 const LEFT_EQUIPMENT_SLOTS = [
-  "head",
   "shoulders",
   "back",
   "arms",
@@ -1615,7 +1614,6 @@ const RIGHT_EQUIPMENT_SLOTS = [
   "hands",
   "off_hand",
   "waist",
-  "feet",
 ] as const;
 
 function EquipmentFigure({
@@ -1751,14 +1749,18 @@ function EquipmentFigure({
             </div>
 
             <div className="min-w-0 components_characters_character_inventory_browser_div_container_40">
-              
+              <div className="mx-auto w-full max-w-[220px]">
+                {slotCard("head")}
+              </div>
 
               <div className="relative mx-auto my-5 h-[560px] w-full max-w-[320px]">
                 <div className="absolute inset-[7%] rounded-[45%] bg-[radial-gradient(circle_at_center,rgba(var(--sep-rgb-92-68-42),0.10),transparent_68%)]" />
                 <Silhouette />
               </div>
 
-              
+              <div className="mx-auto w-full max-w-[220px]">
+                {slotCard("feet")}
+              </div>
             </div>
 
             <div className="min-w-0 space-y-4">
