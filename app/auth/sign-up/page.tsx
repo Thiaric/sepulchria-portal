@@ -1,6 +1,5 @@
 import { AuthPageShell } from "@/components/auth-page-shell";
 import { RegistrationClosedNotice } from "@/components/registration-closed-notice";
-import { RegistrationLeftMessage } from "@/components/registration-left-message";
 import { SignUpForm } from "@/components/sign-up-form";
 import { getRegistrationsOpen } from "@/lib/registration/get-registrations-open";
 import { getValidRegistrationInvitation } from "@/lib/registration/invitations";
@@ -16,32 +15,21 @@ type Props = {
 export default async function SignUpPage({
   searchParams,
 }: Props) {
-  const params =
-    searchParams
-      ? await searchParams
-      : {};
-
+  const params = searchParams ? await searchParams : {};
   const registrationsOpen =
     await getRegistrationsOpen();
 
   const invitation =
     !registrationsOpen && params.invite
-      ? await getValidRegistrationInvitation(
-          params.invite,
-        )
+      ? await getValidRegistrationInvitation(params.invite)
       : null;
 
-  if (
-    !registrationsOpen &&
-    !invitation
-  ) {
+  if (!registrationsOpen && !invitation) {
     return (
       <AuthPageShell
         eyebrow="The City Gates"
         title="Registrations will Open Soon"
-        description={
-          <RegistrationLeftMessage />
-        }
+        description="Sepulchria is accepting applications for its closed Alpha."
       >
         <RegistrationClosedNotice />
       </AuthPageShell>
@@ -67,13 +55,9 @@ export default async function SignUpPage({
       }
     >
       <SignUpForm
-        invitedEmail={
-          invitation?.email ?? null
-        }
+        invitedEmail={invitation?.email ?? null}
         invitationToken={
-          invitation
-            ? params.invite ?? null
-            : null
+          invitation ? params.invite ?? null : null
         }
       />
     </AuthPageShell>

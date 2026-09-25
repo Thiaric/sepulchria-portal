@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 type AuthPageShellProps = {
   eyebrow: string;
   title: string;
-  description: ReactNode;
+  description: string;
   children: ReactNode;
 };
 
@@ -87,9 +87,9 @@ export function AuthPageShell({
               <span className="text-[rgb(var(--sep-colour-ad7d42))] components_auth_page_shell_span_text_3">✦</span>
             </div>
 
-            <div className="mt-6 max-w-lg font-serif text-lg leading-8 text-[rgb(var(--sep-colour-ad9e88))] components_auth_page_shell_p_text_2">
-  {description}
-</div>
+            <p className="mt-6 max-w-lg font-serif text-lg leading-8 text-[rgb(var(--sep-colour-ad9e88))] components_auth_page_shell_p_text_2">
+              {description}
+            </p>
 
             <p className="mt-10 max-w-md text-sm leading-7 text-[rgb(var(--sep-colour-776c5e))] components_auth_page_shell_p_text_3">
               Beyond these gates waits a persistent world of alliances, consequences
