@@ -17,6 +17,7 @@ type TourStep = {
   title: string;
   body: string;
   prepare?: string;
+  viewport?: "mobile" | "desktop";
 };
 
 type TourDefinition = {
@@ -41,7 +42,7 @@ const TOURS: Record<string, TourDefinition> = {
         selector: "[data-portal-header]",
         title: "The Portal Header",
         body:
-          "This bar stays with you throughout the portal. It contains the quickest controls for your account, character and portal-wide tools.",
+          "This bar stays with you throughout the Portal. It contains quick access to your account, character and Portal-wide tools.",
       },
       {
         selector: "[data-cosmetic-header-controls]",
@@ -53,25 +54,54 @@ const TOURS: Record<string, TourDefinition> = {
         selector: ".portal-left-shell",
         title: "Main Navigation",
         body:
-          "The left panel is your main navigation. Use it to reach Sepulchria, characters, lore, rules, social tools, the Market, Crafting, Daily Missions and the other sections available to you.",
+          "On larger screens, the left sidebar is the main Portal navigation. Use it to reach Sepulchria, characters, lore, rules, social tools, Market, Crafting, Daily Missions and the other sections available to you.",
+        viewport: "desktop",
+      },
+      {
+        selector:
+          ".components_portal_mobile_portal_navigation_nav_mobile_portal_navigation",
+        title: "Mobile Navigation",
+        body:
+          "On mobile, the permanent navigation sits along the bottom. Aureth returns home, Enter opens Sepulchria, People opens the character directory, Messages opens private messages, and More contains the rest of the Portal.",
+        viewport: "mobile",
+      },
+      {
+        selector:
+          ".components_portal_mobile_portal_navigation_section_more_sepulchria_navigation",
+        title: "More",
+        body:
+          "More is the mobile equivalent of the desktop navigation sidebar. It contains Lore, the Player's Handbook, Warping, Feats, Market, Crafting, Daily Missions, Polls, Hall of Renown, Support, Legal & Safety and the other sections available to your account.",
+        prepare: "open-mobile-more",
+        viewport: "mobile",
       },
       {
         selector: "[data-portal-centre-host]",
         title: "Main Area",
         body:
-          "The centre is where the page you are using lives. On the home page this is Aureth's map; elsewhere it becomes your Location, character sheet, workbench and other interactive areas.",
+          "The centre is where the page you are using lives. On the home page this is Aureth's map; elsewhere it becomes your Location, Character Sheet, workbench and other interactive areas.",
+        prepare: "close-mobile-more",
       },
       {
         selector: ".portal-right-shell",
         title: "Context Panel",
         body:
-          "The right panel changes with what you are doing. It provides shortcuts, character or Location information, and other context relevant to the page currently open.",
+          "On larger screens, the right panel changes with what you are doing and provides shortcuts, character or Location information, and other context relevant to the current page.",
+        viewport: "desktop",
+      },
+      {
+        selector: "[data-portal-right-sidebar]",
+        title: "Context Panel",
+        body:
+          "On mobile, the diamond button opens the Context panel. Its contents change according to the page or Location you are using. The tutorial will open it automatically whenever a step needs something inside it.",
+        prepare: "open-mobile-context",
+        viewport: "mobile",
       },
       {
         selector: ".components_portal_compact_city_activity_section",
         title: "City Activity",
         body:
           "City Activity is a live, short-term feed of characters entering and leaving Sepulchria. It refreshes automatically so you can see recent movement through the active city presence system.",
+        prepare: "close-mobile-context",
       },
     ],
   },
@@ -99,42 +129,49 @@ const TOURS: Record<string, TourDefinition> = {
       },
       {
         selector: "[data-skin-widget=\"current-location\"]",
+        prepare: "open-mobile-context",
         title: "Current Location Card",
         body:
           "At the top of the right context panel you can always see the Area and exact Location your character currently occupies, together with the Location image."
       },
       {
         selector: ".components_portal_room_info_button_button_info",
+        prepare: "open-mobile-context",
         title: "Location Info",
         body:
           "Press Info whenever you want more than the Location name. It opens the Location information window with the Location image, its full description and, where available, information about the wider Area."
       },
       {
         selector: ".components_portal_game_context_panel_section_section",
+        prepare: "open-mobile-context",
         title: "Present in This Location",
         body:
           "This section lists the characters currently present in the same Location. The counter shows how many are visible to you."
       },
       {
         selector: ".components_portal_game_context_panel_div_container_5",
+        prepare: "open-mobile-context",
         title: "A Present Character",
         body:
           "Select a character row to open that character's sheet. Presence state and public Ancestry/Order identity are shown here; other controls can appear when messaging or staff management is available."
       },
       {
         selector: ".components_portal_game_context_panel_div_container_12",
+        prepare: "open-mobile-context",
         title: "Character Quick Actions",
         body:
           "Quick controls on a present character can let you send a private message or, for staff with permission, open management tools."
       },
       {
         selector: ".components_portal_game_context_panel_section_section_2",
+        prepare: "open-mobile-context",
         title: "Journey To",
         body:
           "The bottom of the context panel lists the passages that can currently be used to leave this Location. The number beside Journey to shows how many exits are available."
       },
       {
         selector: ".components_portal_game_context_panel_button_action_3",
+        prepare: "open-mobile-context",
         title: "Move to Another Location",
         body:
           "Choose an exit to move your character through that passage. The Chronicle and right-side context then refresh for the new Location."
@@ -515,8 +552,27 @@ function candidateTours(pathname: string): TourDefinition[] {
 function availableSteps(tour: TourDefinition): TourStep[] {
   const steps: TourStep[] = [];
 
+  const mobile =
+    typeof window !== "undefined" &&
+    window.innerWidth < 1280;
+
   for (const step of tour.steps) {
-    const target = findTarget(step.selector);
+    if (
+      step.viewport === "mobile" &&
+      !mobile
+    ) {
+      continue;
+    }
+
+    if (
+      step.viewport === "desktop" &&
+      mobile
+    ) {
+      continue;
+    }
+
+    const target =
+      findTarget(step.selector);
 
     if (!target && !step.prepare) {
       continue;
@@ -535,15 +591,36 @@ function availableSteps(tour: TourDefinition): TourStep[] {
   }
 
   if (
-    currentSearchParams().get("embedded") === "1" &&
-    findTarget(".portal-right-shell")
+    currentSearchParams().get("embedded") === "1"
   ) {
-    steps.push({
-      selector: ".portal-right-shell",
-      title: "Context Panel",
-      body:
-        "This right-side panel belongs to the page open in this modal. It changes with the current section and provides the contextual information and shortcuts available here.",
-    });
+    if (
+      mobile &&
+      document.querySelector(
+        "[data-portal-right-sidebar]",
+      )
+    ) {
+      steps.push({
+        selector:
+          "[data-portal-right-sidebar]",
+        title: "Context Panel",
+        body:
+          "This Context panel belongs to the page open in this modal. On mobile, the diamond control opens it; during tutorials it opens automatically whenever its contents are being explained.",
+        prepare:
+          "open-mobile-context",
+        viewport: "mobile",
+      });
+    } else if (
+      !mobile &&
+      findTarget(".portal-right-shell")
+    ) {
+      steps.push({
+        selector: ".portal-right-shell",
+        title: "Context Panel",
+        body:
+          "This right-side panel belongs to the page open in this modal. It changes with the current section and provides the contextual information and shortcuts available here.",
+        viewport: "desktop",
+      });
+    }
   }
 
   return steps;
@@ -808,17 +885,138 @@ export function PortalFirstVisitTour() {
           categoryToggle?.click();
         }
 
+        if (
+          step.prepare ===
+            "open-mobile-more" &&
+          window.innerWidth < 1024
+        ) {
+          const moreButton =
+            document.querySelector<HTMLButtonElement>(
+              ".components_portal_mobile_portal_navigation_button_mobile_portal_navigation_3",
+            );
+
+          if (
+            moreButton?.getAttribute(
+              "aria-expanded",
+            ) !== "true"
+          ) {
+            moreButton?.click();
+          }
+        }
+
+        if (
+          step.prepare ===
+            "close-mobile-more" &&
+          window.innerWidth < 1024
+        ) {
+          const moreButton =
+            document.querySelector<HTMLButtonElement>(
+              ".components_portal_mobile_portal_navigation_button_mobile_portal_navigation_3",
+            );
+
+          if (
+            moreButton?.getAttribute(
+              "aria-expanded",
+            ) === "true"
+          ) {
+            document
+              .querySelector<HTMLButtonElement>(
+                ".components_portal_mobile_portal_navigation_button_close",
+              )
+              ?.click();
+          }
+        }
+
+        if (
+          step.prepare ===
+            "open-mobile-context" &&
+          window.innerWidth < 1280
+        ) {
+          const contextButton =
+            document.querySelector<HTMLButtonElement>(
+              ".components_portal_portal_responsive_right_sidebar_button_open_context_panel",
+            );
+
+          if (
+            contextButton?.getAttribute(
+              "aria-expanded",
+            ) !== "true"
+          ) {
+            contextButton?.click();
+          }
+        }
+
+        if (
+          step.prepare ===
+            "close-mobile-context" &&
+          window.innerWidth < 1280
+        ) {
+          const contextButton =
+            document.querySelector<HTMLButtonElement>(
+              ".components_portal_portal_responsive_right_sidebar_button_open_context_panel",
+            );
+
+          if (
+            contextButton?.getAttribute(
+              "aria-expanded",
+            ) === "true"
+          ) {
+            document
+              .querySelector<HTMLButtonElement>(
+                ".components_portal_portal_responsive_right_sidebar_button_close_context_panel_2",
+              )
+              ?.click();
+          }
+        }
+
         window.setTimeout(
           updateRect,
-          120,
+          240,
         );
         return;
       }
 
-      const target =
+      let target =
         findTarget(
           step.selector,
         );
+
+      if (
+        window.innerWidth < 1280 &&
+        target &&
+        (
+          target.matches(
+            "[data-portal-right-sidebar]",
+          ) ||
+          target.closest(
+            "[data-portal-right-sidebar]",
+          )
+        )
+      ) {
+        const contextButton =
+          document.querySelector<HTMLButtonElement>(
+            ".components_portal_portal_responsive_right_sidebar_button_open_context_panel",
+          );
+
+        if (
+          contextButton?.getAttribute(
+            "aria-expanded",
+          ) !== "true"
+        ) {
+          contextButton?.click();
+
+          window.setTimeout(
+            updateRect,
+            240,
+          );
+          return;
+        }
+
+        target =
+          findTarget(
+            step.selector,
+          );
+      }
 
       if (!target) {
         if (stepIndex < steps.length - 1) {
