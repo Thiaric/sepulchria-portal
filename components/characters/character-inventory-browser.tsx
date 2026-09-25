@@ -213,6 +213,16 @@ function titleCase(
     );
 }
 
+function qualityLabel(
+  value: string,
+) {
+  if (value === "peerless") {
+    return "Legendary";
+  }
+
+  return titleCase(value);
+}
+
 function uniqueSorted(
   values: (
     | string
@@ -989,20 +999,20 @@ function ItemCard({
                   ? ` · ${row.subcategory_name}`
                   : ""}
                 {" · "}
-                {titleCase(
-                  row.quality,
-                )}
+                {qualityLabel(
+  row.quality,
+)}
               </p>
 
               {row.is_equipped &&
               row.equipped_slot &&
               row.equipped_layer ? (
                 <p className="mt-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-9b815d))] components_characters_character_inventory_browser_p_text_18">
-                  {titleCase(
+                  {qualityLabel(
                     row.equipped_slot,
                   )}
                   {" · "}
-                  {titleCase(
+                  {qualityLabel(
                     row.equipped_layer,
                   )}
                   {row.hands_required ===
@@ -1309,7 +1319,7 @@ const isRightSide =
         </p>
 
         <p className="mt-0.5 text-[6px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-756957))] components_characters_character_inventory_browser_p_text_29">
-          {titleCase(
+          {qualityLabel(
             row.equipped_layer ??
               "equipped",
           )}
@@ -1824,7 +1834,7 @@ function FilterBar({
                 key={value}
                 value={value}
               >
-                {titleCase(
+                {qualityLabel(
                   value,
                 )}
               </option>

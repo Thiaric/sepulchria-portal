@@ -87,7 +87,7 @@ export function AdminVaultFilters({ scope, total }: Props) {
           <option className="components_admin_admin_vault_filters_option_fine" value="fine">Fine</option>
           <option className="components_admin_admin_vault_filters_option_superior" value="superior">Superior</option>
           <option className="components_admin_admin_vault_filters_option_flawless" value="flawless">Flawless</option>
-          <option className="components_admin_admin_vault_filters_option_peerless" value="peerless">Peerless</option>
+          <option className="components_admin_admin_vault_filters_option_peerless" value="peerless">Legendary</option>
         </select>
 
         {scope === "live" ? (

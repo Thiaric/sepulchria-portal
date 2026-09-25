@@ -3458,7 +3458,7 @@ body.portal-skin-scope
 }
 
 [data-item-quality="peerless"]
-  > span[aria-label="Peerless quality"] {
+  > span[aria-label="Legendary quality"] {
   color: #d6a844 !important;
   -webkit-text-fill-color: #d6a844 !important;
 }

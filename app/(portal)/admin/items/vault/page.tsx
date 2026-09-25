@@ -269,7 +269,7 @@ export default async function AdminItemVaultPage({
               <option className="admin_items_vault_page_option_fine" value="fine">Fine</option>
               <option className="admin_items_vault_page_option_superior" value="superior">Superior</option>
               <option className="admin_items_vault_page_option_flawless" value="flawless">Flawless</option>
-              <option className="admin_items_vault_page_option_peerless" value="peerless">Peerless</option>
+              <option className="admin_items_vault_page_option_peerless" value="peerless">Legendary</option>
             </select>
 
             <select
@@ -442,7 +442,7 @@ export default async function AdminItemVaultPage({
                             <option className="admin_items_vault_page_option_fine_2" value="fine">Fine</option>
                             <option className="admin_items_vault_page_option_superior_2" value="superior">Superior</option>
                             <option className="admin_items_vault_page_option_flawless_2" value="flawless">Flawless</option>
-                            <option className="admin_items_vault_page_option_peerless_2" value="peerless">Peerless</option>
+                            <option className="admin_items_vault_page_option_peerless_2" value="peerless">Legendary</option>
                           </select>
 
                           <select

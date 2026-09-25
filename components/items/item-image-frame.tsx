@@ -51,7 +51,7 @@ const QUALITY_VISUALS: Record<
   },
 
   peerless: {
-    label: "Peerless",
+    label: "Legendary",
     colour: "#d6a844",
     icon: "/icons/rarity/peerless.png",
     frame: "/icons/rarity/frames/peerless.png",

@@ -727,7 +727,7 @@ function OverrideFields({
         <option className="admin_characters_id_inventory_page_option_fine" value="fine">Fine</option>
         <option className="admin_characters_id_inventory_page_option_superior" value="superior">Superior</option>
         <option className="admin_characters_id_inventory_page_option_flawless" value="flawless">Flawless</option>
-        <option className="admin_characters_id_inventory_page_option_peerless" value="peerless">Peerless</option>
+        <option className="admin_characters_id_inventory_page_option_peerless" value="peerless">Legendary</option>
       </select>
 
       <select

@@ -131,6 +131,7 @@ type CraftedReveal = {
 
 function qualityLabel(value: string) {
   if (!value) return "Average";
+  if (value === "peerless") return "Legendary";
 
   return value
     .split(/[-_\s]+/)

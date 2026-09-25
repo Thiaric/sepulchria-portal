@@ -83,6 +83,20 @@ const qualityOrder = [
   "peerless",
 ];
 
+function qualityLabel(value: string) {
+  if (value === "peerless") {
+    return "Legendary";
+  }
+
+  return value
+    .replace(/_/g, " ")
+    .replace(
+      /\b\w/g,
+      (letter) =>
+        letter.toUpperCase(),
+    );
+}
+
 const attributeFilters = [
   ["muscles", "Mus", "muscles_modifier"],
   ["reflexes", "Dex", "reflexes_modifier"],
@@ -923,10 +937,7 @@ className={[((`${compactInput} col-span-1 min-[420px]:col-span-2 sm:col-span-4 l
                   key={value}
                   value={value}
                 >
-                  {value
-                    .charAt(0)
-                    .toUpperCase() +
-                    value.slice(1)}
+                  {qualityLabel(value)}
                 </option>
               ),
             )}
@@ -1168,16 +1179,16 @@ className="col-span-1 h-7 border border-[rgb(var(--sep-colour-6b5235))] bg-[rgb(
 
                       <p className="mt-1 text-[7px] uppercase tracking-[0.13em] text-[rgb(var(--sep-colour-756958))] components_market_market_catalogue_p_text">
                         {[
-                          item.category,
-                          item.subcategory,
-                          item.quality,
-                        ]
-                          .filter(
-                            Boolean,
-                          )
-                          .join(
-                            " · ",
-                          )}
+  item.category,
+  item.subcategory,
+  qualityLabel(item.quality),
+]
+  .filter(
+    Boolean,
+  )
+  .join(
+    " · ",
+  )}
                       </p>
                     </div>
 
@@ -1284,7 +1295,7 @@ className="col-span-1 h-7 border border-[rgb(var(--sep-colour-6b5235))] bg-[rgb(
                     {listing.sell_price !==
                     null ? (
                       <span className="border border-[rgb(var(--sep-colour-59432c))]/40 bg-[rgb(var(--sep-colour-100c09))] px-2 py-1 text-[7px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-806f5b))] components_market_market_catalogue_span_text_8">
-                        Shop Buyback{" "}
+                        Shop Buys this for {" "}
                         {formatRemnants(
                           listing.sell_price,
                         )}
