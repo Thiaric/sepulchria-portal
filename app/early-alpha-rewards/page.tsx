@@ -146,25 +146,43 @@ export default function EarlyAlphaRewardsPage() {
             </h2>
 
             <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-a99b87))]">
-              BLABLABLABLA.
+              A beautifully crafted lantern designed to be worn securely at the waist, leaving both hands free while travelling or exploring. Its emerald glass burns with a steady golden-green radiance, casting bright light for 6 metres and faint light for a further 6 metres beyond that. Ornate goldwork and a warm, unwavering glow make it as much a mark of distinction as a practical companion in dark places.
             </p>
 
             <div className="mt-4 flex min-h-44 items-center justify-center border border-dashed border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-100c09))] px-5 text-center text-xs text-[rgb(var(--sep-colour-766b5e))]">
-              Screenshot / example image
+              <img
+    src="/first-50-rewards/lantern_1.png"
+    alt="Trophy - The first 50"
+    className="max-h-64 w-full object-contain"
+  />
+  <img
+    src="/first-50-rewards/lantern_2.png"
+    alt="Trophy - The first 50"
+    className="max-h-64 w-full object-contain"
+  />
             </div>
           </section>
 
           <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5">
             <h2 className="font-serif text-xl text-[rgb(var(--sep-skin-c1))]">
-              Exclusive Item - The First Tarot
+              Exclusive Item - Tarot of The First
             </h2>
 
             <p className="mt-2 text-sm leading-6 text-[rgb(var(--sep-colour-a99b87))]">
-              BLABLABLABLA.
+              A thick ivory-coloured card bordered by impossibly fine golden lines. Its illustration depicts The First, a solitary figure standing before an unopened road while distant shapes emerge from darkness behind them. The details of the figure’s face seem subtly different whenever the card is examined again. Only a handful of trustworthy accounts of the card exist, and collectors frequently spend decades attempting to prove whether a supposed copy is genuine. It forms one part of the Three Celestial Tarots. It cannot be purchased or sold for currency and changes ownership only through character-to-character transfer or exchange.
             </p>
 
             <div className="mt-4 flex min-h-44 items-center justify-center border border-dashed border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-100c09))] px-5 text-center text-xs text-[rgb(var(--sep-colour-766b5e))]">
-              Screenshot / example image
+              <img
+    src="/first-50-rewards/tarot_1.png"
+    alt="Trophy - The first 50"
+    className="max-h-64 w-full object-contain"
+  />
+  <img
+    src="/first-50-rewards/tarot_2.png"
+    alt="Trophy - The first 50"
+    className="max-h-64 w-full object-contain"
+  />
             </div>
           </section>
           <section className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] p-5">

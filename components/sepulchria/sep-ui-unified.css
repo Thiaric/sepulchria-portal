@@ -3415,11 +3415,11 @@ body[data-portal-skin="pioneers-land"],
  */
 body.portal-skin-scope
   [data-sep-equipment-popup="true"]
-  [data-sep-interaction-kind="card"] {
+  [data-sep-interactive-surface="card"] {
   background-color:
-    rgb(var(--sep-colour-120f0d) / 0.97) !important;
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
+    rgb(var(--sep-colour-120f0d) / 0.985) !important;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 /*
