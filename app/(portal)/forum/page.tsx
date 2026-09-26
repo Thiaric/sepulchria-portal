@@ -377,34 +377,37 @@ export default async function ForumPage() {
             : ""
         }`)), "forum_page_div_container_3"].filter(Boolean).join(" ")}>
           <ForumCategoryCard
-            eyebrow="The World of Aureth"
-            title="Ongame"
-            sections={ongameSections}
-            topics={topics}
-            readMap={readMap}
-            showUnread={Boolean(user)}
-            emptyMessage="No Ongame sections are currently available."
-          />
+  variant="ongame"
+  eyebrow="The World of Aureth"
+  title="Ongame"
+  sections={ongameSections}
+  topics={topics}
+  readMap={readMap}
+  showUnread={Boolean(user)}
+  emptyMessage="No Ongame sections are currently available."
+/>
 
-          <ForumCategoryCard
-            eyebrow="The Community"
-            title="Offgame"
-            sections={offgameSections}
-            topics={topics}
-            readMap={readMap}
-            showUnread={Boolean(user)}
-            emptyMessage="No Offgame sections are currently available."
-          />
+<ForumCategoryCard
+  variant="offgame"
+  eyebrow="The Community"
+  title="Offgame"
+  sections={offgameSections}
+  topics={topics}
+  readMap={readMap}
+  showUnread={Boolean(user)}
+  emptyMessage="No Offgame sections are currently available."
+/>
 
-          <ForumCategoryCard
-            eyebrow="To Organise the game"
-            title="Organisation"
-            sections={organisationSections}
-            topics={topics}
-            readMap={readMap}
-            showUnread={Boolean(user)}
-            emptyMessage="No organisation forums have been created yet."
-          />
+<ForumCategoryCard
+  variant="organisation"
+  eyebrow="To Organise the game"
+  title="Organisation"
+  sections={organisationSections}
+  topics={topics}
+  readMap={readMap}
+  showUnread={Boolean(user)}
+  emptyMessage="No organisation forums have been created yet."
+/>
         </div>
       </div>
     </main>
@@ -412,6 +415,7 @@ export default async function ForumPage() {
 }
 
 function ForumCategoryCard({
+  variant,
   eyebrow,
   title,
   sections,
@@ -420,6 +424,10 @@ function ForumCategoryCard({
   showUnread,
   emptyMessage,
 }: {
+  variant:
+    | "ongame"
+    | "offgame"
+    | "organisation";
   eyebrow: string;
   title: string;
   sections: ForumSection[];
@@ -428,29 +436,49 @@ function ForumCategoryCard({
   showUnread: boolean;
   emptyMessage: string;
 }) {
+  const headerBackgroundImage =
+  variant === "ongame"
+    ? "/forum/ongame.png"
+    : variant === "offgame"
+      ? "/forum/offgame.png"
+      : "/forum/org.png";
   return (
     <section className="overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-15100d))] shadow-[0_14px_35px_rgba(var(--sep-rgb-0-0-0),0.18)] forum_page_section_section">
-      <header className="border-b border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-1a130e))] px-5 py-5 forum_page_header_header">
-        <p className="text-[8px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-806a4d))] forum_page_p_text">
-          {eyebrow}
-        </p>
+      <header
+  className="relative overflow-hidden px-5 py-5 forum_page_header_header"
+  style={{
+    backgroundImage: `
+      linear-gradient(
+        rgb(var(--sep-colour-100d0b) / 80%),
+        rgb(var(--sep-colour-100d0b) / 80%)
+      ),
+      url("${headerBackgroundImage}")
+    `,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+  }}
+>
+      <p className="text-[8px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-806a4d))] forum_page_p_text">
+        {eyebrow}
+      </p>
 
-        <div className="mt-2 flex items-center justify-between gap-4 forum_page_div_container_4">
-          <h1 className="font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))] forum_page_h1_title">
-            {title}
-          </h1>
+      <div className="mt-2 flex items-center justify-between gap-4 forum_page_div_container_4">
+        <h1 className="font-serif text-3xl text-[rgb(var(--sep-colour-dec69d))] forum_page_h1_title">
+          {title}
+        </h1>
 
-          <span className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] px-2.5 py-1.5 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9c835f))] forum_page_span_text_2">
-            {sections.length}{" "}
-            {sections.length === 1
-              ? "section"
-              : "sections"}
-          </span>
-        </div>
-      </header>
+        <span className="border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))]/85 px-2.5 py-1.5 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9c835f))] forum_page_span_text_2">
+          {sections.length}{" "}
+          {sections.length === 1
+            ? "section"
+            : "sections"}
+        </span>
+      </div>
+    </header>
 
       {sections.length > 0 ? (
-        <div className="divide-y divide-[rgb(var(--sep-colour-60482e))]/30 forum_page_div_container_5">
+        <div className="border-t border-[rgb(var(--sep-colour-60482e))]/40 divide-y divide-[rgb(var(--sep-colour-60482e))]/30 forum_page_div_container_5">
           {sections.map((section) => (
             <CompactForumSection
               key={section.id}

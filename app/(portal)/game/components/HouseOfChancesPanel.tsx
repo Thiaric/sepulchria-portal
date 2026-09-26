@@ -13,6 +13,7 @@ import {
 import { formatRemnants } from "@/lib/economy/currency";
 import { usePortalSkin } from "@/components/portal/portal-skin-provider";
 import { MechanicsInfoModal } from "./MechanicsInfoModal";
+import { ItemHoverPreview, type ItemHoverPreviewData } from "./ItemHoverPreview";
 
 export type HouseOfChancesStateRow = {
   is_open: boolean;
@@ -24,11 +25,17 @@ export type HouseOfChancesStateRow = {
   room_slug: string;
 };
 
+export type HouseOfChancesInfoReward = {
+  id: string;
+  label: string;
+  item?: ItemHoverPreviewData | null;
+};
+
 export type HouseOfChancesInfoRow = {
   id: string;
   name: string;
   condition: string;
-  rewards: string[];
+  rewards: HouseOfChancesInfoReward[];
 };
 
 type ReelValues = [number | null, number | null, number | null];
@@ -571,9 +578,18 @@ export function HouseOfChancesPanel({
                   <p className="text-[8px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-a98b61))]">{entry.condition}</p>
                 </div>
                 <div className="mt-2 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-2">
-                  {entry.rewards.length
-                    ? <p className="text-[9px] leading-5 text-[rgb(var(--sep-colour-c3ad89))]">{entry.rewards.join(" · ")}</p>
-                    : <p className="text-[9px] italic text-[rgb(var(--sep-colour-756958))]">No prize configured.</p>}
+                  {entry.rewards.length ? (
+                    <div className="flex flex-wrap gap-x-2 gap-y-1 text-[9px] leading-5 text-[rgb(var(--sep-colour-c3ad89))]">
+                      {entry.rewards.map((reward,index)=>(
+                        <span key={reward.id} className="inline-flex items-center gap-2">
+                          {index>0?<span className="text-[rgb(var(--sep-colour-665b4d))]">·</span>:null}
+                          {reward.item ? <ItemHoverPreview item={reward.item}>{reward.label}</ItemHoverPreview> : reward.label}
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-[9px] italic text-[rgb(var(--sep-colour-756958))]">No prize configured.</p>
+                  )}
                 </div>
               </div>
             ))}

@@ -265,7 +265,14 @@ async function GameContent() {
         rewards:gathering_rewards(
           id,reward_type,item_id,quantity_min,quantity_max,
           remnants_min,remnants_max,weight,is_active,sort_order,
-          item:items(name)
+          item:items(
+            id,name,description,image_url,quality,reference_value,
+            is_usable,use_behaviour,target_mode,cooldown_minutes,
+            success_die,success_threshold,success_attribute,
+            damage_dice,damage_type,is_equippable,equip_slot,hands_required,
+            category:item_categories(name),
+            subcategory:item_subcategories(name)
+          )
         )
       `)
       .eq("room_id", room.id)
@@ -287,7 +294,17 @@ async function GameContent() {
     room.slug === "house-of-chances"
       ? gameAdmin
           .from("house_of_chances_rule_rewards")
-          .select("id,rule_id,reward_type,remnants_amount,item_id,quantity,sort_order,item:items(name)")
+          .select(`
+            id,rule_id,reward_type,remnants_amount,item_id,quantity,sort_order,
+            item:items(
+              id,name,description,image_url,quality,reference_value,
+              is_usable,use_behaviour,target_mode,cooldown_minutes,
+              success_die,success_threshold,success_attribute,
+              damage_dice,damage_type,is_equippable,equip_slot,hands_required,
+              category:item_categories(name),
+              subcategory:item_subcategories(name)
+            )
+          `)
           .order("sort_order", { ascending: true })
           .order("created_at", { ascending: true })
       : Promise.resolve({ data: [], error: null });
@@ -608,6 +625,41 @@ async function GameContent() {
       | GatheringStateRow
       | null;
 
+  function itemPreview(item:any) {
+    if (!item) return null;
+
+    const category = Array.isArray(item.category)
+      ? item.category[0] ?? null
+      : item.category ?? null;
+
+    const subcategory = Array.isArray(item.subcategory)
+      ? item.subcategory[0] ?? null
+      : item.subcategory ?? null;
+
+    return {
+      id: String(item.id),
+      name: String(item.name ?? "Unknown Item"),
+      description: String(item.description ?? ""),
+      image_url: item.image_url ? String(item.image_url) : null,
+      quality: String(item.quality ?? "average"),
+      category_name: category?.name ? String(category.name) : null,
+      subcategory_name: subcategory?.name ? String(subcategory.name) : null,
+      reference_value: item.reference_value == null ? null : Number(item.reference_value),
+      is_usable: item.is_usable === true,
+      use_behaviour: item.use_behaviour ? String(item.use_behaviour) : null,
+      target_mode: item.target_mode ? String(item.target_mode) : null,
+      cooldown_minutes: item.cooldown_minutes == null ? null : Number(item.cooldown_minutes),
+      success_die: item.success_die == null ? null : Number(item.success_die),
+      success_threshold: item.success_threshold == null ? null : Number(item.success_threshold),
+      success_attribute: item.success_attribute ? String(item.success_attribute) : null,
+      damage_dice: item.damage_dice ? String(item.damage_dice) : null,
+      damage_type: item.damage_type ? String(item.damage_type) : null,
+      is_equippable: item.is_equippable === true,
+      equip_slot: item.equip_slot ? String(item.equip_slot) : null,
+      hands_required: Number(item.hands_required ?? 1),
+    };
+  }
+
   const gatheringInfo: GatheringInfoRow[] = (() => {
     if (gatheringInfoResult.error || !gatheringInfoResult.data) return [];
 
@@ -641,6 +693,7 @@ async function GameContent() {
         label:item?.name ?? "Unknown Item",
         detail:min===max ? `Quantity ${min}` : `Quantity ${min}–${max}`,
         chance_percent:chance,
+        item:itemPreview(item),
       };
     });
 
@@ -749,10 +802,22 @@ async function GameContent() {
         .filter((reward:any) => reward.rule_id === rule.id)
         .map((reward:any) => {
           if (reward.reward_type === "remnants") {
-            return `${Number(reward.remnants_amount ?? 0).toLocaleString("en-GB")} Remnants`;
+            return {
+              id:String(reward.id),
+              label:`${Number(reward.remnants_amount ?? 0).toLocaleString("en-GB")} Remnants`,
+              item:null,
+            };
           }
-          const item = Array.isArray(reward.item) ? reward.item[0] ?? null : reward.item ?? null;
-          return `${item?.name ?? "Unknown Item"} × ${Number(reward.quantity ?? 1)}`;
+
+          const item = Array.isArray(reward.item)
+            ? reward.item[0] ?? null
+            : reward.item ?? null;
+
+          return {
+            id:String(reward.id),
+            label:`${item?.name ?? "Unknown Item"} × ${Number(reward.quantity ?? 1)}`,
+            item:itemPreview(item),
+          };
         }),
     }));
   })();

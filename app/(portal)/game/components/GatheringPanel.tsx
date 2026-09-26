@@ -14,6 +14,7 @@ import { formatRemnants } from "@/lib/economy/currency";
 import { usePortalSkin } from "@/components/portal/portal-skin-provider";
 import { usePortalAudio } from "@/components/audio/portal-audio-provider";
 import { MechanicsInfoModal } from "./MechanicsInfoModal";
+import { ItemHoverPreview, type ItemHoverPreviewData } from "./ItemHoverPreview";
 
 const GATHERING_SKIN_ACCENTS: Record<string, string> = {
   sepulchria: "#b68b4f",
@@ -52,6 +53,7 @@ export type GatheringInfoRow = {
   detail: string | null;
   chance_percent: number;
   is_nothing?: boolean;
+  item?: ItemHoverPreviewData | null;
 };
 
 function sleep(ms: number) {
@@ -319,13 +321,19 @@ export function GatheringPanel({
               }}
             />
             {searching ? (
-              <div className="w-full game_components_gatheringpanel_div_container_13">
-                <div className="mx-auto h-10 w-10 animate-spin rounded-full border border-[rgb(var(--sep-colour-655744))] border-t-[rgb(var(--sep-colour-d1aa71))] game_components_gatheringpanel_div_container_14" />
-                <p className="mt-3 text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-8f8271))] game_components_gatheringpanel_p_text_4">
-                  Searching...
-                </p>
-              </div>
-            ) : result ? (
+  <div className="w-full game_components_gatheringpanel_div_container_13">
+    <img
+      src="/icons/gathering.gif"
+      alt=""
+      aria-hidden="true"
+      className="mx-auto h-24 w-24 object-contain"
+    />
+
+    <p className="mt-3 text-[8px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-8f8271))] game_components_gatheringpanel_p_text_4">
+      Searching...
+    </p>
+  </div>
+) : result ? (
               <div className="w-full game_components_gatheringpanel_div_container_15">
                 {result.outcome_type === "item" ? (
                   <ItemImageFrame
@@ -386,7 +394,15 @@ export function GatheringPanel({
             {info.map(entry => (
               <div key={entry.id} className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2.5">
                 <div className="min-w-0">
-                  <p className={`font-serif text-sm ${entry.is_nothing ? "italic text-[rgb(var(--sep-colour-8f8271))]" : "text-[rgb(var(--sep-colour-d8c29b))]"}`}>{entry.label}</p>
+                  <div className={`font-serif text-sm ${entry.is_nothing ? "italic text-[rgb(var(--sep-colour-8f8271))]" : "text-[rgb(var(--sep-colour-d8c29b))]"}`}>
+  {entry.item ? (
+    <ItemHoverPreview item={entry.item}>
+      {entry.label}
+    </ItemHoverPreview>
+  ) : (
+    entry.label
+  )}
+</div>
                   {entry.detail?<p className="mt-0.5 text-[8px] leading-4 text-[rgb(var(--sep-colour-756958))]">{entry.detail}</p>:null}
                 </div>
                 <span className="self-center whitespace-nowrap font-serif text-sm tabular-nums text-[rgb(var(--sep-colour-e6cfaa))]">
