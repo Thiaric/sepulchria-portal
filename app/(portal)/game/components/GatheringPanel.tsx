@@ -13,6 +13,7 @@ import {
 import { formatRemnants } from "@/lib/economy/currency";
 import { usePortalSkin } from "@/components/portal/portal-skin-provider";
 import { usePortalAudio } from "@/components/audio/portal-audio-provider";
+import { MechanicsInfoModal } from "./MechanicsInfoModal";
 
 const GATHERING_SKIN_ACCENTS: Record<string, string> = {
   sepulchria: "#b68b4f",
@@ -45,6 +46,14 @@ export type GatheringStateRow = {
   attempts_remaining: number;
 };
 
+export type GatheringInfoRow = {
+  id: string;
+  label: string;
+  detail: string | null;
+  chance_percent: number;
+  is_nothing?: boolean;
+};
+
 function sleep(ms: number) {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
 }
@@ -63,8 +72,10 @@ function resultTitle(result: GatheringResult) {
 
 export function GatheringPanel({
   state,
+  info,
 }: {
   state: GatheringStateRow;
+  info: GatheringInfoRow[];
 }) {
   const router = useRouter();
   const { skin } = usePortalSkin();
@@ -78,6 +89,7 @@ export function GatheringPanel({
     "rgb(var(--sep-colour-e6cfaa))";
 
   const [pending, startTransition] = useTransition();
+  const [infoOpen, setInfoOpen] = useState(false);
   const [searching, setSearching] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [result, setResult] = useState<GatheringResult | null>(null);
@@ -251,9 +263,18 @@ export function GatheringPanel({
               Search the surroundings
             </p>
 
-            <h3 className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-e6cfaa))] game_components_gatheringpanel_h3_uncover">
-              What will you uncover?
-            </h3>
+            <div className="mt-1 flex items-center gap-2">
+              <h3 className="font-serif text-xl text-[rgb(var(--sep-colour-e6cfaa))] game_components_gatheringpanel_h3_uncover">
+                What will you uncover?
+              </h3>
+              <button
+                type="button"
+                onClick={() => setInfoOpen(true)}
+                aria-label={`Show Gathering chances for ${state.location_name}`}
+                title="Possible Gathering results"
+                className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-765937))]/70 bg-[rgb(var(--sep-colour-17110d))] font-serif text-[11px] text-[rgb(var(--sep-colour-c9aa78))] transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:text-[rgb(var(--sep-colour-efd6a8))]"
+              >i</button>
+            </div>
 
             {state.location_description ? (
               <p className="mt-2 max-w-2xl text-[10px] leading-5 text-[rgb(var(--sep-colour-948675))] game_components_gatheringpanel_p_uncover_2">
@@ -353,6 +374,31 @@ export function GatheringPanel({
           </section>
         </div>
       </div>
+
+      <MechanicsInfoModal
+        open={infoOpen}
+        onClose={() => setInfoOpen(false)}
+        title={`${state.location_name} · Gathering`}
+        subtitle="Possible results for one Gathering attempt at this Location."
+      >
+        {info.length ? (
+          <div className="space-y-2">
+            {info.map(entry => (
+              <div key={entry.id} className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2.5">
+                <div className="min-w-0">
+                  <p className={`font-serif text-sm ${entry.is_nothing ? "italic text-[rgb(var(--sep-colour-8f8271))]" : "text-[rgb(var(--sep-colour-d8c29b))]"}`}>{entry.label}</p>
+                  {entry.detail?<p className="mt-0.5 text-[8px] leading-4 text-[rgb(var(--sep-colour-756958))]">{entry.detail}</p>:null}
+                </div>
+                <span className="self-center whitespace-nowrap font-serif text-sm tabular-nums text-[rgb(var(--sep-colour-e6cfaa))]">
+                  {entry.chance_percent.toFixed(2).replace(/\.?0+$/, "")}%
+                </span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-[10px] italic text-[rgb(var(--sep-colour-756958))]">No Gathering results are currently available for this Location.</p>
+        )}
+      </MechanicsInfoModal>
     </details>
   );
 }

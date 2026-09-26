@@ -18,6 +18,7 @@ import {
   OrderHeadquartersPanel,
 } from "@/components/orders/order-headquarters-panel";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import type {
   PresentRoomCharacter,
   RoomMessage,
@@ -32,6 +33,7 @@ import { OddJobsPanel, type OddJobStateRow } from "./components/OddJobsPanel";
 import {
   HouseOfChancesPanel,
   type HouseOfChancesStateRow,
+  type HouseOfChancesInfoRow,
 } from "./components/HouseOfChancesPanel";
 import {
   BreezeLodgingsPanel,
@@ -40,6 +42,7 @@ import {
 import {
   GatheringPanel,
   type GatheringStateRow,
+  type GatheringInfoRow,
 } from "./components/GatheringPanel";
 import {
   BreezeLodgingGuestsPanel,
@@ -174,6 +177,7 @@ async function GameContent() {
 }
 
   const room = rawRoom as RoomRelation;
+  const gameAdmin = createAdminClient();
 
   const privateAccess =
     await getPrivateLocationAccess(
@@ -252,6 +256,42 @@ async function GameContent() {
       "get_my_gathering_state",
     );
 
+  const gatheringInfoPromise =
+    gameAdmin
+      .from("gathering_locations")
+      .select(`
+        id,
+        nothing_chance,
+        rewards:gathering_rewards(
+          id,reward_type,item_id,quantity_min,quantity_max,
+          remnants_min,remnants_max,weight,is_active,sort_order,
+          item:items(name)
+        )
+      `)
+      .eq("room_id", room.id)
+      .eq("is_active", true)
+      .maybeSingle();
+
+  const houseRulesInfoPromise =
+    room.slug === "house-of-chances"
+      ? gameAdmin
+          .from("house_of_chances_prize_rules")
+          .select("id,name,priority,sort_order,match_type,roll_1_min,roll_1_max,roll_2_min,roll_2_max,roll_3_min,roll_3_max,total_min,total_max")
+          .eq("is_active", true)
+          .order("priority", { ascending: false })
+          .order("sort_order", { ascending: true })
+          .order("created_at", { ascending: true })
+      : Promise.resolve({ data: [], error: null });
+
+  const houseRewardsInfoPromise =
+    room.slug === "house-of-chances"
+      ? gameAdmin
+          .from("house_of_chances_rule_rewards")
+          .select("id,rule_id,reward_type,remnants_amount,item_id,quantity,sort_order,item:items(name)")
+          .order("sort_order", { ascending: true })
+          .order("created_at", { ascending: true })
+      : Promise.resolve({ data: [], error: null });
+
   const oddJobsPromise =
     room.slug === "odd-jobs-bureau"
       ? supabase.rpc(
@@ -303,6 +343,9 @@ async function GameContent() {
     staffSession,
     headquartersManageData,
     gatheringResult,
+    gatheringInfoResult,
+    houseRulesInfoResult,
+    houseRewardsInfoResult,
     oddJobsResult,
     houseOfChancesResult,
     breezeLodgingsResult,
@@ -315,6 +358,9 @@ async function GameContent() {
     staffSessionPromise,
     headquartersManageDataPromise,
     gatheringPromise,
+    gatheringInfoPromise,
+    houseRulesInfoPromise,
+    houseRewardsInfoPromise,
     oddJobsPromise,
     houseOfChancesPromise,
     breezeLodgingsPromise,
@@ -562,6 +608,55 @@ async function GameContent() {
       | GatheringStateRow
       | null;
 
+  const gatheringInfo: GatheringInfoRow[] = (() => {
+    if (gatheringInfoResult.error || !gatheringInfoResult.data) return [];
+
+    const location = gatheringInfoResult.data as any;
+    const nothingChance = Math.max(0, Math.min(100, Number(location.nothing_chance ?? 0)));
+    const rewards = (Array.isArray(location.rewards) ? location.rewards : [])
+      .filter((reward:any) => reward.is_active === true)
+      .sort((a:any,b:any) => Number(a.sort_order ?? 0) - Number(b.sort_order ?? 0));
+    const totalWeight = rewards.reduce((sum:number,reward:any) => sum + Math.max(0,Number(reward.weight ?? 0)),0);
+    const rewardPool = Math.max(0,100-nothingChance);
+
+    const rows: GatheringInfoRow[] = rewards.map((reward:any) => {
+      const item = Array.isArray(reward.item) ? reward.item[0] ?? null : reward.item ?? null;
+      const chance = totalWeight > 0 ? rewardPool * (Math.max(0,Number(reward.weight ?? 0)) / totalWeight) : 0;
+
+      if (reward.reward_type === "remnants") {
+        const min = Number(reward.remnants_min ?? 0);
+        const max = Number(reward.remnants_max ?? min);
+        return {
+          id:String(reward.id),
+          label:min===max ? `${min.toLocaleString("en-GB")} Remnants` : `${min.toLocaleString("en-GB")}–${max.toLocaleString("en-GB")} Remnants`,
+          detail:null,
+          chance_percent:chance,
+        };
+      }
+
+      const min = Number(reward.quantity_min ?? 1);
+      const max = Number(reward.quantity_max ?? min);
+      return {
+        id:String(reward.id),
+        label:item?.name ?? "Unknown Item",
+        detail:min===max ? `Quantity ${min}` : `Quantity ${min}–${max}`,
+        chance_percent:chance,
+      };
+    });
+
+    if (nothingChance > 0) {
+      rows.push({
+        id:"nothing",
+        label:"Nothing useful",
+        detail:null,
+        chance_percent:nothingChance,
+        is_nothing:true,
+      });
+    }
+
+    return rows;
+  })();
+
   const {
     data: oddJobsData,
     error: oddJobsError,
@@ -628,6 +723,39 @@ async function GameContent() {
     ((houseOfChancesData ?? [])[0] ?? null) as
       | HouseOfChancesStateRow
       | null;
+
+  const houseOfChancesInfo: HouseOfChancesInfoRow[] = (() => {
+    if (houseRulesInfoResult.error || houseRewardsInfoResult.error) return [];
+
+    const rules = (houseRulesInfoResult.data ?? []) as any[];
+    const rewards = (houseRewardsInfoResult.data ?? []) as any[];
+
+    const condition = (rule:any) => {
+      if (rule.match_type === "exact") return `Exactly ${rule.roll_1_min} / ${rule.roll_2_min} / ${rule.roll_3_min}`;
+      if (rule.match_type === "all_equal") {
+        const ranged = rule.roll_1_min !== null || rule.roll_1_max !== null;
+        return ranged ? `All three equal (${rule.roll_1_min ?? 1}–${rule.roll_1_max ?? 100})` : "All three equal";
+      }
+      if (rule.match_type === "all_in_range") return `All three between ${rule.roll_1_min} and ${rule.roll_1_max}`;
+      if (rule.match_type === "total_range") return `Total between ${rule.total_min} and ${rule.total_max}`;
+      return `R1 ${rule.roll_1_min}–${rule.roll_1_max} · R2 ${rule.roll_2_min}–${rule.roll_2_max} · R3 ${rule.roll_3_min}–${rule.roll_3_max}`;
+    };
+
+    return rules.map((rule:any) => ({
+      id:String(rule.id),
+      name:String(rule.name),
+      condition:condition(rule),
+      rewards:rewards
+        .filter((reward:any) => reward.rule_id === rule.id)
+        .map((reward:any) => {
+          if (reward.reward_type === "remnants") {
+            return `${Number(reward.remnants_amount ?? 0).toLocaleString("en-GB")} Remnants`;
+          }
+          const item = Array.isArray(reward.item) ? reward.item[0] ?? null : reward.item ?? null;
+          return `${item?.name ?? "Unknown Item"} × ${Number(reward.quantity ?? 1)}`;
+        }),
+    }));
+  })();
 
   const {
     data: breezeLodgingsData,
@@ -764,13 +892,19 @@ async function GameContent() {
 
     {gatheringState ? (
       <div className="game_page_div_container_5" data-sep-interaction-ignore="true">
-        <GatheringPanel state={gatheringState} />
+        <GatheringPanel
+          state={gatheringState}
+          info={gatheringInfo}
+        />
       </div>
     ) : null}
 
     {room.slug === "house-of-chances" && houseOfChancesState ? (
       <div className="game_page_div_container_6" data-sep-interaction-ignore="true">
-        <HouseOfChancesPanel state={houseOfChancesState} />
+        <HouseOfChancesPanel
+          state={houseOfChancesState}
+          info={houseOfChancesInfo}
+        />
       </div>
     ) : null}
 

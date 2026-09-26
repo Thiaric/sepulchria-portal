@@ -12,6 +12,7 @@ import {
 } from "../house-of-chances-actions";
 import { formatRemnants } from "@/lib/economy/currency";
 import { usePortalSkin } from "@/components/portal/portal-skin-provider";
+import { MechanicsInfoModal } from "./MechanicsInfoModal";
 
 export type HouseOfChancesStateRow = {
   is_open: boolean;
@@ -21,6 +22,13 @@ export type HouseOfChancesStateRow = {
   plays_remaining: number;
   wallet_balance: number;
   room_slug: string;
+};
+
+export type HouseOfChancesInfoRow = {
+  id: string;
+  name: string;
+  condition: string;
+  rewards: string[];
 };
 
 type ReelValues = [number | null, number | null, number | null];
@@ -65,8 +73,10 @@ function rewardLabel(
 
 export function HouseOfChancesPanel({
   state,
+  info,
 }: {
   state: HouseOfChancesStateRow;
+  info: HouseOfChancesInfoRow[];
 }) {
   const router = useRouter();
   const { skin } = usePortalSkin();
@@ -77,6 +87,7 @@ export function HouseOfChancesPanel({
     "rgb(var(--sep-colour-e6cfaa))";
 
   const [pending, startTransition] = useTransition();
+  const [infoOpen, setInfoOpen] = useState(false);
   const [spinning, setSpinning] = useState(false);
   const [reels, setReels] = useState<ReelValues>([null, null, null]);
   const [message, setMessage] = useState<string | null>(null);
@@ -307,9 +318,18 @@ export function HouseOfChancesPanel({
                 <p className="text-[7px] uppercase tracking-[0.34em] text-[rgb(var(--sep-colour-806b50))] game_components_houseofchancespanel_p_let_house_read_fortune">
                   Three turns · One verdict
                 </p>
-                <h3 className="mt-1 font-serif text-lg text-[rgb(var(--sep-colour-e6cfaa))] sm:text-xl game_components_houseofchancespanel_h3_let_house_read_fortune">
-                  Let the House read your fortune
-                </h3>
+                <div className="mt-1 flex items-center justify-center gap-2">
+                  <h3 className="font-serif text-lg text-[rgb(var(--sep-colour-e6cfaa))] sm:text-xl game_components_houseofchancespanel_h3_let_house_read_fortune">
+                    Let the House read your fortune
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() => setInfoOpen(true)}
+                    aria-label="Show House of Chances winning combinations"
+                    title="Winning combinations"
+                    className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[rgb(var(--sep-colour-765937))]/70 bg-[rgb(var(--sep-colour-17110d))] font-serif text-[11px] text-[rgb(var(--sep-colour-c9aa78))] transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:text-[rgb(var(--sep-colour-efd6a8))]"
+                  >i</button>
+                </div>
                 <p className="mx-auto mt-1 max-w-xl text-[8px] leading-4 text-[rgb(var(--sep-colour-8f8271))] game_components_houseofchancespanel_p_let_house_read_fortune_2">
                   Three numbers are drawn beyond your control. The House honours only the highest claim that fate reveals.
                 </p>
@@ -535,6 +555,36 @@ export function HouseOfChancesPanel({
           </div>
         </div>
       </div>
+
+      <MechanicsInfoModal
+        open={infoOpen}
+        onClose={() => setInfoOpen(false)}
+        title="House of Chances · Winning Combinations"
+        subtitle="If more than one rule matches the same three rolls, the highest-priority configured rule wins."
+      >
+        {info.length ? (
+          <div className="space-y-2">
+            {info.map(entry => (
+              <div key={entry.id} className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-15100d))] px-3 py-2.5">
+                <div className="flex flex-wrap items-baseline justify-between gap-2">
+                  <p className="font-serif text-sm text-[rgb(var(--sep-colour-d8c29b))]">{entry.name}</p>
+                  <p className="text-[8px] uppercase tracking-[0.1em] text-[rgb(var(--sep-colour-a98b61))]">{entry.condition}</p>
+                </div>
+                <div className="mt-2 border-t border-[rgb(var(--sep-colour-59432c))]/25 pt-2">
+                  {entry.rewards.length
+                    ? <p className="text-[9px] leading-5 text-[rgb(var(--sep-colour-c3ad89))]">{entry.rewards.join(" · ")}</p>
+                    : <p className="text-[9px] italic text-[rgb(var(--sep-colour-756958))]">No prize configured.</p>}
+                </div>
+              </div>
+            ))}
+            <p className="pt-1 text-[8px] italic leading-4 text-[rgb(var(--sep-colour-756958))]">
+              Any roll that matches none of the combinations above wins nothing.
+            </p>
+          </div>
+        ) : (
+          <p className="text-[10px] italic text-[rgb(var(--sep-colour-756958))]">No winning combinations are currently configured.</p>
+        )}
+      </MechanicsInfoModal>
     </details>
   );
 }

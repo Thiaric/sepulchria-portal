@@ -3795,7 +3795,7 @@ body[data-portal-skin="pioneers-land"],
   --sep-colour-622720: 141 65 40;
   --sep-colour-62482f: 176 132 44;
   --sep-colour-62492e: 176 132 44;
-  --sep-colour-625747: 141 65 40;
+  --sep-colour-625747: var(--sep-skin-c1);
   --sep-colour-62584b: 141 65 40;
   --sep-colour-62594d: 141 65 40;
   --sep-colour-626979: 170 78 49;
