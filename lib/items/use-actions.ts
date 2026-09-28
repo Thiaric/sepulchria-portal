@@ -802,7 +802,7 @@ export async function useInventoryItem(
           }
 
           return {
-            ok: true,
+            ok: false,
             message:
               `${record.item.name} · d20 ${roll} + Brains ${brains} = ${total} vs DC ${dc} · FAILED — ${shape.name} was not learned. Scroll destroyed.`,
           };

@@ -7,7 +7,7 @@ import {
   useState,
   useTransition,
 } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import {
   ItemImageFrame,
@@ -955,7 +955,6 @@ function ItemCard({
   return (
     <article
       data-sep-interactive-surface="card"
-      data-inventory-item-id={row.item_id}
       className={[((`border ${
         row.is_equipped
           ? "border-[rgb(var(--sep-colour-8d6d3e))]/65 bg-[rgb(var(--sep-colour-18110c))]"
@@ -2079,14 +2078,6 @@ export function CharacterInventoryBrowser({
   useTargets?: InventoryUseTarget[];
   showInventoryItems?: boolean;
 }) {
-  const searchParams =
-    useSearchParams();
-
-  const focusItemId =
-    own
-      ? searchParams.get("focusItem")
-      : null;
-
   const [
     search,
     setSearch,
@@ -2161,110 +2152,6 @@ export function CharacterInventoryBrowser({
     equipmentCollapsed,
     setEquipmentCollapsed,
   ] = useState(false);
-
-  useEffect(() => {
-    if (!focusItemId) {
-      return;
-    }
-
-    const targetRow =
-      rows.find(
-        (row) =>
-          row.item_id ===
-          focusItemId,
-      );
-
-    if (!targetRow) {
-      return;
-    }
-
-    setSearch("");
-    setCategory("");
-    setSubcategory("");
-    setQuality("");
-    setSlot("");
-    setStatus("all");
-    setRequirement("all");
-
-    setCollapsed(
-      (current) => {
-        const next =
-          new Set(current);
-
-        if (
-          targetRow.parent_container_id
-        ) {
-          next.delete(
-            "__containers__",
-          );
-        } else {
-          next.delete(
-            targetRow.category_name,
-          );
-        }
-
-        return next;
-      },
-    );
-
-    const timeoutId =
-      window.setTimeout(() => {
-        const selector =
-          `[data-inventory-item-id="${CSS.escape(
-            focusItemId,
-          )}"]`;
-
-        const element =
-          document.querySelector<HTMLElement>(
-            selector,
-          );
-
-        if (!element) {
-          return;
-        }
-
-        element.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-
-        element.animate(
-          [
-            {
-              boxShadow:
-                "0 0 0 0 rgba(255,255,255,0)",
-              transform:
-                "scale(1)",
-            },
-            {
-              boxShadow:
-                "0 0 0 3px rgba(255,255,255,0.55)",
-              transform:
-                "scale(1.01)",
-            },
-            {
-              boxShadow:
-                "0 0 0 0 rgba(255,255,255,0)",
-              transform:
-                "scale(1)",
-            },
-          ],
-          {
-            duration: 2200,
-            easing: "ease-out",
-          },
-        );
-      }, 120);
-
-    return () => {
-      window.clearTimeout(
-        timeoutId,
-      );
-    };
-  }, [
-    focusItemId,
-    rows,
-  ]);
 
   const filtersActive =
     Boolean(search.trim()) ||

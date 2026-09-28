@@ -6,10 +6,6 @@ import {
   formatRemnants,
 } from "@/lib/economy/currency";
 import type { PresentRoomCharacter } from "@/types/game";
-import {
-  notifyItemGiftReceived,
-  notifyRemnantsGiftReceived,
-} from "@/app/(portal)/game/gift-notification-actions";
 
 type InventoryRecord = {
   record_kind: "standard" | "unique";
@@ -449,17 +445,6 @@ export function ItemExchangePanel({
       return;
     }
 
-    const selectedItem =
-      inventoryRecords.get(
-        `${kind}:${id}`,
-      );
-
-    if (!selectedItem) {
-      setOk(false);
-      setMessage("That Item is no longer available.");
-      return;
-    }
-
     await mutate(async () => {
       const { error } = await supabase.rpc(
         "give_own_inventory_record_normalized",
@@ -472,30 +457,8 @@ export function ItemExchangePanel({
       );
       if (error) throw new Error(error.message);
 
-      let notificationWarning = "";
-
-      try {
-        await notifyItemGiftReceived({
-          recipientCharacterId:
-            giveTarget,
-          itemId:
-            selectedItem.item_id,
-          quantity:
-            giveQuantity,
-        });
-      } catch (notificationError) {
-        console.error(
-          "Unable to notify Item recipient:",
-          notificationError,
-        );
-        notificationWarning =
-          " The Item was transferred, but the recipient notification could not be created.";
-      }
-
       setOk(true);
-      setMessage(
-        `Item given successfully.${notificationWarning}`,
-      );
+      setMessage("Item given successfully.");
       setGiveChoice("");
       setGiveQuantity(1);
     });
@@ -531,28 +494,8 @@ export function ItemExchangePanel({
 
       if (error) throw new Error(error.message);
 
-      let notificationWarning = "";
-
-      try {
-        await notifyRemnantsGiftReceived({
-          recipientCharacterId:
-            remnantTarget,
-          amount:
-            remnantAmount,
-        });
-      } catch (notificationError) {
-        console.error(
-          "Unable to notify Remnants recipient:",
-          notificationError,
-        );
-        notificationWarning =
-          " The Remnants were transferred, but the recipient notification could not be created.";
-      }
-
       setOk(true);
-      setMessage(
-        `Remnants given successfully.${notificationWarning}`,
-      );
+      setMessage("Remnants given successfully.");
       setRemnantTarget("");
       setRemnantAmount(1);
     });
