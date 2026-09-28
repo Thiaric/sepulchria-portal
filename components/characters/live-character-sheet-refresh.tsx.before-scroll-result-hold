@@ -22,9 +22,6 @@ export function LiveCharacterSheetRefresh({
   const refreshTimerRef =
     useRef<number | null>(null);
 
-  const suspendedUntilRef =
-    useRef(0);
-
   useEffect(() => {
     const supabase = createClient();
     let disposed = false;
@@ -33,22 +30,8 @@ export function LiveCharacterSheetRefresh({
       if (disposed) return;
 
       if (refreshTimerRef.current !== null) {
-        window.clearTimeout(
-          refreshTimerRef.current,
-        );
+        window.clearTimeout(refreshTimerRef.current);
       }
-
-      const remainingSuspension =
-        Math.max(
-          0,
-          suspendedUntilRef.current -
-            Date.now(),
-        );
-
-      const delay =
-        remainingSuspension > 0
-          ? remainingSuspension
-          : 250;
 
       refreshTimerRef.current =
         window.setTimeout(() => {
@@ -63,7 +46,7 @@ export function LiveCharacterSheetRefresh({
               },
             );
           }
-        }, delay);
+        }, 250);
     }
 
     const channels = [
@@ -168,56 +151,9 @@ export function LiveCharacterSheetRefresh({
       }
     }
 
-    function suspendRefresh(
-      event: Event,
-    ) {
-      const detail =
-        (
-          event as CustomEvent<{
-            milliseconds?: number;
-          }>
-        ).detail;
-
-      const milliseconds =
-        Math.max(
-          0,
-          Number(
-            detail?.milliseconds ?? 0,
-          ),
-        );
-
-      suspendedUntilRef.current =
-        Math.max(
-          suspendedUntilRef.current,
-          Date.now() + milliseconds,
-        );
-
-      if (
-        refreshTimerRef.current !==
-        null
-      ) {
-        refreshSheet();
-      }
-    }
-
-    function refreshNow() {
-      suspendedUntilRef.current = 0;
-      refreshSheet();
-    }
-
     document.addEventListener(
       "visibilitychange",
       refreshWhenVisible,
-    );
-
-    window.addEventListener(
-      "sepulchria:character-sheet-refresh-suspend",
-      suspendRefresh,
-    );
-
-    window.addEventListener(
-      "sepulchria:character-sheet-refresh-now",
-      refreshNow,
     );
 
     return () => {
@@ -230,16 +166,6 @@ export function LiveCharacterSheetRefresh({
       document.removeEventListener(
         "visibilitychange",
         refreshWhenVisible,
-      );
-
-      window.removeEventListener(
-        "sepulchria:character-sheet-refresh-suspend",
-        suspendRefresh,
-      );
-
-      window.removeEventListener(
-        "sepulchria:character-sheet-refresh-now",
-        refreshNow,
       );
 
       for (const channel of channels) {

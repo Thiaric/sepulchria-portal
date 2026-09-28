@@ -626,22 +626,10 @@ function UseControl({
 
     startTransition(async () => {
       if (row.teaches_shape) {
-        let warning;
-
-        try {
-          warning =
-            await getShapeScrollLearningWarning(
-              data,
-            );
-        } catch (error) {
-          setSuccess(false);
-          setMessage(
-            error instanceof Error
-              ? error.message
-              : "Unable to check this Scroll.",
+        const warning =
+          await getShapeScrollLearningWarning(
+            data,
           );
-          return;
-        }
 
         if (
           warning.requiresConfirmation &&
@@ -651,17 +639,6 @@ function UseControl({
         ) {
           return;
         }
-
-        window.dispatchEvent(
-          new CustomEvent(
-            "sepulchria:character-sheet-refresh-suspend",
-            {
-              detail: {
-                milliseconds: 5_500,
-              },
-            },
-          ),
-        );
       }
 
       const result =
@@ -669,25 +646,6 @@ function UseControl({
 
       setSuccess(result.ok);
       setMessage(result.message);
-
-      if (row.teaches_shape) {
-        await new Promise<void>(
-          (resolve) => {
-            window.setTimeout(
-              resolve,
-              5_000,
-            );
-          },
-        );
-
-        window.dispatchEvent(
-          new Event(
-            "sepulchria:character-sheet-refresh-now",
-          ),
-        );
-
-        return;
-      }
 
       if (result.ok) {
         router.refresh();
