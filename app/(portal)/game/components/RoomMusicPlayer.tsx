@@ -19,6 +19,7 @@ import type {
   CharacterMusicPayload,
   PlayableMusicTrack,
 } from "@/lib/music/get-character-music";
+import { usePortalAudio } from "@/components/audio/portal-audio-provider";
 
 type Props = CharacterMusicPayload & {
   locationName: string;
@@ -42,6 +43,10 @@ export default function RoomMusicPlayer({
   ownedTracks: initialOwnedTracks,
   preferences,
 }: Props) {
+  const {
+    muted: portalMuted,
+  } = usePortalAudio();
+
   const audioRef =
     useRef<HTMLAudioElement | null>(
       null,
@@ -89,6 +94,19 @@ export default function RoomMusicPlayer({
 
   const [muted, setMuted] =
     useState(preferences.muted);
+
+  /*
+   * Portal mute is the master switch.
+   * `muted` remains the Character's own Location Music preference,
+   * while `effectiveMuted` is the actual playback state.
+   *
+   * The two settings never overwrite each other:
+   * - Portal muted + Location unmuted => silent
+   * - Portal unmuted + Location muted => silent
+   * - both unmuted => audible
+   */
+  const effectiveMuted =
+    portalMuted || muted;
 
   const [playing, setPlaying] =
     useState(false);
@@ -400,7 +418,7 @@ export default function RoomMusicPlayer({
     audio.pause();
     audio.src = track.url;
     audio.loop = true;
-    audio.muted = muted;
+    audio.muted = effectiveMuted;
     audio.volume = 0;
     audio.load();
 
@@ -409,7 +427,7 @@ export default function RoomMusicPlayer({
       .then(() => {
         setNeedsGesture(false);
         fadeTo(
-          muted ? 0 : volume,
+          effectiveMuted ? 0 : volume,
         );
       })
       .catch(() => {
@@ -432,14 +450,14 @@ export default function RoomMusicPlayer({
 
     if (!audio) return;
 
-    audio.muted = muted;
+    audio.muted = effectiveMuted;
 
     if (
       fadeTimerRef.current === null
     ) {
       audio.volume = volume;
     }
-  }, [muted, volume]);
+  }, [effectiveMuted, volume]);
 
   useEffect(() => {
     if (
@@ -459,7 +477,7 @@ export default function RoomMusicPlayer({
         .then(() => {
           setNeedsGesture(false);
           fadeTo(
-            muted ? 0 : volume,
+            effectiveMuted ? 0 : volume,
           );
         })
         .catch(() => {
@@ -500,7 +518,7 @@ export default function RoomMusicPlayer({
   }, [
     needsGesture,
     activeTrack?.id,
-    muted,
+    effectiveMuted,
     volume,
   ]);
 
@@ -969,9 +987,13 @@ export default function RoomMusicPlayer({
               : "Mute location music"
           }
           title={
-            muted
-              ? "Unmute"
-              : "Mute"
+            portalMuted
+              ? muted
+                ? "Portal audio is muted · Location Music is also muted"
+                : "Portal audio is muted · Location Music will resume when Portal audio is unmuted"
+              : muted
+                ? "Unmute"
+                : "Mute"
           }
           className={[((`flex h-10 w-10 shrink-0 items-center justify-center border-l transition ${
             muted
@@ -986,6 +1008,12 @@ export default function RoomMusicPlayer({
           )}
         </button>
       </div>
+
+      {portalMuted ? (
+        <p className="border-t border-[rgb(var(--sep-colour-59432c))]/30 px-3 py-1.5 text-[7px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-7d655d))]">
+          Muted by the portal sound control
+        </p>
+      ) : null}
 
       {expanded ? (
         <div className="border-t border-[rgb(var(--sep-colour-59432c))]/30 px-3 py-3 game_components_roommusicplayer_div_container_2">

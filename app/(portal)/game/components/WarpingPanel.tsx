@@ -2126,7 +2126,7 @@ return [
       ) : (
         <>
           <select
-            value={s?.id ?? ""}
+  value={s?._selection_key ?? ""}
             onChange={e => {
               setSid(
                 e.target.value,
