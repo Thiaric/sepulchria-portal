@@ -723,26 +723,85 @@ async function touchPresence(
   }
 }
 
-export async function moveCharacter(
-  formData: FormData,
-): Promise<void> {
-  const roomId = String(
-    formData.get("roomId") ?? "",
-  );
+export async function moveCharacter(formData: FormData): Promise<void> {
+  const roomId = String(formData.get("roomId") ?? "").trim();
 
-  /*
-   * Journey buttons are generated only from the current room's exits,
-   * so do not re-query room_connections here.
-   *
-   * Use the exact same entry pipeline as /area -> Location:
-   * - skips re-checking access to the room being left
-   * - validates destination room + destination access in parallel
-   * - preserves ghost/private/HQ-return/presence behaviour
-   */
-  await enterRoomById(
-    roomId,
-  );
+  if (!roomId) {
+    throw new Error("Invalid destination room.");
+  }
 
+  const { supabase, character } = await getOwnedCharacter({ allowDeadGhost: true });
+
+  if (!character.current_room_id) {
+    throw new Error("The character has no current room.");
+  }
+
+  const [directResult, reverseResult] = await Promise.all([
+    supabase
+      .from("room_connections")
+      .select("id")
+      .eq("from_room_id", character.current_room_id)
+      .eq("to_room_id", roomId)
+      .maybeSingle(),
+    supabase
+      .from("room_connections")
+      .select("id")
+      .eq("from_room_id", roomId)
+      .eq("to_room_id", character.current_room_id)
+      .eq("is_two_way", true)
+      .maybeSingle(),
+  ]);
+
+  if (directResult.error) {
+    throw new Error(
+      `Unable to verify room connection: ${directResult.error.message}`,
+    );
+  }
+
+  if (reverseResult.error) {
+    throw new Error(
+      `Unable to verify reverse room connection: ${reverseResult.error.message}`,
+    );
+  }
+
+  if (!directResult.data && !reverseResult.data) {
+    throw new Error("This room is not connected to the current location.");
+  }
+
+  if (character.life_state === "dead") {
+    await assertGhostMovementAllowed(
+      character.id,
+      roomId,
+    );
+  }
+
+  const destinationAccess =
+    await getPrivateLocationAccess(
+      roomId,
+      character.id,
+    );
+
+  if (
+    destinationAccess.isPrivate &&
+    !destinationAccess.allowed
+  ) {
+    throw new Error(
+      "This location is not available.",
+    );
+  }
+
+  const { error: moveError } = await supabase
+    .from("characters")
+    .update({ current_room_id: roomId })
+    .eq("id", character.id);
+
+  if (moveError) {
+    throw new Error(`Unable to move character: ${moveError.message}`);
+  }
+
+  await touchPresence(supabase, character.id, roomId);
+
+  revalidatePath("/game");
   redirect("/game");
 }
 

@@ -93,11 +93,6 @@ export function GameContextPanel({
   const [exits, setExits] =
     useState<RoomExit[]>([]);
 
-  const [
-    journeyingTo,
-    setJourneyingTo,
-  ] = useState<string | null>(null);
-
   const [loading, setLoading] =
     useState(Boolean(roomId));
 
@@ -590,11 +585,6 @@ export function GameContextPanel({
                 <form className="components_portal_game_context_panel_form_move_character"
                   key={`${exit.id}-${destination.id}`}
                   action={moveCharacter}
-                  onSubmit={() => {
-                    setJourneyingTo(
-                      destination.id,
-                    );
-                  }}
                 >
                   <input className="components_portal_game_context_panel_input_room_id"
                     type="hidden"
@@ -606,26 +596,12 @@ export function GameContextPanel({
 
                   <button
                     type="submit"
-                    disabled={
-                      journeyingTo !== null
-                    }
-                    aria-disabled={
-                      journeyingTo !== null
-                    }
-                    className={[
-                      "group w-full border border-[rgb(var(--sep-colour-765937))]/60 bg-[rgb(var(--sep-colour-271c12))] px-2.5 py-[2px] text-left transition components_portal_game_context_panel_button_action_3",
-                      journeyingTo !== null
-                        ? "cursor-wait opacity-65"
-                        : "hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-3b2919))]",
-                    ].join(" ")}
+                    className="group w-full border border-[rgb(var(--sep-colour-765937))]/60 bg-[rgb(var(--sep-colour-271c12))] px-2.5 py-[2px] text-left transition hover:border-[rgb(var(--sep-colour-a17a49))] hover:bg-[rgb(var(--sep-colour-3b2919))] components_portal_game_context_panel_button_action_3"
                   >
                     <span className="flex items-center justify-between gap-3 components_portal_game_context_panel_span_text_3">
                       <span className="min-w-0 components_portal_game_context_panel_span_text_4">
                         <span className="block truncate font-serif text-[13px] leading-4 text-[rgb(var(--sep-colour-d8bf91))] transition group-hover:text-[rgb(var(--sep-colour-ead2a4))] components_portal_game_context_panel_span_text_5">
-                          {journeyingTo ===
-                          destination.id
-                            ? "Journeying..."
-                            : destination.name}
+                          {destination.name}
                         </span>
 
                         
@@ -635,10 +611,7 @@ export function GameContextPanel({
                         aria-hidden="true"
                         className="shrink-0 text-[10px] text-[rgb(var(--sep-colour-836746))] transition group-hover:translate-x-0.5 components_portal_game_context_panel_span_text_6"
                       >
-                        {journeyingTo ===
-                        destination.id
-                          ? "…"
-                          : "→"}
+                        →
                       </span>
                     </span>
                   </button>
