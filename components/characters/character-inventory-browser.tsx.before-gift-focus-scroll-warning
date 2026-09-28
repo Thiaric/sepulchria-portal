@@ -22,10 +22,7 @@ import {
 import {
   moveOwnInventoryItem,
 } from "@/lib/items/inventory-move-actions";
-import {
-  getShapeScrollLearningWarning,
-  useInventoryItem,
-} from "@/lib/items/use-actions";
+import { useInventoryItem } from "@/lib/items/use-actions";
 import { discardInventoryItem } from "@/lib/items/player-transfer-actions";
 
 export type InventoryUseTarget = {
@@ -542,7 +539,7 @@ function UseControl({
         () => {
           setMessage(null);
         },
-        5_000,
+        10_000,
       );
 
     return () => {
@@ -625,22 +622,6 @@ function UseControl({
     setMessage(null);
 
     startTransition(async () => {
-      if (row.teaches_shape) {
-        const warning =
-          await getShapeScrollLearningWarning(
-            data,
-          );
-
-        if (
-          warning.requiresConfirmation &&
-          !window.confirm(
-            warning.message,
-          )
-        ) {
-          return;
-        }
-      }
-
       const result =
         await useInventoryItem(data);
 
@@ -2316,15 +2297,6 @@ export function CharacterInventoryBrowser({
     return;
   }
 
-  /*
-   * A notification link may ask us to focus a received Item.
-   * The focus effect above opens that Item's category. Do not
-   * immediately close it again with the normal default collapse.
-   */
-  if (focusItemId) {
-    return;
-  }
-
   const next =
     new Set<string>(
       rows.map(
@@ -2349,7 +2321,6 @@ export function CharacterInventoryBrowser({
 }, [
   filtersActive,
   rows,
-  focusItemId,
 ]);
 
   useEffect(() => {

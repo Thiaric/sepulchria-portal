@@ -584,8 +584,6 @@ export function NotificationBell() {
     const automaticSources =
       new Set([
         "item_trade",
-        "item_gift",
-        "remnant_gift",
         "private_location_invite",
         "breeze_lodging_invite",
         "forum_reply",
