@@ -2963,7 +2963,7 @@ function ignoreSpellingWord() {
       ) : utilityMode === "feat" ? (
         <form className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))] p-3 game_components_roomchatform_form_form">
           <UtilityPanelHeader
-            title="Use Feat"
+            title=""
             description="Choose one of your Feats and use or activate it from the room."
             onClose={() => setUtilityMode(null)}
           />
@@ -3044,18 +3044,18 @@ function ignoreSpellingWord() {
                 </label>
               ) : null}
 
-              <div className="mt-3 border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3 game_components_roomchatform_div_container_21">
+              <div className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3 game_components_roomchatform_div_container_21">
                 <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))] game_components_roomchatform_p_text_15">
                   {selectedGift.name}
                 </p>
                 {selectedGift.description ? (
-                  <p className="mt-1 text-[10px] leading-5 text-[rgb(var(--sep-colour-817565))] game_components_roomchatform_p_text_16">
+                  <p className=" text-[10px] leading-5 text-[rgb(var(--sep-colour-817565))] game_components_roomchatform_p_text_16">
                     {
                       selectedGift.description
                     }
                   </p>
                 ) : null}
-                <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-c5a36f))] game_components_roomchatform_p_text_17">
+                <p className=" text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-c5a36f))] game_components_roomchatform_p_text_17">
                   {selectedGift.mechanicsShape
                     ? selectedGift.effectMode === "passive"
                       ? "Passive · Shape-style Self profile is always active while owned"
@@ -3077,7 +3077,7 @@ function ignoreSpellingWord() {
                 (selectedGift.healthDice ||
                   selectedGift.healthDelta !== 0 ||
                   selectedGift.maxHealthModifier !== 0) ? (
-                  <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-aa8c61))] game_components_roomchatform_p_text_18">
+                  <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-aa8c61))] game_components_roomchatform_p_text_18">
                     {[
                       selectedGift.healthDice
                         ? `Healing ${selectedGift.healthDice}${
@@ -3127,7 +3127,7 @@ function ignoreSpellingWord() {
                   </p>
                 ) : null}
 
-                <p className="mt-2 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8b7657))] game_components_roomchatform_p_text_20">
+                <p className="text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-8b7657))] game_components_roomchatform_p_text_20">
                   {selectedGift.effectMode ===
                   "passive"
                     ? "Passive effect is already active - you can show this Feat in chat"
@@ -3164,7 +3164,7 @@ function ignoreSpellingWord() {
                 </p>
               </div>
 
-              <div className="mt-3 flex flex-wrap items-center justify-between gap-3 game_components_roomchatform_div_container_22">
+              <div className="flex w-full flex-wrap items-center justify-between gap-3 game_components_roomchatform_div_container_22">
                 <p
                   className={[((`text-xs ${
                     giftUseState.message
@@ -3370,7 +3370,7 @@ function ignoreSpellingWord() {
                 />
               ) : null}
 
-              <div className="mt-3 border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3 game_components_roomchatform_div_container_24">
+              <div className="border border-[rgb(var(--sep-colour-59432c))]/30 bg-[rgb(var(--sep-colour-15100d))] p-3 game_components_roomchatform_div_container_24">
                 <p className="font-serif text-base text-[rgb(var(--sep-colour-dec89f))] game_components_roomchatform_p_text_23">
                   {selectedItem.name}
                 </p>

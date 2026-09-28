@@ -263,7 +263,7 @@ const cooldown =
   );
 
   return (
-    <div className="mt-3 border border-[rgb(var(--sep-colour-765937))]/45 bg-[rgb(var(--sep-colour-15100d))] p-3">
+    <div className="mt-1 border border-[rgb(var(--sep-colour-765937))]/45 bg-[rgb(var(--sep-colour-15100d))] p-3">
       {actorCharacterId ? (
         <input
           type="hidden"
@@ -304,16 +304,16 @@ const cooldown =
           {durationLabel(shape)}
         </div>
       </div>
-
+<div className="grid gap-2 text-[9px] sm:grid-cols-2 lg:grid-cols-3">
       {selfBits.length ? (
-        <div className="mt-3 border-l-2 border-[rgb(var(--sep-skin-c2))]/60 bg-[rgb(var(--sep-skin-c2))]/10 px-3 py-2 text-[9px] leading-5 text-[rgb(var(--sep-skin-c2))]">
+        <div className="mt-1 border-l-2 border-[rgb(var(--sep-skin-c2))]/60 bg-[rgb(var(--sep-skin-c2))]/10 px-3 py-2 text-[9px] leading-5 text-[rgb(var(--sep-skin-c2))]">
           <b className="font-semibold">Self profile:</b>{" "}
           {selfBits.join(" · ")}
         </div>
       ) : null}
 
       {otherBits.length ? (
-        <div className="mt-2 border-l-2 border-[rgb(var(--sep-skin-c1))]/60 bg-[rgb(var(--sep-skin-c1))]/10 px-3 py-2 text-[9px] leading-5 text-[rgb(var(--sep-skin-c1))]">
+        <div className="mt-1 border-l-2 border-[rgb(var(--sep-skin-c1))]/60 bg-[rgb(var(--sep-skin-c1))]/10 px-3 py-2 text-[9px] leading-5 text-[rgb(var(--sep-skin-c1))]">
           <b className="font-semibold">Other profile:</b>{" "}
           {otherBits.join(" · ")}
         </div>
@@ -326,7 +326,7 @@ const cooldown =
           {harmfulBits.join(" · ")}
         </div>
       ) : null}
-
+</div>
       {targetMode !== "self" ? (
         <div className="mt-3 space-y-2">
           <p className="text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-806b50))]">
