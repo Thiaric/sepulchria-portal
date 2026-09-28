@@ -280,8 +280,8 @@ function FeatCard({
       style={{
         backgroundImage: `
           linear-gradient(
-            rgb(var(--sep-colour-100d0b) / 80%),
-            rgb(var(--sep-colour-100d0b) / 80%)
+            rgb(var(--sep-colour-100d0b) / 75%),
+            rgb(var(--sep-colour-100d0b) / 83%)
           ),
           url("${backgroundImage}")
         `,

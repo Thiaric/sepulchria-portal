@@ -433,8 +433,8 @@ function ShapeArticle({
   style={{
     backgroundImage: `
       linear-gradient(
-        rgb(var(--sep-colour-100d0b) / 88%),
-        rgb(var(--sep-colour-100d0b) / 88%)
+        rgb(var(--sep-colour-100d0b) / 75%),
+        rgb(var(--sep-colour-100d0b) / 83%)
       ),
       url("${backgroundImage}")
     `,
