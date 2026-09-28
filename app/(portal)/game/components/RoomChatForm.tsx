@@ -331,8 +331,9 @@ export default function RoomChatForm({
       } = await presenceSupabase
         .from("character_presence")
         .select(`
-          character_id,
-          character:characters!character_presence_character_id_fkey(
+  character_id,
+  appear_offline,
+  character:characters!character_presence_character_id_fkey(
             id,
             display_name,
             is_system
@@ -374,7 +375,10 @@ export default function RoomChatForm({
                 ? row.character[0]
                 : row.character;
 
-            if (!relation) {
+            if (
+              !relation ||
+              row.appear_offline === true
+            ) {
               return null;
             }
 

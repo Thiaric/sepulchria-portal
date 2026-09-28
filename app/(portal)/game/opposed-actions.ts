@@ -196,6 +196,32 @@ async function roomTarget(roomId: string, targetId: string) {
           "That NPC is not active in this Location.",
       );
     }
+  } else {
+    const activeSince = new Date(
+      Date.now() - 5 * 60_000,
+    ).toISOString();
+
+    const {
+      data: presence,
+      error: presenceError,
+    } = await admin
+      .from("character_presence")
+      .select("character_id, appear_offline")
+      .eq("character_id", data.id)
+      .eq("room_id", roomId)
+      .gte("last_seen_at", activeSince)
+      .maybeSingle();
+
+    if (
+      presenceError ||
+      !presence ||
+      presence.appear_offline === true
+    ) {
+      throw new Error(
+        presenceError?.message ??
+          "That Character is not available at this Location.",
+      );
+    }
   }
 
   if (data.life_state === "dead") {

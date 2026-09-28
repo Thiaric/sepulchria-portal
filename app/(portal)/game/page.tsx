@@ -230,6 +230,7 @@ async function GameContent() {
       .from("character_presence")
       .select(`
         character_id,
+        appear_offline,
         character:characters!character_presence_character_id_fkey(
           id,
           display_name,
@@ -569,12 +570,13 @@ async function GameContent() {
             : entry.character;
 
         if (
-          !relation ||
-          relation.id ===
-            character.id
-        ) {
-          return null;
-        }
+  !relation ||
+  relation.id ===
+    character.id ||
+  entry.appear_offline === true
+) {
+  return null;
+}
 
         return {
           id: relation.id,

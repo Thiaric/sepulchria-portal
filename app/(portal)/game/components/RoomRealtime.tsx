@@ -289,20 +289,22 @@ export default function RoomRealtime({
           },
           (payload) => {
             const next =
-              payload.new as {
-                character_id?: string;
-                room_id?:
-                  | string
-                  | null;
-              };
+  payload.new as {
+    character_id?: string;
+    room_id?:
+      | string
+      | null;
+    appear_offline?: boolean;
+  };
 
-            const previous =
-              payload.old as {
-                character_id?: string;
-                room_id?:
-                  | string
-                  | null;
-              };
+const previous =
+  payload.old as {
+    character_id?: string;
+    room_id?:
+      | string
+      | null;
+    appear_offline?: boolean;
+  };
 
             const changedCharacterId =
               String(
@@ -317,55 +319,65 @@ export default function RoomRealtime({
               return;
             }
 
+            if (
+  changedCharacterId ===
+  currentCharacterId
+) {
+  return;
+}
+
             const isKnown =
               knownRoomCharactersRef.current.has(
                 changedCharacterId,
               );
 
-            const isNowHere =
-              next?.room_id ===
-              roomId;
+            const isNowVisibleHere =
+  next?.room_id ===
+    roomId &&
+  next?.appear_offline !==
+    true;
 
-            if (
-              isNowHere &&
-              !isKnown
-            ) {
-              knownRoomCharactersRef.current.add(
-                changedCharacterId,
-              );
+if (
+  isNowVisibleHere &&
+  !isKnown
+) {
+  knownRoomCharactersRef.current.add(
+    changedCharacterId,
+  );
 
-              window.dispatchEvent(
-                new CustomEvent(
-                  "sepulchria:room-presence-changed",
-                  {
-                    detail: {
-                      roomId,
-                    },
-                  },
-                ),
-              );
-              return;
-            }
+  window.dispatchEvent(
+    new CustomEvent(
+      "sepulchria:room-presence-changed",
+      {
+        detail: {
+          roomId,
+        },
+      },
+    ),
+  );
 
-            if (
-              !isNowHere &&
-              isKnown
-            ) {
-              knownRoomCharactersRef.current.delete(
-                changedCharacterId,
-              );
+  return;
+}
 
-              window.dispatchEvent(
-                new CustomEvent(
-                  "sepulchria:room-presence-changed",
-                  {
-                    detail: {
-                      roomId,
-                    },
-                  },
-                ),
-              );
-            }
+if (
+  !isNowVisibleHere &&
+  isKnown
+) {
+  knownRoomCharactersRef.current.delete(
+    changedCharacterId,
+  );
+
+  window.dispatchEvent(
+    new CustomEvent(
+      "sepulchria:room-presence-changed",
+      {
+        detail: {
+          roomId,
+        },
+      },
+    ),
+  );
+}
           },
         )
         .subscribe();

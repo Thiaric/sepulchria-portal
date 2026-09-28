@@ -297,7 +297,7 @@ async function resolveGiftTarget({
   const { data: presence, error: presenceError } =
     await supabase
       .from("character_presence")
-      .select("character_id")
+      .select("character_id, appear_offline")
       .eq("character_id", requestedTargetId)
       .eq("room_id", roomId)
       .gte("last_seen_at", activeSince)
@@ -309,7 +309,10 @@ async function resolveGiftTarget({
     );
   }
 
-  if (!presence) {
+  if (
+    !presence ||
+    presence.appear_offline === true
+  ) {
     throw new Error(
       "That character is no longer present in this Location.",
     );
@@ -997,7 +1000,7 @@ async function resolveWhisperRecipient(
     error: presenceError,
   } = await supabase
     .from("character_presence")
-    .select("character_id")
+    .select("character_id, appear_offline")
     .eq(
       "character_id",
       recipientId,
@@ -1017,7 +1020,10 @@ async function resolveWhisperRecipient(
     };
   }
 
-  if (!presence) {
+  if (
+    !presence ||
+    presence.appear_offline === true
+  ) {
     return {
       ok: false,
       message:
@@ -3568,13 +3574,16 @@ export async function useRoomItem(
 
       const { data: presence } = await supabase
         .from("character_presence")
-        .select("character_id")
+        .select("character_id, appear_offline")
         .eq("character_id", targetCharacterId)
         .eq("room_id", character.current_room_id)
         .gte("last_seen_at", activeSince)
         .maybeSingle();
 
-      if (!presence) {
+      if (
+        !presence ||
+        presence.appear_offline === true
+      ) {
         return {
           ok: false,
           message: "That character is no longer present in this room.",
