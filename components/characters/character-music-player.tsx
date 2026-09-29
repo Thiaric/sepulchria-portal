@@ -786,7 +786,7 @@ export function CharacterMusicPlayer({
               ${
                 portalMuted ||
                 localMuted
-                  ? "border-[rgb(var(--sep-colour-65443b))] text-[rgb(var(--sep-colour-a56f64))]"
+                  ? "border-red-900/70 bg-red-950/35 text-red-400 hover:border-red-700/80 hover:text-red-300"
                   : "border-[rgb(var(--sep-colour-60482e))]/60 text-[rgb(var(--sep-colour-c6a26d))] hover:border-[rgb(var(--sep-colour-987344))] hover:text-[rgb(var(--sep-colour-ead2a5))]"
               }
             `)),
