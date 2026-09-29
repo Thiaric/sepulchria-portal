@@ -410,7 +410,9 @@ export default function RoomMusicPlayer({
 
     personalAvailable &&
 
-    usePersonal;
+    (usePersonal ||
+
+      locationTrack === null);
 
 
 
@@ -1806,7 +1808,9 @@ export default function RoomMusicPlayer({
 
   if (
 
-    !activeTrack
+    !locationTrack &&
+
+    !personalAvailable
 
   ) {
 
@@ -2166,13 +2170,15 @@ export default function RoomMusicPlayer({
 
                   value="location"
 
+                  disabled={!locationTrack}
+
                 >
 
                   {locationTrack
 
                     ? "Location Music"
 
-                    : "No Music"}
+                    : "Location Music — None"}
 
                 </option>
 
