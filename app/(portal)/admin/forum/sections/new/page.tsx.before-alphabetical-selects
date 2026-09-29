@@ -408,15 +408,7 @@ export default async function NewForumSectionPage({
                     No parent section
                   </option>
 
-                  {[...sections]
-                    .sort((a, b) =>
-                      a.name.localeCompare(
-                        b.name,
-                        undefined,
-                        { sensitivity: "base", numeric: true },
-                      ),
-                    )
-                    .map(
+                  {sections.map(
                     (section) => (
                       <option className="admin_forum_sections_new_page_option_option"
                         key={section.id}

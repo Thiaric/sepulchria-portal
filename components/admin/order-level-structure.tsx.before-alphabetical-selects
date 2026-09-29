@@ -260,16 +260,7 @@ export async function OrderLevelStructure({ orderId }: { orderId: string }) {
                                     <input className="components_admin_order_level_structure_input_job_id_2" type="hidden" name="fromJobId" value={job.id} />
                                     <select name="toJobId" required defaultValue="" className="min-w-0 flex-1 border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-100c09))] px-2 py-2 text-[9px] text-[rgb(var(--sep-colour-d7c4a5))] components_admin_order_level_structure_select_job_id">
                                       <option className="components_admin_order_level_structure_option_job_id" value="" disabled>Link to Level {level.level + 1} Role</option>
-                                      {(nextLevel.jobs ?? [])
-                                        .filter((candidate) => !linkedAbove.has(candidate.id))
-                                        .sort((a, b) =>
-                                          a.name.localeCompare(
-                                            b.name,
-                                            undefined,
-                                            { sensitivity: "base", numeric: true },
-                                          ),
-                                        )
-                                        .map((candidate) => <option className="components_admin_order_level_structure_option_job_id_2" key={candidate.id} value={candidate.id}>{candidate.name}</option>)}
+                                      {(nextLevel.jobs ?? []).filter((candidate) => !linkedAbove.has(candidate.id)).map((candidate) => <option className="components_admin_order_level_structure_option_job_id_2" key={candidate.id} value={candidate.id}>{candidate.name}</option>)}
                                     </select>
                                     <button type="submit" className="border border-[rgb(var(--sep-colour-765937))]/55 bg-[rgb(var(--sep-colour-261b12))] px-3 py-2 text-[7px] uppercase text-[rgb(var(--sep-colour-ccb083))] components_admin_order_level_structure_button_link">Link</button>
                                   </form>

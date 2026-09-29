@@ -345,15 +345,7 @@ export default async function AdminOrdersPage({
                     className="w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] admin_orders_page_select_headquarters_area_id"
                   >
                     <option className="admin_orders_page_option_headquarters_area_id" value="" disabled>Select Headquarters Area</option>
-                    {[...headquartersAreas]
-                      .sort((a, b) =>
-                        a.name.localeCompare(
-                          b.name,
-                          undefined,
-                          { sensitivity: "base", numeric: true },
-                        ),
-                      )
-                      .map((area) => (
+                    {headquartersAreas.map((area) => (
                       <option className="admin_orders_page_option_option_2" key={area.id} value={area.id}>
                         {area.name}{!area.is_active ? " — inactive" : ""}
                       </option>

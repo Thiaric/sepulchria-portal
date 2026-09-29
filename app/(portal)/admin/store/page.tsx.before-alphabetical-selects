@@ -385,16 +385,7 @@ export default async function AdminStorePage() {
                             <input className="admin_store_page_input_product_id_3" type="hidden" name="product_id" value={product.id} />
                             <input className="admin_store_page_input_grant_type_2" type="hidden" name="grant_type" value="cosmetic" />
                             <select name="target" className={[((field)), "admin_store_page_select_product_unlocks_2"].filter(Boolean).join(" ")}>
-                              {cosmetics
-                                .filter((x) => x.is_active)
-                                .sort((a, b) =>
-                                  a.name.localeCompare(
-                                    b.name,
-                                    undefined,
-                                    { sensitivity: "base", numeric: true },
-                                  ),
-                                )
-                                .map((item) => (
+                              {cosmetics.filter((x) => x.is_active).map((item) => (
                                 <option className="admin_store_page_option_option_2" key={item.id} value={item.id}>
                                   {item.name} · {item.category}
                                 </option>
@@ -407,16 +398,7 @@ export default async function AdminStorePage() {
                             <input className="admin_store_page_input_product_id_4" type="hidden" name="product_id" value={product.id} />
                             <input className="admin_store_page_input_grant_type_3" type="hidden" name="grant_type" value="music" />
                             <select name="target" className={[((field)), "admin_store_page_select_product_unlocks_3"].filter(Boolean).join(" ")}>
-                              {musicTracks
-                                .filter((x) => x.is_active && x.is_personal_selectable)
-                                .sort((a, b) =>
-                                  a.name.localeCompare(
-                                    b.name,
-                                    undefined,
-                                    { sensitivity: "base", numeric: true },
-                                  ),
-                                )
-                                .map((track) => (
+                              {musicTracks.filter((x) => x.is_active && x.is_personal_selectable).map((track) => (
                                 <option className="admin_store_page_option_option_3" key={track.id} value={track.id}>
                                   {track.name}
                                 </option>
@@ -508,15 +490,7 @@ export default async function AdminStorePage() {
             <label className="admin_store_page_label_store_discounts_8">
               <span className={[((label)), "admin_store_page_span_store_discounts_8"].filter(Boolean).join(" ")}>Product scope</span>
               <select name="product_ids" multiple size={5} className={[((field)), "admin_store_page_select_product_ids"].filter(Boolean).join(" ")}>
-                {[...products]
-                  .sort((a, b) =>
-                    a.name.localeCompare(
-                      b.name,
-                      undefined,
-                      { sensitivity: "base", numeric: true },
-                    ),
-                  )
-                  .map((product) => <option className="admin_store_page_option_product_ids" key={product.id} value={product.id}>{product.name}</option>)}
+                {products.map((product) => <option className="admin_store_page_option_product_ids" key={product.id} value={product.id}>{product.name}</option>)}
               </select>
             </label>
             <label className="admin_store_page_label_store_discounts_9">
@@ -602,15 +576,7 @@ export default async function AdminStorePage() {
                       <label className="admin_store_page_label_label_13"><span className={[((label)), "admin_store_page_span_text_17"].filter(Boolean).join(" ")}>Currency</span><input name="currency" defaultValue={discount.currency ?? "GBP"} maxLength={3} className={[((field)), "admin_store_page_input_currency_3"].filter(Boolean).join(" ")} /></label>
                       <label className="admin_store_page_label_label_14"><span className={[((label)), "admin_store_page_span_text_18"].filter(Boolean).join(" ")}>Scope</span><select name="scope_type" defaultValue={discount.scope_type} className={[((field)), "admin_store_page_select_scope_type_2"].filter(Boolean).join(" ")}><option className="admin_store_page_option_all_2" value="all">Everything</option><option className="admin_store_page_option_products_2" value="products">Selected products</option><option className="admin_store_page_option_category_2" value="category">Category</option></select></label>
                       <label className="admin_store_page_label_label_15"><span className={[((label)), "admin_store_page_span_text_19"].filter(Boolean).join(" ")}>Category scope</span><select name="scope_category" className={[((field)), "admin_store_page_select_scope_category_2"].filter(Boolean).join(" ")} defaultValue={discount.scope_category ?? ""}><option className="admin_store_page_option_scope_category_2" value="">—</option><option className="admin_store_page_option_skin_4" value="skin">Skin</option><option className="admin_store_page_option_cosmetic_4" value="cosmetic">Cosmetic</option><option className="admin_store_page_option_music_4" value="music">Music</option><option className="admin_store_page_option_friend_list_5" value="friend_list">Friend List</option><option className="admin_store_page_option_private_location_4" value="private_location">Private Location</option><option className="admin_store_page_option_bundle_4" value="bundle">Bundle</option></select></label>
-                      <label className="admin_store_page_label_label_16"><span className={[((label)), "admin_store_page_span_text_20"].filter(Boolean).join(" ")}>Product scope</span><select name="product_ids" multiple size={5} className={[((field)), "admin_store_page_select_product_ids_2"].filter(Boolean).join(" ")} defaultValue={[...selectedProductIds]}>{[...products]
-                  .sort((a, b) =>
-                    a.name.localeCompare(
-                      b.name,
-                      undefined,
-                      { sensitivity: "base", numeric: true },
-                    ),
-                  )
-                  .map((product) => <option className="admin_store_page_option_product_ids_2" key={product.id} value={product.id}>{product.name}</option>)}</select></label>
+                      <label className="admin_store_page_label_label_16"><span className={[((label)), "admin_store_page_span_text_20"].filter(Boolean).join(" ")}>Product scope</span><select name="product_ids" multiple size={5} className={[((field)), "admin_store_page_select_product_ids_2"].filter(Boolean).join(" ")} defaultValue={[...selectedProductIds]}>{products.map((product) => <option className="admin_store_page_option_product_ids_2" key={product.id} value={product.id}>{product.name}</option>)}</select></label>
                       <label className="admin_store_page_label_label_17"><span className={[((label)), "admin_store_page_span_text_21"].filter(Boolean).join(" ")}>Minimum money (minor units)</span><input name="minimum_money_minor" type="number" min="0" defaultValue={discount.minimum_money_minor ?? ""} className={[((field)), "admin_store_page_input_minimum_money_minor_2"].filter(Boolean).join(" ")} /></label>
                       <label className="admin_store_page_label_label_18"><span className={[((label)), "admin_store_page_span_text_22"].filter(Boolean).join(" ")}>Minimum Remnants</span><input name="minimum_remnants" type="number" min="0" defaultValue={discount.minimum_remnants ?? ""} className={[((field)), "admin_store_page_input_minimum_remnants_2"].filter(Boolean).join(" ")} /></label>
                       <label className="admin_store_page_label_label_19"><span className={[((label)), "admin_store_page_span_text_23"].filter(Boolean).join(" ")}>Max total uses</span><input name="max_redemptions" type="number" min="1" defaultValue={discount.max_redemptions ?? ""} className={[((field)), "admin_store_page_input_field"].filter(Boolean).join(" ")} /></label>

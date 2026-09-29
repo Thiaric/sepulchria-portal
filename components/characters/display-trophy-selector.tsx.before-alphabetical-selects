@@ -123,15 +123,7 @@ export async function DisplayTrophySelector({
                   >
                     <option className="components_characters_display_trophy_selector_option_option" value="">None</option>
 
-                    {[...trophies]
-                      .sort((a, b) =>
-                        a.name.localeCompare(
-                          b.name,
-                          undefined,
-                          { sensitivity: "base", numeric: true },
-                        ),
-                      )
-                      .map((trophy) => (
+                    {trophies.map((trophy) => (
                       <option className="components_characters_display_trophy_selector_option_option_2"
                         key={trophy.id}
                         value={trophy.id}

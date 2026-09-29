@@ -483,15 +483,7 @@ created_at: room.created_at,
                       Select an area
                     </option>
 
-                    {[...areas]
-                      .sort((a, b) =>
-                        a.name.localeCompare(
-                          b.name,
-                          undefined,
-                          { sensitivity: "base", numeric: true },
-                        ),
-                      )
-                      .map((area) => (
+                    {areas.map((area) => (
                       <option className="admin_rooms_page_option_option"
                         key={area.id}
                         value={area.id}
@@ -548,15 +540,7 @@ created_at: room.created_at,
                       <option className="admin_rooms_page_option_music_track_id" value="">
                         None
                       </option>
-                      {[...musicTracks]
-                      .sort((a, b) =>
-                        a.name.localeCompare(
-                          b.name,
-                          undefined,
-                          { sensitivity: "base", numeric: true },
-                        ),
-                      )
-                      .map((track) => (
+                      {musicTracks.map((track) => (
                         <option className="admin_rooms_page_option_option_2"
                           key={track.id}
                           value={track.id}
@@ -993,15 +977,7 @@ created_at: room.created_at,
                               <option className="admin_rooms_page_option_music_track_id_2" value="">
                                 None
                               </option>
-                              {[...musicTracks]
-                      .sort((a, b) =>
-                        a.name.localeCompare(
-                          b.name,
-                          undefined,
-                          { sensitivity: "base", numeric: true },
-                        ),
-                      )
-                      .map((track) => (
+                              {musicTracks.map((track) => (
                                 <option className="admin_rooms_page_option_option_6"
                                   key={track.id}
                                   value={track.id}

@@ -799,15 +799,7 @@ export function ItemExchangePanel({
           <div className="mt-2 grid gap-1 game_components_itemexchangepanel_div_container_12">
             <select className={[((field)), "game_components_itemexchangepanel_select_select"].filter(Boolean).join(" ")} value={giveChoice} onChange={(e) => setGiveChoice(e.target.value)}>
               <option className="game_components_itemexchangepanel_option_option" value="">Choose Item...</option>
-              {[...inventory]
-                .sort((a, b) =>
-                  a.name.localeCompare(
-                    b.name,
-                    undefined,
-                    { sensitivity: "base", numeric: true },
-                  ),
-                )
-                .map((row) => (
+              {inventory.map((row) => (
                 <option className="game_components_itemexchangepanel_option_option_2" key={encoded(row)} value={encoded(row)}>
                   {row.name}
                   {row.quantity > 1
@@ -824,15 +816,7 @@ export function ItemExchangePanel({
             </select>
             <select className={[((field)), "game_components_itemexchangepanel_select_select_2"].filter(Boolean).join(" ")} value={giveTarget} onChange={(e) => setGiveTarget(e.target.value)}>
               <option className="game_components_itemexchangepanel_option_option_3" value="">Give to...</option>
-              {[...presentCharacters]
-                .sort((a, b) =>
-                  a.display_name.localeCompare(
-                    b.display_name,
-                    undefined,
-                    { sensitivity: "base", numeric: true },
-                  ),
-                )
-                .map((character) => (
+              {presentCharacters.map((character) => (
                 <option className="game_components_itemexchangepanel_option_option_4" key={character.id} value={character.id}>{character.display_name}</option>
               ))}
             </select>
@@ -891,15 +875,7 @@ export function ItemExchangePanel({
               onChange={(e) => setRemnantTarget(e.target.value)}
             >
               <option className="game_components_itemexchangepanel_option_option_5" value="">Give to...</option>
-              {[...presentCharacters]
-                .sort((a, b) =>
-                  a.display_name.localeCompare(
-                    b.display_name,
-                    undefined,
-                    { sensitivity: "base", numeric: true },
-                  ),
-                )
-                .map((character) => (
+              {presentCharacters.map((character) => (
                 <option className="game_components_itemexchangepanel_option_option_6" key={character.id} value={character.id}>
                   {character.display_name}
                 </option>
@@ -945,15 +921,7 @@ export function ItemExchangePanel({
             <div className="mt-3 grid gap-2 game_components_itemexchangepanel_div_container_17">
               <select className={[((field)), "game_components_itemexchangepanel_select_select_4"].filter(Boolean).join(" ")} value={tradeTarget} onChange={(e) => setTradeTarget(e.target.value)}>
                 <option className="game_components_itemexchangepanel_option_option_7" value="">Exchange with...</option>
-                {[...exchangeCharacters]
-                  .sort((a, b) =>
-                    a.display_name.localeCompare(
-                      b.display_name,
-                      undefined,
-                      { sensitivity: "base", numeric: true },
-                    ),
-                  )
-                  .map((character) => (
+                {exchangeCharacters.map((character) => (
                   <option className="game_components_itemexchangepanel_option_option_8" key={character.id} value={character.id}>{character.display_name}</option>
                 ))}
               </select>
@@ -980,15 +948,7 @@ export function ItemExchangePanel({
           <div className="mt-3 grid gap-2 md:grid-cols-[minmax(0,1fr)_100px_auto] game_components_itemexchangepanel_div_container_19">
             <select className={[((field)), "game_components_itemexchangepanel_select_select_5"].filter(Boolean).join(" ")} value={offerChoice} onChange={(e) => setOfferChoice(e.target.value)}>
               <option className="game_components_itemexchangepanel_option_option_9" value="">Add one of your Items...</option>
-              {[...inventory]
-                .sort((a, b) =>
-                  a.name.localeCompare(
-                    b.name,
-                    undefined,
-                    { sensitivity: "base", numeric: true },
-                  ),
-                )
-                .map((row) => (
+              {inventory.map((row) => (
                 <option className="game_components_itemexchangepanel_option_option_10" key={encoded(row)} value={encoded(row)}>
                   {row.name}
                   {row.quantity > 1

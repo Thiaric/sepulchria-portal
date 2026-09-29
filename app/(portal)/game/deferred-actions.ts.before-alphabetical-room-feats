@@ -457,17 +457,7 @@ async function giftsFor(
             : null,
       } satisfies DeferredChatGift;
     })
-    .filter((gift): gift is DeferredChatGift => gift !== null)
-    .sort((a, b) =>
-      a.name.localeCompare(
-        b.name,
-        undefined,
-        {
-          sensitivity: "base",
-          numeric: true,
-        },
-      ),
-    );
+    .filter((gift): gift is DeferredChatGift => gift !== null);
 }
 
 export async function loadMyEffectiveAttributes() {

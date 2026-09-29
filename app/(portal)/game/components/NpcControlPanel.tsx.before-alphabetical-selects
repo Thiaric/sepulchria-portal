@@ -341,9 +341,7 @@ export function NpcControlPanel({roomId}:{roomId:string}){
       {mechanicsMode==="feat"&&<div className="mt-3">
         <select value={selectedGift} onChange={e=>{setSelectedGift(e.target.value);setMechanicsTarget("");}} className={inputClass}>
           <option value="">{mechanics.gifts?.length?"Choose Feat":"No Feats assigned"}</option>
-          {[...(mechanics.gifts??[])]
-            .sort((a:any,b:any)=>String(a.name??"").localeCompare(String(b.name??""),undefined,{sensitivity:"base",numeric:true}))
-            .map((g:any)=><option key={g.characterGiftId} value={g.characterGiftId}>{g.name} · {g.effectMode??g.effect_mode}</option>)}
+          {mechanics.gifts?.map((g:any)=><option key={g.characterGiftId} value={g.characterGiftId}>{g.name} · {g.effectMode??g.effect_mode}</option>)}
         </select>
 
         {(()=>{
@@ -390,9 +388,7 @@ export function NpcControlPanel({roomId}:{roomId:string}){
       {mechanicsMode==="item"&&<div className="mt-3 grid gap-2 sm:grid-cols-[1fr_1fr_auto]">
         <select value={selectedItem} onChange={e=>setSelectedItem(e.target.value)} className={inputClass}>
           <option value="">{mechanics.items?.length?"Choose Item":"No Items assigned"}</option>
-          {[...(mechanics.items??[])]
-            .sort((a:any,b:any)=>String(a.name??"").localeCompare(String(b.name??""),undefined,{sensitivity:"base",numeric:true}))
-            .map((i:any)=><option key={`${i.record_kind}:${i.record_id}`} value={i.record_id}>{i.name}{i.is_equipped?` · equipped ${i.equipped_slot??""}`:""}{!i.is_usable?" · not usable":""}</option>)}
+          {mechanics.items?.map((i:any)=><option key={`${i.record_kind}:${i.record_id}`} value={i.record_id}>{i.name}{i.is_equipped?` · equipped ${i.equipped_slot??""}`:""}{!i.is_usable?" · not usable":""}</option>)}
         </select>
         {(()=>{const i=mechanics.items?.find((x:any)=>x.record_id===selectedItem);if(!i||i.target_mode==="self")return <p className="mt-2 text-[9px] text-[rgb(var(--sep-colour-9e8b70))]">Target: Self</p>;return <NpcTargetButtons targets={mechanics.targets??[]} selected={mechanicsTarget} onSelect={setMechanicsTarget} allowSelf={i.target_mode==="either"} selfId={selected.character_id??""}/>;})()}
         <form action={itemAction}>
@@ -449,10 +445,7 @@ export function NpcControlPanel({roomId}:{roomId:string}){
       {mechanicsMode==="whisper"&&<div className="mt-3 grid gap-2">
         <select value={whisperTarget} onChange={e=>setWhisperTarget(e.target.value)} className={inputClass}>
           <option value="">Whisper to...</option>
-          {(mechanics.targets??[])
-            .filter((target:any)=>target.is_system!==true)
-            .sort((a:any,b:any)=>String(a.display_name??"").localeCompare(String(b.display_name??""),undefined,{sensitivity:"base",numeric:true}))
-            .map((target:any)=>
+          {(mechanics.targets??[]).filter((target:any)=>target.is_system!==true).map((target:any)=>
             <option key={target.id} value={target.id}>{target.display_name}</option>
           )}
         </select>
@@ -486,7 +479,6 @@ export function NpcControlPanel({roomId}:{roomId:string}){
               item.transfer_policy==="free"&&
               !item.is_quest_item
             )
-            .sort((a:any,b:any)=>String(a.name??"").localeCompare(String(b.name??""),undefined,{sensitivity:"base",numeric:true}))
             .map((item:any)=>
               <option key={`${item.record_kind}:${item.record_id}`} value={item.record_id}>
                 {item.name}{Number(item.quantity??1)>1?` ×${item.quantity}`:""}
@@ -495,10 +487,7 @@ export function NpcControlPanel({roomId}:{roomId:string}){
         </select>
         <select value={giveTarget} onChange={e=>setGiveTarget(e.target.value)} className={inputClass}>
           <option value="">Give to Character...</option>
-          {(mechanics.targets??[])
-            .filter((target:any)=>target.is_system!==true)
-            .sort((a:any,b:any)=>String(a.display_name??"").localeCompare(String(b.display_name??""),undefined,{sensitivity:"base",numeric:true}))
-            .map((target:any)=>
+          {(mechanics.targets??[]).filter((target:any)=>target.is_system!==true).map((target:any)=>
             <option key={target.id} value={target.id}>{target.display_name}</option>
           )}
         </select>

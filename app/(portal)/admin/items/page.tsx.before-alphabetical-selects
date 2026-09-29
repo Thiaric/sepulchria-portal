@@ -319,15 +319,7 @@ export default async function AdminItemsPage({ searchParams }: Props) {
           >
             <select name="categoryId" required defaultValue="" className={[((inputClass)), "admin_items_page_select_category_id"].filter(Boolean).join(" ")}>
               <option className="admin_items_page_option_category_id" value="" disabled>Core category</option>
-              {[...categories]
-              .sort((a, b) =>
-                a.name.localeCompare(
-                  b.name,
-                  undefined,
-                  { sensitivity: "base", numeric: true },
-                ),
-              )
-              .map((category) => (
+              {categories.map((category) => (
                 <option className="admin_items_page_option_option" key={category.id} value={category.id}>{category.name}</option>
               ))}
             </select>
@@ -365,15 +357,7 @@ export default async function AdminItemsPage({ searchParams }: Props) {
                       defaultValue={subcategory.category_id}
                       className={[((inputClass)), "admin_items_page_select_category_id_2"].filter(Boolean).join(" ")}
                     >
-                      {[...categories]
-              .sort((a, b) =>
-                a.name.localeCompare(
-                  b.name,
-                  undefined,
-                  { sensitivity: "base", numeric: true },
-                ),
-              )
-              .map((category) => (
+                      {categories.map((category) => (
                         <option className="admin_items_page_option_option_2" key={category.id} value={category.id}>{category.name}</option>
                       ))}
                     </select>
@@ -668,15 +652,7 @@ function ItemForm({
             defaultValue={item?.category_id ?? categories[0]?.id ?? ""}
             className={[((inputClass)), "admin_items_page_select_category_id_3"].filter(Boolean).join(" ")}
           >
-            {[...categories]
-              .sort((a, b) =>
-                a.name.localeCompare(
-                  b.name,
-                  undefined,
-                  { sensitivity: "base", numeric: true },
-                ),
-              )
-              .map((category) => (
+            {categories.map((category) => (
               <option className="admin_items_page_option_option_3" key={category.id} value={category.id}>{category.name}</option>
             ))}
           </select>
@@ -689,26 +665,10 @@ function ItemForm({
             className={[((inputClass)), "admin_items_page_select_subcategory_id"].filter(Boolean).join(" ")}
           >
             <option className="admin_items_page_option_subcategory_id" value="">None</option>
-            {[...categories]
-              .sort((a, b) =>
-                a.name.localeCompare(
-                  b.name,
-                  undefined,
-                  { sensitivity: "base", numeric: true },
-                ),
-              )
-              .map((category) => {
-              const matches = subcategories
-                .filter(
-                  (subcategory) => subcategory.category_id === category.id,
-                )
-                .sort((a, b) =>
-                  a.name.localeCompare(
-                    b.name,
-                    undefined,
-                    { sensitivity: "base", numeric: true },
-                  ),
-                );
+            {categories.map((category) => {
+              const matches = subcategories.filter(
+                (subcategory) => subcategory.category_id === category.id,
+              );
               if (!matches.length) return null;
 
               return (
@@ -732,15 +692,7 @@ function ItemForm({
             className={[((inputClass)), "admin_items_page_select_teaches_recipe_id"].filter(Boolean).join(" ")}
           >
             <option className="admin_items_page_option_teaches_recipe_id" value="">None</option>
-            {[...recipes]
-              .sort((a, b) =>
-                a.name.localeCompare(
-                  b.name,
-                  undefined,
-                  { sensitivity: "base", numeric: true },
-                ),
-              )
-              .map((recipe) => (
+            {recipes.map((recipe) => (
               <option className="admin_items_page_option_option_5"
                 key={recipe.id}
                 value={recipe.id}

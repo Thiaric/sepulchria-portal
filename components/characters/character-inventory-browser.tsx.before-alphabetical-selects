@@ -803,15 +803,7 @@ function MoveControls({
           Loose Inventory
         </option>
 
-        {[...containers]
-          .sort((a, b) =>
-            a.name.localeCompare(
-              b.name,
-              undefined,
-              { sensitivity: "base", numeric: true },
-            ),
-          )
-          .map(
+        {containers.map(
           (container) => (
             <option className="components_characters_character_inventory_browser_option_option_2"
               key={

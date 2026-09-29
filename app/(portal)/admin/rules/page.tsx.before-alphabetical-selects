@@ -264,15 +264,7 @@ export default async function AdminRulesPage() {
                     <option className="admin_rules_page_option_related_rule_id" value="">
                       None
                     </option>
-                    {[...rules]
-                  .sort((a, b) =>
-                    a.title.localeCompare(
-                      b.title,
-                      undefined,
-                      { sensitivity: "base", numeric: true },
-                    ),
-                  )
-                  .map(
+                    {rules.map(
                       (rule) => (
                         <option className="admin_rules_page_option_option"
                           key={rule.id}
@@ -356,15 +348,7 @@ export default async function AdminRulesPage() {
                   >
                     Select
                   </option>
-                  {[...categories]
-                  .sort((a, b) =>
-                    a.name.localeCompare(
-                      b.name,
-                      undefined,
-                      { sensitivity: "base", numeric: true },
-                    ),
-                  )
-                  .map(
+                  {categories.map(
                     (category) => (
                       <option className="admin_rules_page_option_option_2"
                         key={
@@ -438,15 +422,7 @@ export default async function AdminRulesPage() {
           />
 
           <div className="mt-3 space-y-2 admin_rules_page_div_container_8">
-            {[...rules]
-                  .sort((a, b) =>
-                    a.title.localeCompare(
-                      b.title,
-                      undefined,
-                      { sensitivity: "base", numeric: true },
-                    ),
-                  )
-                  .map((rule) => (
+            {rules.map((rule) => (
               <details
                 key={rule.id}
                 id={`rule-${rule.slug}`}
@@ -520,15 +496,7 @@ export default async function AdminRulesPage() {
                         }
                         className={[((inputClass)), "admin_rules_page_select_category_id_2"].filter(Boolean).join(" ")}
                       >
-                        {[...categories]
-                  .sort((a, b) =>
-                    a.name.localeCompare(
-                      b.name,
-                      undefined,
-                      { sensitivity: "base", numeric: true },
-                    ),
-                  )
-                  .map(
+                        {categories.map(
                           (
                             category,
                           ) => (
@@ -652,15 +620,7 @@ export default async function AdminRulesPage() {
             />
 
             <div className="mt-3 space-y-2 admin_rules_page_div_container_15">
-              {[...categories]
-                  .sort((a, b) =>
-                    a.name.localeCompare(
-                      b.name,
-                      undefined,
-                      { sensitivity: "base", numeric: true },
-                    ),
-                  )
-                  .map(
+              {categories.map(
                 (category) => (
                   <AdminActionForm
                     key={category.id}
@@ -827,15 +787,7 @@ export default async function AdminRulesPage() {
                             <option className="admin_rules_page_option_related_rule_id_2" value="">
                               None
                             </option>
-                            {[...rules]
-                  .sort((a, b) =>
-                    a.title.localeCompare(
-                      b.title,
-                      undefined,
-                      { sensitivity: "base", numeric: true },
-                    ),
-                  )
-                  .map(
+                            {rules.map(
                               (rule) => (
                                 <option className="admin_rules_page_option_option_4"
                                   key={
@@ -938,15 +890,7 @@ export default async function AdminRulesPage() {
                 >
                   Source rule
                 </option>
-                {[...rules]
-                  .sort((a, b) =>
-                    a.title.localeCompare(
-                      b.title,
-                      undefined,
-                      { sensitivity: "base", numeric: true },
-                    ),
-                  )
-                  .map((rule) => (
+                {rules.map((rule) => (
                   <option className="admin_rules_page_option_option_5"
                     key={rule.id}
                     value={rule.id}
@@ -968,15 +912,7 @@ export default async function AdminRulesPage() {
                 >
                   Target rule
                 </option>
-                {[...rules]
-                  .sort((a, b) =>
-                    a.title.localeCompare(
-                      b.title,
-                      undefined,
-                      { sensitivity: "base", numeric: true },
-                    ),
-                  )
-                  .map((rule) => (
+                {rules.map((rule) => (
                   <option className="admin_rules_page_option_option_7"
                     key={rule.id}
                     value={rule.id}

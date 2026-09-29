@@ -657,15 +657,7 @@ export default async function ForumTopicsManagementPage({
                 All sections
               </option>
 
-              {[...sections]
-                .sort((a, b) =>
-                  a.name.localeCompare(
-                    b.name,
-                    undefined,
-                    { sensitivity: "base", numeric: true },
-                  ),
-                )
-                .map(
+              {sections.map(
                 (section) => (
                   <option className="admin_forum_topics_page_option_option"
                     key={section.id}
