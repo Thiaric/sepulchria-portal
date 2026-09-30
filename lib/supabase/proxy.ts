@@ -17,6 +17,7 @@ const PUBLIC_ROUTES = [
   "/cookies",
   "/purchases",
   "/refund-policy",
+  "/credits",
   "/auth",
   "/api/contact",
   "/api/auth",

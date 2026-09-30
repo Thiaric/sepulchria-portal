@@ -426,11 +426,20 @@ export function SepulchriaHomepage({
               aria-label="Footer navigation"
               className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-[8px] uppercase tracking-[0.18em] sm:justify-end [&_a]:uppercase [&_button]:uppercase components_homepage_sepulchria_homepage_nav_footer_navigation"
             >
-              <Link href="https://discord.gg/pNbpsRQV9" target="_new">
+              <Link href="https://discord.com/channels/1542825856982982676/1542926663959052419" target="_new">
                 Discord
               </Link>
 
-              <Link href="#">
+              <Link
+                href="/credits"
+                onClick={(event) => {
+                  event.preventDefault();
+                  setPublicModal({
+                    title: "Credits",
+                    href: "/credits",
+                  });
+                }}
+              >
                 Credits
               </Link>
 
