@@ -60,23 +60,6 @@ export async function clearOwnPresenceForLogout(): Promise<LogoutPresenceResult>
 
   const admin = createAdminClient();
 
-  const {
-    error: expertiseSettleError,
-  } = await admin.rpc(
-    "settle_portal_session_expertise",
-    {
-      p_user_id: user.id,
-      p_now: new Date().toISOString(),
-    },
-  );
-
-  if (expertiseSettleError) {
-    console.error(
-      "Unable to settle portal-time Expertise before logout:",
-      expertiseSettleError.message,
-    );
-  }
-
   const { error: deleteError } =
     await admin
       .from("character_presence")
@@ -94,30 +77,5 @@ export async function clearOwnPresenceForLogout(): Promise<LogoutPresenceResult>
     };
   }
 
-  if (!expertiseSettleError) {
-    const {
-      error: sessionDeleteError,
-    } = await admin
-      .from("portal_active_sessions")
-      .delete()
-      .eq("user_id", user.id);
-
-    if (sessionDeleteError) {
-      return {
-        ok: false,
-        message:
-          `Unable to close portal session: ${sessionDeleteError.message}`,
-      };
-    }
-  }
-
-  return {
-    ok: !expertiseSettleError,
-    ...(expertiseSettleError
-      ? {
-          message:
-            `Unable to settle portal-time Expertise: ${expertiseSettleError.message}`,
-        }
-      : {}),
-  };
+  return { ok: true };
 }

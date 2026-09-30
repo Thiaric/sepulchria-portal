@@ -14,7 +14,6 @@ import {
 } from "next/navigation";
 
 import { GameContextPanel } from "@/components/portal/game-context-panel";
-import { RichTextContentClient } from "@/components/editor/rich-text-content-client";
 import { MissionsContextPanel } from "@/components/portal/missions-context-panel";
 import {
   enterRoomFromMap,
@@ -4709,12 +4708,12 @@ function ForumTopicContext({
               Replying to {authorName}
             </p>
 
-            <div className="mt-2 max-h-28 overflow-hidden text-[11px] italic leading-5 text-[rgb(var(--sep-colour-9f927f))] components_portal_portal_context_panel_p_text_59">
-              <RichTextContentClient
-                body={post.body}
-                className="text-[11px] italic leading-5 [&_p]:my-0 [&_ul]:my-1 [&_ol]:my-1 [&_blockquote]:my-1 [&_h1]:my-1 [&_h2]:my-1 [&_h3]:my-1 [&_h4]:my-1"
-              />
-            </div>
+            <p className="mt-2 line-clamp-5 text-[11px] italic leading-5 text-[rgb(var(--sep-colour-9f927f))] components_portal_portal_context_panel_p_text_59">
+              {shortenForumText(
+                post.body,
+                280,
+              )}
+            </p>
 
             <div className="mt-3 flex flex-wrap gap-3 components_portal_portal_context_panel_div_container_85">
               <a

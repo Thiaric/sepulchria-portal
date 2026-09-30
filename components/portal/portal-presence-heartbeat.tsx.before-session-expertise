@@ -23,6 +23,9 @@ import {
   setAutomaticAway,
 } from "@/app/(portal)/game/actions";
 import {
+  heartbeatExpertisePresence,
+} from "@/app/(portal)/game/expertise-presence-actions";
+import {
   clearOwnPresenceForLogout,
 } from "@/app/(portal)/logout-presence-actions";
 
@@ -30,6 +33,9 @@ import { createClient } from "@/lib/supabase/client";
 
 const HEARTBEAT_INTERVAL_MS =
   60_000;
+
+const EXPERTISE_HEARTBEAT_INTERVAL_MS =
+  10 * 60_000;
 
 const AWAY_AFTER_MS =
   15 * 60_000;
@@ -52,6 +58,9 @@ export function PortalPresenceHeartbeat({
   enabled: boolean;
 }) {
   const runningRef =
+    useRef(false);
+
+  const expertiseRunningRef =
     useRef(false);
 
   const awayAppliedRef =
@@ -133,6 +142,32 @@ export function PortalPresenceHeartbeat({
         }
       } finally {
         runningRef.current = false;
+      }
+    }
+
+    async function sendExpertiseHeartbeat() {
+      if (
+        logoutStartedRef.current ||
+        expertiseRunningRef.current ||
+        idleForMs() >=
+          AWAY_AFTER_MS
+      ) {
+        return;
+      }
+
+      expertiseRunningRef.current =
+        true;
+
+      try {
+        await heartbeatExpertisePresence();
+      } catch (error) {
+        console.error(
+          "Unable to refresh portal-time Expertise:",
+          error,
+        );
+      } finally {
+        expertiseRunningRef.current =
+          false;
       }
     }
 
@@ -393,6 +428,19 @@ export function PortalPresenceHeartbeat({
       );
 
     void sendHeartbeat();
+    void sendExpertiseHeartbeat();
+
+    const expertiseIntervalId =
+      window.setInterval(
+        () => {
+          if (
+            evaluateIdleState()
+          ) {
+            void sendExpertiseHeartbeat();
+          }
+        },
+        EXPERTISE_HEARTBEAT_INTERVAL_MS,
+      );
 
     return () => {
       window.clearInterval(
@@ -401,6 +449,10 @@ export function PortalPresenceHeartbeat({
 
       window.clearInterval(
         idleIntervalId,
+      );
+
+      window.clearInterval(
+        expertiseIntervalId,
       );
 
       for (

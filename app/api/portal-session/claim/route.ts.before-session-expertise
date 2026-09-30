@@ -63,32 +63,6 @@ export async function POST(
   const admin =
     createAdminClient();
 
-  const {
-    error: expertiseSettleError,
-  } = await admin.rpc(
-    "settle_portal_session_expertise",
-    {
-      p_user_id: user.id,
-      p_now: now,
-    },
-  );
-
-  if (expertiseSettleError) {
-    console.error(
-      "Unable to settle previous portal-time Expertise:",
-      expertiseSettleError.message,
-    );
-
-    return NextResponse.json(
-      {
-        ok: false,
-        message:
-          "Unable to finalise your previous portal session.",
-      },
-      { status: 500 },
-    );
-  }
-
   const { error } =
     await admin
       .from("portal_active_sessions")

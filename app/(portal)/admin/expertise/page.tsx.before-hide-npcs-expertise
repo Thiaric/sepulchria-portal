@@ -5,7 +5,6 @@ import {
   requireAdminSection,
 } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
-import { createAdminClient } from "@/lib/supabase/admin";
 
 type Row = {
   character_id: string;
@@ -22,36 +21,7 @@ export default async function ExpertiseAdminPage() {
   const { data, error } = await supabase.rpc("staff_expertise_overview");
   if (error) throw new Error(`Unable to load Expertise: ${error.message}`);
 
-  const admin = createAdminClient();
-
-  const {
-    data: npcCharacters,
-    error: npcError,
-  } = await admin
-    .from("characters")
-    .select("id")
-    .eq("is_system", true);
-
-  if (npcError) {
-    throw new Error(
-      `Unable to filter NPCs from Expertise: ${npcError.message}`,
-    );
-  }
-
-  const npcIds = new Set(
-    (npcCharacters ?? []).map(
-      (character) =>
-        String(character.id),
-    ),
-  );
-
-  const rows =
-    ((data ?? []) as Row[]).filter(
-      (row) =>
-        !npcIds.has(
-          row.character_id,
-        ),
-    );
+  const rows = (data ?? []) as Row[];
 
   return (
     <main className="p-5 sm:p-7 lg:p-9 admin_expertise_page_main_main">

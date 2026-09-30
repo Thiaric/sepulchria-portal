@@ -48,26 +48,19 @@ function elementText(
   );
 }
 
-function isExplicitLogoutControl(
-  element: Element | null,
-) {
-  return (
-    element?.getAttribute(
-      "data-experience-logout",
-    ) === "1"
+function looksLikeLogoutText(value: string) {
+  return ["logout", "log out", "sign out", "signout", "exit"].some(
+    (token) => value.includes(token),
   );
 }
 
 function isLogoutAnchor(element: HTMLAnchorElement) {
-  const href = normalise(
-    element.getAttribute("href"),
-  );
-
+  const href = normalise(element.getAttribute("href"));
   return (
-    isExplicitLogoutControl(element) ||
-    href === "/logout" ||
-    href === "/signout" ||
-    href === "/sign-out"
+    href.includes("logout") ||
+    href.includes("signout") ||
+    href.includes("sign-out") ||
+    looksLikeLogoutText(elementText(element))
   );
 }
 
@@ -270,11 +263,7 @@ export function ExperienceLogoutGuard() {
         return;
       }
 
-      if (
-        !isExplicitLogoutControl(
-          submitter,
-        )
-      ) {
+      if (!looksLikeLogoutText(elementText(submitter as HTMLButtonElement))) {
         return;
       }
 
@@ -305,11 +294,7 @@ export function ExperienceLogoutGuard() {
         return;
       }
 
-      if (
-        !isExplicitLogoutControl(
-          button,
-        )
-      ) {
+      if (!looksLikeLogoutText(elementText(button))) {
         return;
       }
 

@@ -155,31 +155,12 @@ export async function POST(
     );
   }
 
-  const now =
-    new Date().toISOString();
-
-  const {
-    error: expertiseSettleError,
-  } = await admin.rpc(
-    "settle_portal_session_expertise",
-    {
-      p_user_id: user.id,
-      p_now: now,
-    },
-  );
-
-  if (expertiseSettleError) {
-    console.warn(
-      "Unable to settle portal-time Expertise:",
-      expertiseSettleError.message,
-    );
-  }
-
   const { error: seenError } =
     await admin
       .from("portal_active_sessions")
       .update({
-        last_seen_at: now,
+        last_seen_at:
+          new Date().toISOString(),
       })
       .eq("user_id", user.id)
       .eq(
