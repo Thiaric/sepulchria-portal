@@ -2,7 +2,6 @@ import "server-only";
 
 import { saveDisplayTrophies } from "@/app/(portal)/character/actions";
 import { PendingSubmitButton } from "@/components/forms/pending-submit-button";
-import { TrophySlotSelect } from "@/components/characters/trophy-slot-select";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 type EarnedRow = {
@@ -19,7 +18,6 @@ type TrophyDefinition = {
   name: string;
   category: string;
   sort_order: number;
-  icon_url: string | null;
 };
 
 export async function DisplayTrophySelector({
@@ -66,7 +64,7 @@ export async function DisplayTrophySelector({
   if (earnedIds.length) {
     const { data, error } = await admin
       .from("trophy_definitions")
-      .select("id, name, category, sort_order, icon_url")
+      .select("id, name, category, sort_order")
       .in("id", earnedIds)
       .eq("is_active", true)
       .order("category", { ascending: true })
@@ -116,22 +114,32 @@ export async function DisplayTrophySelector({
                     Slot {slot}
                   </span>
 
-                  <TrophySlotSelect
+                  <select
                     name={`display_trophy_${slot}`}
                     defaultValue={
                       selectedBySlot.get(slot) ?? ""
                     }
-                    trophies={[...trophies].sort((a, b) =>
-                      a.name.localeCompare(
-                        b.name,
-                        undefined,
-                        {
-                          sensitivity: "base",
-                          numeric: true,
-                        },
-                      ),
-                    )}
-                  />
+                    className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-2.5 text-[11px] text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] components_characters_display_trophy_selector_select_select"
+                  >
+                    <option className="components_characters_display_trophy_selector_option_option" value="">None</option>
+
+                    {[...trophies]
+                      .sort((a, b) =>
+                        a.name.localeCompare(
+                          b.name,
+                          undefined,
+                          { sensitivity: "base", numeric: true },
+                        ),
+                      )
+                      .map((trophy) => (
+                      <option className="components_characters_display_trophy_selector_option_option_2"
+                        key={trophy.id}
+                        value={trophy.id}
+                      >
+                        {trophy.category} — {trophy.name}
+                      </option>
+                    ))}
+                  </select>
                 </label>
               ))}
             </div>
