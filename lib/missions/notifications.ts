@@ -353,16 +353,24 @@ export async function removeDailyMissionNotification(
 ) {
   const admin = createAdminClient();
 
-  const { error } = await admin
+  const {
+    data,
+    error,
+  } = await admin
     .from("notifications")
     .delete()
     .eq("source_type", sourceType)
     .eq("source_id", sourceId)
-    .eq("source_trigger", "completed");
+    .eq("source_trigger", "completed")
+    .select("id");
 
   if (error) {
     throw new Error(
       `Unable to remove Daily Mission notification: ${error.message}`,
     );
   }
+
+  return (data ?? []).map(
+    (row) => String(row.id),
+  );
 }

@@ -9,6 +9,7 @@ import {
 export type DailyRewardClaimState = {
   success: boolean;
   message: string;
+  removedNotificationIds?: string[];
 };
 
 export async function claimDailyMission(
@@ -41,17 +42,20 @@ export async function claimDailyMission(
     };
   }
 
-  try {
+  let removedNotificationIds: string[] = [];
+
+try {
+  removedNotificationIds =
     await removeDailyMissionNotification(
       "daily_mission",
       assignmentId,
     );
-  } catch (notificationError) {
-    console.error(
-      "Unable to remove claimed Daily Mission notification:",
-      notificationError,
-    );
-  }
+} catch (notificationError) {
+  console.error(
+    "Unable to remove claimed Daily Mission notification:",
+    notificationError,
+  );
+}
 
   
 
@@ -59,9 +63,10 @@ export async function claimDailyMission(
   revalidatePath("/character");
 
   return {
-    success: true,
-    message: "Reward received.",
-  };
+  success: true,
+  message: "Reward received.",
+  removedNotificationIds,
+};
 }
 
 export async function claimDailyMilestone(
@@ -94,11 +99,14 @@ export async function claimDailyMilestone(
     };
   }
 
-  try {
-  await removeDailyMissionNotification(
-    "daily_milestone",
-    claimId,
-  );
+  let removedNotificationIds: string[] = [];
+
+try {
+  removedNotificationIds =
+    await removeDailyMissionNotification(
+      "daily_milestone",
+      claimId,
+    );
 } catch (notificationError) {
   console.error(
     "Unable to remove claimed Daily Mission milestone notification:",
@@ -110,7 +118,8 @@ export async function claimDailyMilestone(
   revalidatePath("/character");
 
   return {
-    success: true,
-    message: "Reward received.",
-  };
+  success: true,
+  message: "Reward received.",
+  removedNotificationIds,
+};
 }

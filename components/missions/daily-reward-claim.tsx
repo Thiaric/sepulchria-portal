@@ -75,12 +75,18 @@ useEffect(() => {
   setShowMessage(true);
 
   if (state.success) {
-    window.dispatchEvent(
-      new CustomEvent(
-        "sepulchria:notifications-changed",
-      ),
-    );
-  }
+  window.dispatchEvent(
+    new CustomEvent(
+      "sepulchria:notifications-changed",
+      {
+        detail: {
+          removedNotificationIds:
+            state.removedNotificationIds ?? [],
+        },
+      },
+    ),
+  );
+}
 
   const timer = window.setTimeout(() => {
     setShowMessage(false);

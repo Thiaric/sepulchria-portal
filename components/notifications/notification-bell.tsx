@@ -550,10 +550,49 @@ export function NotificationBell() {
   useEffect(() => {
     void load();
 
-    const handleAdminDataChanged =
-      () => {
-        void load();
-      };
+    const handleAdminDataChanged = (
+  event: Event,
+) => {
+  if (
+    event instanceof CustomEvent
+  ) {
+    const removedNotificationIds =
+      Array.isArray(
+        event.detail
+          ?.removedNotificationIds,
+      )
+        ? event.detail
+            .removedNotificationIds
+            .map(String)
+        : [];
+
+    if (
+      removedNotificationIds.length >
+      0
+    ) {
+      const removedIds =
+        new Set(
+          removedNotificationIds,
+        );
+
+      setRows(
+        (currentRows) =>
+          currentRows.filter(
+            (row) =>
+              !removedIds.has(
+                row.id,
+              ),
+          ),
+      );
+    }
+  }
+
+  /*
+   * Still reconcile with the server,
+   * but the UI has already updated.
+   */
+  void load();
+};
 
     window.addEventListener(
       "sepulchria:admin-data-changed",
