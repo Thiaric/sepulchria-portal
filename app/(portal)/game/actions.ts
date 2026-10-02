@@ -2536,6 +2536,113 @@ export async function heartbeatPresence(): Promise<PresenceActionResult> {
   }
 }
 
+async function leaveLocationForMap(
+  destination:
+    | "aureth"
+    | "sepulchria",
+): Promise<void> {
+  const supabase =
+    await createClient();
+
+  const {
+    data: { user },
+    error: userError,
+  } =
+    await supabase.auth.getUser();
+
+  if (userError || !user) {
+    redirect("/homepage");
+  }
+
+  const {
+    data: character,
+    error: characterError,
+  } = await supabase
+    .from("characters")
+    .select("id")
+    .eq(
+      "user_id",
+      user.id,
+    )
+    .maybeSingle();
+
+  if (characterError) {
+    throw new Error(
+      `Unable to identify the Character before opening the map: ${characterError.message}`,
+    );
+  }
+
+  if (character) {
+    const now =
+      new Date().toISOString();
+
+    const {
+      error: presenceError,
+    } = await supabase
+      .from("character_presence")
+      .upsert(
+        {
+          character_id:
+            character.id,
+          room_id: null,
+          last_seen_at:
+            now,
+        },
+        {
+          onConflict:
+            "character_id",
+        },
+      );
+
+    if (presenceError) {
+      throw new Error(
+        `Unable to leave Location presence before opening the map: ${presenceError.message}`,
+      );
+    }
+
+    const {
+      error: locationError,
+    } = await supabase
+      .from("characters")
+      .update({
+        current_room_id:
+          null,
+        updated_at:
+          now,
+      })
+      .eq(
+        "id",
+        character.id,
+      );
+
+    if (locationError) {
+      throw new Error(
+        `Unable to leave the current Location before opening the map: ${locationError.message}`,
+      );
+    }
+
+  }
+
+  redirect(
+    destination ===
+      "sepulchria"
+      ? "/?map=sepulchria"
+      : "/",
+  );
+}
+
+export async function leaveLocationForAurethMap(): Promise<void> {
+  await leaveLocationForMap(
+    "aureth",
+  );
+}
+
+export async function leaveLocationForSepulchriaMap(): Promise<void> {
+  await leaveLocationForMap(
+    "sepulchria",
+  );
+}
+
 export async function leaveCurrentRoom(): Promise<void> {
   const {
     supabase,

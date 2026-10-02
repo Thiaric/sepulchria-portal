@@ -14,7 +14,12 @@ import {
   useSearchParams,
 } from "next/navigation";
 
-import { enterRoomFromMap } from "@/app/(portal)/game/actions";
+import {
+  enterRoomFromMap,
+} from "@/app/(portal)/game/actions";
+import {
+  LeaveLocationMapLink,
+} from "@/components/portal/leave-location-map-link";
 import { enterOwnOrderHeadquarters } from "@/app/(portal)/orders/headquarters/shortcut-actions";
 import { useOrderHeadquartersRoomId } from "@/components/portal/use-order-headquarters-room";
 import { ForumSidebarMenu } from "@/components/portal/forum-sidebar-menu";
@@ -1047,10 +1052,10 @@ const moreDragging =
               : "grid-cols-5"
           }`)), "components_portal_mobile_portal_navigation_div_mobile_portal_navigation"].filter(Boolean).join(" ")}
         >
-          <Link
+          <LeaveLocationMapLink
             href="/"
             className={[
-              "flex min-h-[50px] flex-col items-center justify-center gap-1 px-1 text-[9px]",
+              "flex min-h-[50px] w-full flex-col items-center justify-center gap-1 px-1 text-[9px]",
               pathname === "/" &&
               !mapOpen
                 ? "bg-[rgb(var(--sep-colour-21170f))] text-[rgb(var(--sep-colour-d4b47d))]"
@@ -1062,12 +1067,12 @@ const moreDragging =
               size={20}
             />
             <span className="uppercase tracking-[0.14em] components_portal_mobile_portal_navigation_span_mobile_portal_navigation">AURETH</span>
-          </Link>
+          </LeaveLocationMapLink>
 
-          <Link
+          <LeaveLocationMapLink
             href="/?map=sepulchria"
             className={[
-              "flex min-h-[50px] flex-col items-center justify-center gap-1 px-1 text-[9px]",
+              "flex min-h-[50px] w-full flex-col items-center justify-center gap-1 px-1 text-[9px]",
               pathname === "/" &&
               mapOpen
                 ? "bg-[rgb(var(--sep-colour-21170f))] text-[rgb(var(--sep-colour-d4b47d))]"
@@ -1079,7 +1084,7 @@ const moreDragging =
               size={20}
             />
             <span className="uppercase tracking-[0.14em] components_portal_mobile_portal_navigation_span_mobile_portal_navigation_2">ENTER</span>
-          </Link>
+          </LeaveLocationMapLink>
 
           {orderHeadquartersRoomId ? (
             <form

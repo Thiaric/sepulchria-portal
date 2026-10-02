@@ -19,6 +19,9 @@ import { MissionsContextPanel } from "@/components/portal/missions-context-panel
 import {
   enterRoomFromMap,
 } from "@/app/(portal)/game/actions";
+import {
+  LeaveLocationMapLink,
+} from "@/components/portal/leave-location-map-link";
 import { LiveDashboardChronicle } from "@/components/portal/live-dashboard-chronicle";
 import { MessagesContextNavigator } from "@/components/messages/messages-context-navigator";
 import {
@@ -5137,7 +5140,7 @@ function AreaContext({
         ) : null}
       </div>
 
-      <Link
+      <LeaveLocationMapLink
         href="/?map=sepulchria"
         className="mt-4 flex w-full shrink-0 items-center justify-between border border-[rgb(var(--sep-colour-765937))] bg-[rgb(var(--sep-colour-271c12))] px-4 py-3 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-dfc79c))] transition hover:border-[rgb(var(--sep-colour-997042))] hover:bg-[rgb(var(--sep-colour-3b2919))]"
       >
@@ -5147,7 +5150,7 @@ function AreaContext({
         <span className="components_portal_portal_context_panel_span_text_48" aria-hidden="true">
           →
         </span>
-      </Link>
+      </LeaveLocationMapLink>
     </div>
   );
 }

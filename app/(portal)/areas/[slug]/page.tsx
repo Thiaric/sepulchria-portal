@@ -10,7 +10,12 @@ import { createClient } from "@/lib/supabase/server";
 import {
   getOrderHeadquartersAccess,
 } from "@/lib/order-headquarters/access";
-import { enterRoomFromMap } from "../../game/actions";
+import {
+  enterRoomFromMap,
+} from "../../game/actions";
+import {
+  LeaveLocationMapLink,
+} from "@/components/portal/leave-location-map-link";
 
 type Props = {
   params: Promise<{
@@ -186,12 +191,12 @@ export default async function AreaPage({
             </p>
           </div>
 
-          <Link
+          <LeaveLocationMapLink
             href="/?map=sepulchria"
             className="inline-flex items-center justify-center border border-[rgb(var(--sep-colour-80613b))] bg-[rgb(var(--sep-colour-241a12))] px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-e0b86a))] transition hover:border-[rgb(var(--sep-colour-b28b55))] hover:bg-[rgb(var(--sep-colour-302217))] hover:text-[rgb(var(--sep-colour-f4d89b))]"
           >
             ← Return to Sepulchria
-          </Link>
+          </LeaveLocationMapLink>
         </div>
 
         {safeRooms.length > 0 ? (

@@ -26,7 +26,12 @@ import {
   PollUnreadBadge,
   usePollUnreadCount,
 } from "@/components/polls/poll-unread-badge";
-import { enterRoomFromMap } from "@/app/(portal)/game/actions";
+import {
+  enterRoomFromMap,
+} from "@/app/(portal)/game/actions";
+import {
+  LeaveLocationMapLink,
+} from "@/components/portal/leave-location-map-link";
 import { enterOwnOrderHeadquarters } from "@/app/(portal)/orders/headquarters/shortcut-actions";
 import { useOrderHeadquartersRoomId } from "@/components/portal/use-order-headquarters-room";
 
@@ -1719,6 +1724,27 @@ export function PortalSidebar({
         >
           {contents}
         </button>
+      );
+    }
+
+    if (
+      item.href === "/" ||
+      item.href ===
+        "/?map=sepulchria"
+    ) {
+      return (
+        <LeaveLocationMapLink
+          key={item.label}
+          href={
+            item.href as
+              | "/"
+              | "/?map=sepulchria"
+          }
+          title={item.title}
+          className={`${itemClassName} w-full text-left`}
+        >
+          {contents}
+        </LeaveLocationMapLink>
       );
     }
 

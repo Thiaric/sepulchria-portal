@@ -21,6 +21,9 @@ import {
   getStaffSession,
 } from "@/lib/auth/require-staff";
 import type { PortalContext } from "@/types/portal";
+import {
+  LeaveLocationMapLink,
+} from "@/components/portal/leave-location-map-link";
 
 type PortalHeaderProps = { context: PortalContext };
 
@@ -35,10 +38,10 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
         className="sticky top-0 z-50 h-[clamp(56px,8dvh,80px)] border-b border-[rgb(var(--sep-colour-6e5535))]/40 bg-[rgb(var(--sep-colour-0d0b0a))]/95 backdrop-blur components_portal_portal_header_header_header"
       >
         <div className="mx-auto flex h-full w-full max-w-[1800px] items-center justify-between gap-2 px-3 sm:gap-3 sm:px-5 lg:gap-4 lg:px-6 2xl:px-8 components_portal_portal_header_div_container">
-          <Link
+          <LeaveLocationMapLink
             href="/"
-            className="min-w-0 shrink"
-            aria-label="Sepulchria home"
+            className="block min-w-0 shrink text-left"
+            ariaLabel="Sepulchria home"
           >
             <img
               src="/icons/newLogo.png"
@@ -52,7 +55,7 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
             <span className="mt-0.5 hidden truncate text-[8px] uppercase tracking-[0.24em] text-[rgb(var(--sep-colour-8f806d))] md:block lg:text-[9px] 2xl:mt-1 2xl:text-[10px] 2xl:tracking-[0.35em] components_portal_portal_header_span_text_2">
               Built upon the remains of The First, shaped by your choices.
             </span>
-          </Link>
+          </LeaveLocationMapLink>
 
           <div data-cosmetic-header-controls className="flex shrink-0 items-center gap-1.5 sm:gap-2 lg:gap-2.5 2xl:gap-3 components_portal_portal_header_div_container_2">
             <PortalModalButton

@@ -606,6 +606,7 @@ const nextTop =
 
 
 
+{character?.currentRoom ? (
 <section className="relative min-h-[108px] overflow-hidden border border-[rgb(var(--sep-colour-60482e))]/45 components_portal_portal_responsive_right_sidebar_section_section">{character
                   ?.currentRoom
                   ?.image_url ? (
@@ -658,6 +659,7 @@ const nextTop =
                   </div>
                 </div>
               </section>
+) : null}
             </div>
             ) : null}
 
