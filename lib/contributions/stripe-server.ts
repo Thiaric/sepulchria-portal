@@ -244,6 +244,18 @@ export async function syncContributionProductToStripe(productId: string) {
   return { stripeProductId };
 }
 
+export async function ensureContributionProductReady(productId: string) {
+  const { stripeProductId } = await syncContributionProductToStripe(productId);
+
+  if (!stripeProductId) {
+    throw new Error(
+      "Stripe Contribution product sync did not return a product ID.",
+    );
+  }
+
+  return { stripeProductId };
+}
+
 export async function ensureContributionPriceReady(priceId: string) {
   const admin = createAdminClient();
 
@@ -289,11 +301,14 @@ export async function ensureContributionPriceReady(priceId: string) {
 }
 
 export async function createContributionCheckout(input: {
-  stripePriceId: string;
+  stripePriceId?: string | null;
+  stripeProductId?: string | null;
+  amountMinor: number;
+  currency: string;
   customerEmail: string;
   contributionId: string;
   contributionProductId: string;
-  contributionPriceId: string;
+  contributionPriceId?: string | null;
   userId: string;
   characterId?: string | null;
 }) {
@@ -303,13 +318,41 @@ export async function createContributionCheckout(input: {
     sepulchria_payment_type: "contribution",
     contribution_id: input.contributionId,
     sepulchria_contribution_product_id: input.contributionProductId,
-    sepulchria_contribution_price_id: input.contributionPriceId,
     sepulchria_user_id: input.userId,
   };
+
+  if (input.contributionPriceId) {
+    metadata.sepulchria_contribution_price_id = input.contributionPriceId;
+  }
 
   if (input.characterId) {
     metadata.sepulchria_character_id = input.characterId;
   }
+
+  if (!input.stripePriceId && !input.stripeProductId) {
+    throw new Error(
+      "Contribution checkout is missing its Stripe price or product.",
+    );
+  }
+
+  const lineItems = input.stripePriceId
+    ? [
+        {
+          price: input.stripePriceId,
+          quantity: 1,
+        },
+      ]
+    : [
+        {
+          price_data: {
+            currency: input.currency.toLowerCase(),
+            unit_amount: Math.trunc(input.amountMinor),
+            tax_behavior: "inclusive" as const,
+            product: input.stripeProductId!,
+          },
+          quantity: 1,
+        },
+      ];
 
   const params = {
     mode: "payment",
@@ -318,12 +361,7 @@ export async function createContributionCheckout(input: {
     submit_type: "donate",
     customer_email: input.customerEmail,
     client_reference_id: input.contributionId,
-    line_items: [
-      {
-        price: input.stripePriceId,
-        quantity: 1,
-      },
-    ],
+    line_items: lineItems,
     metadata,
     payment_intent_data: {
       metadata,

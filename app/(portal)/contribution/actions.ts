@@ -3,6 +3,7 @@
 import {
   createContributionCheckout,
   ensureContributionPriceReady,
+  ensureContributionProductReady,
 } from "@/lib/contributions/stripe-server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -23,6 +24,19 @@ function failure(error: string): ContributionStripeState {
     checkoutSessionId: null,
     amountMinor: null,
   };
+}
+
+function parseCustomAmountMinor(raw: string) {
+  const normalized = raw.trim();
+
+  if (!/^\d+(?:\.\d{1,2})?$/.test(normalized)) {
+    return null;
+  }
+
+  const amount = Number(normalized);
+  if (!Number.isFinite(amount)) return null;
+
+  return Math.round(amount * 100);
 }
 
 export async function getContributionCheckoutStatus(
@@ -65,8 +79,13 @@ export async function startContributionCheckout(
   formData: FormData,
 ): Promise<ContributionStripeState> {
   const priceId = String(formData.get("priceId") ?? "").trim();
+  const productId = String(formData.get("productId") ?? "").trim();
+  const pricingMode = String(formData.get("pricingMode") ?? "").trim();
 
-  if (!priceId) return failure("Choose a Contribution option.");
+  if (!priceId && !productId) {
+    return failure("Choose a Contribution option.");
+  }
+
   if (!process.env.STRIPE_SECRET_KEY?.trim()) {
     return failure("Stripe is not configured yet.");
   }
@@ -94,9 +113,92 @@ export async function startContributionCheckout(
     .eq("is_system", false)
     .maybeSingle();
 
-  let ready;
+  let ready:
+    | {
+        pricingMode: "fixed";
+        productId: string;
+        priceId: string;
+        amountMinor: number;
+        currency: string;
+        stripePriceId: string;
+        stripeProductId: null;
+      }
+    | {
+        pricingMode: "custom";
+        productId: string;
+        priceId: null;
+        amountMinor: number;
+        currency: string;
+        stripePriceId: null;
+        stripeProductId: string;
+      };
+
   try {
-    ready = await ensureContributionPriceReady(priceId);
+    if (pricingMode === "custom") {
+      if (!productId) {
+        return failure("Choose a Contribution option.");
+      }
+
+      const { data: product, error: productError } = await admin
+        .from("support_contribution_products")
+        .select(
+          "id, pricing_mode, custom_min_amount_minor, custom_max_amount_minor, is_active",
+        )
+        .eq("id", productId)
+        .eq("is_active", true)
+        .single();
+
+      if (productError || !product || product.pricing_mode !== "custom") {
+        return failure("That custom Contribution option is not available.");
+      }
+
+      const amountMinor = parseCustomAmountMinor(
+        String(formData.get("customAmount") ?? ""),
+      );
+
+      const minimum = Number(product.custom_min_amount_minor ?? 100);
+      const maximum = Number(product.custom_max_amount_minor ?? 50000);
+
+      if (
+        amountMinor === null ||
+        amountMinor < minimum ||
+        amountMinor > maximum
+      ) {
+        return failure(
+          `Choose an amount between £${(minimum / 100).toFixed(2)} and £${(
+            maximum / 100
+          ).toFixed(2)}.`,
+        );
+      }
+
+      const productReady = await ensureContributionProductReady(product.id);
+
+      ready = {
+        pricingMode: "custom",
+        productId: product.id,
+        priceId: null,
+        amountMinor,
+        currency: "GBP",
+        stripePriceId: null,
+        stripeProductId: productReady.stripeProductId,
+      };
+    } else {
+      if (!priceId) {
+        return failure("Choose a Contribution option.");
+      }
+
+      const fixed = await ensureContributionPriceReady(priceId);
+
+      ready = {
+        pricingMode: "fixed",
+        productId: fixed.productId,
+        priceId,
+        amountMinor: fixed.amountMinor,
+        currency: fixed.currency,
+        stripePriceId: fixed.stripePriceId,
+        stripeProductId: null,
+      };
+    }
   } catch (error) {
     return failure(error instanceof Error ? error.message : String(error));
   }
@@ -108,7 +210,7 @@ export async function startContributionCheckout(
       character_id: character?.id ?? null,
       customer_email: customerEmail,
       product_id: ready.productId,
-      price_id: priceId,
+      price_id: ready.priceId,
       amount_minor: ready.amountMinor,
       currency: ready.currency,
       status: "pending",
@@ -130,10 +232,13 @@ export async function startContributionCheckout(
   try {
     const checkout = await createContributionCheckout({
       stripePriceId: ready.stripePriceId,
+      stripeProductId: ready.stripeProductId,
+      amountMinor: ready.amountMinor,
+      currency: ready.currency,
       customerEmail,
       contributionId: contribution.id,
       contributionProductId: ready.productId,
-      contributionPriceId: priceId,
+      contributionPriceId: ready.priceId,
       userId: user.id,
       characterId: character?.id ?? null,
     });

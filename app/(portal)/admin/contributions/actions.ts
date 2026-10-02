@@ -25,6 +25,55 @@ function amountMinor(fd: FormData) {
   return value;
 }
 
+function optionalMoneyMinor(
+  fd: FormData,
+  key: string,
+  fallback: number,
+) {
+  const raw = read(fd, key);
+  if (!raw) return fallback;
+
+  if (!/^\d+(?:\.\d{1,2})?$/.test(raw)) {
+    throw new Error("Enter a valid custom amount limit.");
+  }
+
+  return Math.round(Number(raw) * 100);
+}
+
+function contributionPricing(fd: FormData) {
+  const pricingMode =
+    read(fd, "pricing_mode") === "custom" ? "custom" : "fixed";
+
+  if (pricingMode === "fixed") {
+    return {
+      pricing_mode: "fixed",
+      custom_min_amount_minor: null,
+      custom_max_amount_minor: null,
+    } as const;
+  }
+
+  const minimum = optionalMoneyMinor(fd, "custom_min_amount", 100);
+  const maximum = optionalMoneyMinor(fd, "custom_max_amount", 50000);
+
+  if (minimum < 100) {
+    throw new Error("Custom contribution minimum cannot be less than £1.00.");
+  }
+
+  if (maximum > 50000) {
+    throw new Error("Custom contribution maximum cannot exceed £500.00.");
+  }
+
+  if (maximum < minimum) {
+    throw new Error("Custom contribution maximum must be at least the minimum.");
+  }
+
+  return {
+    pricing_mode: "custom",
+    custom_min_amount_minor: minimum,
+    custom_max_amount_minor: maximum,
+  } as const;
+}
+
 async function auth() {
   await requireAdminSection("store");
 }
@@ -38,6 +87,8 @@ export async function createContributionProduct(fd: FormData) {
   await auth();
   const admin = createAdminClient();
 
+  const pricing = contributionPricing(fd);
+
   const { error } = await admin.from("support_contribution_products").insert({
     name: read(fd, "name"),
     slug: read(fd, "slug"),
@@ -46,6 +97,7 @@ export async function createContributionProduct(fd: FormData) {
     tax_code: read(fd, "tax_code"),
     sort_order: number(fd, "sort_order"),
     is_active: fd.get("is_active") === "on",
+    ...pricing,
   });
 
   if (error) throw new Error(error.message);
@@ -55,6 +107,8 @@ export async function createContributionProduct(fd: FormData) {
 export async function updateContributionProduct(fd: FormData) {
   await auth();
   const admin = createAdminClient();
+
+  const pricing = contributionPricing(fd);
 
   const { error } = await admin
     .from("support_contribution_products")
@@ -66,6 +120,7 @@ export async function updateContributionProduct(fd: FormData) {
       tax_code: read(fd, "tax_code"),
       sort_order: number(fd, "sort_order"),
       is_active: fd.get("is_active") === "on",
+      ...pricing,
       stripe_sync_status: "pending",
       updated_at: new Date().toISOString(),
     })

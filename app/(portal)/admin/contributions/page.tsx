@@ -70,6 +70,30 @@ export default async function AdminContributionsPage() {
             <textarea name="description" rows={3} placeholder="Description" className={`${field} md:col-span-2`} />
             <input name="image_url" placeholder="Image URL" className={field} />
             <input name="tax_code" required placeholder="Stripe tax code: txcd_..." className={field} />
+            <select name="pricing_mode" defaultValue="fixed" className={field}>
+              <option value="fixed">Fixed price</option>
+              <option value="custom">Choose your amount</option>
+            </select>
+            <input
+              name="custom_min_amount"
+              type="number"
+              min="1"
+              max="500"
+              step="0.01"
+              defaultValue="1"
+              placeholder="Custom minimum (£)"
+              className={field}
+            />
+            <input
+              name="custom_max_amount"
+              type="number"
+              min="1"
+              max="500"
+              step="0.01"
+              defaultValue="500"
+              placeholder="Custom maximum (£)"
+              className={field}
+            />
             <input name="sort_order" type="number" defaultValue="0" className={field} />
             <label className="flex items-center gap-2 text-xs text-[rgb(var(--sep-skin-c2,211_194_170))]">
               <input name="is_active" type="checkbox" defaultChecked /> Active
@@ -107,6 +131,42 @@ export default async function AdminContributionsPage() {
                     <textarea name="description" rows={3} defaultValue={product.description} className={`${field} md:col-span-2`} />
                     <input name="image_url" defaultValue={product.image_url ?? ""} className={field} />
                     <input name="tax_code" defaultValue={product.tax_code} required className={field} />
+                    <select
+                      name="pricing_mode"
+                      defaultValue={product.pricing_mode ?? "fixed"}
+                      className={field}
+                    >
+                      <option value="fixed">Fixed price</option>
+                      <option value="custom">Choose your amount</option>
+                    </select>
+                    <input
+                      name="custom_min_amount"
+                      type="number"
+                      min="1"
+                      max="500"
+                      step="0.01"
+                      defaultValue={
+                        product.custom_min_amount_minor
+                          ? Number(product.custom_min_amount_minor) / 100
+                          : 1
+                      }
+                      placeholder="Custom minimum (£)"
+                      className={field}
+                    />
+                    <input
+                      name="custom_max_amount"
+                      type="number"
+                      min="1"
+                      max="500"
+                      step="0.01"
+                      defaultValue={
+                        product.custom_max_amount_minor
+                          ? Number(product.custom_max_amount_minor) / 100
+                          : 500
+                      }
+                      placeholder="Custom maximum (£)"
+                      className={field}
+                    />
                     <input name="sort_order" type="number" defaultValue={product.sort_order} className={field} />
                     <label className="flex items-center gap-2 text-xs text-[rgb(var(--sep-skin-c2,211_194_170))]">
                       <input name="is_active" type="checkbox" defaultChecked={product.is_active} /> Active
@@ -117,36 +177,49 @@ export default async function AdminContributionsPage() {
                   </AdminActionForm>
 
                   <div className="mt-5 border border-[rgb(var(--sep-skin-c1,169_138_96))]/20 p-4">
-                    <h3 className="font-serif text-lg text-[rgb(var(--sep-skin-c1,169_138_96))]">Prices</h3>
+                    <h3 className="font-serif text-lg text-[rgb(var(--sep-skin-c1,169_138_96))]">
+                      {product.pricing_mode === "custom" ? "Choose your amount" : "Prices"}
+                    </h3>
 
-                    <div className="mt-3 space-y-2">
-                      {productPrices.map((price) => (
-                        <div key={price.id} className="flex items-center justify-between text-xs text-[rgb(var(--sep-skin-c2,211_194_170))]">
-                          <span>{money(Number(price.amount_minor), price.currency)} · {price.stripe_sync_status}</span>
-                          <AdminActionForm action={deleteContributionPrice} successMessage="Price removed.">
-                            <input type="hidden" name="id" value={price.id} />
-                            <button className={danger}>Remove</button>
-                          </AdminActionForm>
+                    {product.pricing_mode === "custom" ? (
+                      <p className="mt-3 text-xs leading-5 text-[rgb(var(--sep-skin-c2,211_194_170))]">
+                        Players choose the amount at checkout. Allowed range:{" "}
+                        {money(Number(product.custom_min_amount_minor ?? 100), "GBP")} –{" "}
+                        {money(Number(product.custom_max_amount_minor ?? 50000), "GBP")}.
+                        No fixed Stripe Price is required; Sync to Stripe creates or updates the persistent Product.
+                      </p>
+                    ) : (
+                      <>
+                        <div className="mt-3 space-y-2">
+                          {productPrices.map((price) => (
+                            <div key={price.id} className="flex items-center justify-between text-xs text-[rgb(var(--sep-skin-c2,211_194_170))]">
+                              <span>{money(Number(price.amount_minor), price.currency)} · {price.stripe_sync_status}</span>
+                              <AdminActionForm action={deleteContributionPrice} successMessage="Price removed.">
+                                <input type="hidden" name="id" value={price.id} />
+                                <button className={danger}>Remove</button>
+                              </AdminActionForm>
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
 
-                    <AdminActionForm
-                      action={addContributionPrice}
-                      successMessage="Price added."
-                      className="mt-4 grid gap-3 sm:grid-cols-4"
-                    >
-                      <input type="hidden" name="product_id" value={product.id} />
-                      <input name="amount" type="number" min="0.50" step="0.01" required placeholder="Amount" className={field} />
-                      <input name="currency" defaultValue="GBP" required className={field} />
-                      <input name="sort_order" type="number" defaultValue="0" className={field} />
-                      <label className="flex items-center gap-2 text-xs text-[rgb(var(--sep-skin-c2,211_194_170))]">
-                        <input name="is_active" type="checkbox" defaultChecked /> Active
-                      </label>
-                      <div className="sm:col-span-4">
-                        <button className={button}>Add price</button>
-                      </div>
-                    </AdminActionForm>
+                        <AdminActionForm
+                          action={addContributionPrice}
+                          successMessage="Price added."
+                          className="mt-4 grid gap-3 sm:grid-cols-4"
+                        >
+                          <input type="hidden" name="product_id" value={product.id} />
+                          <input name="amount" type="number" min="0.50" step="0.01" required placeholder="Amount" className={field} />
+                          <input name="currency" defaultValue="GBP" required className={field} />
+                          <input name="sort_order" type="number" defaultValue="0" className={field} />
+                          <label className="flex items-center gap-2 text-xs text-[rgb(var(--sep-skin-c2,211_194_170))]">
+                            <input name="is_active" type="checkbox" defaultChecked /> Active
+                          </label>
+                          <div className="sm:col-span-4">
+                            <button className={button}>Add price</button>
+                          </div>
+                        </AdminActionForm>
+                      </>
+                    )}
                   </div>
 
                   {product.stripe_sync_error ? (

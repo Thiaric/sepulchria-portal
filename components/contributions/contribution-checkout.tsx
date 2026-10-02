@@ -21,10 +21,16 @@ import {
 
 type ContributionOption = {
   id: string;
+  productId: string;
+  priceId: string | null;
+  pricingMode: "fixed" | "custom";
   productName: string;
   description: string;
-  amountMinor: number;
+  amountMinor: number | null;
   currency: string;
+  minAmountMinor: number | null;
+  maxAmountMinor: number | null;
+  sortOrder: number;
 };
 
 const initialState: ContributionStripeState = {
@@ -151,10 +157,14 @@ export function ContributionCheckout({
     initialState,
   );
 
-  const [selectedPriceId, setSelectedPriceId] = useState(options[0]?.id ?? "");
+  const [selectedOptionId, setSelectedOptionId] = useState(options[0]?.id ?? "");
+  const [customAmount, setCustomAmount] = useState("");
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [completedAmount, setCompletedAmount] = useState<number | null>(null);
   const openedSessionRef = useRef<string | null>(null);
+
+  const selected =
+    options.find((option) => option.id === selectedOptionId) ?? null;
 
   useEffect(() => {
     if (!state.ok || !state.clientSecret || !state.checkoutSessionId) return;
@@ -167,17 +177,23 @@ export function ContributionCheckout({
   return (
     <>
       <form action={action} className="mt-6">
-        <input type="hidden" name="priceId" value={selectedPriceId} />
+        <input type="hidden" name="productId" value={selected?.productId ?? ""} />
+        <input type="hidden" name="priceId" value={selected?.priceId ?? ""} />
+        <input
+          type="hidden"
+          name="pricingMode"
+          value={selected?.pricingMode ?? ""}
+        />
 
         <div className="grid gap-3 sm:grid-cols-2">
           {options.map((option) => {
-            const active = option.id === selectedPriceId;
+            const active = option.id === selectedOptionId;
 
             return (
               <button
                 key={option.id}
                 type="button"
-                onClick={() => setSelectedPriceId(option.id)}
+                onClick={() => setSelectedOptionId(option.id)}
                 className={[
                   "border p-4 text-left transition",
                   active
@@ -192,16 +208,52 @@ export function ContributionCheckout({
                   {option.description}
                 </span>
                 <span className="mt-3 block font-serif text-2xl text-[rgb(var(--sep-colour-d8bf91))]">
-                  {moneyLabel(option.amountMinor, option.currency)}
+                  {option.pricingMode === "custom"
+                    ? "Choose your amount"
+                    : moneyLabel(option.amountMinor ?? 0, option.currency)}
                 </span>
               </button>
             );
           })}
         </div>
 
+        {selected?.pricingMode === "custom" ? (
+          <label className="mt-4 block">
+            <span className="mb-1 block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8f8271))]">
+              Your contribution
+            </span>
+            <div className="flex items-center border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))]">
+              <span className="px-3 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+                £
+              </span>
+              <input
+                name="customAmount"
+                type="number"
+                min={(selected.minAmountMinor ?? 100) / 100}
+                max={(selected.maxAmountMinor ?? 50000) / 100}
+                step="0.01"
+                required
+                value={customAmount}
+                onChange={(event) => setCustomAmount(event.target.value)}
+                placeholder={`${((selected.minAmountMinor ?? 100) / 100).toFixed(2)} – ${((selected.maxAmountMinor ?? 50000) / 100).toFixed(2)}`}
+                className="min-w-0 flex-1 bg-transparent px-1 py-3 text-sm text-[rgb(var(--sep-colour-e5cfa6))] outline-none"
+              />
+            </div>
+            <span className="mt-1 block text-[9px] text-[rgb(var(--sep-colour-756957))]">
+              Minimum {moneyLabel(selected.minAmountMinor ?? 100, selected.currency)} · Maximum{" "}
+              {moneyLabel(selected.maxAmountMinor ?? 50000, selected.currency)}
+            </span>
+          </label>
+        ) : null}
+
         <button
           type="submit"
-          disabled={pending || !publishableKey || !selectedPriceId}
+          disabled={
+            pending ||
+            !publishableKey ||
+            !selected ||
+            (selected.pricingMode === "custom" && !customAmount)
+          }
           className="mt-5 w-full border border-[rgb(var(--sep-colour-987344))]/70 bg-[rgb(var(--sep-colour-2a1d12))] px-5 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd9aa))] disabled:opacity-55"
         >
           {pending ? "Opening secure checkout..." : "Support Sepulchria"}

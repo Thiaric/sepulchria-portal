@@ -18,7 +18,7 @@ export default async function ContributionPage() {
   const [productsResult, pricesResult] = await Promise.all([
     admin
       .from("support_contribution_products")
-      .select("id, name, description, sort_order")
+      .select("id, name, description, sort_order, pricing_mode, custom_min_amount_minor, custom_max_amount_minor")
       .eq("is_active", true)
       .order("sort_order")
       .order("name"),
@@ -35,18 +35,48 @@ export default async function ContributionPage() {
   const products = productsResult.data ?? [];
   const prices = pricesResult.data ?? [];
 
-  const options = prices.flatMap((price) => {
-    const product = products.find((item) => item.id === price.product_id);
+  const fixedOptions = prices.flatMap((price) => {
+    const product = products.find(
+      (item) =>
+        item.id === price.product_id &&
+        (item.pricing_mode ?? "fixed") === "fixed",
+    );
     if (!product) return [];
 
     return [{
-      id: price.id,
+      id: `fixed:${price.id}`,
+      productId: product.id,
+      priceId: price.id,
+      pricingMode: "fixed" as const,
       productName: product.name,
       description: product.description,
       amountMinor: Number(price.amount_minor),
       currency: price.currency,
+      minAmountMinor: null,
+      maxAmountMinor: null,
+      sortOrder: Number(product.sort_order ?? 0),
     }];
   });
+
+  const customOptions = products
+    .filter((product) => product.pricing_mode === "custom")
+    .map((product) => ({
+      id: `custom:${product.id}`,
+      productId: product.id,
+      priceId: null,
+      pricingMode: "custom" as const,
+      productName: product.name,
+      description: product.description,
+      amountMinor: null,
+      currency: "GBP",
+      minAmountMinor: Number(product.custom_min_amount_minor ?? 100),
+      maxAmountMinor: Number(product.custom_max_amount_minor ?? 50000),
+      sortOrder: Number(product.sort_order ?? 0),
+    }));
+
+  const options = [...fixedOptions, ...customOptions].sort(
+    (a, b) => a.sortOrder - b.sortOrder,
+  );
 
   return (
     <main className="flex min-h-full w-full items-start justify-center p-3 sm:p-6 lg:p-8">
