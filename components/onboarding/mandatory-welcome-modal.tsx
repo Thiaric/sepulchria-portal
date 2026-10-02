@@ -103,6 +103,16 @@ export function MandatoryWelcomeModal() {
 
       setVisible(false);
 
+      /*
+       * The mandatory welcome is the first onboarding gate.
+       * Tutorial initialisation is allowed only after this fires.
+       */
+      window.dispatchEvent(
+        new CustomEvent(
+          "sepulchria:welcome-acknowledged",
+        ),
+      );
+
       if (pathname !== "/character/create") {
         router.push("/character/create");
       } else {

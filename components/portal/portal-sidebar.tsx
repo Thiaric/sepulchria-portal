@@ -145,7 +145,7 @@ const otherCodexNavigationItems: NavigationItem[] = [
     opensModal: true,
   },
   {
-    label: "Warping",
+    label: "Shapes",
     title:
       "Read about magic in Sepulchria, including Warping.",
     icon: "/icons/warping.png",

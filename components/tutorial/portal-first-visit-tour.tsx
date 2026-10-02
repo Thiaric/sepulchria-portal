@@ -637,6 +637,7 @@ export function PortalFirstVisitTour() {
   const [steps, setSteps] = useState<TourStep[]>([]);
   const [stepIndex, setStepIndex] = useState(0);
   const [rect, setRect] = useState<SpotlightRect | null>(null);
+  const [welcomeVersion, setWelcomeVersion] = useState(0);
   const startingRef = useRef(false);
 
   const preparedStepRef =
@@ -687,6 +688,26 @@ export function PortalFirstVisitTour() {
   );
 
   useEffect(() => {
+    function handleWelcomeAcknowledged() {
+      setWelcomeVersion(
+        (current) => current + 1,
+      );
+    }
+
+    window.addEventListener(
+      "sepulchria:welcome-acknowledged",
+      handleWelcomeAcknowledged,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "sepulchria:welcome-acknowledged",
+        handleWelcomeAcknowledged,
+      );
+    };
+  }, []);
+
+  useEffect(() => {
     let cancelled = false;
 
     setReady(false);
@@ -705,6 +726,58 @@ export function PortalFirstVisitTour() {
           setUserId(null);
           setReady(true);
         }
+        return;
+      }
+
+      /*
+       * Mandatory welcome ALWAYS comes before the tutorial.
+       * Do not load or start tutorial progress until the welcome API
+       * confirms that this account is either grandfathered or has
+       * completed the acknowledgement.
+       */
+      try {
+        const welcomeResponse =
+          await fetch(
+            "/api/onboarding/welcome",
+            {
+              method: "GET",
+              cache: "no-store",
+            },
+          );
+
+        const welcomeStatus =
+          await welcomeResponse
+            .json()
+            .catch(() => null) as
+              | {
+                  ok?: boolean;
+                  acknowledged?: boolean;
+                }
+              | null;
+
+        if (cancelled) {
+          return;
+        }
+
+        if (
+          !welcomeResponse.ok ||
+          !welcomeStatus?.ok ||
+          welcomeStatus.acknowledged !== true
+        ) {
+          setUserId(user.id);
+          setReady(false);
+          return;
+        }
+      } catch (error) {
+        if (!cancelled) {
+          console.error(
+            "Unable to verify mandatory welcome before tutorial:",
+            error,
+          );
+          setUserId(user.id);
+          setReady(false);
+        }
+
         return;
       }
 
@@ -739,7 +812,7 @@ export function PortalFirstVisitTour() {
     return () => {
       cancelled = true;
     };
-  }, [pathname, supabase]);
+  }, [pathname, supabase, welcomeVersion]);
 
   const startTour = useCallback(
     async (tour: TourDefinition) => {

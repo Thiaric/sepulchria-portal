@@ -242,6 +242,8 @@ try {
             TERMS_VERSION,
           privacy_version:
             PRIVACY_VERSION,
+          welcome_required:
+            true,
         },
       },
     });

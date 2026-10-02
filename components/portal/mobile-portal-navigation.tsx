@@ -745,10 +745,10 @@ const moreDragging =
     },
     {
       href: "/warping",
-      label: "Warping",
+      label: "Shapes",
       icon: "/icons/warping.png",
       modal: {
-        label: "Warping",
+        label: "Shapes",
         title:
           "Read about magic in Sepulchria, including Warping.",
         icon:

@@ -251,12 +251,12 @@ export function PortalPresenceHeartbeat({
         idleForMs();
 
       if (
-        elapsed >=
-        LOGOUT_AFTER_MS
-      ) {
-        void logoutForInactivity();
-        return false;
-      }
+  elapsed >=
+  AWAY_AFTER_MS
+) {
+  void markAutomaticAway();
+  return true;
+}
 
       if (
         elapsed >=

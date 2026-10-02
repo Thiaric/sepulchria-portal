@@ -29,6 +29,20 @@ export async function GET() {
     );
   }
 
+  /*
+   * Only accounts created after the welcome rollout carry
+   * welcome_required=true. Existing accounts are grandfathered.
+   */
+  if (user.user_metadata?.welcome_required !== true) {
+    return NextResponse.json(
+      {
+        ok: true,
+        acknowledged: true,
+      },
+      { headers: { "Cache-Control": "no-store" } },
+    );
+  }
+
   const admin = createAdminClient();
   const { data, error } = await admin
     .from("user_onboarding_acknowledgements")
