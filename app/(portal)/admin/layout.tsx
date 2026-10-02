@@ -124,6 +124,12 @@ export default async function AdminLayout({
               </AdminNavigationLink>
             ) : null}
 
+            {can("items") ? (
+              <AdminNavigationLink href="/admin/contributions">
+                Contribution
+              </AdminNavigationLink>
+            ) : null}
+
 
 
             {can("missions") ? (
@@ -354,6 +360,11 @@ export default async function AdminLayout({
             {can("store") ? (
               <AdminNavigationLink href="/admin/store">
                 Store
+              </AdminNavigationLink>
+            ) : null}
+            {can("store") ? (
+              <AdminNavigationLink href="/admin/contributions">
+                Contributions
               </AdminNavigationLink>
             ) : null}
 

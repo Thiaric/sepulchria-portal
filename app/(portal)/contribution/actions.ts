@@ -1,6 +1,9 @@
 "use server";
 
-import { createContributionCheckout } from "@/lib/contributions/stripe-server";
+import {
+  createContributionCheckout,
+  ensureContributionPriceReady,
+} from "@/lib/contributions/stripe-server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -12,9 +15,6 @@ export type ContributionStripeState = {
   amountMinor: number | null;
 };
 
-const MINIMUM_AMOUNT_MINOR = 100;
-const MAXIMUM_AMOUNT_MINOR = 50_000;
-
 function failure(error: string): ContributionStripeState {
   return {
     ok: false,
@@ -25,33 +25,11 @@ function failure(error: string): ContributionStripeState {
   };
 }
 
-function parseAmountMinor(raw: string) {
-  const normalized = raw.trim();
-
-  if (!/^\d+(?:\.\d{1,2})?$/.test(normalized)) {
-    return null;
-  }
-
-  const amount = Number(normalized);
-  if (!Number.isFinite(amount)) return null;
-
-  const minor = Math.round(amount * 100);
-
-  if (minor < MINIMUM_AMOUNT_MINOR || minor > MAXIMUM_AMOUNT_MINOR) {
-    return null;
-  }
-
-  return minor;
-}
-
 export async function getContributionCheckoutStatus(
   checkoutSessionId: string,
 ): Promise<{ status: string | null; paid: boolean }> {
   const sessionId = checkoutSessionId.trim();
-
-  if (!sessionId) {
-    return { status: null, paid: false };
-  }
+  if (!sessionId) return { status: null, paid: false };
 
   const supabase = await createClient();
   const admin = createAdminClient();
@@ -60,9 +38,7 @@ export async function getContributionCheckoutStatus(
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
-    return { status: null, paid: false };
-  }
+  if (!user) return { status: null, paid: false };
 
   const { data: contribution, error } = await admin
     .from("support_contributions")
@@ -88,16 +64,11 @@ export async function startContributionCheckout(
   _previousState: ContributionStripeState,
   formData: FormData,
 ): Promise<ContributionStripeState> {
+  const priceId = String(formData.get("priceId") ?? "").trim();
+
+  if (!priceId) return failure("Choose a Contribution option.");
   if (!process.env.STRIPE_SECRET_KEY?.trim()) {
     return failure("Stripe is not configured yet.");
-  }
-
-  const amountMinor = parseAmountMinor(
-    String(formData.get("amount") ?? ""),
-  );
-
-  if (amountMinor === null) {
-    return failure("Choose an amount between £1.00 and £500.00.");
   }
 
   const supabase = await createClient();
@@ -107,12 +78,9 @@ export async function startContributionCheckout(
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
-    return failure("You must be signed in.");
-  }
+  if (!user) return failure("You must be signed in.");
 
   const customerEmail = user.email?.trim() ?? "";
-
   if (!customerEmail) {
     return failure(
       "Your account does not have an email address for the contribution receipt.",
@@ -126,14 +94,23 @@ export async function startContributionCheckout(
     .eq("is_system", false)
     .maybeSingle();
 
+  let ready;
+  try {
+    ready = await ensureContributionPriceReady(priceId);
+  } catch (error) {
+    return failure(error instanceof Error ? error.message : String(error));
+  }
+
   const { data: contribution, error: insertError } = await admin
     .from("support_contributions")
     .insert({
       user_id: user.id,
       character_id: character?.id ?? null,
       customer_email: customerEmail,
-      amount_minor: amountMinor,
-      currency: "GBP",
+      product_id: ready.productId,
+      price_id: priceId,
+      amount_minor: ready.amountMinor,
+      currency: ready.currency,
       status: "pending",
       stripe_environment: (
         process.env.STRIPE_ENVIRONMENT ?? "sandbox"
@@ -152,9 +129,11 @@ export async function startContributionCheckout(
 
   try {
     const checkout = await createContributionCheckout({
-      amountMinor,
+      stripePriceId: ready.stripePriceId,
       customerEmail,
       contributionId: contribution.id,
+      contributionProductId: ready.productId,
+      contributionPriceId: priceId,
       userId: user.id,
       characterId: character?.id ?? null,
     });
@@ -167,16 +146,14 @@ export async function startContributionCheckout(
       })
       .eq("id", contribution.id);
 
-    if (updateError) {
-      throw new Error(updateError.message);
-    }
+    if (updateError) throw new Error(updateError.message);
 
     return {
       ok: true,
       error: null,
       clientSecret: checkout.clientSecret,
       checkoutSessionId: checkout.checkoutSessionId,
-      amountMinor,
+      amountMinor: ready.amountMinor,
     };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);

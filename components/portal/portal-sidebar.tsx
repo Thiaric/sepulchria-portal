@@ -377,6 +377,16 @@ const manageOrderItem: NavigationItem = {
   activePaths: ["/orders/manage"],
 };
 
+const contributionItem: NavigationItem = {
+  label: "Support Sepulchria",
+  title:
+    "Make a one-off contribution to support Sepulchria.",
+  icon: "/icons/store.png",
+  href: "/contribution",
+  activePaths: ["/contribution"],
+  opensModal: true,
+};
+
 function normalizeCount(
   value: unknown,
   fallback = 0,
@@ -1976,14 +1986,14 @@ export function PortalSidebar({
             className="mt-1 border-l border-[rgb(var(--sep-colour-60482e))]/40 pl-2 components_portal_portal_sidebar_div_premium_submenu"
           >
             {renderNavigationItem(
-              storeItem,
-            )}
+  storeItem,
+)}
 
-            {hasCosmetics
-              ? renderNavigationItem(
-                  cosmeticsItem,
-                )
-              : null}
+{hasCosmetics
+  ? renderNavigationItem(
+      cosmeticsItem,
+    )
+  : null}
 
             {hasFriendListFeature
               ? renderNavigationItem(
@@ -2073,8 +2083,11 @@ export function PortalSidebar({
                 </button>
               ),
             )}
+            
           </div>
-        ) : null}
+        ) : null}{renderNavigationItem(
+  contributionItem,
+)}
       </div>
     );
   }
