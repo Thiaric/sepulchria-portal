@@ -5684,3 +5684,202 @@ body[data-portal-skin]
     filter: brightness(1.12);
   }
 }
+
+
+/* ==================================================================
+   CONTRIBUTIONS — SEMANTIC SKIN C1/C2 EXCEPTIONS
+   ------------------------------------------------------------------
+   The unified portal rules intentionally normalise generic buttons,
+   cards, fields and context panels with !important. Contributions has
+   explicit semantic roles, so restore them here after that generic pass.
+
+   C1 = accents / labels / prices / borders
+   C2 = titles / names / prose / control text
+   ================================================================== */
+
+[data-portal-shell] [data-contribution-page] .contribution_section,
+[data-portal-shell] [data-contribution-page] .contribution_header,
+[data-portal-shell] [data-contribution-page] .contribution_option_card,
+[data-portal-shell] [data-contribution-page] .contribution_custom_amount,
+[data-portal-shell] [data-contribution-page] .contribution_custom_amount_field,
+[data-portal-shell] [data-contribution-page] .contribution_empty {
+  border-color: rgb(var(--sep-skin-c1) / 0.35) !important;
+}
+
+[data-portal-shell] [data-contribution-page] .contribution_p1,
+[data-portal-shell] [data-contribution-page] .contribution_option_name,
+[data-portal-shell] [data-contribution-page] .contribution_option_price,
+[data-portal-shell] [data-contribution-page] .contribution_custom_amount_label {
+  color: rgb(var(--sep-skin-c1)) !important;
+  -webkit-text-fill-color: rgb(var(--sep-skin-c1)) !important;
+}
+
+[data-portal-shell] [data-contribution-page] .contribution_h1,
+[data-portal-shell] [data-contribution-page] .contribution_p2,
+
+[data-portal-shell] [data-contribution-page] .contribution_option_description,
+[data-portal-shell] [data-contribution-page] .contribution_custom_amount_currency,
+[data-portal-shell] [data-contribution-page] .contribution_custom_amount_input,
+[data-portal-shell] [data-contribution-page] .contribution_custom_amount_limits,
+[data-portal-shell] [data-contribution-page] .contribution_empty,
+[data-portal-shell] [data-contribution-page] .contribution_payment_note,
+[data-portal-shell] [data-contribution-page] .contribution_success {
+  color: rgb(var(--sep-skin-c2)) !important;
+  -webkit-text-fill-color: rgb(var(--sep-skin-c2)) !important;
+}
+
+[data-portal-shell] [data-contribution-page] .contribution_option_card[aria-pressed="true"] {
+  border-color: rgb(var(--sep-skin-c1)) !important;
+  box-shadow:
+    0 0 0 1px rgb(var(--sep-skin-c1) / 0.34),
+    0 0 14px rgb(var(--sep-skin-c1) / 0.12) !important;
+}
+
+[data-portal-shell] [data-contribution-page] .contribution_option_card[aria-pressed="true"]
+  .contribution_option_selected {
+  border-color: rgb(var(--sep-skin-c1) / 0.58) !important;
+  color: rgb(var(--sep-skin-c2)) !important;
+  -webkit-text-fill-color: rgb(var(--sep-skin-c2)) !important;
+}
+
+[data-portal-shell] [data-contribution-page] .contribution_submit {
+  border-color: rgb(var(--sep-skin-c1) / 0.55) !important;
+  color: rgb(var(--sep-skin-c2)) !important;
+  -webkit-text-fill-color: rgb(var(--sep-skin-c2)) !important;
+}
+
+[data-portal-shell] [data-contribution-page] .contribution_submit:hover:not(:disabled) {
+  border-color: rgb(var(--sep-skin-c2) / 0.70) !important;
+  color: rgb(var(--sep-skin-c2)) !important;
+  -webkit-text-fill-color: rgb(var(--sep-skin-c2)) !important;
+}
+
+[data-portal-shell] [data-contribution-page] .contribution_custom_amount_input::placeholder {
+  color: rgb(var(--sep-skin-c2) / 0.55) !important;
+  -webkit-text-fill-color: rgb(var(--sep-skin-c2) / 0.55) !important;
+}
+
+[data-portal-shell] .contribution_checkout_modal {
+  border-color: rgb(var(--sep-skin-c1) / 0.70) !important;
+}
+
+[data-portal-shell] .contribution_checkout_modal_header {
+  border-bottom-color: rgb(var(--sep-skin-c1) / 0.35) !important;
+}
+
+[data-portal-shell] .contribution_checkout_modal_eyebrow {
+  color: rgb(var(--sep-skin-c1)) !important;
+  -webkit-text-fill-color: rgb(var(--sep-skin-c1)) !important;
+}
+
+[data-portal-shell] .contribution_checkout_modal_title,
+[data-portal-shell] .contribution_checkout_modal_close {
+  color: rgb(var(--sep-skin-c2)) !important;
+  -webkit-text-fill-color: rgb(var(--sep-skin-c2)) !important;
+}
+
+[data-portal-shell] .contribution_checkout_modal_close {
+  border-color: rgb(var(--sep-skin-c1) / 0.55) !important;
+}
+
+/* Stripe's embedded white checkout body intentionally keeps Stripe's own
+   accessible colours; do not recolour its internals with portal skin rules. */
+[data-portal-shell] .contribution_checkout_stripe_body,
+[data-portal-shell] .contribution_checkout_stripe_body * {
+  -webkit-text-fill-color: initial;
+}
+
+/* Right/context sidebar Contribution summary. */
+[data-portal-shell] .portal-right-shell .contribution_context
+  .components_portal_portal_context_panel_p_text_66,
+[data-portal-shell] .portal-right-shell .contribution_context
+  .contribution_context_card_label {
+  color: rgb(var(--sep-skin-c1)) !important;
+  -webkit-text-fill-color: rgb(var(--sep-skin-c1)) !important;
+}
+
+[data-portal-shell] .portal-right-shell .contribution_context
+  .components_portal_portal_context_panel_h2_heading,
+[data-portal-shell] .portal-right-shell .contribution_context_intro,
+[data-portal-shell] .portal-right-shell .contribution_context_card_body {
+  color: rgb(var(--sep-skin-c2)) !important;
+  -webkit-text-fill-color: rgb(var(--sep-skin-c2)) !important;
+}
+
+[data-portal-shell] .portal-right-shell .contribution_context_divider {
+  background-color: rgb(var(--sep-skin-c1) / 0.20) !important;
+}
+
+[data-portal-shell] .portal-right-shell .contribution_context_card {
+  border-color: rgb(var(--sep-skin-c1) / 0.35) !important;
+}
+/* END CONTRIBUTIONS — SEMANTIC SKIN C1/C2 EXCEPTIONS */
+
+
+/* ==================================================================
+   CONTRIBUTION PRODUCT CARD C1/C2 HARD OVERRIDE V2
+   Contribution options are selection cards, not standard text buttons.
+   ================================================================== */
+[data-portal-shell]
+[data-contribution-page]
+.contribution_options_grid
+[data-contribution-option="true"] {
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: rgb(var(--sep-skin-c1) / 0.35) !important;
+  color: rgb(var(--sep-skin-c2)) !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  font-weight: inherit !important;
+  line-height: inherit !important;
+}
+
+[data-portal-shell]
+[data-contribution-page]
+.contribution_options_grid
+[data-contribution-option="true"]:hover {
+  border-color: rgb(var(--sep-skin-c1) / 0.60) !important;
+}
+
+[data-portal-shell]
+[data-contribution-page]
+.contribution_options_grid
+[data-contribution-option="true"][aria-pressed="true"] {
+  border-color: rgb(var(--sep-skin-c1)) !important;
+  box-shadow:
+    0 0 0 1px rgb(var(--sep-skin-c1) / 0.38),
+    0 0 14px rgb(var(--sep-skin-c1) / 0.14) !important;
+}
+
+
+[data-portal-shell]
+[data-contribution-page]
+.contribution_options_grid
+.contribution_option_description,
+[data-portal-shell]
+[data-contribution-page]
+.contribution_options_grid
+.contribution_option_selected {
+  color: rgb(var(--sep-skin-c2)) !important;
+  -webkit-text-fill-color: rgb(var(--sep-skin-c2)) !important;
+}
+[data-portal-shell]
+[data-contribution-page]
+.contribution_options_grid
+.contribution_option_name,
+[data-portal-shell]
+[data-contribution-page]
+.contribution_options_grid
+.contribution_option_price {
+  color: rgb(var(--sep-skin-c1)) !important;
+  -webkit-text-fill-color: rgb(var(--sep-skin-c1)) !important;
+}
+
+[data-portal-shell]
+[data-contribution-page]
+.contribution_options_grid
+.contribution_option_selected {
+  border-color: rgb(var(--sep-skin-c1) / 0.60) !important;
+}
+/* END CONTRIBUTION PRODUCT CARD C1/C2 HARD OVERRIDE V2 */
+

@@ -381,7 +381,7 @@ const contributionItem: NavigationItem = {
   label: "Support Sepulchria",
   title:
     "Make a one-off contribution to support Sepulchria.",
-  icon: "/icons/store.png",
+  icon: "/icons/contributions.png",
   href: "/contribution",
   activePaths: ["/contribution"],
   opensModal: true,
@@ -2824,7 +2824,7 @@ export function PortalSidebar({
               href="/support"
               data-left-sidebar-section-heading="true"
               className="flex items-center py-0.5 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-9f8b70))] transition hover:text-[rgb(var(--sep-colour-d8bf91))]">
-              <span className="components_portal_portal_sidebar_span_text_21">Support</span><TicketNotificationBadge audience="player" variant="sidebar" />
+              <span className="components_portal_portal_sidebar_span_text_21">Need Help?</span><TicketNotificationBadge audience="player" variant="sidebar" />
             </Link>
             <PlayerSanctionsSidebarLink />
 

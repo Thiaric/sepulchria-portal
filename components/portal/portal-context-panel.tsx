@@ -5162,71 +5162,80 @@ function AreaContext({
 
 function ContributionHistoryContext() {
   return (
-    <div className="flex h-full min-h-0 flex-col">
+    <div className="flex h-full min-h-0 flex-col contribution_context">
       <ContextHeading
         eyebrow="Support Sepulchria"
         title="Contributions"
       />
 
-      <p className="text-[11px] leading-5 text-[rgb(var(--sep-global-c1))]">
+      <p className="text-[11px] leading-5 text-[rgb(var(--sep-global-c1))] contribution_context_intro">
         Contributions are optional one-off payments that help support the
         continued development and running of Sepulchria.
       </p>
 
-      <div className="my-4 h-px bg-[rgb(var(--sep-skin-c1))]/20" />
+      <div className="my-4 h-px bg-[rgb(var(--sep-skin-c1))]/20 contribution_context_divider" />
 
       <div
         data-portal-scroll
-        className="min-h-0 flex-1 space-y-3 overflow-y-auto pr-1"
+        className="min-h-0 flex-1 space-y-3 overflow-y-auto pr-1 contribution_context_cards"
       >
-        <section className="border border-[rgb(var(--sep-skin-c1))]/25 bg-[rgb(var(--sep-colour-100c09))] p-3">
-          <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-skin-c1))]">
+        <section className="border border-[rgb(var(--sep-skin-c1))]/25 bg-[rgb(var(--sep-colour-100c09))] p-3 contribution_context_card">
+          <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-skin-c1))] contribution_context_card_label">
             What they support
           </p>
-          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-global-c1))]">
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-global-c1))] contribution_context_card_body">
             Contributions help towards hosting, infrastructure, services and
             the ongoing development of the Sepulchria portal and its world.
           </p>
         </section>
 
-        <section className="border border-[rgb(var(--sep-skin-c1))]/25 bg-[rgb(var(--sep-colour-100c09))] p-3">
-          <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-skin-c1))]">
+        <section className="border border-[rgb(var(--sep-skin-c1))]/25 bg-[rgb(var(--sep-colour-100c09))] p-3 contribution_context_card">
+          <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-skin-c1))] contribution_context_card_label">
             Completely optional
           </p>
-          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-global-c1))]">
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-global-c1))] contribution_context_card_body">
             Supporting Sepulchria is entirely voluntary. Contributions are not
             required to play and do not provide gameplay advantages,
             progression or preferential treatment.
           </p>
         </section>
 
-        <section className="border border-[rgb(var(--sep-skin-c1))]/25 bg-[rgb(var(--sep-colour-100c09))] p-3">
-          <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-skin-c1))]">
+        <section className="border border-[rgb(var(--sep-skin-c1))]/25 bg-[rgb(var(--sep-colour-100c09))] p-3 contribution_context_card">
+          <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-skin-c1))] contribution_context_card_label">
             One-off payments
           </p>
-          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-global-c1))]">
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-global-c1))] contribution_context_card_body">
             Every contribution is a one-off payment. There is no recurring
             subscription and no automatic future charge.
           </p>
         </section>
 
-        <section className="border border-[rgb(var(--sep-skin-c1))]/25 bg-[rgb(var(--sep-colour-100c09))] p-3">
-          <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-skin-c1))]">
+        <section className="border border-[rgb(var(--sep-skin-c1))]/25 bg-[rgb(var(--sep-colour-100c09))] p-3 contribution_context_card">
+          <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-skin-c1))] contribution_context_card_label">
             Secure checkout
           </p>
-          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-global-c1))]">
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-global-c1))] contribution_context_card_body">
             Payments are handled securely through Stripe Managed Payments.
             Sepulchria does not store your payment-card details.
           </p>
         </section>
 
-        <section className="border border-[rgb(var(--sep-skin-c1))]/25 bg-[rgb(var(--sep-colour-100c09))] p-3">
-          <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-skin-c1))]">
+        <section className="border border-[rgb(var(--sep-skin-c1))]/25 bg-[rgb(var(--sep-colour-100c09))] p-3 contribution_context_card">
+          <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-skin-c1))] contribution_context_card_label">
             Thank you
           </p>
-          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-global-c1))]">
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-global-c1))] contribution_context_card_body">
             Every contribution, large or small, helps us keep building and
             maintaining Sepulchria. Thank you for supporting the project.
+          </p>
+        </section>
+
+        <section className="border border-[rgb(var(--sep-skin-c1))]/25 bg-[rgb(var(--sep-colour-100c09))] p-3 contribution_context_card">
+          <p className="text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-skin-c1))] contribution_context_card_label">
+            Refunds
+          </p>
+          <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-global-c1))] contribution_context_card_body">
+            If you need to request a refund, please contact our support team via the "Need Help?" link.
           </p>
         </section>
       </div>

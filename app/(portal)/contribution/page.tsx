@@ -81,7 +81,7 @@ export default async function ContributionPage() {
   return (
     <main
       data-contribution-page
-      className="flex h-full min-h-0 w-full flex-col p-2 sm:p-5"
+      className="flex h-full min-h-0 w-full flex-col p-2 sm:p-5 contribution_main"
     >
       <section className="flex min-h-0 flex-1 flex-col overflow-hidden border border-[rgb(var(--sep-skin-c1))]/30 bg-[rgb(var(--sep-colour-15100d))]/82 shadow-[0_10px_26px_rgba(var(--sep-rgb-0-0-0),0.2)] contribution_section">
         <header className="shrink-0 border-b border-[rgb(var(--sep-skin-c1))]/25 bg-[rgb(var(--sep-colour-211a14))] px-4 py-4 sm:px-5 contribution_header">
@@ -96,16 +96,16 @@ export default async function ContributionPage() {
           </p>
         </header>
 
-        <div data-portal-scroll className="min-h-0 flex-1 overflow-y-auto px-4 py-4 sm:px-5 sm:py-5">
+        <div data-portal-scroll className="min-h-0 flex-1 overflow-y-auto px-4 py-4 sm:px-5 sm:py-5 contribution_content">
           {options.length ? (
             <ContributionCheckout options={options} />
           ) : (
-            <p className="border border-[rgb(var(--sep-skin-c1))]/25 bg-[rgb(var(--sep-colour-100c09))] p-4 text-[11px] text-[rgb(var(--sep-global-c1))]">
+            <p className="border border-[rgb(var(--sep-skin-c1))]/25 bg-[rgb(var(--sep-colour-100c09))] p-4 text-[11px] text-[rgb(var(--sep-global-c1))] contribution_empty">
               No contribution options are currently available.
             </p>
           )}
 
-          <p className="mt-5 border-t border-[rgb(var(--sep-skin-c1))]/20 pt-4 text-[9px] leading-5 text-[rgb(var(--sep-colour-756957))]">
+          <p className="mt-5 border-t border-[rgb(var(--sep-skin-c1))]/20 pt-4 text-[9px] leading-5 text-[rgb(var(--sep-colour-756957))] contribution_payment_note">
             Payments are processed securely through Stripe Managed Payments.
           </p>
         </div>
