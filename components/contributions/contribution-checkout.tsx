@@ -176,7 +176,7 @@ export function ContributionCheckout({
 
   return (
     <>
-      <form action={action} className="mt-6">
+      <form action={action}>
         <input type="hidden" name="productId" value={selected?.productId ?? ""} />
         <input type="hidden" name="priceId" value={selected?.priceId ?? ""} />
         <input
@@ -185,7 +185,7 @@ export function ContributionCheckout({
           value={selected?.pricingMode ?? ""}
         />
 
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-3">
           {options.map((option) => {
             const active = option.id === selectedOptionId;
 
@@ -196,25 +196,25 @@ export function ContributionCheckout({
                 aria-pressed={active}
                 onClick={() => setSelectedOptionId(option.id)}
                 className={[
-                  "relative border p-4 pr-24 text-left normal-case transition",
+                  "relative min-h-[132px] border p-3.5 pr-20 text-left normal-case transition",
                   active
-                    ? "border-2 border-[rgb(var(--sep-colour-b58a50))] bg-[rgb(var(--sep-colour-332719))] ring-1 ring-[rgb(var(--sep-colour-b58a50))]/55 shadow-lg"
-                    : "border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))]",
+                    ? "border-[rgb(var(--sep-skin-c1))] bg-[rgb(var(--sep-colour-21170f))] shadow-[0_0_14px_rgba(var(--sep-rgb-185-140-80),0.12)] ring-1 ring-[rgb(var(--sep-skin-c1))]/35"
+                    : "border-[rgb(var(--sep-skin-c1))]/25 bg-[rgb(var(--sep-colour-100c09))] hover:border-[rgb(var(--sep-skin-c1))]/55 hover:bg-[rgb(var(--sep-colour-17120f))]",
                 ].join(" ")}
               >
                 {active ? (
-                  <span className="absolute right-3 top-3 normal-case border border-[rgb(var(--sep-colour-b58a50))]/70 bg-[rgb(var(--sep-colour-211a14))] px-2 py-1 text-[9px] font-semibold text-[rgb(var(--sep-colour-efd6aa))]">
+                  <span className="absolute right-2.5 top-2.5 normal-case border border-[rgb(var(--sep-skin-c1))]/55 bg-[rgb(var(--sep-colour-15100d))] px-2 py-1 text-[8px] text-[rgb(var(--sep-skin-c2))]">
                     ✓ Selected
                   </span>
                 ) : null}
 
-                <span className="block font-serif text-xl normal-case text-[rgb(var(--sep-colour-efd6aa))]">
+                <span className="block font-serif text-lg normal-case text-[rgb(var(--sep-skin-c2))]">
                   {option.productName}
                 </span>
-                <span className="mt-1 block text-[11px] leading-5 text-[rgb(var(--sep-colour-a99b89))]">
+                <span className="mt-1 block text-[10px] leading-[1.45rem] text-[rgb(var(--sep-global-c1))]">
                   {option.description}
                 </span>
-                <span className="mt-3 block font-serif text-2xl normal-case text-[rgb(var(--sep-colour-d8bf91))]">
+                <span className="mt-2 block font-serif text-xl normal-case text-[rgb(var(--sep-skin-c1))]">
                   {option.pricingMode === "custom"
                     ? "Choose your amount"
                     : moneyLabel(option.amountMinor ?? 0, option.currency)}
@@ -225,12 +225,12 @@ export function ContributionCheckout({
         </div>
 
         {selected?.pricingMode === "custom" ? (
-          <label className="mt-4 block">
-            <span className="mb-1 block normal-case text-[9px] tracking-[0.04em] text-[rgb(var(--sep-colour-8f8271))]">
+          <label className="mt-3 block border border-[rgb(var(--sep-skin-c1))]/25 bg-[rgb(var(--sep-colour-100c09))] p-3">
+            <span className="mb-1.5 block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-skin-c1))]">
               Your contribution
             </span>
-            <div className="flex items-center border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))]">
-              <span className="px-3 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+            <div className="flex items-center border border-[rgb(var(--sep-skin-c1))]/35 bg-[rgb(var(--sep-colour-15100d))]">
+              <span className="px-3 font-serif text-lg text-[rgb(var(--sep-skin-c2))]">
                 £
               </span>
               <input
@@ -243,7 +243,7 @@ export function ContributionCheckout({
                 value={customAmount}
                 onChange={(event) => setCustomAmount(event.target.value)}
                 placeholder={`${((selected.minAmountMinor ?? 100) / 100).toFixed(2)} – ${((selected.maxAmountMinor ?? 50000) / 100).toFixed(2)}`}
-                className="min-w-0 flex-1 bg-transparent px-1 py-3 text-sm text-[rgb(var(--sep-colour-e5cfa6))] outline-none"
+                className="min-w-0 flex-1 bg-transparent px-1 py-2.5 text-xs text-[rgb(var(--sep-skin-c2))] outline-none"
               />
             </div>
             <span className="mt-1 block text-[9px] text-[rgb(var(--sep-colour-756957))]">
@@ -261,7 +261,7 @@ export function ContributionCheckout({
             !selected ||
             (selected.pricingMode === "custom" && !customAmount)
           }
-          className="mt-5 w-full normal-case border border-[rgb(var(--sep-colour-987344))]/70 bg-[rgb(var(--sep-colour-2a1d12))] px-5 py-3 text-[10px] tracking-[0.04em] text-[rgb(var(--sep-colour-efd9aa))] disabled:opacity-55"
+          className="mt-4 w-full border border-[rgb(var(--sep-skin-c1))]/55 bg-[rgb(var(--sep-colour-21170f))] px-4 py-2.5 text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-skin-c2))] transition hover:border-[rgb(var(--sep-skin-c2))]/70 hover:bg-[rgb(var(--sep-colour-2a1d12))] disabled:opacity-55"
         >
           {pending ? "Opening secure checkout..." : "Support Sepulchria"}
         </button>

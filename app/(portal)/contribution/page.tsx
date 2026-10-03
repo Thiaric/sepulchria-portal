@@ -79,31 +79,34 @@ export default async function ContributionPage() {
   );
 
   return (
-    <main className="flex min-h-full w-full items-start justify-center p-3 sm:p-6 lg:p-8">
-      <section className="w-full max-w-3xl border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))]/90">
-        <header className="border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-211a14))] px-5 py-5 sm:px-7 sm:py-6">
-          <p className="normal-case text-[9px] tracking-[0.08em] text-[rgb(var(--sep-colour-876a46))]">
-            Sepulchria · contribution
-          </p>
-          <h1 className="mt-2 font-serif text-3xl normal-case text-[rgb(var(--sep-colour-e5cfa6))]">
+    <main
+      data-contribution-page
+      className="flex h-full min-h-0 w-full flex-col p-2 sm:p-5"
+    >
+      <section className="flex min-h-0 flex-1 flex-col overflow-hidden border border-[rgb(var(--sep-skin-c1))]/30 bg-[rgb(var(--sep-colour-15100d))]/82 shadow-[0_10px_26px_rgba(var(--sep-rgb-0-0-0),0.2)] contribution_section">
+        <header className="shrink-0 border-b border-[rgb(var(--sep-skin-c1))]/25 bg-[rgb(var(--sep-colour-211a14))] px-4 py-4 sm:px-5 contribution_header">
+          <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-skin-c1))] contribution_p1">
             Support Sepulchria
+          </p>
+          <h1 className="mt-1 font-serif text-2xl normal-case text-[rgb(var(--sep-global-c2))] sm:text-3xl contribution_h1">
+            Make a contribution
           </h1>
-          <p className="mt-3 text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
-            Make a voluntary one-off contribution to support Sepulchria.
+          <p className="mt-2 max-w-3xl text-[11px] leading-5 text-[rgb(var(--sep-global-c1))] contribution_p2">
+            Make a voluntary one-off contribution to help with the continued development and running of Sepulchria.
           </p>
         </header>
 
-        <div className="px-5 py-6 sm:px-7">
+        <div data-portal-scroll className="min-h-0 flex-1 overflow-y-auto px-4 py-4 sm:px-5 sm:py-5">
           {options.length ? (
             <ContributionCheckout options={options} />
           ) : (
-            <p className="text-sm text-[rgb(var(--sep-colour-a99b89))]">
+            <p className="border border-[rgb(var(--sep-skin-c1))]/25 bg-[rgb(var(--sep-colour-100c09))] p-4 text-[11px] text-[rgb(var(--sep-global-c1))]">
               No contribution options are currently available.
             </p>
           )}
 
-          <p className="mt-6 border-t border-[rgb(var(--sep-colour-60482e))]/35 pt-5 text-[10px] text-[rgb(var(--sep-colour-756957))]">
-            Payments are processed through Stripe Managed Payments.
+          <p className="mt-5 border-t border-[rgb(var(--sep-skin-c1))]/20 pt-4 text-[9px] leading-5 text-[rgb(var(--sep-colour-756957))]">
+            Payments are processed securely through Stripe Managed Payments.
           </p>
         </div>
       </section>

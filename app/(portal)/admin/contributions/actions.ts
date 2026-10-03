@@ -3,7 +3,12 @@
 import { revalidatePath } from "next/cache";
 
 import { requireAdminSection } from "@/lib/auth/require-staff";
-import { syncContributionProductToStripe } from "@/lib/contributions/stripe-server";
+import {
+  cancelPendingContributionOnStripe,
+  refundContributionOnStripe,
+  syncContributionProductToStripe,
+} from "@/lib/contributions/stripe-server";
+import { sendContributionThankYouEmail } from "@/lib/contributions/contribution-email";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 function read(fd: FormData, key: string) {
@@ -175,5 +180,36 @@ export async function deleteContributionProduct(fd: FormData) {
 export async function syncContributionProduct(fd: FormData) {
   await auth();
   await syncContributionProductToStripe(read(fd, "id"));
+  refresh();
+}
+
+export async function cancelPendingContribution(fd: FormData) {
+  await auth();
+
+  const id = read(fd, "id");
+  if (!id) throw new Error("Contribution ID is required.");
+
+  const result = await cancelPendingContributionOnStripe(id);
+
+  if (result.result === "reconciled_paid") {
+    try {
+      await sendContributionThankYouEmail(id);
+    } catch (emailError) {
+      console.error(
+        "Contribution was reconciled as paid from admin, but the thank-you email failed:",
+        emailError,
+      );
+    }
+  }
+
+  refresh();
+  return result;
+}
+
+export async function refundContribution(fd: FormData) {
+  await auth();
+  const id = read(fd, "id");
+  if (!id) throw new Error("Contribution ID is required.");
+  await refundContributionOnStripe(id);
   refresh();
 }

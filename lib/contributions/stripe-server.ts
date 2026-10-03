@@ -300,6 +300,207 @@ export async function ensureContributionPriceReady(priceId: string) {
   };
 }
 
+function normalizedContributionEnvironment(value: string | null | undefined) {
+  const normalized = (value ?? "").trim().toLowerCase();
+  return normalized === "live" || normalized === "production" ? "live" : "test";
+}
+
+function assertContributionEnvironment(value: string | null | undefined) {
+  const recordEnvironment = normalizedContributionEnvironment(value);
+  const currentEnvironment = stripeEnvironment();
+
+  if (recordEnvironment !== currentEnvironment) {
+    throw new Error(
+      `This contribution belongs to the ${recordEnvironment} Stripe environment, but the current server is using ${currentEnvironment}.`,
+    );
+  }
+}
+
+export async function cancelPendingContributionOnStripe(contributionId: string) {
+  const admin = createAdminClient();
+  const stripe = stripeClient();
+
+  const { data: contribution, error } = await admin
+    .from("support_contributions")
+    .select(
+      "id, status, amount_minor, stripe_environment, stripe_checkout_session_id, stripe_payment_intent_id, stripe_charge_id",
+    )
+    .eq("id", contributionId)
+    .single();
+
+  if (error || !contribution) {
+    throw new Error(error?.message ?? "Contribution not found.");
+  }
+
+  if (contribution.status !== "pending") {
+    throw new Error("Only pending contributions can be checked or cancelled.");
+  }
+
+  assertContributionEnvironment(contribution.stripe_environment);
+
+  const sessionId = contribution.stripe_checkout_session_id?.trim() ?? "";
+
+  if (!sessionId) {
+    const { error: updateError } = await admin
+      .from("support_contributions")
+      .update({
+        status: "failed",
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", contribution.id)
+      .eq("status", "pending");
+
+    if (updateError) throw new Error(updateError.message);
+    return { result: "cancelled" as const };
+  }
+
+  const session = await stripe.checkout.sessions.retrieve(sessionId, {
+    expand: ["payment_intent"],
+  });
+
+  if (session.payment_status === "paid") {
+    const paymentIntent =
+      session.payment_intent &&
+      typeof session.payment_intent !== "string"
+        ? session.payment_intent
+        : null;
+
+    const paymentIntentId =
+      typeof session.payment_intent === "string"
+        ? session.payment_intent
+        : paymentIntent?.id ??
+          contribution.stripe_payment_intent_id ??
+          null;
+
+    const latestCharge = paymentIntent?.latest_charge;
+
+    const chargeId =
+      typeof latestCharge === "string"
+        ? latestCharge
+        : latestCharge?.id ??
+          contribution.stripe_charge_id ??
+          null;
+
+    const amountMinor =
+      typeof session.amount_total === "number"
+        ? session.amount_total
+        : Number(contribution.amount_minor);
+
+    const now = new Date().toISOString();
+
+    const { error: reconcileError } = await admin
+      .from("support_contributions")
+      .update({
+        status: "paid",
+        amount_minor: amountMinor,
+        stripe_payment_intent_id: paymentIntentId,
+        stripe_charge_id: chargeId,
+        stripe_customer_id:
+          typeof session.customer === "string"
+            ? session.customer
+            : session.customer?.id ?? null,
+        paid_at: now,
+        updated_at: now,
+      })
+      .eq("id", contribution.id)
+      .eq("status", "pending");
+
+    if (reconcileError) throw new Error(reconcileError.message);
+    return { result: "reconciled_paid" as const };
+  }
+
+  if (session.status === "open") {
+    await stripe.checkout.sessions.expire(sessionId);
+  } else if (session.status === "complete") {
+    throw new Error(
+      "This Checkout Session is complete but Stripe has not marked it paid. Check the Stripe payment before changing this record.",
+    );
+  }
+
+  const { error: updateError } = await admin
+    .from("support_contributions")
+    .update({
+      status: "failed",
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", contribution.id)
+    .eq("status", "pending");
+
+  if (updateError) throw new Error(updateError.message);
+  return { result: "cancelled" as const };
+}
+
+export async function refundContributionOnStripe(contributionId: string) {
+  const admin = createAdminClient();
+  const stripe = stripeClient();
+
+  const { data: contribution, error } = await admin
+    .from("support_contributions")
+    .select(
+      "id, status, stripe_environment, stripe_payment_intent_id, stripe_charge_id",
+    )
+    .eq("id", contributionId)
+    .single();
+
+  if (error || !contribution) {
+    throw new Error(error?.message ?? "Contribution not found.");
+  }
+
+  if (
+    contribution.status !== "paid" &&
+    contribution.status !== "partially_refunded"
+  ) {
+    throw new Error("Only paid contributions can be refunded.");
+  }
+
+  assertContributionEnvironment(contribution.stripe_environment);
+
+  const paymentIntentId = contribution.stripe_payment_intent_id?.trim() ?? "";
+  const chargeId = contribution.stripe_charge_id?.trim() ?? "";
+
+  if (!paymentIntentId && !chargeId) {
+    throw new Error(
+      "This contribution has no Stripe PaymentIntent or Charge ID to refund.",
+    );
+  }
+
+  const refund = await stripe.refunds.create({
+    ...(paymentIntentId
+      ? { payment_intent: paymentIntentId }
+      : { charge: chargeId }),
+    metadata: {
+      sepulchria_payment_type: "contribution",
+      contribution_id: contribution.id,
+      sepulchria_admin_refund: "true",
+    },
+  });
+
+  if (refund.status === "failed" || refund.status === "canceled") {
+    throw new Error(
+      refund.failure_reason
+        ? `Stripe refund failed: ${refund.failure_reason}`
+        : `Stripe refund did not succeed (${refund.status}).`,
+    );
+  }
+
+  if (refund.status === "succeeded") {
+    const now = new Date().toISOString();
+
+    const { error: updateError } = await admin
+      .from("support_contributions")
+      .update({
+        status: "refunded",
+        refunded_at: now,
+        updated_at: now,
+      })
+      .eq("id", contribution.id);
+
+    if (updateError) throw new Error(updateError.message);
+  }
+
+  return { refundId: refund.id, status: refund.status };
+}
+
 export async function retrieveContributionCheckoutSession(
   checkoutSessionId: string,
 ) {
