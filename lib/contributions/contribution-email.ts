@@ -24,6 +24,29 @@ async function logContributionEmail(input: {
 export async function sendContributionThankYouEmail(contributionId: string) {
   const admin = createAdminClient();
 
+  const { data: alreadySent, error: sentLookupError } = await admin
+    .from("support_contribution_email_log")
+    .select("id, provider_message_id")
+    .eq("contribution_id", contributionId)
+    .eq("kind", "thank_you")
+    .eq("status", "sent")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (sentLookupError) {
+    throw new Error(sentLookupError.message);
+  }
+
+  if (alreadySent) {
+    return {
+      sent: true,
+      skipped: false,
+      alreadySent: true,
+      providerMessageId: alreadySent.provider_message_id ?? null,
+    };
+  }
+
   const { data: contribution, error } = await admin
     .from("support_contributions")
     .select("id, user_id, customer_email, amount_minor, currency, status")
@@ -43,20 +66,31 @@ export async function sendContributionThankYouEmail(contributionId: string) {
     recipient = userData.user?.email?.trim() ?? "";
   }
 
-  if (!recipient) return;
+  if (!recipient) {
+    await logContributionEmail({
+      contributionId,
+      recipient: "unknown",
+      status: "skipped",
+      error: "Contribution has no recipient email address.",
+    });
+    throw new Error("Contribution has no recipient email address.");
+  }
 
   const apiKey = process.env.RESEND_API_KEY?.trim();
   const from = process.env.CONTRIBUTIONS_EMAIL_FROM?.trim();
 
   if (!apiKey || !from) {
+    const message =
+      "RESEND_API_KEY or CONTRIBUTIONS_EMAIL_FROM is not configured.";
+
     await logContributionEmail({
       contributionId,
       recipient,
       status: "skipped",
-      error:
-        "RESEND_API_KEY or CONTRIBUTIONS_EMAIL_FROM is not configured.",
+      error: message,
     });
-    return { sent: false, skipped: true };
+
+    throw new Error(message);
   }
 
   const amount = new Intl.NumberFormat("en-GB", {
@@ -69,6 +103,7 @@ export async function sendContributionThankYouEmail(contributionId: string) {
     headers: {
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
+      "Idempotency-Key": `contribution-thank-you/${contribution.id}`,
     },
     body: JSON.stringify({
       from,

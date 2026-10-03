@@ -48,6 +48,10 @@ import {
 import {
   shapeSchoolBorderClass,
 } from "@/lib/warping/shape-school-style";
+import {
+  getMyContributionHistory,
+  type ContributionHistoryEntry,
+} from "@/app/(portal)/contribution/actions";
 
 
 type PortalContextPanelProps = {
@@ -98,6 +102,10 @@ if (pathname === "/friends") {
 
 if (pathname === "/cosmetics") {
   return <PlayerCosmeticsContextPanel />;
+}
+
+if (pathname === "/contribution") {
+  return <ContributionHistoryContext />;
 }
 
 if (pathname === "/ranking") {
@@ -5151,6 +5159,194 @@ function AreaContext({
           →
         </span>
       </LeaveLocationMapLink>
+    </div>
+  );
+}
+
+
+function contributionMoney(amountMinor: number, currency: string) {
+  return new Intl.NumberFormat("en-GB", {
+    style: "currency",
+    currency,
+  }).format(amountMinor / 100);
+}
+
+function contributionDate(value: string) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+}
+
+function ContributionHistoryContext() {
+  const [email, setEmail] = useState<string | null>(null);
+  const [entries, setEntries] = useState<ContributionHistoryEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const loadHistory = useCallback(async () => {
+    try {
+      setError(null);
+      const result = await getMyContributionHistory();
+      setEmail(result.email);
+      setEntries(result.entries);
+    } catch (loadError) {
+      setError(
+        loadError instanceof Error
+          ? loadError.message
+          : "Unable to load contribution history.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadHistory();
+
+    function handleUpdated() {
+      void loadHistory();
+    }
+
+    function handleFocus() {
+      void loadHistory();
+    }
+
+    window.addEventListener(
+      "sepulchria:contribution-updated",
+      handleUpdated,
+    );
+    window.addEventListener("focus", handleFocus);
+
+    return () => {
+      window.removeEventListener(
+        "sepulchria:contribution-updated",
+        handleUpdated,
+      );
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, [loadHistory]);
+
+  const paidEntries = entries.filter(
+    (entry) => entry.status === "paid",
+  );
+
+  const paidTotalMinor = paidEntries.reduce(
+    (total, entry) => total + entry.amountMinor,
+    0,
+  );
+
+  const totalCurrency =
+    paidEntries[0]?.currency ?? entries[0]?.currency ?? "GBP";
+
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <ContextHeading
+        eyebrow="Support Sepulchria"
+        title="Your contributions"
+      />
+
+      <div className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-3">
+        <p className="text-[8px] normal-case tracking-[0.06em] text-[rgb(var(--sep-colour-806b50))]">
+          Account email
+        </p>
+
+        <p className="mt-1 break-all text-[11px] text-[rgb(var(--sep-colour-cbb28a))]">
+          {email ?? "No email available"}
+        </p>
+
+        <div className="mt-3 flex items-end justify-between gap-3 border-t border-[rgb(var(--sep-colour-59432c))]/30 pt-3">
+          <div>
+            <p className="text-[8px] normal-case tracking-[0.06em] text-[rgb(var(--sep-colour-806b50))]">
+              Paid contributions
+            </p>
+            <p className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+              {paidEntries.length}
+            </p>
+          </div>
+
+          <div className="text-right">
+            <p className="text-[8px] normal-case tracking-[0.06em] text-[rgb(var(--sep-colour-806b50))]">
+              Total paid
+            </p>
+            <p className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
+              {contributionMoney(paidTotalMinor, totalCurrency)}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="my-4 h-px bg-[rgb(var(--sep-colour-59432c))]/35" />
+
+      <p className="mb-2 text-[9px] normal-case tracking-[0.06em] text-[rgb(var(--sep-colour-806b50))]">
+        Contribution history - {entries.length}
+      </p>
+
+      <div
+        data-portal-scroll
+        className="min-h-0 flex-1 space-y-2 overflow-y-auto pr-1"
+      >
+        {loading ? (
+          <p className="px-2 py-3 text-[11px] text-[rgb(var(--sep-colour-8f826f))]">
+            Loading contribution history...
+          </p>
+        ) : error ? (
+          <p className="border border-red-900/45 bg-red-950/20 px-3 py-2 text-[10px] leading-5 text-red-300">
+            {error}
+          </p>
+        ) : entries.length === 0 ? (
+          <p className="border border-[rgb(var(--sep-colour-59432c))]/35 bg-[rgb(var(--sep-colour-100c09))]/60 px-3 py-3 text-[11px] leading-5 text-[rgb(var(--sep-colour-8f826f))]">
+            No contributions have been recorded for this email yet.
+          </p>
+        ) : (
+          entries.map((entry) => {
+            const date = entry.paidAt ?? entry.createdAt;
+
+            const statusClass =
+              entry.status === "paid"
+                ? "text-emerald-300"
+                : entry.status === "pending"
+                  ? "text-amber-300"
+                  : entry.status === "refunded" ||
+                      entry.status === "partially_refunded"
+                    ? "text-sky-300"
+                    : "text-red-300";
+
+            return (
+              <div
+                key={entry.id}
+                className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-[rgb(var(--sep-colour-100c09))] px-3 py-2.5"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <span className="font-serif text-[16px] text-[rgb(var(--sep-colour-d8bf91))]">
+                    {contributionMoney(
+                      entry.amountMinor,
+                      entry.currency,
+                    )}
+                  </span>
+
+                  <span className={`text-[9px] normal-case ${statusClass}`}>
+                    {entry.status.replaceAll("_", " ")}
+                  </span>
+                </div>
+
+                <p className="mt-1 text-[9px] text-[rgb(var(--sep-colour-756958))]">
+                  {contributionDate(date)}
+                </p>
+              </div>
+            );
+          })
+        )}
+      </div>
     </div>
   );
 }

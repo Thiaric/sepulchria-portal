@@ -82,10 +82,10 @@ export default async function ContributionPage() {
     <main className="flex min-h-full w-full items-start justify-center p-3 sm:p-6 lg:p-8">
       <section className="w-full max-w-3xl border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))]/90">
         <header className="border-b border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-211a14))] px-5 py-5 sm:px-7 sm:py-6">
-          <p className="text-[8px] uppercase tracking-[0.28em] text-[rgb(var(--sep-colour-876a46))]">
-            Sepulchria · Contribution
+          <p className="normal-case text-[9px] tracking-[0.08em] text-[rgb(var(--sep-colour-876a46))]">
+            Sepulchria · contribution
           </p>
-          <h1 className="mt-2 font-serif text-3xl text-[rgb(var(--sep-colour-e5cfa6))]">
+          <h1 className="mt-2 font-serif text-3xl normal-case text-[rgb(var(--sep-colour-e5cfa6))]">
             Support Sepulchria
           </h1>
           <p className="mt-3 text-sm leading-7 text-[rgb(var(--sep-colour-a99b89))]">
@@ -98,7 +98,7 @@ export default async function ContributionPage() {
             <ContributionCheckout options={options} />
           ) : (
             <p className="text-sm text-[rgb(var(--sep-colour-a99b89))]">
-              No Contribution options are currently available.
+              No contribution options are currently available.
             </p>
           )}
 

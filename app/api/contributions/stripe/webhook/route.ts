@@ -68,7 +68,23 @@ async function markContributionPaid(
     contribution.status === "refunded" ||
     contribution.status === "partially_refunded"
   ) {
-    return NextResponse.json({ ok: true });
+    try {
+      await sendContributionThankYouEmail(contributionId);
+      return NextResponse.json({ ok: true });
+    } catch (emailError) {
+      const message =
+        emailError instanceof Error ? emailError.message : String(emailError);
+
+      console.error(
+        "Contribution is already recorded, but thank-you email retry failed:",
+        emailError,
+      );
+
+      return NextResponse.json(
+        { error: `Contribution email failed: ${message}` },
+        { status: 500 },
+      );
+    }
   }
 
   let paymentIntentId: string | null = null;
@@ -126,9 +142,17 @@ async function markContributionPaid(
   try {
     await sendContributionThankYouEmail(contributionId);
   } catch (emailError) {
+    const message =
+      emailError instanceof Error ? emailError.message : String(emailError);
+
     console.error(
       "Contribution was recorded, but thank-you email failed:",
       emailError,
+    );
+
+    return NextResponse.json(
+      { error: `Contribution email failed: ${message}` },
+      { status: 500 },
     );
   }
 

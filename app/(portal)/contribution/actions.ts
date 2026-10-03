@@ -4,7 +4,9 @@ import {
   createContributionCheckout,
   ensureContributionPriceReady,
   ensureContributionProductReady,
+  retrieveContributionCheckoutSession,
 } from "@/lib/contributions/stripe-server";
+import { sendContributionThankYouEmail } from "@/lib/contributions/contribution-email";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -56,7 +58,9 @@ export async function getContributionCheckoutStatus(
 
   const { data: contribution, error } = await admin
     .from("support_contributions")
-    .select("status")
+    .select(
+      "id, status, amount_minor, stripe_checkout_session_id, stripe_payment_intent_id, stripe_charge_id",
+    )
     .eq("user_id", user.id)
     .eq("stripe_checkout_session_id", sessionId)
     .maybeSingle();
@@ -65,14 +69,98 @@ export async function getContributionCheckoutStatus(
     return { status: null, paid: false };
   }
 
-  return {
-    status: contribution.status,
-    paid:
-      contribution.status === "paid" ||
-      contribution.status === "partially_refunded" ||
-      contribution.status === "refunded",
-  };
+  const alreadyPaid =
+    contribution.status === "paid" ||
+    contribution.status === "partially_refunded" ||
+    contribution.status === "refunded";
+
+  if (alreadyPaid) {
+    return { status: contribution.status, paid: true };
+  }
+
+  try {
+    const session = await retrieveContributionCheckoutSession(sessionId);
+
+    if (
+      session.metadata?.sepulchria_payment_type !== "contribution" ||
+      session.metadata?.contribution_id !== contribution.id ||
+      session.metadata?.sepulchria_user_id !== user.id
+    ) {
+      return { status: contribution.status, paid: false };
+    }
+
+    if (session.payment_status !== "paid") {
+      return { status: contribution.status, paid: false };
+    }
+
+    const paymentIntent =
+      session.payment_intent &&
+      typeof session.payment_intent !== "string"
+        ? session.payment_intent
+        : null;
+
+    const paymentIntentId =
+      typeof session.payment_intent === "string"
+        ? session.payment_intent
+        : paymentIntent?.id ?? null;
+
+    const latestCharge = paymentIntent?.latest_charge;
+
+    const chargeId =
+      typeof latestCharge === "string"
+        ? latestCharge
+        : latestCharge?.id ?? contribution.stripe_charge_id ?? null;
+
+    const amountMinor =
+      typeof session.amount_total === "number"
+        ? session.amount_total
+        : Number(contribution.amount_minor);
+
+    const { error: updateError } = await admin
+      .from("support_contributions")
+      .update({
+        status: "paid",
+        amount_minor: amountMinor,
+        stripe_payment_intent_id:
+          paymentIntentId ?? contribution.stripe_payment_intent_id ?? null,
+        stripe_charge_id: chargeId,
+        stripe_customer_id:
+          typeof session.customer === "string"
+            ? session.customer
+            : session.customer?.id ?? null,
+        paid_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", contribution.id);
+
+    if (updateError) {
+      console.error(
+        "Unable to reconcile paid Contribution from Stripe Checkout Session:",
+        updateError,
+      );
+      return { status: contribution.status, paid: false };
+    }
+
+    try {
+      await sendContributionThankYouEmail(contribution.id);
+    } catch (emailError) {
+      console.error(
+        "Contribution was reconciled as paid, but thank-you email failed:",
+        emailError,
+      );
+    }
+
+    return { status: "paid", paid: true };
+  } catch (stripeError) {
+    console.error(
+      "Unable to verify Contribution Checkout Session directly with Stripe:",
+      stripeError,
+    );
+
+    return { status: contribution.status, paid: false };
+  }
 }
+
 
 export async function startContributionCheckout(
   _previousState: ContributionStripeState,
@@ -274,3 +362,60 @@ export async function startContributionCheckout(
     return failure(message);
   }
 }
+
+export type ContributionHistoryEntry = {
+  id: string;
+  amountMinor: number;
+  currency: string;
+  status: string;
+  createdAt: string;
+  paidAt: string | null;
+};
+
+export type ContributionHistoryResult = {
+  email: string | null;
+  entries: ContributionHistoryEntry[];
+};
+
+export async function getMyContributionHistory(): Promise<ContributionHistoryResult> {
+  const supabase = await createClient();
+  const admin = createAdminClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { email: null, entries: [] };
+  }
+
+  const email = user.email?.trim() ?? "";
+
+  if (!email) {
+    return { email: null, entries: [] };
+  }
+
+  const { data, error } = await admin
+    .from("support_contributions")
+    .select("id, amount_minor, currency, status, created_at, paid_at")
+    .eq("customer_email", email)
+    .order("created_at", { ascending: false })
+    .limit(50);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return {
+    email,
+    entries: (data ?? []).map((row) => ({
+      id: String(row.id),
+      amountMinor: Number(row.amount_minor),
+      currency: String(row.currency ?? "GBP").toUpperCase(),
+      status: String(row.status ?? "pending"),
+      createdAt: String(row.created_at),
+      paidAt: row.paid_at ? String(row.paid_at) : null,
+    })),
+  };
+}
+

@@ -300,6 +300,20 @@ export async function ensureContributionPriceReady(priceId: string) {
   };
 }
 
+export async function retrieveContributionCheckoutSession(
+  checkoutSessionId: string,
+) {
+  const id = checkoutSessionId.trim();
+
+  if (!id) {
+    throw new Error("Stripe Checkout Session ID is required.");
+  }
+
+  return stripeClient().checkout.sessions.retrieve(id, {
+    expand: ["payment_intent"],
+  });
+}
+
 export async function createContributionCheckout(input: {
   stripePriceId?: string | null;
   stripeProductId?: string | null;

@@ -103,17 +103,17 @@ function ContributionCheckoutModal({
       <div className="relative flex max-h-[94vh] w-full max-w-3xl flex-col overflow-hidden border border-[rgb(var(--sep-colour-987344))]/70 bg-[rgb(var(--sep-colour-100c09))] shadow-2xl">
         <div className="flex items-center justify-between border-b border-[rgb(var(--sep-colour-60482e))]/45 px-4 py-3">
           <div>
-            <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+            <p className="normal-case text-[9px] tracking-[0.08em] text-[rgb(var(--sep-colour-806b50))]">
               Support Sepulchria
             </p>
-            <p className="mt-1 font-serif text-xl text-[rgb(var(--sep-colour-d8bf91))]">
-              Secure Contribution
+            <p className="mt-1 font-serif text-xl normal-case text-[rgb(var(--sep-colour-d8bf91))]">
+              Secure contribution
             </p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="border border-[rgb(var(--sep-colour-60482e))]/55 px-3 py-2 text-[9px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d7c4a5))]"
+            className="normal-case border border-[rgb(var(--sep-colour-60482e))]/55 px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d7c4a5))]"
           >
             Close
           </button>
@@ -130,8 +130,8 @@ function ContributionCheckoutModal({
           {finalising ? (
             <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/95 p-6 text-center">
               <div className="max-w-sm">
-                <p className="font-serif text-2xl text-[#24180f]">
-                  Confirming Contribution
+                <p className="font-serif text-2xl normal-case text-[#24180f]">
+                  Confirming contribution
                 </p>
                 {finaliseError ? (
                   <p className="mt-4 text-sm text-red-700">{finaliseError}</p>
@@ -193,21 +193,28 @@ export function ContributionCheckout({
               <button
                 key={option.id}
                 type="button"
+                aria-pressed={active}
                 onClick={() => setSelectedOptionId(option.id)}
                 className={[
-                  "border p-4 text-left transition",
+                  "relative border p-4 pr-24 text-left normal-case transition",
                   active
-                    ? "border-[rgb(var(--sep-colour-b58a50))] bg-[rgb(var(--sep-colour-332719))]"
-                    : "border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))]",
+                    ? "border-2 border-[rgb(var(--sep-colour-b58a50))] bg-[rgb(var(--sep-colour-332719))] ring-1 ring-[rgb(var(--sep-colour-b58a50))]/55 shadow-lg"
+                    : "border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-15100d))]",
                 ].join(" ")}
               >
-                <span className="block font-serif text-xl text-[rgb(var(--sep-colour-efd6aa))]">
+                {active ? (
+                  <span className="absolute right-3 top-3 normal-case border border-[rgb(var(--sep-colour-b58a50))]/70 bg-[rgb(var(--sep-colour-211a14))] px-2 py-1 text-[9px] font-semibold text-[rgb(var(--sep-colour-efd6aa))]">
+                    ✓ Selected
+                  </span>
+                ) : null}
+
+                <span className="block font-serif text-xl normal-case text-[rgb(var(--sep-colour-efd6aa))]">
                   {option.productName}
                 </span>
                 <span className="mt-1 block text-[11px] leading-5 text-[rgb(var(--sep-colour-a99b89))]">
                   {option.description}
                 </span>
-                <span className="mt-3 block font-serif text-2xl text-[rgb(var(--sep-colour-d8bf91))]">
+                <span className="mt-3 block font-serif text-2xl normal-case text-[rgb(var(--sep-colour-d8bf91))]">
                   {option.pricingMode === "custom"
                     ? "Choose your amount"
                     : moneyLabel(option.amountMinor ?? 0, option.currency)}
@@ -219,7 +226,7 @@ export function ContributionCheckout({
 
         {selected?.pricingMode === "custom" ? (
           <label className="mt-4 block">
-            <span className="mb-1 block text-[8px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8f8271))]">
+            <span className="mb-1 block normal-case text-[9px] tracking-[0.04em] text-[rgb(var(--sep-colour-8f8271))]">
               Your contribution
             </span>
             <div className="flex items-center border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))]">
@@ -254,7 +261,7 @@ export function ContributionCheckout({
             !selected ||
             (selected.pricingMode === "custom" && !customAmount)
           }
-          className="mt-5 w-full border border-[rgb(var(--sep-colour-987344))]/70 bg-[rgb(var(--sep-colour-2a1d12))] px-5 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd9aa))] disabled:opacity-55"
+          className="mt-5 w-full normal-case border border-[rgb(var(--sep-colour-987344))]/70 bg-[rgb(var(--sep-colour-2a1d12))] px-5 py-3 text-[10px] tracking-[0.04em] text-[rgb(var(--sep-colour-efd9aa))] disabled:opacity-55"
         >
           {pending ? "Opening secure checkout..." : "Support Sepulchria"}
         </button>
@@ -279,6 +286,9 @@ export function ContributionCheckout({
           onPaid={() => {
             setCompletedAmount(state.amountMinor);
             setCheckoutOpen(false);
+            window.dispatchEvent(
+              new CustomEvent("sepulchria:contribution-updated"),
+            );
           }}
           onClose={() => setCheckoutOpen(false)}
         />
