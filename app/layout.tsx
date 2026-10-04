@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { cookies } from "next/headers";
-import { Geist } from "next/font/google";
 import "./globals.css";
 import "./portal-themes.css";
 import "@/components/sepulchria/sep-ui-unified.css";
@@ -81,12 +80,6 @@ function validInitialSkin(
   );
 }
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  display: "swap",
-  subsets: ["latin"],
-});
-
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -114,7 +107,7 @@ export default async function RootLayout({
     >
       <body
         data-portal-skin={initialSkin}
-        className={`${geistSans.className} antialiased portal-skin-scope`}
+        className="antialiased portal-skin-scope"
       >
         <EmbeddedPortalSkinBridge />
         {children}

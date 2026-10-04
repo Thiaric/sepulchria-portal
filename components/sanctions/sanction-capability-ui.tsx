@@ -19,7 +19,7 @@ type State = {
 
 type Listener = (state: State) => void;
 
-const SHARED_REFRESH_MS = 15_000;
+const SHARED_REFRESH_MS = 5 * 60_000;
 
 const stateByCapability =
   new Map<SanctionCapability, State>();

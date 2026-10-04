@@ -78,7 +78,7 @@ const ATMOSPHERES: Record<AtmosphereKind, AtmosphereConfig> = {
     type: "video",
     webm: "/skins/atmospheres/rose-nocturne.webm",
     mp4: "/skins/atmospheres/rose-nocturne.mp4",
-    opacity: 0.018,
+    opacity: 0.03,
     blendMode: "screen",
     vignette: "dark",
     scale: 1.03,
