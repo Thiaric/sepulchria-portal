@@ -11,7 +11,6 @@ function isTransientTransportError(
   );
 }
 
-
 import {
   useEffect,
   useRef,
@@ -53,6 +52,9 @@ export function PortalPresenceHeartbeat({
 }) {
   const runningRef =
     useRef(false);
+
+  const lastHeartbeatAtRef =
+    useRef(0);
 
   const awayAppliedRef =
     useRef(false);
@@ -108,7 +110,9 @@ export function PortalPresenceHeartbeat({
       );
     }
 
-    async function sendHeartbeat() {
+    async function sendHeartbeat(
+      force = false,
+    ) {
       if (
         logoutStartedRef.current ||
         runningRef.current
@@ -116,6 +120,18 @@ export function PortalPresenceHeartbeat({
         return;
       }
 
+      const now = Date.now();
+
+      if (
+        !force &&
+        now -
+          lastHeartbeatAtRef.current <
+          HEARTBEAT_INTERVAL_MS
+      ) {
+        return;
+      }
+
+      lastHeartbeatAtRef.current = now;
       runningRef.current = true;
 
       try {
@@ -251,12 +267,12 @@ export function PortalPresenceHeartbeat({
         idleForMs();
 
       if (
-  elapsed >=
-  AWAY_AFTER_MS
-) {
-  void markAutomaticAway();
-  return true;
-}
+        elapsed >=
+        LOGOUT_AFTER_MS
+      ) {
+        void logoutForInactivity();
+        return false;
+      }
 
       if (
         elapsed >=
@@ -392,7 +408,7 @@ export function PortalPresenceHeartbeat({
         IDLE_CHECK_INTERVAL_MS,
       );
 
-    void sendHeartbeat();
+    void sendHeartbeat(true);
 
     return () => {
       window.clearInterval(
