@@ -154,6 +154,18 @@ export default function PurchasesPage() {
                 </p>
               </div>
             </section>
+            <section className="border border-[rgb(var(--sep-colour-59432c))]/45 bg-black/10 p-4 sm:p-5 purchases_page_section_support_refunds">
+              <h2 className="font-serif text-xl text-[rgb(var(--sep-colour-d7bd91))] purchases_page_h2_support_refunds">
+                More Information about Optional Purchases and Store
+              </h2>
+              <div className="mt-2 space-y-3 purchases_page_div_support_refunds">
+                <p className="purchases_page_p_support_refunds">
+                  For more information in regards to each of the element listed above, please visit the Player's Handbook, "Store and Purchases" section.
+                  
+                </p>
+                
+              </div>
+            </section>
           </div>
 
           
