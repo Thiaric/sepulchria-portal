@@ -12,32 +12,26 @@ export const metadata = {
 const purchaseTypes = [
   {
     title: "Portal Skins",
-    price: "From £1.99",
     text: "Optional visual themes for the Sepulchria portal interface.",
   },
   {
     title: "Cosmetic Frames & Backgrounds",
-    price: "From £2.99",
     text: "Optional cosmetic presentation for characters and selected interface elements.",
   },
   {
     title: "Location Music",
-    price: "From £0.99",
     text: "Optional music unlocks for supported in-game locations.",
   },
   {
     title: "Friend List Access",
-    price: "£10.00",
     text: "Unlocks the Friend List feature for the purchasing account.",
   },
   {
     title: "Private Locations",
-    price: "£20.00",
     text: "Unlocks access to create and manage eligible private roleplay locations.",
   },
   {
     title: "Bundles",
-    price: "Price shown before purchase",
     text: "Curated groups of Sepulchria digital features or cosmetics. The exact contents and total price are shown before checkout.",
   },
 ] as const;
@@ -101,9 +95,7 @@ export default function PurchasesPage() {
                       <h3 className="font-serif text-base text-[rgb(var(--sep-colour-d7bd91))] purchases_page_h3_heading">
                         {item.title}
                       </h3>
-                      <span className="shrink-0 text-[11px] font-semibold text-[rgb(var(--sep-colour-d2ae78))] purchases_page_span_text">
-                        {item.price}
-                      </span>
+                      
                     </div>
                     <p className="mt-2 text-xs leading-5 text-[rgb(var(--sep-colour-9f907b))] purchases_page_p_text">
                       {item.text}
