@@ -1122,19 +1122,34 @@ export function PortalFirstVisitTour() {
         }
 
         const pad = 7;
+const viewportPad = 8;
 
-        setRect({
-          top: Math.max(8, box.top - pad),
-          left: Math.max(8, box.left - pad),
-          width: Math.min(
-            window.innerWidth - 16,
-            box.width + pad * 2,
-          ),
-          height: Math.min(
-            window.innerHeight - 16,
-            box.height + pad * 2,
-          ),
-        });
+const top = Math.max(
+  viewportPad,
+  box.top - pad,
+);
+
+const left = Math.max(
+  viewportPad,
+  box.left - pad,
+);
+
+const right = Math.min(
+  window.innerWidth - viewportPad,
+  box.right + pad,
+);
+
+const bottom = Math.min(
+  window.innerHeight - viewportPad,
+  box.bottom + pad,
+);
+
+setRect({
+  top,
+  left,
+  width: Math.max(0, right - left),
+  height: Math.max(0, bottom - top),
+});
       });
     }
 
