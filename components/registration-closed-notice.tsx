@@ -226,10 +226,10 @@ export function RegistrationClosedNotice() {
 
             {success ? (
               <div className="mt-6 border border-emerald-800/55 bg-emerald-950/15 p-5 text-sm leading-7 text-emerald-300 components_registration_closed_notice_div_container_4">
-                Thank you. Your application has been received. If selected,
-                you will receive an invitation at the email address you
-                provided.
-              </div>
+  Thank you. Your application has been received. Applications will be
+  reviewed starting November 1st 2026. If selected, you will receive an
+  invitation at the email address you provided.
+</div>
             ) : (
               <form onSubmit={submit} className="mt-6 space-y-5 components_registration_closed_notice_form_submit">
                 <div className="space-y-2 components_registration_closed_notice_div_name">

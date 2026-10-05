@@ -9,7 +9,7 @@ const contentSecurityPolicy = [
   "img-src 'self' blob: data: https:",
   "font-src 'self' data:",
   "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://challenges.cloudflare.com https://*.stripe.com",
-  "frame-src 'self' https://challenges.cloudflare.com https://js.stripe.com https://hooks.stripe.com https://checkout.stripe.com https://www.youtube.com https://www.youtube-nocookie.com",
+  "frame-src 'self' https://challenges.cloudflare.com https://js.stripe.com https://hooks.stripe.com https://checkout.stripe.com https://www.youtube.com https://www.youtube-nocookie.com https://drive.google.com",
   "worker-src 'self' blob:",
   "media-src 'self' blob: https:",
   "object-src 'none'",

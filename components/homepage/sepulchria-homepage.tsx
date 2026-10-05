@@ -6,6 +6,7 @@ import { HomepagePublicModal } from "@/components/homepage/homepage-public-modal
 import { HomepageContactModal } from "@/components/homepage/homepage-contact-modal";
 import {
   useEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -77,6 +78,7 @@ export function SepulchriaHomepage({
 
   const [contactOpen, setContactOpen] =
     useState(false);
+    
 
   const [
     publicModal,
@@ -90,6 +92,12 @@ export function SepulchriaHomepage({
     portalSessionReplaced,
     setPortalSessionReplaced,
   ] = useState(false);
+
+  const navigationPanelRef =
+  useRef<HTMLDivElement>(null);
+
+const firstStepsPanelRef =
+  useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handlePortalMessage(
@@ -176,6 +184,62 @@ export function SepulchriaHomepage({
       );
     };
   }, [aboutOpen]);
+
+  useEffect(() => {
+  function syncSidePanelHeights() {
+    const navigationPanel =
+      navigationPanelRef.current;
+
+    const firstStepsPanel =
+      firstStepsPanelRef.current;
+
+    if (!navigationPanel || !firstStepsPanel) {
+      return;
+    }
+
+    if (window.innerWidth < 1024) {
+      navigationPanel.style.minHeight = "";
+      firstStepsPanel.style.minHeight = "";
+      return;
+    }
+
+    navigationPanel.style.minHeight = "";
+    firstStepsPanel.style.minHeight = "";
+
+    const height = Math.max(
+      navigationPanel.offsetHeight,
+      firstStepsPanel.offsetHeight,
+    );
+
+    navigationPanel.style.minHeight =
+      `${height}px`;
+
+    firstStepsPanel.style.minHeight =
+      `${height}px`;
+  }
+
+  syncSidePanelHeights();
+
+  window.addEventListener(
+    "resize",
+    syncSidePanelHeights,
+  );
+
+  void document.fonts?.ready.then(
+    syncSidePanelHeights,
+  );
+
+  return () => {
+    window.removeEventListener(
+      "resize",
+      syncSidePanelHeights,
+    );
+  };
+}, [
+  registrationsOpen,
+  isAuthenticated,
+  portalSessionReplaced,
+]);
 
   return (
     <main
@@ -289,7 +353,10 @@ export function SepulchriaHomepage({
 
           {/* Navigation — second on mobile */}
           <aside className="order-2 min-w-0 lg:order-1 components_homepage_sepulchria_homepage_aside_sidebar">
-            <div className="relative border border-[rgb(var(--sep-colour-6b5032))]/45 bg-[rgb(var(--sep-colour-110c09))]/84 p-3 shadow-[0_18px_60px_rgba(var(--sep-rgb-0-0-0),0.38)] backdrop-blur-sm lg:min-h-[405px] xl:min-h-[430px] components_homepage_sepulchria_homepage_div_container_11">
+            <div
+  ref={navigationPanelRef}
+  className="relative border border-[rgb(var(--sep-colour-6b5032))]/45 bg-[rgb(var(--sep-colour-110c09))]/84 p-3 shadow-[0_18px_60px_rgba(var(--sep-rgb-0-0-0),0.38)] backdrop-blur-sm components_homepage_sepulchria_homepage_div_container_11"
+>
               <div className="pointer-events-none absolute inset-1 border border-[rgb(var(--sep-colour-9a7547))]/10 components_homepage_sepulchria_homepage_div_container_12" />
 
               <div className="relative mb-3 text-center components_homepage_sepulchria_homepage_div_container_13">
@@ -368,7 +435,10 @@ export function SepulchriaHomepage({
 
           {/* First Pages */}
           <aside className="order-3 min-w-0 components_homepage_sepulchria_homepage_aside_sidebar_2">
-            <div className="relative border border-[rgb(var(--sep-colour-6b5032))]/45 bg-[rgb(var(--sep-colour-110c09))]/84 px-5 py-4 shadow-[0_18px_60px_rgba(var(--sep-rgb-0-0-0),0.38)] backdrop-blur-sm components_homepage_sepulchria_homepage_div_container_15">
+            <div
+  ref={firstStepsPanelRef}
+  className="relative border border-[rgb(var(--sep-colour-6b5032))]/45 bg-[rgb(var(--sep-colour-110c09))]/84 px-5 py-4 shadow-[0_18px_60px_rgba(var(--sep-rgb-0-0-0),0.38)] backdrop-blur-sm components_homepage_sepulchria_homepage_div_container_15"
+>
               <div className="pointer-events-none absolute inset-1 border border-[rgb(var(--sep-colour-9a7547))]/10 components_homepage_sepulchria_homepage_div_container_16" />
 
               <div className="relative text-center components_homepage_sepulchria_homepage_div_container_17">
@@ -402,8 +472,26 @@ export function SepulchriaHomepage({
                           </h2>
 
                           <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-968875))] components_homepage_sepulchria_homepage_p_text_4">
-                            {chapter.text}
-                          </p>
+  {chapter.text}
+
+  {chapter.number === "I" ? (
+    <>
+      {" "}
+      <button
+        type="button"
+        onClick={() =>
+          setPublicModal({
+            title: "Discover the World",
+            href: "https://drive.google.com/file/d/1iMhPhgTQ7KzLiywkJWPux3uyTiupzKi7/preview",
+          })
+        }
+        className="inline font-serif italic text-[rgb(var(--sep-colour-c59a62))] transition hover:text-[rgb(var(--sep-colour-efd8aa))]"
+      >
+        Watch the introduction video →
+      </button>
+    </>
+  ) : null}
+</p>
                         </div>
                       </div>
                     </article>
