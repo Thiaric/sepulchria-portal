@@ -20,6 +20,7 @@ import { ConversationMessageList } from "./components/ConversationMessageList";
 import ConversationRealtime from "./components/ConversationRealtime";
 import { DeleteConversationForm } from "./components/DeleteConversationForm";
 import { GroupConversationView } from "../components/group-conversation-view";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 type ConversationPageProps = {
   params: Promise<{
@@ -68,7 +69,7 @@ export default async function ConversationPage({
   const {
     data: { user },
   } =
-    await supabase.auth.getUser();
+    await getAuthenticatedUser();
 
   if (!user) {
     redirect("/auth/login");

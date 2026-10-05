@@ -6,6 +6,7 @@ import { getStaffSession } from "@/lib/auth/require-staff";
 
 import { MessagesInboxClient } from "./components/messages-inbox-client";
 import { MessagesInboxRealtime } from "./components/messages-inbox-realtime";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 type Props = {
   searchParams: Promise<{
@@ -139,10 +140,13 @@ export default async function MessagesPage({
   const supabase =
     await createClient();
 
+  const staffSessionPromise =
+    getStaffSession();
+
   const {
     data: { user },
   } =
-    await supabase.auth.getUser();
+    await getAuthenticatedUser();
 
   if (!user) {
     redirect("/auth/login");
@@ -631,7 +635,7 @@ export default async function MessagesPage({
       );
 
   const staffSession =
-    await getStaffSession();
+    await staffSessionPromise;
 
   return (
     <>

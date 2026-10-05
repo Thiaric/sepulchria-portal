@@ -13,6 +13,7 @@ import {
 import { createClient } from "@/lib/supabase/server";
 import { ForumOrderSectionFields } from "@/components/admin/forum-order-section-fields";
 import { ForumStaffRoleAccessFields } from "@/components/admin/forum-staff-role-access-fields";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -111,7 +112,7 @@ export default async function EditForumSectionPage({
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await getAuthenticatedUser();
 
   if (!user) {
     redirect(

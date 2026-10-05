@@ -8,6 +8,7 @@ import {
   canViewOrderTopic,
   getForumViewerContext,
 } from "@/lib/forum/order-forum-access";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 
 type ForumSection = {
@@ -136,7 +137,7 @@ export default async function ForumPage() {
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await getAuthenticatedUser();
 
   const viewer =
     await getForumViewerContext(supabase);

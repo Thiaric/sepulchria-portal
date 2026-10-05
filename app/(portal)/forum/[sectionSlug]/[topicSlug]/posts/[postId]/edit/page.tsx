@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 
 import EditPostForm from "@/components/forum/edit-post-form";
 import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -85,7 +86,7 @@ export default async function EditPostPage({
   const {
     data: { user },
     error: authError,
-  } = await supabase.auth.getUser();
+  } = await getAuthenticatedUser();
 
   if (authError || !user) {
     const destination =

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 type Shop = {
   id: string;
@@ -16,7 +17,7 @@ export default async function MarketPage() {
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await getAuthenticatedUser();
 
   if (!user) {
     redirect("/auth/login");

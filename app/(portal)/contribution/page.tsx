@@ -3,13 +3,14 @@ import { redirect } from "next/navigation";
 import { ContributionCheckout } from "@/components/contributions/contribution-checkout";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 export default async function ContributionPage() {
   const supabase = await createClient();
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await getAuthenticatedUser();
 
   if (!user) redirect("/auth/login");
 

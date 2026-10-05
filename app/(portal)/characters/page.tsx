@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { CharacterDirectory } from "@/components/characters/character-directory";
 import { getPublicCharacters } from "@/lib/characters/get-public-character";
 import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 export const metadata: Metadata = {
   title: "Characters | Sepulchria",
@@ -20,7 +21,7 @@ export default async function CharactersPage() {
     },
   ] = await Promise.all([
     getPublicCharacters(),
-    supabase.auth.getUser(),
+    getAuthenticatedUser(),
   ]);
 
   let viewerCharacterId: string | null =

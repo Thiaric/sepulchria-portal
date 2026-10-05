@@ -2,13 +2,14 @@ import { redirect } from "next/navigation";
 
 import { OrderSubmissionForm } from "@/components/orders/order-submission-form";
 import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 export default async function SubmitOrderIdeaPage() {
   const supabase = await createClient();
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await getAuthenticatedUser();
 
   if (!user) {
     redirect("/auth/login");

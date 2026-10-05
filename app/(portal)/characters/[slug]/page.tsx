@@ -10,6 +10,7 @@ import { isCharacterStaff } from "@/lib/auth/is-character-staff";
 import { hasCharacterFeature } from "@/lib/features/character-feature-entitlements";
 import { createClient } from "@/lib/supabase/server";
 import { getEquippedCosmetic } from "@/lib/cosmetics/get-equipped-cosmetic";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 type PublicCharacterPageProps = {
   params: Promise<{
@@ -97,7 +98,7 @@ export default async function PublicCharacterPage({
       character.id,
       "sheet_frame",
     ),
-    supabase.auth.getUser(),
+    getAuthenticatedUser(),
   ]);
 
   const {

@@ -11,6 +11,7 @@ import {
   canWriteForumSection,
   getForumViewerContext,
 } from "@/lib/forum/order-forum-access";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 type ForumSectionQueryRow = {
   id: string;
@@ -131,7 +132,7 @@ export default async function NewForumTopicPage({
   const {
     data: authenticationData,
     error: authenticationError,
-  } = await supabase.auth.getUser();
+  } = await getAuthenticatedUser();
 
   if (
     authenticationError ||

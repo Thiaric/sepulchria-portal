@@ -8,6 +8,7 @@ import { closeExpiredPolls } from "@/lib/polls/lifecycle";
 import { PollSeenMarker } from "@/components/polls/poll-seen-marker";
 
 import { submitPollVote } from "./actions";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 type PollOption = {
   id: string;
@@ -88,7 +89,7 @@ export default async function PollsPage() {
   const {
     data: { user },
   } =
-    await supabase.auth.getUser();
+    await getAuthenticatedUser();
 
   if (!user) {
     return null;

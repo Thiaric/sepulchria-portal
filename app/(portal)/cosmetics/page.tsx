@@ -10,6 +10,7 @@ import {
   type CosmeticCategory,
 } from "@/lib/cosmetics/catalogue";
 import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -18,7 +19,7 @@ export default async function CosmeticsPage() {
   const supabase = await createClient();
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await getAuthenticatedUser();
 
   if (!user) redirect("/login");
 

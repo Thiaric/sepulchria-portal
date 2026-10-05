@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import CharacterForm from "../CharacterForm";
 import { createCharacter } from "./actions";
 import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 type CreateCharacterPageProps = {
   searchParams: Promise<{ error?: string }>;
@@ -17,7 +18,7 @@ export default async function CreateCharacterPage({
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await getAuthenticatedUser();
 
   if (!user) redirect("/auth/login");
 

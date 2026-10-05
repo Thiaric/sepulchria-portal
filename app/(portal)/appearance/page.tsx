@@ -5,13 +5,14 @@ import {
   type AppearanceSkin,
 } from "@/components/portal/portal-skin-gallery";
 import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 export default async function AppearancePage() {
   const supabase = await createClient();
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await getAuthenticatedUser();
 
   if (!user) {
     redirect("/login");

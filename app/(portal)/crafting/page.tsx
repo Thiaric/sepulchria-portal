@@ -7,6 +7,7 @@ import {
   type KnownCraftingRecipe,
 } from "./crafting-workbench";
 import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 type RecipeRow = {
   id: string;
@@ -81,7 +82,7 @@ export default async function CraftingPage() {
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await getAuthenticatedUser();
 
   if (!user) {
     redirect("/auth/login");

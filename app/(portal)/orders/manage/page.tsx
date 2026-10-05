@@ -12,6 +12,7 @@ import {
 } from "@/components/orders/order-head-member-form";
 import { createClient } from "@/lib/supabase/server";
 import { formatRemnants } from "@/lib/economy/currency";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 type Props = {
   searchParams?: Promise<{
@@ -75,7 +76,7 @@ export default async function ManageOrdersPage({
   const {
     data: { user },
   } =
-    await supabase.auth.getUser();
+    await getAuthenticatedUser();
 
   if (!user) {
     redirect("/homepage");

@@ -5,6 +5,7 @@ import CharacterForm from "../CharacterForm";
 import { updateCharacter } from "./actions";
 import { getRaces } from "@/lib/races";
 import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 type EditCharacterPageProps = {
   searchParams: Promise<{ error?: string }>;
@@ -18,7 +19,7 @@ export default async function EditCharacterPage({
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await getAuthenticatedUser();
 
   if (!user) redirect("/auth/login");
 

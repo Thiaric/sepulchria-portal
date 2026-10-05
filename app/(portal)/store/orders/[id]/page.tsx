@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 function money(minor: number, currency: string | null) {
   if (!currency) return "—";
@@ -22,7 +23,7 @@ export default async function StoreReceiptPage({
   const supabase = await createClient();
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await getAuthenticatedUser();
 
   if (!user) redirect("/auth/login");
 

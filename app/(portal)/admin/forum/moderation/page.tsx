@@ -2,6 +2,7 @@
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -119,7 +120,7 @@ export default async function ForumModerationPage({
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await getAuthenticatedUser();
 
   if (!user) {
     redirect(

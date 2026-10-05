@@ -34,6 +34,7 @@ import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-
 import { createClient } from "@/lib/supabase/server";
 import { cosmeticFrameStyle } from "@/components/cosmetics/cosmetic-frame-overlay";
 import { getEquippedCosmetic } from "@/lib/cosmetics/get-equipped-cosmetic";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 type CharacterStatus =
   | "draft"
@@ -119,7 +120,7 @@ export default async function CharacterPage({
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await getAuthenticatedUser();
 
   if (!user) {
     redirect("/auth/login");

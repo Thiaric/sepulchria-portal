@@ -26,6 +26,7 @@ import {
 import {
   getVisiblePrivateLocations,
 } from "@/lib/private-locations/access";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 type CharacterSummary = {
   id: string;
@@ -49,7 +50,7 @@ export default async function PrivateLocationPage() {
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await getAuthenticatedUser();
 
   if (!user) {
     redirect("/auth/login");

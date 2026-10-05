@@ -8,6 +8,7 @@ import {
   isOrderLevel,
   type OrderLevel,
 } from "@/lib/forum/order-levels";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 export type ForumOrderMembership = {
   orderId: string;
@@ -138,7 +139,7 @@ export async function getForumViewerContext(
 ): Promise<ForumViewerContext> {
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await getAuthenticatedUser();
 
   if (!user) {
     return {
@@ -151,12 +152,21 @@ export async function getForumViewerContext(
     };
   }
 
-  const { data: staffMember } =
-    await supabase
+  const [
+    { data: staffMember },
+    { data: characterData },
+  ] = await Promise.all([
+    supabase
       .from("staff_members")
       .select("role")
       .eq("user_id", user.id)
-      .maybeSingle<{ role: StaffRole }>();
+      .maybeSingle<{ role: StaffRole }>(),
+    supabase
+      .from("characters")
+      .select("id, status, life_state")
+      .eq("user_id", user.id)
+      .maybeSingle<CharacterRow>(),
+  ]);
 
   const staffRole =
     staffMember?.role === "owner" ||
@@ -167,12 +177,6 @@ export async function getForumViewerContext(
       : null;
 
   const isStaff = staffRole !== null;
-
-  const { data: characterData } = await supabase
-    .from("characters")
-    .select("id, status, life_state")
-    .eq("user_id", user.id)
-    .maybeSingle<CharacterRow>();
 
   if (!characterData) {
     return {

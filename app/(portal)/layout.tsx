@@ -82,27 +82,32 @@ async function PortalLayoutContent({
     );
   }
 
-  const [
-    context,
-    worldState,
-    initialTidings,
-    unreadForumCount,
-    staffSession,
-  ] = await Promise.all([
-    getPortalContext(),
-    getWorldState(),
-    getActiveTidings(),
-    getUnreadForumCount(),
-    getStaffSession(),
-  ]);
+  const contextPromise =
+    getPortalContext();
 
-  const presenceEnabled =
-    context.character?.status ===
-    "approved";
+  const worldStatePromise =
+    getWorldState();
 
-  const portalCosmetics =
+  const initialTidingsPromise =
+    getActiveTidings();
+
+  const unreadForumCountPromise =
+    getUnreadForumCount();
+
+  const staffSessionPromise =
+    getStaffSession();
+
+  /*
+   * Cosmetics need the character id, so context is the only dependency.
+   * Start every other shell request first, then begin cosmetics as soon as
+   * context resolves instead of waiting for the whole first batch.
+   */
+  const context =
+    await contextPromise;
+
+  const portalCosmeticsPromise =
     context.character
-      ? await getEquippedCosmetics(
+      ? getEquippedCosmetics(
           context.character.id,
           [
             "header_control_frame",
@@ -113,7 +118,31 @@ async function PortalLayoutContent({
             "location_atmosphere",
           ],
         )
-      : {};
+      : Promise.resolve(
+          {} as Awaited<
+            ReturnType<
+              typeof getEquippedCosmetics
+            >
+          >,
+        );
+
+  const [
+    worldState,
+    initialTidings,
+    unreadForumCount,
+    staffSession,
+    portalCosmetics,
+  ] = await Promise.all([
+    worldStatePromise,
+    initialTidingsPromise,
+    unreadForumCountPromise,
+    staffSessionPromise,
+    portalCosmeticsPromise,
+  ]);
+
+  const presenceEnabled =
+    context.character?.status ===
+    "approved";
 
   const portalCosmeticStyle = {
     "--sep-cosmetic-header-control-frame":

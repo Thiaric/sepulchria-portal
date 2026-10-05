@@ -38,6 +38,7 @@ import {
 } from "@/lib/order-headquarters/access";
 
 import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 
 
@@ -267,7 +268,7 @@ export default async function FriendsPage({
 
     data: { user },
 
-  } = await supabase.auth.getUser();
+  } = await getAuthenticatedUser();
 
 
 

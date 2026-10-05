@@ -52,6 +52,7 @@ import {
   getBreezeLodgingStaffOccupants,
 } from "@/lib/breeze-lodgings/access";
 import { leaveCurrentRoom } from "./actions";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 type Props = Record<string, never>;
 
@@ -105,7 +106,7 @@ async function GameContent() {
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await getAuthenticatedUser();
 
   if (!user) {
     redirect("/auth/login");
@@ -732,36 +733,16 @@ async function GameContent() {
   const oddJobIds =
     oddJobsBase.map((job) => job.job_id);
 
-  const oddJobImagesResult =
+  const oddJobImagesPromise =
     oddJobIds.length > 0
-      ? await supabase
+      ? supabase
           .from("odd_jobs")
           .select("id, image_url")
           .in("id", oddJobIds)
-      : { data: [], error: null };
-
-  if (oddJobImagesResult.error) {
-    throw new Error(
-      `Unable to load Odd Job images: ${oddJobImagesResult.error.message}`,
-    );
-  }
-
-  const oddJobImageById =
-    new Map<string, string | null>(
-      (oddJobImagesResult.data ?? []).map(
-        (job) => [
-          String(job.id),
-          job.image_url ? String(job.image_url) : null,
-        ],
-      ),
-    );
-
-  const oddJobs: OddJobStateRow[] =
-    oddJobsBase.map((job) => ({
-      ...job,
-      image_url:
-        oddJobImageById.get(job.job_id) ?? null,
-    }));
+      : Promise.resolve({
+          data: [],
+          error: null,
+        });
 
   const {
     data: houseOfChancesData,
@@ -848,16 +829,49 @@ async function GameContent() {
       (lodging) => lodging.room_id,
     );
 
-  const breezeRoomImageResult =
+  const breezeRoomImagePromise =
     breezeRoomIds.length > 0
-      ? await supabase
+      ? supabase
           .from("rooms")
           .select("id, image_url, is_outdoors")
           .in("id", breezeRoomIds)
-      : {
+      : Promise.resolve({
           data: [],
           error: null,
-        };
+        });
+
+  const [
+    oddJobImagesResult,
+    breezeRoomImageResult,
+  ] = await Promise.all([
+    oddJobImagesPromise,
+    breezeRoomImagePromise,
+  ]);
+
+  if (oddJobImagesResult.error) {
+    throw new Error(
+      `Unable to load Odd Job images: ${oddJobImagesResult.error.message}`,
+    );
+  }
+
+  const oddJobImageById =
+    new Map<string, string | null>(
+      (oddJobImagesResult.data ?? []).map(
+        (job) => [
+          String(job.id),
+          job.image_url
+            ? String(job.image_url)
+            : null,
+        ],
+      ),
+    );
+
+  const oddJobs: OddJobStateRow[] =
+    oddJobsBase.map((job) => ({
+      ...job,
+      image_url:
+        oddJobImageById.get(job.job_id) ?? null,
+    }));
 
   if (breezeRoomImageResult.error) {
     throw new Error(

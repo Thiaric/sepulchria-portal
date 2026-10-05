@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { InteractiveWorldMap } from "@/components/portal/interactive-world-map";
 import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 type Area = {
   id: string;
@@ -14,7 +15,7 @@ export default async function DashboardPage() {
 
   const {
   data: { user },
-} = await supabase.auth.getUser();
+} = await getAuthenticatedUser();
 
 if (!user) {
   redirect("/homepage");

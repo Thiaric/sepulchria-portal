@@ -12,6 +12,7 @@ import {
 import {
   DailyRewardClaim,
 } from "@/components/missions/daily-reward-claim";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 export const dynamic = "force-dynamic";
 
@@ -123,7 +124,7 @@ export default async function MissionsPage() {
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await getAuthenticatedUser();
 
   if (!user) redirect("/auth/login");
 

@@ -13,6 +13,7 @@ import {
 import {
   formatAurethDate,
 } from "@/lib/world/calendar";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 type ForumSection = {
   id: string;
@@ -215,7 +216,7 @@ export default async function ForumSectionPage({
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await getAuthenticatedUser();
 
   const { data: staffResult } = user
     ? await supabase.rpc(
@@ -511,7 +512,7 @@ export default async function ForumSectionPage({
     const {
       data: { user },
     } =
-      await supabase.auth.getUser();
+      await getAuthenticatedUser();
 
     if (!user) {
       return;

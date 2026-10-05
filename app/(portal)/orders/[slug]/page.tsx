@@ -11,6 +11,7 @@ import {
 import { createClient } from "@/lib/supabase/server";
 import { formatRemnants } from "@/lib/economy/currency";
 import { ImagePreviewButton } from "@/components/world/image-preview-button";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 type Relation<T> = T | T[] | null;
 
@@ -137,7 +138,7 @@ export default async function OrderPage({
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await getAuthenticatedUser();
 
   const { data: viewerCharacter } = user
     ? await supabase

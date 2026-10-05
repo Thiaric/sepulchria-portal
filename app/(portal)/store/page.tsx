@@ -12,6 +12,7 @@ import { createClient } from "@/lib/supabase/server";
 import {
   StoreProductImageLightbox,
 } from "@/components/store/store-product-image-lightbox";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 type StoreProduct = {
   id: string;
@@ -112,7 +113,7 @@ export default async function StorePage() {
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await getAuthenticatedUser();
 
   if (!user) {
     redirect("/auth/login");

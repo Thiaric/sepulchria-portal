@@ -16,6 +16,7 @@ import {
 import {
   LeaveLocationMapLink,
 } from "@/components/portal/leave-location-map-link";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 type Props = {
   params: Promise<{
@@ -107,7 +108,7 @@ export default async function AreaPage({
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await getAuthenticatedUser();
 
   const {
     data: viewerCharacter,

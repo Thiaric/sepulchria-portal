@@ -11,6 +11,7 @@ import {
 import {
   PmRecipientPicker,
 } from "../components/pm-recipient-picker";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 type CharacterRow = {
   id: string;
@@ -42,7 +43,7 @@ export default async function NewPrivateMessagePage() {
   const {
     data: { user },
   } =
-    await supabase.auth.getUser();
+    await getAuthenticatedUser();
 
   if (!user) {
     redirect("/auth/login");

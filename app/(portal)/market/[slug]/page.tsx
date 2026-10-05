@@ -7,6 +7,7 @@ import {
   MarketCatalogue,
   type MarketCatalogueListing,
 } from "@/components/market/market-catalogue";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -226,7 +227,7 @@ export default async function MarketShopPage({ params }: Props) {
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await getAuthenticatedUser();
 
   if (!user) {
     redirect("/auth/login");

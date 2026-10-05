@@ -11,6 +11,7 @@ import {
 import {
   PmRecipientPicker,
 } from "../../components/pm-recipient-picker";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 
 type Props = {
   params: Promise<{
@@ -44,7 +45,7 @@ export default async function ForwardMessagePage({
   const {
     data: { user },
   } =
-    await supabase.auth.getUser();
+    await getAuthenticatedUser();
 
   if (!user) {
     redirect("/auth/login");
