@@ -211,6 +211,8 @@ export default function MessageComposer({
         <div className="mt-1.5 grid grid-cols-2 gap-2 messages_components_messagecomposer_div_container_2">
           <button
             type="button"
+            id="sep-ongame-message-selector"
+            data-sep-message-mode-selector="ongame"
             disabled={isDead}
             title={
               isDead
@@ -242,6 +244,7 @@ export default function MessageComposer({
             type="button"
             id="sep-offgame-message-selector"
             data-sep-offgame-selector="true"
+            data-sep-message-mode-selector="offgame"
             onClick={() =>
               setMessageMode("offgame")
             }
@@ -264,6 +267,9 @@ export default function MessageComposer({
       </fieldset>
 
       <div
+        data-sep-message-mode-note={
+          isOnGame ? "ongame" : "offgame"
+        }
         className={[((`mt-2 border-l-2 px-3 py-1.5 text-[9px] leading-4 ${
           isOnGame
             ? "border-[rgb(var(--sep-colour-a77a42))] bg-[rgb(var(--sep-colour-24190f))] text-[rgb(var(--sep-colour-bfa37a))]"

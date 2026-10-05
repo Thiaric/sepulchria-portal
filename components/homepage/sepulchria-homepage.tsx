@@ -39,14 +39,14 @@ const PRIMARY_LINKS = [
 
 const CHAPTERS = [
   {
-    number: "I",
-    title: "Discover the World",
-    text: "Explore a city raised from divine remains, where every district carries the legacy of a fallen god.",
-    videoTitle: "Discover the World",
-    videoHref:
-      "https://drive.google.com/file/d/1iMhPhgTQ7KzLiywkJWPux3uyTiupzKi7/preview",
-    videoLabel: "Watch the introduction video →",
-  },
+  number: "I",
+  title: "Discover the World",
+  text: "Explore a city raised from divine remains, where every district carries the legacy of a fallen god.",
+  videoTitle: "Discover the World",
+  videoHref:
+    "https://www.youtube.com/embed/74CILewLSKA",
+  videoLabel: "Watch the introduction video →",
+},
   {
     number: "II",
     title: "Forge Your Character",
@@ -528,7 +528,7 @@ const firstStepsPanelRef =
     <>
       {" "}
       <br></br><span className="homepage-intro-video-link inline font-serif italic">
-        {chapter.videoLabel}
+        <b>{chapter.videoLabel}</b>
       </span>
     </>
   ) : null}

@@ -5883,3 +5883,76 @@ body[data-portal-skin]
 }
 /* END CONTRIBUTION PRODUCT CARD C1/C2 HARD OVERRIDE V2 */
 
+/* PRIVATE MESSAGES — MESSAGE MODE C1/C2 SEMANTIC OVERRIDE */
+
+/* ON-GAME selected — faint C1 background, C2 text. */
+body.portal-skin-scope
+  [data-portal-shell]
+  #sep-ongame-message-selector[data-sep-message-mode-selector="ongame"][aria-pressed="true"] {
+  background-color:
+    rgb(var(--sep-skin-c1) / 0.34) !important;
+  color:
+    rgb(var(--sep-skin-c2)) !important;
+  -webkit-text-fill-color:
+    rgb(var(--sep-skin-c2)) !important;
+}
+
+/* OFF-GAME selected — faint C2 background, C1 text. */
+body.portal-skin-scope
+  [data-portal-shell]
+  #sep-offgame-message-selector[data-sep-message-mode-selector="offgame"][aria-pressed="true"] {
+  background-color:
+    rgb(var(--sep-skin-c2) / 0.34) !important;
+  color:
+    rgb(var(--sep-skin-c1)) !important;
+  -webkit-text-fill-color:
+    rgb(var(--sep-skin-c1)) !important;
+}
+
+body.portal-skin-scope
+  [data-portal-shell]
+  #sep-ongame-message-selector[aria-pressed="false"] {
+  background-color:
+    rgb(var(--sep-colour-100c09)) !important;
+}
+
+body.portal-skin-scope
+  [data-portal-shell]
+  #sep-offgame-message-selector[aria-pressed="false"] {
+  background-color:
+    rgb(var(--sep-colour-100c09)) !important;
+}
+
+/* Keep the explanatory strip on the normal PM surface. */
+body.portal-skin-scope
+  [data-portal-shell]
+  [data-sep-message-mode-note] {
+  background-color:
+    rgb(var(--sep-colour-100c09)) !important;
+}
+
+/* ON-GAME note — C1 text + C1 vertical rule. */
+body.portal-skin-scope
+  [data-portal-shell]
+  [data-sep-message-mode-note="ongame"] {
+  border-left-color:
+    rgb(var(--sep-skin-c1)) !important;
+  color:
+    rgb(var(--sep-skin-c1)) !important;
+  -webkit-text-fill-color:
+    rgb(var(--sep-skin-c1)) !important;
+}
+
+/* OFF-GAME note — C2 text + C2 vertical rule. */
+body.portal-skin-scope
+  [data-portal-shell]
+  [data-sep-message-mode-note="offgame"] {
+  border-left-color:
+    rgb(var(--sep-skin-c2)) !important;
+  color:
+    rgb(var(--sep-skin-c2)) !important;
+  -webkit-text-fill-color:
+    rgb(var(--sep-skin-c2)) !important;
+}
+/* END PRIVATE MESSAGES — MESSAGE MODE C1/C2 SEMANTIC OVERRIDE */
+
