@@ -367,8 +367,6 @@ export function MissionsLiveSync({
   }, [dayId, supabase]);
 
   useEffect(() => {
-    void sync();
-
     const timer =
       window.setInterval(
         () => {

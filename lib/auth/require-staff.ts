@@ -4,6 +4,7 @@ import { cache } from "react";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 import { setAuditActorContext } from "@/lib/audit/actor-context";
 
 import {
@@ -104,7 +105,7 @@ export const getStaffSession = cache(async (): Promise<
     data: { user },
     error: userError,
   } =
-    await supabase.auth.getUser();
+    await getAuthenticatedUser();
 
   if (userError || !user) {
     return null;

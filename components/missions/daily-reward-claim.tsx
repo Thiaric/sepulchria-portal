@@ -68,6 +68,12 @@ export function DailyRewardClaim({
     );
 
   const [showMessage, setShowMessage] = useState(false);
+  const [locallyClaimed, setLocallyClaimed] =
+    useState(claimed);
+
+  useEffect(() => {
+    setLocallyClaimed(claimed);
+  }, [claimed]);
 
 useEffect(() => {
   if (!state.message) return;
@@ -75,6 +81,8 @@ useEffect(() => {
   setShowMessage(true);
 
   if (state.success) {
+  setLocallyClaimed(true);
+
   window.dispatchEvent(
     new CustomEvent(
       "sepulchria:notifications-changed",
@@ -124,7 +132,7 @@ useEffect(() => {
         type="submit"
         disabled={
           !complete ||
-          claimed ||
+          locallyClaimed ||
           pending
         }
         className={[(([
@@ -138,7 +146,7 @@ useEffect(() => {
       >
         {pending
           ? "Claiming..."
-          : claimed
+          : locallyClaimed
             ? "Claimed"
             : complete
               ? compact

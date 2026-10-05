@@ -39,6 +39,7 @@ type PortalSidebarProps = {
   unreadMessageCount: number;
   unreadForumCount: number;
   isStaff: boolean;
+  characterId: string | null;
 };
 
 type NavigationItem = {
@@ -419,6 +420,7 @@ export function PortalSidebar({
   unreadMessageCount,
   unreadForumCount,
   isStaff,
+  characterId,
 }: PortalSidebarProps) {
   const pathname = usePathname();
 
@@ -664,29 +666,17 @@ export function PortalSidebar({
 
   const refreshCosmeticsAccess =
     useCallback(async () => {
+      if (!characterId) {
+        setHasCosmetics(false);
+        return;
+      }
+
       const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-
-      if (!user) {
-        setHasCosmetics(false);
-        return;
-      }
-
-      const { data: character } = await supabase
-        .from("characters")
-        .select("id")
-        .eq("user_id", user.id)
-        .maybeSingle();
-
-      if (!character) {
-        setHasCosmetics(false);
-        return;
-      }
 
       const { data, error } = await supabase
         .from("character_cosmetic_entitlements")
         .select("cosmetic_item_id")
-        .eq("character_id", character.id)
+        .eq("character_id", characterId)
         .eq("enabled", true)
         .limit(1);
 
@@ -697,37 +687,12 @@ export function PortalSidebar({
       }
 
       setHasCosmetics((data ?? []).length > 0);
-    }, []);
+    }, [characterId]);
 
   const refreshPrivateLocationAccess =
     useCallback(async () => {
-      const supabase =
-        createClient();
-
-      const {
-        data: { user },
-      } =
-        await supabase.auth.getUser();
-
-      if (!user) {
-        setHasPrivateLocationAccess(
-          false,
-        );
-        return;
-      }
-
-      const {
-        data: character,
-      } = await supabase
-        .from("characters")
-        .select("id")
-        .eq("user_id", user.id)
-        .maybeSingle();
-
-      if (!character) {
-        setHasPrivateLocationAccess(
-          false,
-        );
+      if (!characterId) {
+        setHasPrivateLocationAccess(false);
         return;
       }
 
@@ -737,70 +702,25 @@ export function PortalSidebar({
       setHasPrivateLocationAccess(
         hasAccess,
       );
-    }, [isStaff]);
+    }, [characterId, isStaff]);
 
   const refreshFriendListFeature =
     useCallback(async () => {
-      const supabase =
-        createClient();
-
-      const {
-        data: { user },
-      } =
-        await supabase.auth.getUser();
-
-      if (!user) {
-        setHasFriendListFeature(
-          false,
-        );
+      if (!characterId) {
+        setHasFriendListFeature(false);
         return;
       }
 
-      const {
-        data: character,
-        error: characterError,
-      } = await supabase
-        .from("characters")
-        .select("id")
-        .eq(
-          "user_id",
-          user.id,
-        )
-        .maybeSingle();
-
-      if (
-        characterError ||
-        !character
-      ) {
-        if (characterError) {
-          console.error(
-            "Unable to identify character for Friend List access:",
-            characterError,
-          );
-        }
-
-        setHasFriendListFeature(
-          false,
-        );
-        return;
-      }
+      const supabase = createClient();
 
       const {
         data: entitlement,
         error: entitlementError,
       } = await supabase
-        .from(
-          "character_feature_entitlements",
-        )
+        .from("character_feature_entitlements")
         .select("enabled")
-        .eq(
-          "character_id",
-          character.id,
-        )
-        .eq(
-          "feature_key",
-          "friend_list",
-        )
+        .eq("character_id", characterId)
+        .eq("feature_key", "friend_list")
         .maybeSingle();
 
       if (entitlementError) {
@@ -808,50 +728,23 @@ export function PortalSidebar({
           "Unable to check Friend List access:",
           entitlementError,
         );
-
-        setHasFriendListFeature(
-          false,
-        );
+        setHasFriendListFeature(false);
         return;
       }
 
       setHasFriendListFeature(
-        entitlement?.enabled ===
-          true,
+        entitlement?.enabled === true,
       );
-    }, []);
+    }, [characterId]);
 
   const refreshOrderLeadership =
     useCallback(async () => {
-      const supabase =
-        createClient();
-
-      const {
-        data: { user },
-      } =
-        await supabase.auth.getUser();
-
-      if (!user) {
+      if (!characterId) {
         setHasOrderLeadership(false);
         return;
       }
 
-      const {
-        data: character,
-        error: characterError,
-      } = await supabase
-        .from("characters")
-        .select("id")
-        .eq("user_id", user.id)
-        .maybeSingle();
-
-      if (
-        characterError ||
-        !character
-      ) {
-        setHasOrderLeadership(false);
-        return;
-      }
+      const supabase = createClient();
 
       const {
         data: memberships,
@@ -864,10 +757,7 @@ export function PortalSidebar({
             level
           )
         `)
-        .eq(
-          "character_id",
-          character.id,
-        );
+        .eq("character_id", characterId);
 
       if (membershipError) {
         console.error(
@@ -888,13 +778,11 @@ export function PortalSidebar({
                 ? membership.level[0]
                 : membership.level;
 
-            return (
-              relation?.level === 6
-            );
+            return relation?.level === 6;
           },
         ),
       );
-    }, []);
+    }, [characterId]);
 
   useEffect(() => {
     void refreshCosmeticsAccess();

@@ -44,6 +44,7 @@ type MobilePortalNavigationProps = {
   unreadMessageCount: number;
   unreadForumCount: number;
   isStaff: boolean;
+  characterId: string | null;
 };
 
 type LinkEntry = {
@@ -170,6 +171,7 @@ export function MobilePortalNavigation({
   unreadMessageCount,
   unreadForumCount,
   isStaff,
+  characterId,
 }: MobilePortalNavigationProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -475,34 +477,14 @@ const moreDragging =
 
   const refreshAccess =
     useCallback(async () => {
-      const supabase =
-        createClient();
-
-      const {
-        data: { user },
-      } =
-        await supabase.auth.getUser();
-
-      if (!user) {
+      if (!characterId) {
         setHasFriendListFeature(false);
         setHasPrivateLocationAccess(false);
         setHasOrderLeadership(false);
         return;
       }
 
-      const { data: character } =
-        await supabase
-          .from("characters")
-          .select("id")
-          .eq("user_id", user.id)
-          .maybeSingle();
-
-      if (!character) {
-        setHasFriendListFeature(false);
-        setHasPrivateLocationAccess(false);
-        setHasOrderLeadership(false);
-        return;
-      }
+      const supabase = createClient();
 
       const [
         friendResult,
@@ -510,18 +492,10 @@ const moreDragging =
         orderMembershipResult,
       ] = await Promise.all([
         supabase
-          .from(
-            "character_feature_entitlements",
-          )
+          .from("character_feature_entitlements")
           .select("enabled")
-          .eq(
-            "character_id",
-            character.id,
-          )
-          .eq(
-            "feature_key",
-            "friend_list",
-          )
+          .eq("character_id", characterId)
+          .eq("feature_key", "friend_list")
           .maybeSingle(),
 
         hasCurrentCharacterPrivateLocationAccess(),
@@ -534,10 +508,7 @@ const moreDragging =
               level
             )
           `)
-          .eq(
-            "character_id",
-            character.id,
-          ),
+          .eq("character_id", characterId),
       ]);
 
       setHasFriendListFeature(
@@ -563,7 +534,7 @@ const moreDragging =
           return relation?.level === 6;
         }),
       );
-    }, [isStaff]);
+    }, [characterId, isStaff]);
 
   useEffect(() => {
     void refreshAccess();

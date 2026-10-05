@@ -59,7 +59,6 @@ try {
 
   
 
-  revalidatePath("/missions");
   revalidatePath("/character");
 
   return {
@@ -114,7 +113,6 @@ try {
   );
 }
 
-  revalidatePath("/missions");
   revalidatePath("/character");
 
   return {

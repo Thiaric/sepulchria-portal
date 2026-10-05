@@ -953,6 +953,10 @@ async function PortalLayoutContent({
                   isStaff={
                     context.isStaff
                   }
+                  characterId={
+                    context.character?.id ??
+                    null
+                  }
                 />
               }
               centre={
@@ -986,6 +990,10 @@ async function PortalLayoutContent({
               }
               isStaff={
                 context.isStaff
+              }
+              characterId={
+                context.character?.id ??
+                null
               }
             />
             </div>

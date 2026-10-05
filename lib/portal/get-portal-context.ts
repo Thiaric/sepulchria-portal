@@ -7,6 +7,7 @@ import {
   PRESENCE_ACTIVE_MINUTES,
 } from "@/lib/game/constants";
 import { createClient } from "@/lib/supabase/server";
+import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 import {
   getPrivateLocationAccess,
   getVisiblePrivateLocations,
@@ -140,33 +141,15 @@ export const getPortalContext = cache(
     const supabase =
       await createClient();
 
-    let {
-  data: { user },
-  error: userError,
-} =
-  await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: userError,
+    } =
+      await getAuthenticatedUser();
 
-/*
- * A portal modal runs the same authenticated application
- * inside an iframe. A transient auth/network failure must
- * not immediately throw that iframe back to /homepage.
- *
- * Retry once before treating the session as unavailable.
- */
-if (userError || !user) {
-  const retryResult =
-    await supabase.auth.getUser();
-
-  user =
-    retryResult.data.user;
-
-  userError =
-    retryResult.error;
-}
-
-if (userError || !user) {
-  redirect("/homepage");
-}
+    if (userError || !user) {
+      redirect("/homepage");
+    }
 
     const [
       {

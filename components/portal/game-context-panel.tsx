@@ -567,9 +567,7 @@ export function GameContextPanel({
             
           </div>
 
-          <span className="text-[10px] text-[rgb(var(--sep-colour-806c52))] components_portal_game_context_panel_span_text_2">
-            {exits.length}
-          </span>
+          
         </div>
 
         <div className="mt-[4px] max-h-28 space-y-1.5 overflow-y-auto overscroll-contain pr-1 components_portal_game_context_panel_div_container_15">
