@@ -22,6 +22,7 @@ import { ExperienceContextPanel } from "@/components/admin/experience-context-pa
 import { MusicContextPanel } from "@/components/admin/music-context-panel";
 import { CosmeticsContextPanel } from "@/components/admin/cosmetics-context-panel";
 import { StoreContextPanel } from "@/components/admin/store-context-panel";
+import { ContributionsContextPanel } from "@/components/admin/contributions-context-panel";
 import { AdminCharacterPremiumFeaturesContext } from "@/components/admin/admin-character-premium-features-context";
 import { DeathContextPanel } from "@/components/admin/death-context-panel";
 import {
@@ -58,6 +59,7 @@ type ContextMode =
   | "codex"
   | "cosmetics"
   | "store"
+  | "contributions"
   | "media"
   | "notifications"
   | "polls"
@@ -152,6 +154,10 @@ function getMode(
 
   if (pathname === "/admin/store") {
     return "store";
+  }
+
+  if (pathname === "/admin/contributions") {
+    return "contributions";
   }
 
   if (pathname === "/admin/media") {
@@ -270,6 +276,12 @@ export function AdminContextPanel({
   if (mode === "store") {
     return (
       <StoreContextPanel />
+    );
+  }
+
+  if (mode === "contributions") {
+    return (
+      <ContributionsContextPanel />
     );
   }
 

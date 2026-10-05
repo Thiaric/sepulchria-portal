@@ -117,7 +117,11 @@ export default async function AdminContributionsPage() {
           Separate Contribution catalogue synced to Stripe and used with Managed Payments.
         </p>
 
-        <section className="mt-8 border border-[rgb(var(--sep-skin-c1,169_138_96))]/35 bg-[rgb(var(--sep-colour-15100d))] p-5">
+        <section
+          id="admin-contribution-create"
+          data-admin-contribution-create="true"
+          className="mt-8 border border-[rgb(var(--sep-skin-c1,169_138_96))]/35 bg-[rgb(var(--sep-colour-15100d))] p-5"
+        >
           <h2 className="font-serif text-2xl text-[rgb(var(--sep-skin-c1,169_138_96))]">
             Create product
           </h2>
@@ -171,7 +175,17 @@ export default async function AdminContributionsPage() {
             const productPrices = prices.filter((price) => price.product_id === product.id);
 
             return (
-              <details key={product.id} className="border border-[rgb(var(--sep-skin-c1,169_138_96))]/30 bg-[rgb(var(--sep-colour-120e0b))]">
+              <details
+                key={product.id}
+                id={`admin-contribution-product-${product.id}`}
+                data-admin-contribution-product="true"
+                data-admin-contribution-product-id={product.id}
+                data-admin-contribution-product-name={product.name}
+                data-admin-contribution-product-slug={product.slug}
+                data-admin-contribution-product-status={product.stripe_sync_status}
+                data-admin-contribution-product-active={product.is_active ? "true" : "false"}
+                className="border border-[rgb(var(--sep-skin-c1,169_138_96))]/30 bg-[rgb(var(--sep-colour-120e0b))]"
+              >
                 <summary className="cursor-pointer px-4 py-4">
                   <span className="font-serif text-xl text-[rgb(var(--sep-skin-c1,169_138_96))]">
                     {product.name}
@@ -307,7 +321,10 @@ export default async function AdminContributionsPage() {
           })}
         </div>
 
-        <section className="mt-8 border border-[rgb(var(--sep-skin-c1,169_138_96))]/35 bg-[rgb(var(--sep-colour-15100d))] p-5">
+        <section
+          id="admin-contributions-records"
+          className="mt-8 border border-[rgb(var(--sep-skin-c1,169_138_96))]/35 bg-[rgb(var(--sep-colour-15100d))] p-5"
+        >
           <div className="flex flex-wrap items-end justify-between gap-3 border-b border-[rgb(var(--sep-skin-c1,169_138_96))]/20 pb-4">
             <div>
               <p className="text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
@@ -361,6 +378,20 @@ export default async function AdminContributionsPage() {
                     return (
                       <tr
                         key={contribution.id}
+                        id={`admin-contribution-record-${contribution.id}`}
+                        data-admin-contribution-record="true"
+                        data-admin-contribution-record-id={contribution.id}
+                        data-admin-contribution-email={contribution.customer_email ?? ""}
+                        data-admin-contribution-character={characterName ?? ""}
+                        data-admin-contribution-user={contribution.user_id ?? ""}
+                        data-admin-contribution-status={String(contribution.status)}
+                        data-admin-contribution-environment={normalizedEnvironment(
+                          contribution.stripe_environment,
+                        )}
+                        data-admin-contribution-amount={money(
+                          Number(contribution.amount_minor),
+                          contribution.currency,
+                        )}
                         className="border-b border-[rgb(var(--sep-skin-c1,169_138_96))]/12 align-top text-[rgb(var(--sep-skin-c2,211_194_170))]"
                       >
                         <td className="whitespace-nowrap px-2 py-3">
