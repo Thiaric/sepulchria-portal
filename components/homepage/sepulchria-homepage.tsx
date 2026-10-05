@@ -42,16 +42,26 @@ const CHAPTERS = [
     number: "I",
     title: "Discover the World",
     text: "Explore a city raised from divine remains, where every district carries the legacy of a fallen god.",
+    videoTitle: "Discover the World",
+    videoHref:
+      "https://drive.google.com/file/d/1iMhPhgTQ7KzLiywkJWPux3uyTiupzKi7/preview",
+    videoLabel: "Watch the introduction video →",
   },
   {
     number: "II",
     title: "Forge Your Character",
     text: "Choose your Ancestry, Order and place within the living world of Sepulchria.",
+    videoTitle: "Forge Your Character",
+    videoHref: null,
+    videoLabel: "Watch the character creation video →",
   },
   {
     number: "III",
     title: "Shape the Story",
     text: "Enter a persistent world where choices, loyalties and consequences become part of its history.",
+    videoTitle: "Shape the Story",
+    videoHref: null,
+    videoLabel: "Watch the gameplay video →",
   },
 ] as const;
 
@@ -455,16 +465,16 @@ const firstStepsPanelRef =
                     <article
   key={chapter.number}
   onClick={
-    chapter.number === "I"
+    chapter.videoHref
       ? () =>
           setPublicModal({
-            title: "Discover the World",
-            href: "https://drive.google.com/file/d/1iMhPhgTQ7KzLiywkJWPux3uyTiupzKi7/preview",
+            title: chapter.videoTitle,
+            href: chapter.videoHref,
           })
       : undefined
   }
   onKeyDown={
-    chapter.number === "I"
+    chapter.videoHref
       ? (event) => {
           if (
             event.key === "Enter" ||
@@ -473,25 +483,25 @@ const firstStepsPanelRef =
             event.preventDefault();
 
             setPublicModal({
-              title: "Discover the World",
-              href: "https://drive.google.com/file/d/1iMhPhgTQ7KzLiywkJWPux3uyTiupzKi7/preview",
+              title: chapter.videoTitle,
+              href: chapter.videoHref,
             });
           }
         }
       : undefined
   }
   role={
-    chapter.number === "I"
+    chapter.videoHref
       ? "button"
       : undefined
   }
   tabIndex={
-    chapter.number === "I"
+    chapter.videoHref
       ? 0
       : undefined
   }
   className={`group py-4 transition-transform duration-300 ease-out hover:translate-x-1.5 first:pt-1 last:pb-1 components_homepage_sepulchria_homepage_article_article ${
-    chapter.number === "I"
+    chapter.videoHref
       ? "cursor-pointer"
       : ""
   }`}
@@ -514,12 +524,12 @@ const firstStepsPanelRef =
                           <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-968875))] components_homepage_sepulchria_homepage_p_text_4">
   {chapter.text}
 
-  {chapter.number === "I" ? (
+  {chapter.videoHref ? (
     <>
       {" "}
-      <span className="homepage-intro-video-link inline font-serif italic">
-  Watch the introduction video →
-</span>
+      <br></br><span className="homepage-intro-video-link inline font-serif italic">
+        {chapter.videoLabel}
+      </span>
     </>
   ) : null}
 </p>
