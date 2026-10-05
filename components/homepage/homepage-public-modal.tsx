@@ -138,11 +138,13 @@ export function HomepagePublicModal({
 )}
 
         <iframe
-          key={iframeSrc}
-          src={iframeSrc}
-          title={modal.title}
-          className="min-h-0 flex-1 border-0 bg-[rgb(var(--sep-colour-090706))]"
-        />
+  key={iframeSrc}
+  src={iframeSrc}
+  title={modal.title}
+  allow="autoplay; fullscreen"
+  allowFullScreen
+  className="min-h-0 flex-1 border-0 bg-[rgb(var(--sep-colour-090706))]"
+/>
       </section>
     </div>
   );

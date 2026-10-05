@@ -46,10 +46,46 @@ export async function clearOwnPresenceForLogout(): Promise<LogoutPresenceResult>
     return { ok: true };
   }
 
-  const { error: friendLeaveError } =
-    await supabase.rpc(
+  const admin = createAdminClient();
+  const now = new Date().toISOString();
+
+  /*
+   * These logout operations do not depend on one another, so do them
+   * concurrently instead of making the player wait for three separate
+   * database round trips in sequence.
+   */
+  const [
+    friendLeaveResult,
+    expertiseSettleResult,
+    presenceDeleteResult,
+  ] = await Promise.all([
+    supabase.rpc(
       "notify_my_mutual_friends_left",
-    );
+    ),
+    admin.rpc(
+      "settle_portal_session_expertise",
+      {
+        p_user_id: user.id,
+        p_now: now,
+      },
+    ),
+    admin
+      .from("character_presence")
+      .delete()
+      .eq(
+        "character_id",
+        character.id,
+      ),
+  ]);
+
+  const friendLeaveError =
+    friendLeaveResult.error;
+
+  const expertiseSettleError =
+    expertiseSettleResult.error;
+
+  const deleteError =
+    presenceDeleteResult.error;
 
   if (friendLeaveError) {
     console.error(
@@ -58,33 +94,12 @@ export async function clearOwnPresenceForLogout(): Promise<LogoutPresenceResult>
     );
   }
 
-  const admin = createAdminClient();
-
-  const {
-    error: expertiseSettleError,
-  } = await admin.rpc(
-    "settle_portal_session_expertise",
-    {
-      p_user_id: user.id,
-      p_now: new Date().toISOString(),
-    },
-  );
-
   if (expertiseSettleError) {
     console.error(
       "Unable to settle portal-time Expertise before logout:",
       expertiseSettleError.message,
     );
   }
-
-  const { error: deleteError } =
-    await admin
-      .from("character_presence")
-      .delete()
-      .eq(
-        "character_id",
-        character.id,
-      );
 
   if (deleteError) {
     return {
@@ -94,6 +109,10 @@ export async function clearOwnPresenceForLogout(): Promise<LogoutPresenceResult>
     };
   }
 
+  /*
+   * Only remove the active portal session after Expertise has been
+   * settled successfully, preserving the existing safety behaviour.
+   */
   if (!expertiseSettleError) {
     const {
       error: sessionDeleteError,

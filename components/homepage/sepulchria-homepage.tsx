@@ -454,7 +454,47 @@ const firstStepsPanelRef =
                   (chapter) => (
                     <article
   key={chapter.number}
-  className="group py-4 transition-transform duration-300 ease-out hover:translate-x-1.5 first:pt-1 last:pb-1 components_homepage_sepulchria_homepage_article_article"
+  onClick={
+    chapter.number === "I"
+      ? () =>
+          setPublicModal({
+            title: "Discover the World",
+            href: "https://drive.google.com/file/d/1iMhPhgTQ7KzLiywkJWPux3uyTiupzKi7/preview",
+          })
+      : undefined
+  }
+  onKeyDown={
+    chapter.number === "I"
+      ? (event) => {
+          if (
+            event.key === "Enter" ||
+            event.key === " "
+          ) {
+            event.preventDefault();
+
+            setPublicModal({
+              title: "Discover the World",
+              href: "https://drive.google.com/file/d/1iMhPhgTQ7KzLiywkJWPux3uyTiupzKi7/preview",
+            });
+          }
+        }
+      : undefined
+  }
+  role={
+    chapter.number === "I"
+      ? "button"
+      : undefined
+  }
+  tabIndex={
+    chapter.number === "I"
+      ? 0
+      : undefined
+  }
+  className={`group py-4 transition-transform duration-300 ease-out hover:translate-x-1.5 first:pt-1 last:pb-1 components_homepage_sepulchria_homepage_article_article ${
+    chapter.number === "I"
+      ? "cursor-pointer"
+      : ""
+  }`}
 >
                       <div className="flex items-start gap-3 components_homepage_sepulchria_homepage_div_container_20">
                         <span className="font-serif text-2xl text-[rgb(var(--sep-colour-8e6737))]/65 transition group-hover:text-[rgb(var(--sep-colour-c18d4c))] components_homepage_sepulchria_homepage_span_text_2">
@@ -477,18 +517,9 @@ const firstStepsPanelRef =
   {chapter.number === "I" ? (
     <>
       {" "}
-      <button
-        type="button"
-        onClick={() =>
-          setPublicModal({
-            title: "Discover the World",
-            href: "https://drive.google.com/file/d/1iMhPhgTQ7KzLiywkJWPux3uyTiupzKi7/preview",
-          })
-        }
-        className="inline font-serif italic text-[rgb(var(--sep-colour-c59a62))] transition hover:text-[rgb(var(--sep-colour-efd8aa))]"
-      >
-        Watch the introduction video →
-      </button>
+      <span className="homepage-intro-video-link inline font-serif italic">
+  Watch the introduction video →
+</span>
     </>
   ) : null}
 </p>
@@ -1031,6 +1062,20 @@ const firstStepsPanelRef =
     -webkit-text-fill-color:
       rgb(var(--sep-skin-c1, 169 138 96)) !important;
   }
+
+  .homepage-intro-video-link {
+  color: rgb(var(--sep-skin-c1)) !important;
+  -webkit-text-fill-color: rgb(var(--sep-skin-c1)) !important;
+
+  transition:
+    color 180ms ease,
+    -webkit-text-fill-color 180ms ease;
+}
+
+article:hover .homepage-intro-video-link {
+  color: rgb(var(--sep-skin-c2)) !important;
+  -webkit-text-fill-color: rgb(var(--sep-skin-c2)) !important;
+}
 `}</style>
 
       <style jsx>{`
