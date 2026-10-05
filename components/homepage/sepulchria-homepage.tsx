@@ -426,9 +426,79 @@ export function SepulchriaHomepage({
               aria-label="Footer navigation"
               className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-[8px] uppercase tracking-[0.18em] sm:justify-end [&_a]:uppercase [&_button]:uppercase components_homepage_sepulchria_homepage_nav_footer_navigation"
             >
-              <Link href="https://discord.com/channels/1542825856982982676/1542926663959052419" target="_new">
-                Discord
+              <Link
+                href="https://www.instagram.com/sepulchriarpg/?hl=en"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Sepulchria on Instagram"
+                title="Instagram"
+                className="inline-flex items-center justify-center"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  className="h-3.5 w-3.5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                >
+                  <rect
+                    x="3"
+                    y="3"
+                    width="18"
+                    height="18"
+                    rx="5"
+                  />
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="4.2"
+                  />
+                  <circle
+                    cx="17.4"
+                    cy="6.8"
+                    r="1"
+                    fill="currentColor"
+                    stroke="none"
+                  />
+                </svg>
               </Link>
+
+              <Link
+                href="https://www.tiktok.com/@sepulchria.rpg4?lang=en-GB"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Sepulchria on TikTok"
+                title="TikTok"
+                className="inline-flex items-center justify-center"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  className="h-3.5 w-3.5"
+                  fill="currentColor"
+                >
+                  <path d="M14.2 3h2.7c.25 1.47 1.07 2.73 2.31 3.55A5.8 5.8 0 0 0 22 7.5v2.66a8.4 8.4 0 0 1-5.14-1.68v6.47a6.15 6.15 0 1 1-5.3-6.1v2.73a3.48 3.48 0 1 0 2.64 3.37V3Z" />
+                </svg>
+              </Link>
+
+              <Link
+  href="https://discord.com/channels/1542825856982982676/1542926663959052419"
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="Sepulchria on Discord"
+  title="Discord"
+  className="inline-flex items-center justify-center"
+>
+  <svg
+    viewBox="0 0 24 24"
+    aria-hidden="true"
+    className="h-3.5 w-3.5"
+    fill="currentColor"
+  >
+    <path d="M19.54 5.34A16.4 16.4 0 0 0 15.44 4l-.5 1.02a15.1 15.1 0 0 0-5.88 0L8.56 4a16.6 16.6 0 0 0-4.1 1.34C1.86 9.18 1.15 12.92 1.5 16.6a16.8 16.8 0 0 0 5.03 2.54l1.22-1.68a10.7 10.7 0 0 1-1.92-.92l.47-.36a11.73 11.73 0 0 0 11.4 0l.48.36c-.61.36-1.25.67-1.92.92l1.22 1.68a16.8 16.8 0 0 0 5.03-2.54c.42-4.26-.72-7.96-2.97-11.26ZM8.35 14.52c-1.16 0-2.11-1.07-2.11-2.38 0-1.32.93-2.39 2.11-2.39 1.19 0 2.13 1.08 2.11 2.39 0 1.31-.93 2.38-2.11 2.38Zm7.3 0c-1.16 0-2.11-1.07-2.11-2.38 0-1.32.93-2.39 2.11-2.39 1.19 0 2.13 1.08 2.11 2.39 0 1.31-.92 2.38-2.11 2.38Z" />
+  </svg>
+</Link>
 
               <Link
                 href="/credits"
