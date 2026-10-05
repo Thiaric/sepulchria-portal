@@ -334,28 +334,15 @@ const firstStepsPanelRef =
                 <div className="pointer-events-none absolute inset-1 z-20 border border-[rgb(var(--sep-colour-9a7547))]/10 components_homepage_sepulchria_homepage_div_container_9" />
 
                 <div className="relative h-full w-full components_homepage_sepulchria_homepage_div_container_10">
-    <video
-      className="block h-full max-h-full w-full max-w-full object-contain"
-      src="/videos/Sepulchria_Promo.mp4"
-      autoPlay
-      muted
-      loop
-      playsInline
-      controls
-      preload="metadata"
-      aria-label="Sepulchria promotional video"
-    >
-      Your browser does not support HTML5 video.
-    </video>
+    <iframe
+  src="https://www.tiktok.com/player/v1/7692112751329561878?autoplay=1&loop=1&muted=0&controls=1&description=0&music_info=0"
+  className="block h-full w-full border-0"
+  allow="autoplay; fullscreen"
+  allowFullScreen
+  title="Sepulchria promotional video"
+/>
 
-    <a
-  href="https://youtube.com/shorts/DKP4dsbnZtY"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="absolute left-1/2 top-2 z-30 -translate-x-1/2 rounded bg-[rgb(var(--sep-colour-15100c))]/55 px-1.5 py-0.5 text-[7px] uppercase tracking-[0.10em] text-white/80 transition hover:bg-[rgb(var(--sep-colour-15100c))] hover:text-white"
->
-  Watch on YouTube ↗
-</a>
+    
   </div>
               </div>
             </div>
