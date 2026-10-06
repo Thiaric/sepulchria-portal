@@ -3258,8 +3258,38 @@ function PublicPageModal({
                       ),
                     );
                 }}
+                onMouseEnter={(event) => {
+                  const el = event.currentTarget;
+                  el.style.setProperty(
+                    "border-color",
+                    "rgb(var(--sep-skin-c1))",
+                    "important",
+                  );
+                  el.style.setProperty(
+                    "background-color",
+                    "rgb(var(--sep-skin-c1) / 0.22)",
+                    "important",
+                  );
+                  el.style.setProperty(
+                    "color",
+                    "rgb(var(--sep-skin-c2))",
+                    "important",
+                  );
+                  el.style.setProperty(
+                    "-webkit-text-fill-color",
+                    "rgb(var(--sep-skin-c2))",
+                    "important",
+                  );
+                }}
+                onMouseLeave={(event) => {
+                  const el = event.currentTarget;
+                  el.style.removeProperty("border-color");
+                  el.style.removeProperty("background-color");
+                  el.style.removeProperty("color");
+                  el.style.removeProperty("-webkit-text-fill-color");
+                }}
                 className="mr-1 h-7 border border-[rgb(var(--sep-colour-60482e))]/50 bg-[rgb(var(--sep-colour-17110d))] px-3 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-bd9d6d))] transition hover:border-[rgb(var(--sep-colour-967342))] hover:text-[rgb(var(--sep-colour-f1d7a5))]"
-              >
+                >
                 Play Tutorial
               </button>
             ) : null}
