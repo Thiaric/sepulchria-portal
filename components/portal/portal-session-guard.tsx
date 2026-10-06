@@ -58,6 +58,9 @@ export function PortalSessionGuard() {
   const replacedRef =
     useRef(false);
 
+  const intentionalLogoutRef =
+    useRef(false);
+
   const lastEventCheckRef =
     useRef(0);
 
@@ -238,6 +241,54 @@ export function PortalSessionGuard() {
       checkFromBrowserEvent();
     }
 
+    function handleLogoutStarted() {
+      intentionalLogoutRef.current =
+        true;
+    }
+
+    function handlePageHide() {
+      if (
+        intentionalLogoutRef.current ||
+        replacedRef.current
+      ) {
+        return;
+      }
+
+      if (
+        !window.opener ||
+        window.opener.closed
+      ) {
+        return;
+      }
+
+      try {
+        window.opener.postMessage(
+          {
+            type:
+              "sepulchria:portal-window-maybe-closed",
+            instanceId:
+              getPortalInstanceId(),
+          },
+          window.location.origin,
+        );
+      } catch (error) {
+        console.warn(
+          "Unable to notify homepage that the Portal window may be closing:",
+          error,
+        );
+      }
+    }
+
+    window.addEventListener(
+      "sepulchria-logout-started",
+      handleLogoutStarted,
+    );
+
+    window.addEventListener(
+      "pagehide",
+      handlePageHide,
+    );
+
     window.addEventListener(
       "online",
       handleOnline,
@@ -251,6 +302,16 @@ export function PortalSessionGuard() {
     return () => {
       window.clearInterval(
         intervalId,
+      );
+
+      window.removeEventListener(
+        "sepulchria-logout-started",
+        handleLogoutStarted,
+      );
+
+      window.removeEventListener(
+        "pagehide",
+        handlePageHide,
       );
 
       window.removeEventListener(

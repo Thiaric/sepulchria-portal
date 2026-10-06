@@ -134,6 +134,74 @@ const firstStepsPanelRef =
 
       if (
         event.data?.type ===
+          "sepulchria:portal-window-maybe-closed"
+      ) {
+        const portalWindow =
+          event.source as Window | null;
+
+        const instanceId =
+          typeof event.data?.instanceId ===
+          "string"
+            ? event.data.instanceId
+            : "";
+
+        if (
+          !portalWindow ||
+          !instanceId
+        ) {
+          return;
+        }
+
+        window.setTimeout(
+          async () => {
+            if (!portalWindow.closed) {
+              return;
+            }
+
+            try {
+              const response =
+                await fetch(
+                  "/api/portal-session/close",
+                  {
+                    method: "POST",
+                    credentials:
+                      "same-origin",
+                    cache: "no-store",
+                    headers: {
+                      "Content-Type":
+                        "application/json",
+                    },
+                    body:
+                      JSON.stringify({
+                        instanceId,
+                      }),
+                  },
+                );
+
+              if (!response.ok) {
+                console.error(
+                  "Unable to close Portal session after window close:",
+                  response.status,
+                );
+                return;
+              }
+
+              window.location.reload();
+            } catch (error) {
+              console.error(
+                "Unable to close Portal session after window close:",
+                error,
+              );
+            }
+          },
+          300,
+        );
+
+        return;
+      }
+
+      if (
+        event.data?.type ===
           "sepulchria:portal-session-replaced"
       ) {
         /*
