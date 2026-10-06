@@ -382,9 +382,9 @@ export function CosmeticRuntime() {
         content: "";
         position: absolute;
         z-index: 5;
-        width: 40px;
-        height: 40px;
-        right: -34px;
+        width: 30px;
+        height: 30px;
+        right: -24px;
         top: 48%;
         transform: translateY(-49%);
         background-image: var(--sep-cosmetic-profile-crest);
