@@ -288,8 +288,8 @@ function selectRule(
     (
       `h-9 shrink-0 border px-4 text-[8px] uppercase tracking-[0.18em] transition ${
         glossaryOpen
-          ? "border-[rgb(var(--sep-colour-9a7445))] bg-[rgb(var(--sep-colour-302115))] text-[rgb(var(--sep-colour-e7c996))]"
-          : "border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] text-[rgb(var(--sep-colour-9f8d71))] hover:border-[rgb(var(--sep-colour-8c693e))] hover:text-[rgb(var(--sep-colour-d6b782))]"
+          ? "border-[rgb(var(--sep-colour-9a7445))] bg-[rgb(var(--sep-colour-302115))] text-[rgb(var(--sep-colour-e7c996))] hover:bg-[rgb(var(--sep-skin-c1)/0.16)]"
+          : "border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-15100d))] text-[rgb(var(--sep-colour-9f8d71))] hover:border-[rgb(var(--sep-skin-c1))] hover:bg-[rgb(var(--sep-skin-c1)/0.12)] hover:text-[rgb(var(--sep-skin-c1))]"
       }`
     ),
     "components_rules_public_rules_button_glossary",
@@ -443,8 +443,8 @@ function selectRule(
         className={[
           `w-full border px-3 py-2.5 text-left transition ${
             selectedRule?.id === rule.id
-              ? "border-[rgb(var(--sep-colour-8d693e))] bg-[rgb(var(--sep-colour-2a1d12))]"
-              : "border-transparent bg-[rgb(var(--sep-colour-100c09))]/55 hover:border-[rgb(var(--sep-colour-59432c))]/55 hover:bg-[rgb(var(--sep-colour-19120d))]"
+              ? "border-[rgb(var(--sep-colour-8d693e))] bg-[rgb(var(--sep-colour-2a1d12))] hover:bg-[rgb(var(--sep-skin-c1)/0.16)]"
+              : "border-transparent bg-[rgb(var(--sep-colour-100c09))]/55 hover:border-[rgb(var(--sep-skin-c1))]/70 hover:bg-[rgb(var(--sep-skin-c1)/0.12)]"
           }`,
           "components_rules_public_rules_button_action",
         ]
@@ -580,8 +580,8 @@ function CategoryButton({
       onClick={onClick}
       className={[((`border px-2.5 py-1.5 text-[8px] uppercase tracking-[0.13em] transition ${
         active
-          ? "border-[rgb(var(--sep-colour-8c693e))] bg-[rgb(var(--sep-colour-2a1d12))] text-[rgb(var(--sep-colour-dfc28f))]"
-          : "border-[rgb(var(--sep-colour-4f3b28))]/45 bg-[rgb(var(--sep-colour-15100d))] text-[rgb(var(--sep-colour-776a58))] hover:border-[rgb(var(--sep-colour-765937))] hover:text-[rgb(var(--sep-colour-bca47e))]"
+          ? "border-[rgb(var(--sep-colour-8c693e))] bg-[rgb(var(--sep-colour-2a1d12))] text-[rgb(var(--sep-colour-dfc28f))] hover:bg-[rgb(var(--sep-skin-c1)/0.16)]"
+          : "border-[rgb(var(--sep-colour-4f3b28))]/45 bg-[rgb(var(--sep-colour-15100d))] text-[rgb(var(--sep-colour-776a58))] hover:border-[rgb(var(--sep-skin-c1))] hover:bg-[rgb(var(--sep-skin-c1)/0.12)] hover:text-[rgb(var(--sep-skin-c1))]"
       }`)), "components_rules_public_rules_button_click"].filter(Boolean).join(" ")}
     >
       {label}
@@ -647,7 +647,7 @@ function RulePanel({
                     onClick={() =>
                       onSelectRule(rule)
                     }
-                    className="border border-[rgb(var(--sep-colour-59432c))]/50 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 text-xs text-[rgb(var(--sep-colour-b59e78))] transition hover:border-[rgb(var(--sep-colour-8c693e))] hover:text-[rgb(var(--sep-colour-e2c58f))] components_rules_public_rules_button_action_2"
+                    className="border border-[rgb(var(--sep-colour-59432c))]/50 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 text-xs text-[rgb(var(--sep-colour-b59e78))] transition hover:border-[rgb(var(--sep-skin-c1))] hover:bg-[rgb(var(--sep-skin-c1)/0.12)] hover:text-[rgb(var(--sep-skin-c1))] components_rules_public_rules_button_action_2"
                   >
                     {label ??
                       rule.title}
@@ -758,7 +758,7 @@ function GlossaryPanel({
                         relatedRule,
                       )
                     }
-                    className="mt-3 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9a7547))] hover:text-[rgb(var(--sep-colour-dfbd84))] components_rules_public_rules_button_related_rule"
+                    className="mt-3 border border-transparent px-2 py-1 text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-9a7547))] transition hover:border-[rgb(var(--sep-skin-c1))]/70 hover:bg-[rgb(var(--sep-skin-c1)/0.12)] hover:text-[rgb(var(--sep-skin-c1))] components_rules_public_rules_button_related_rule"
                   >
                     Related entry →
                   </button>

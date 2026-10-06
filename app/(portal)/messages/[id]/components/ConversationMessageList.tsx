@@ -61,11 +61,24 @@ function MessageModeBadge({
 
   return (
     <span
-      className={[((`inline-flex border px-2 py-1 text-[7px] uppercase tracking-[0.18em] ${
-        ongame
-          ? "border-[rgb(var(--sep-colour-9b7446))]/70 bg-[rgb(var(--sep-colour-312215))] text-[rgb(var(--sep-colour-e2bd82))]"
-          : "border-[rgb(var(--sep-colour-687083))]/70 bg-[rgb(var(--sep-colour-22252c))] text-[rgb(var(--sep-colour-c6ccd8))]"
-      }`)), "ml-2 messages_id_components_conversationmessagelist_span_text"].filter(Boolean).join(" ")}
+      className="ml-2 inline-flex border px-2 py-1 text-[7px] uppercase tracking-[0.18em] messages_id_components_conversationmessagelist_span_text"
+      style={{
+        backgroundColor: ongame
+          ? "rgb(var(--sep-skin-c2) / 0.28)"
+          : "rgb(var(--sep-skin-c1) / 0.14)",
+
+        borderColor: ongame
+          ? "rgb(var(--sep-skin-c1) / 0.85)"
+          : "rgb(var(--sep-skin-c2) / 0.85)",
+
+        color: ongame
+          ? "rgb(var(--sep-skin-c1))"
+          : "rgb(var(--sep-skin-c2))",
+
+        WebkitTextFillColor: ongame
+          ? "rgb(var(--sep-skin-c1))"
+          : "rgb(var(--sep-skin-c2))",
+      }}
     >
       {ongame
         ? "On-game"
@@ -73,7 +86,7 @@ function MessageModeBadge({
     </span>
   );
 }
-
+  
 function dateStart(
   value: string,
 ): number | null {
@@ -721,12 +734,12 @@ export function ConversationMessageList({
                 data-cosmetic-surface="pm"
                 className={[((`relative max-w-[92%] border px-2.5 py-2 transition ${
                   own
-                    ? ongame
-                      ? "ml-auto border-[rgb(var(--sep-colour-514233))] bg-[rgb(var(--sep-colour-100c09))]"
-                      : "ml-auto border-[rgb(var(--sep-colour-5c6372))] bg-[rgb(var(--sep-colour-191b21))]"
-                    : ongame
-                      ? "border-[rgb(var(--sep-colour-514233))] bg-[rgb(var(--sep-colour-100c09))]"
-                      : "border-[rgb(var(--sep-colour-5c6372))] bg-[rgb(var(--sep-colour-191b21))]"
+  ? ongame
+    ? "ml-auto border-[rgb(var(--sep-colour-514233))] bg-[rgb(var(--sep-colour-100c09))]"
+    : "ml-auto border-[rgb(var(--sep-colour-5c6372))] bg-[rgb(var(--sep-colour-332317))]"
+  : ongame
+    ? "border-[rgb(var(--sep-colour-514233))] bg-[rgb(var(--sep-colour-100c09))]"
+    : "border-[rgb(var(--sep-colour-5c6372))] bg-[rgb(var(--sep-colour-332317))]"
                 } ${
                   selected
   ? "ring-2 ring-[rgb(var(--sep-skin-c1))]"
