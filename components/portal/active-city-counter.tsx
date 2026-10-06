@@ -14,9 +14,6 @@ import { startConversationForModal } from "@/app/(portal)/messages/actions";
 import { openPortalModal } from "@/components/portal/portal-modal-button";
 import { useSanctionCapability } from "@/components/sanctions/sanction-capability-ui";
 import { CharacterOrderIdentity } from "@/components/characters/character-order-identity";
-import {
-  PRESENCE_ACTIVE_MINUTES,
-} from "@/lib/game/constants";
 import { createClient } from "@/lib/supabase/client";
 import type { PresenceStatus } from "@/types/game";
 
@@ -200,12 +197,64 @@ export function ActiveCityCounter({
       const supabase =
         createClient();
 
-      const activeSince =
-        new Date(
-          Date.now() -
-            PRESENCE_ACTIVE_MINUTES *
-              60_000,
-        ).toISOString();
+      let activeCharacterIds:
+        string[] = [];
+
+      try {
+        const response =
+          await fetch(
+            "/api/portal/active-character-ids",
+            {
+              cache: "no-store",
+            },
+          );
+
+        if (!response.ok) {
+          throw new Error(
+            `Active Portal session lookup failed with ${response.status}.`,
+          );
+        }
+
+        const payload =
+          (await response.json()) as {
+            characterIds?: unknown;
+          };
+
+        activeCharacterIds =
+          Array.isArray(
+            payload.characterIds,
+          )
+            ? payload.characterIds.filter(
+                (
+                  value,
+                ): value is string =>
+                  typeof value ===
+                  "string",
+              )
+            : [];
+      } catch (activeSessionError) {
+        console.error(
+          "Unable to refresh active Portal sessions:",
+          activeSessionError,
+        );
+
+        setError(
+          "The city presence list could not be loaded.",
+        );
+        setLoading(false);
+        return;
+      }
+
+      if (
+        activeCharacterIds.length ===
+        0
+      ) {
+        setPresentCharacters([]);
+        setCount(0);
+        setError(null);
+        setLoading(false);
+        return;
+      }
 
       const {
         data,
@@ -233,25 +282,25 @@ export function ActiveCityCounter({
             ),
 
             character:characters!character_presence_character_id_fkey(
-  id,
-  display_name,
-  portrait_url,
-  public_slug,
-  is_system,
-  title,
-  occupation,
+              id,
+              display_name,
+              portrait_url,
+              public_slug,
+              is_system,
+              title,
+              occupation,
 
-  order_memberships(
-    order:orders!order_memberships_order_id_fkey(
-      id,
-      name,
-      slug,
-      icon_url,
-      colour
-    )
-  ),
+              order_memberships(
+                order:orders!order_memberships_order_id_fkey(
+                  id,
+                  name,
+                  slug,
+                  icon_url,
+                  colour
+                )
+              ),
 
-  race:races!characters_race_id_fkey(
+              race:races!characters_race_id_fkey(
                 id,
                 name,
                 slug,
@@ -269,11 +318,10 @@ export function ActiveCityCounter({
             )
           `,
         )
-        .gte(
-          "last_seen_at",
-          activeSince,
-        )
-        
+        .in(
+          "character_id",
+          activeCharacterIds,
+        );
 
       if (presenceError) {
         console.error(
@@ -302,42 +350,45 @@ export function ActiveCityCounter({
             );
 
       const sortedRows =
-  [...visibleRows].sort(
-    (a, b) => {
-      const aCharacter =
-        normaliseRelation(
-          a.character,
+        [...visibleRows].sort(
+          (a, b) => {
+            const aCharacter =
+              normaliseRelation(
+                a.character,
+              );
+
+            const bCharacter =
+              normaliseRelation(
+                b.character,
+              );
+
+            const aName =
+              aCharacter?.display_name?.trim() ??
+              "";
+
+            const bName =
+              bCharacter?.display_name?.trim() ??
+              "";
+
+            return aName.localeCompare(
+              bName,
+              undefined,
+              {
+                sensitivity:
+                  "base",
+              },
+            );
+          },
         );
 
-      const bCharacter =
-        normaliseRelation(
-          b.character,
-        );
-
-      const aName =
-        aCharacter?.display_name?.trim() ??
-        "";
-
-      const bName =
-        bCharacter?.display_name?.trim() ??
-        "";
-
-      return aName.localeCompare(
-        bName,
-        undefined,
-        {
-          sensitivity: "base",
-        },
+      setPresentCharacters(
+        sortedRows,
       );
-    },
-  );
 
-setPresentCharacters(
-  sortedRows,
-);
       setCount(
-        visibleRows.length,
+        activeCharacterIds.length,
       );
+
       setError(null);
       setLoading(false);
     }, [isStaff]);

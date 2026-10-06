@@ -4,8 +4,8 @@ import { cache } from "react";
 import { redirect } from "next/navigation";
 
 import {
-  PRESENCE_ACTIVE_MINUTES,
-} from "@/lib/game/constants";
+  getActivePortalCharacterIds,
+} from "@/lib/portal/get-active-portal-character-ids";
 import { createClient } from "@/lib/supabase/server";
 import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
 import {
@@ -235,32 +235,11 @@ export const getPortalContext = cache(
     let visibleBreezeLodgingRoomIds:
       string[] = [];
 
-    const activeSince =
-      new Date(
-        Date.now() -
-          PRESENCE_ACTIVE_MINUTES *
-            60_000,
-      ).toISOString();
-
-    let onlineCountQuery =
-      supabase
-        .from("character_presence")
-        .select("character_id", {
-          count: "exact",
-          head: true,
-        })
-        .gte(
-          "last_seen_at",
-          activeSince,
-        );
-
-    if (!staffSession) {
-      onlineCountQuery =
-        onlineCountQuery.eq(
-          "appear_offline",
-          false,
-        );
-    }
+    const activePortalCharacterIdsPromise =
+      getActivePortalCharacterIds({
+        includeAppearOffline:
+          staffSession !== null,
+      });
 
     if (characterData) {
       const row =
@@ -343,11 +322,7 @@ export const getPortalContext = cache(
           data: unreadResult,
           error: unreadError,
         },
-        {
-          count:
-            onlineCharacterCount,
-          error: onlineError,
-        },
+        activePortalCharacterIds,
       ] = await Promise.all([
         getVisiblePrivateLocations(
           characterId,
@@ -374,7 +349,7 @@ export const getPortalContext = cache(
         supabase.rpc(
           "get_unread_direct_message_count",
         ),
-        onlineCountQuery,
+        activePortalCharacterIdsPromise,
       ]);
 
       if (presenceError) {
@@ -386,12 +361,6 @@ export const getPortalContext = cache(
       if (unreadError) {
         throw new Error(
           `Unable to count unread messages: ${unreadError.message}`,
-        );
-      }
-
-      if (onlineError) {
-        throw new Error(
-          `Unable to count online characters: ${onlineError.message}`,
         );
       }
 
@@ -429,7 +398,7 @@ export const getPortalContext = cache(
         presence,
         unreadMessageCount,
         onlineCharacterCount:
-          onlineCharacterCount ?? 0,
+          activePortalCharacterIds.length,
         currentRoomAccessAllowed,
         isStaff:
           staffSession !== null,
@@ -446,16 +415,8 @@ export const getPortalContext = cache(
       };
     }
 
-    const {
-      count: onlineCharacterCount,
-      error: onlineError,
-    } = await onlineCountQuery;
-
-    if (onlineError) {
-      throw new Error(
-        `Unable to count online characters: ${onlineError.message}`,
-      );
-    }
+    const activePortalCharacterIds =
+      await activePortalCharacterIdsPromise;
 
     return {
       user: {
@@ -467,7 +428,7 @@ export const getPortalContext = cache(
       presence,
       unreadMessageCount,
       onlineCharacterCount:
-        onlineCharacterCount ?? 0,
+        activePortalCharacterIds.length,
       currentRoomAccessAllowed,
       isStaff:
         staffSession !== null,
