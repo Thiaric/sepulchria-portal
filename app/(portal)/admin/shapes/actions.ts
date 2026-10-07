@@ -353,26 +353,38 @@ export async function updateShape(
 }
 
 export async function deleteShape(f:FormData){
-  await requireAdminSection("shapes"); const db=await createClient(); const id=txt(f,"shape_id");
+  await requireAdminSection("shapes");
 
-  const {count:effectCount,error:effectError}=await (db as any)
-    .from("character_effects")
-    .select("id",{count:"exact",head:true})
-    .eq("source_type","shape")
-    .eq("source_definition_id",id);
+  const id=txt(f,"shape_id");
 
-  if(effectError){
-    redirect(`/admin/shapes?error=${encodeURIComponent(`Unable to inspect Shape effects: ${effectError.message}`)}`);
+  if(!id){
+    redirect("/admin/shapes?error=Shape%20ID%20is%20missing");
   }
 
-  if((effectCount??0)>0){
-    redirect(`/admin/shapes?error=${encodeURIComponent(`This Shape cannot be deleted because ${effectCount} active or preserved character effect${effectCount===1?"":"s"} still refer to it. Remove those effects first.`)}`);
+  const admin=createAdminClient();
+
+  const {data,error}=await admin.rpc(
+    "delete_shape_completely",
+    {p_shape_id:id},
+  );
+
+  if(error){
+    redirect(
+      `/admin/shapes?error=${encodeURIComponent(error.message)}`,
+    );
   }
 
-  const {error}=await db.from("shapes").delete().eq("id",id);
-  if(error) redirect(`/admin/shapes?error=${encodeURIComponent(error.message)}`);
-  revalidatePath("/admin/shapes"); redirect("/admin/shapes?success=Shape%20deleted");
+  if(data!==true){
+    redirect("/admin/shapes?error=Shape%20not%20found");
+  }
+
+  revalidatePath("/admin/shapes");
+  revalidatePath("/game");
+  revalidatePath("/character");
+
+  redirect("/admin/shapes?success=Shape%20deleted");
 }
+
 export async function assignShape(f:FormData){
   await requireAdminSection("shapes");
   const db=await createClient();

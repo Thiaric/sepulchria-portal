@@ -9,6 +9,7 @@ import {
 } from "@/lib/auth/require-staff";
 import { sanitizeRichHtml } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 function readRequiredUuid(
   value: FormDataEntryValue | null,
@@ -489,147 +490,23 @@ export async function deleteRoom(
     );
   }
 
-  const supabase = await createClient();
+  const admin = createAdminClient();
 
-  const [
-    charactersResult,
-    presenceResult,
-    messagesResult,
-    outgoingConnectionsResult,
-    incomingConnectionsResult,
-    headquartersResult,
-  ] = await Promise.all([
-    supabase
-      .from("characters")
-      .select("id", {
-        count: "exact",
-        head: true,
-      })
-      .eq("current_room_id", roomId),
-
-    supabase
-      .from("character_presence")
-      .select("room_id", {
-        count: "exact",
-        head: true,
-      })
-      .eq("room_id", roomId),
-
-    supabase
-      .from("room_messages")
-      .select("id", {
-        count: "exact",
-        head: true,
-      })
-      .eq("room_id", roomId),
-
-    supabase
-      .from("room_connections")
-      .select("id", {
-        count: "exact",
-        head: true,
-      })
-      .eq("from_room_id", roomId),
-
-    supabase
-      .from("room_connections")
-      .select("id", {
-        count: "exact",
-        head: true,
-      })
-      .eq("to_room_id", roomId),
-
-    supabase
-      .from("order_headquarters")
-      .select("id", {
-        count: "exact",
-        head: true,
-      })
-      .eq("room_id", roomId),
-  ]);
-
-  const firstError =
-    charactersResult.error ??
-    presenceResult.error ??
-    messagesResult.error ??
-    outgoingConnectionsResult.error ??
-    incomingConnectionsResult.error ??
-    headquartersResult.error;
-
-  if (firstError) {
-    throw new Error(
-      `Unable to inspect room dependencies: ${firstError.message}`,
+  const { data, error } =
+    await admin.rpc(
+      "delete_room_completely",
+      { p_room_id: roomId },
     );
-  }
-
-  const characterCount =
-    charactersResult.count ?? 0;
-
-  const presenceCount =
-    presenceResult.count ?? 0;
-
-  const messageCount =
-    messagesResult.count ?? 0;
-
-  const connectionCount =
-    (outgoingConnectionsResult.count ??
-      0) +
-    (incomingConnectionsResult.count ??
-      0);
-
-  const headquartersCount =
-    headquartersResult.count ?? 0;
-
-  if (headquartersCount > 0) {
-    throw new Error(
-      "This room cannot be deleted because it is currently assigned as an Order Headquarters. Remove or change the Headquarters first.",
-    );
-  }
-
-  if (characterCount > 0) {
-    throw new Error(
-      `This room cannot be deleted because ${characterCount} ${
-        characterCount === 1
-          ? "character is"
-          : "characters are"
-      } currently assigned to it.`,
-    );
-  }
-
-  if (presenceCount > 0) {
-    throw new Error(
-      "This room cannot be deleted while character presence records still refer to it.",
-    );
-  }
-
-  if (messageCount > 0) {
-    throw new Error(
-      `This room cannot be deleted because it contains ${messageCount} ${
-        messageCount === 1
-          ? "message"
-          : "messages"
-      }.`,
-    );
-  }
-
-  if (connectionCount > 0) {
-    throw new Error(
-      `This room cannot be deleted because it still has ${connectionCount} ${
-        connectionCount === 1
-          ? "connection"
-          : "connections"
-      }. Remove them first.`,
-    );
-  }
-
-  const { error } = await supabase
-    .from("rooms")
-    .delete()
-    .eq("id", roomId);
 
   if (error) {
     throw new Error(
       `Unable to delete room: ${error.message}`,
+    );
+  }
+
+  if (data !== true) {
+    throw new Error(
+      "The selected room no longer exists.",
     );
   }
 

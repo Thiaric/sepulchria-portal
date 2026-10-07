@@ -760,6 +760,27 @@ function MoveControls({
     InventoryBrowserRow[];
   compact?: boolean;
 }) {
+  const [pending, startTransition] =
+    useTransition();
+
+  const [message, setMessage] =
+    useState<string | null>(null);
+
+  const [
+    targetContainerId,
+    setTargetContainerId,
+  ] = useState(
+    row.parent_container_id ??
+      "",
+  );
+
+  useEffect(() => {
+    setTargetContainerId(
+      row.parent_container_id ??
+        "",
+    );
+  }, [row.parent_container_id]);
+
   if (
     row.record_kind ===
       "unique" &&
@@ -769,35 +790,81 @@ function MoveControls({
     return null;
   }
 
+  const run = () => {
+    const data =
+      new FormData();
+
+    data.set(
+      "recordKind",
+      row.record_kind,
+    );
+
+    data.set(
+      "recordId",
+      row.record_id,
+    );
+
+    data.set(
+      "targetContainerId",
+      targetContainerId,
+    );
+
+    setMessage(null);
+
+    startTransition(
+      async () => {
+        const result =
+          await moveOwnInventoryItem(
+            data,
+          );
+
+        setMessage(
+          result.message,
+        );
+
+        if (!result.ok) {
+          return;
+        }
+
+        window.dispatchEvent(
+          new CustomEvent(
+            "sepulchria:inventory-item-moved",
+            {
+              detail: {
+                recordKind:
+                  row.record_kind,
+                recordId:
+                  row.record_id,
+                targetContainerId:
+                  result.targetContainerId,
+              },
+            },
+          ),
+        );
+      },
+    );
+  };
+
   return (
     <form
-      action={
-        moveOwnInventoryItem
-      }
+      onSubmit={(event) => {
+        event.preventDefault();
+        run();
+      }}
       className={[((compact
           ? "flex min-w-[220px] flex-1 gap-2"
           : "mt-3 flex flex-wrap gap-2")), "components_characters_character_inventory_browser_form_move_own_inventory_item"].filter(Boolean).join(" ")}
     >
-      <input className="components_characters_character_inventory_browser_input_record_kind"
-        type="hidden"
-        name="recordKind"
-        value={
-          row.record_kind
-        }
-      />
-      <input className="components_characters_character_inventory_browser_input_record_id"
-        type="hidden"
-        name="recordId"
-        value={row.record_id}
-      />
-
       <select
         name="targetContainerId"
-        defaultValue={
-          row.parent_container_id ??
-          ""
+        value={targetContainerId}
+        onChange={(event) =>
+          setTargetContainerId(
+            event.target.value,
+          )
         }
-        className="min-w-[150px] flex-1 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-1.5 text-[9px] text-[rgb(var(--sep-colour-cdbb9d))] outline-none focus:border-[rgb(var(--sep-colour-987344))] components_characters_character_inventory_browser_select_select"
+        disabled={pending}
+        className="min-w-[150px] flex-1 border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-100c09))] px-3 py-1.5 text-[9px] text-[rgb(var(--sep-colour-cdbb9d))] outline-none focus:border-[rgb(var(--sep-colour-987344))] disabled:opacity-50 components_characters_character_inventory_browser_select_select"
       >
         <option className="components_characters_character_inventory_browser_option_option" value="">
           Loose Inventory
@@ -831,10 +898,23 @@ function MoveControls({
 
       <button
         type="submit"
-        className="border border-[rgb(var(--sep-colour-6f5639))]/60 bg-[rgb(var(--sep-colour-1b140f))] px-3 py-1.5 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-bca483))] transition hover:border-[rgb(var(--sep-colour-987344))] hover:text-[rgb(var(--sep-colour-e2c99f))] components_characters_character_inventory_browser_button_move"
+        disabled={pending}
+        className="border border-[rgb(var(--sep-colour-6f5639))]/60 bg-[rgb(var(--sep-colour-1b140f))] px-3 py-1.5 text-[8px] uppercase tracking-[0.12em] text-[rgb(var(--sep-colour-bca483))] transition hover:border-[rgb(var(--sep-colour-987344))] hover:text-[rgb(var(--sep-colour-e2c99f))] disabled:cursor-wait disabled:opacity-50 components_characters_character_inventory_browser_button_move"
       >
-        Move
+        {
+          pending
+            ? "Moving..."
+            : "Move"
+        }
       </button>
+
+      {message &&
+      message !==
+        "Item moved." ? (
+        <span className="self-center text-[8px] text-red-400">
+          {message}
+        </span>
+      ) : null}
     </form>
   );
 }
@@ -2135,7 +2215,7 @@ function FilterBar({
 }
 
 export function CharacterInventoryBrowser({
-  rows,
+  rows: initialRows,
   characterName,
   own = false,
   useTargets = [],
@@ -2150,6 +2230,96 @@ export function CharacterInventoryBrowser({
 }) {
   const searchParams =
     useSearchParams();
+
+  const [rows, setRows] =
+    useState<InventoryBrowserRow[]>(
+      initialRows,
+    );
+
+  useEffect(() => {
+    setRows(initialRows);
+  }, [initialRows]);
+
+  useEffect(() => {
+    const handleInventoryMoved = (
+      event: Event,
+    ) => {
+      if (
+        !(event instanceof CustomEvent)
+      ) {
+        return;
+      }
+
+      const recordKind =
+        String(
+          event.detail?.recordKind ??
+            "",
+        );
+
+      const recordId =
+        String(
+          event.detail?.recordId ??
+            "",
+        );
+
+      const targetContainerId =
+        typeof event.detail
+          ?.targetContainerId ===
+        "string"
+          ? event.detail
+              .targetContainerId
+          : null;
+
+      if (
+        !recordId ||
+        ![
+          "standard",
+          "unique",
+        ].includes(recordKind)
+      ) {
+        return;
+      }
+
+      setRows((current) =>
+        current.map((row) =>
+          row.record_kind ===
+            recordKind &&
+          row.record_id ===
+            recordId
+            ? {
+                ...row,
+                parent_container_id:
+                  targetContainerId,
+                is_equipped:
+                  targetContainerId
+                    ? false
+                    : row.is_equipped,
+                equipped_slot:
+                  targetContainerId
+                    ? null
+                    : row.equipped_slot,
+                equipped_layer:
+                  targetContainerId
+                    ? null
+                    : row.equipped_layer,
+              }
+            : row,
+        ),
+      );
+    };
+
+    window.addEventListener(
+      "sepulchria:inventory-item-moved",
+      handleInventoryMoved,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "sepulchria:inventory-item-moved",
+        handleInventoryMoved,
+      );
+    };
+  }, []);
 
   const focusItemId =
     own

@@ -1571,7 +1571,8 @@ export async function deleteCharacterAdministration(
       first_name,
       surname,
       display_name,
-      status
+      status,
+      is_system
     `)
     .eq("id", characterId)
     .maybeSingle();
@@ -1585,6 +1586,25 @@ export async function deleteCharacterAdministration(
         characterError?.message ??
         "Character not found."
       }`,
+    );
+  }
+
+  const linkedNpc =
+    await supabase
+      .from("npcs")
+      .select("id")
+      .eq("character_id", characterId)
+      .maybeSingle();
+
+  if (linkedNpc.error) {
+    throw new Error(
+      `Unable to inspect NPC identity: ${linkedNpc.error.message}`,
+    );
+  }
+
+  if (linkedNpc.data) {
+    throw new Error(
+      "NPCs can only be deleted from NPC Administration.",
     );
   }
 

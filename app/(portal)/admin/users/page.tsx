@@ -475,6 +475,7 @@ export default async function AdminUsersPage({
                             </span>
 
                             <select
+                              key={`${user.user_id}:${user.staff_role ?? "player"}`}
                               name="role"
                               defaultValue={
                                 user.staff_role ??

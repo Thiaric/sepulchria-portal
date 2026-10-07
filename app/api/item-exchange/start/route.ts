@@ -3,17 +3,13 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import {
+  createTargetedCharacterNotification,
+} from "@/lib/notifications/create-targeted-character-notification";
+import {
   assertOrdinaryInteractionTargetAllowed,
 } from "@/lib/death/death-system";
 
 export const dynamic = "force-dynamic";
-
-function notificationExpiry() {
-  return new Date(
-    Date.now() +
-      7 * 24 * 60 * 60 * 1000,
-  ).toISOString();
-}
 
 export async function POST(
   request: Request,
@@ -280,16 +276,10 @@ export async function POST(
   }
 
   if (!existing) {
-    const now =
-      new Date().toISOString();
-
-    const {
-      data: notification,
-      error: notificationError,
-    } = await admin
-      .from("notifications")
-      .insert({
-        type: "system",
+    try {
+      await createTargetedCharacterNotification({
+        recipientCharacterId:
+          recipient.id,
         title:
           "Item Exchange request",
         body:
@@ -299,27 +289,16 @@ export async function POST(
           `/game?exchange=${encodeURIComponent(
             trade.id,
           )}`,
-        starts_at: now,
-        expires_at:
-          notificationExpiry(),
-        expires_game_at: null,
-        created_by: user.id,
-        is_automatic: true,
-        source_type:
+        sourceType:
           "item_trade",
-        source_id: trade.id,
-        source_trigger:
+        sourceId:
+          trade.id,
+        sourceTrigger:
           "opened",
-        staff_overridden: false,
-        is_active: true,
-      })
-      .select("id")
-      .single();
-
-    if (
-      notificationError ||
-      !notification
-    ) {
+        createdByUserId:
+          user.id,
+      });
+    } catch (error) {
       await cancelCreatedTrade();
 
       return NextResponse.json(
@@ -327,67 +306,12 @@ export async function POST(
           error:
             "The exchange could not be notified, so it was cancelled. " +
             (
-              notificationError
-                ?.message ??
-              ""
+              error instanceof Error
+                ? error.message
+                : ""
             ),
         },
         { status: 500 },
-      );
-    }
-
-    const {
-      error: targetError,
-    } = await admin
-      .from(
-        "notification_targets",
-      )
-      .insert({
-        notification_id:
-          notification.id,
-        target_type:
-          "character",
-        target_id:
-          recipient.id,
-      });
-
-    if (targetError) {
-      await admin
-        .from("notifications")
-        .delete()
-        .eq(
-          "id",
-          notification.id,
-        );
-
-      await cancelCreatedTrade();
-
-      return NextResponse.json(
-        {
-          error:
-            "The exchange could not be notified, so it was cancelled. " +
-            targetError.message,
-        },
-        { status: 500 },
-      );
-    }
-
-    const {
-      error: readySignalError,
-    } = await admin
-      .from("notifications")
-      .update({
-        starts_at: now,
-      })
-      .eq(
-        "id",
-        notification.id,
-      );
-
-    if (readySignalError) {
-      console.warn(
-        "Item Exchange notification realtime signal:",
-        readySignalError.message,
       );
     }
   }

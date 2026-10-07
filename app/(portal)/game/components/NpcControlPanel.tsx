@@ -4,7 +4,7 @@ import { useActionState,useCallback,useEffect,useMemo,useState,useTransition } f
 import { useFormStatus } from "react-dom";
 import { openPortalModal } from "@/components/portal/portal-modal-button";
 import { MechanicalFeatPanel } from "./MechanicalFeatPanel";
-import { createNpc,loadNpcControlData,sendNpcMessage,sendNpcWhisper,type NpcControlData,updateNpc } from "../npc-actions";
+import { createNpc,deleteNpc,loadNpcControlData,sendNpcMessage,sendNpcWhisper,type NpcControlData,updateNpc } from "../npc-actions";
 import {
   loadNpcMechanicsData,
   npcWarpShape,
@@ -242,6 +242,30 @@ export function NpcControlPanel({roomId}:{roomId:string}){
       }
     });
   }
+  function removeSelectedNpc(){
+    if(!selected)return;
+
+    if(
+      !window.confirm(
+        `Permanently delete NPC "${selected.name}"? This cannot be undone.`,
+      )
+    ){
+      return;
+    }
+
+    startTransition(async()=>{
+      const result=await deleteNpc({npcId:selected.id});
+      setStatus(result.message);
+
+      if(result.ok){
+        setEditorOpen(false);
+        setCreating(false);
+        setSelectedId("");
+        await refresh();
+      }
+    });
+  }
+
   function post(){
     if(!selected)return;
     startTransition(async()=>{
@@ -593,9 +617,24 @@ export function NpcControlPanel({roomId}:{roomId:string}){
           <button type="button" onClick={()=>openPortalModal({label:`${selected.name} · Shapes`,title:`${selected.name} · Shapes`,icon:selected.portrait_url??"/icons/characters.png",href:`/admin/characters/${selected.character_id}/warping`})} className={buttonClass}>Shapes</button>
         </div>:null}
 
-        <div className="mt-5 flex justify-end gap-2">
-          <button type="button" onClick={closeEditor} className={buttonClass}>Cancel</button>
-          <button type="button" disabled={pending} onClick={save} className="border border-[rgb(var(--sep-colour-8d6d3e))]/70 bg-[rgb(var(--sep-colour-21190f))] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d8bf91))] disabled:opacity-40">{creating?"Create in this Location":inThisRoom?"Save NPC":"Save & Bring Here"}</button>
+        <div className="mt-5 flex flex-wrap justify-between gap-2">
+          <div>
+            {!creating&&selected?(
+              <button
+                type="button"
+                disabled={pending}
+                onClick={removeSelectedNpc}
+                className="border border-red-900/60 bg-red-950/20 px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-red-400 disabled:opacity-40"
+              >
+                Delete NPC permanently
+              </button>
+            ):null}
+          </div>
+
+          <div className="flex gap-2">
+            <button type="button" onClick={closeEditor} className={buttonClass}>Cancel</button>
+            <button type="button" disabled={pending} onClick={save} className="border border-[rgb(var(--sep-colour-8d6d3e))]/70 bg-[rgb(var(--sep-colour-21190f))] px-4 py-2 text-[8px] uppercase tracking-[0.14em] text-[rgb(var(--sep-colour-d8bf91))] disabled:opacity-40">{creating?"Create in this Location":inThisRoom?"Save NPC":"Save & Bring Here"}</button>
+          </div>
         </div>
       </div>
     </div>:null}

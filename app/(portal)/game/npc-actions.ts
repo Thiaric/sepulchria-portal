@@ -110,6 +110,42 @@ export async function createNpc(input:{roomId:string;firstName:string;surname?:s
   }catch(error){return {ok:false,message:error instanceof Error?error.message:"Unable to create NPC."};}
 }
 
+export async function deleteNpc(input:{npcId:string}){
+  try{
+    const {admin}=await requireNpcStaff();
+    const npcId=String(input.npcId??"").trim();
+
+    if(!npcId){
+      return {ok:false,message:"Choose an NPC to delete."};
+    }
+
+    const result=await admin.rpc(
+      "delete_npc_completely",
+      {p_npc_id:npcId},
+    );
+
+    if(result.error){
+      return {
+        ok:false,
+        message:`Unable to delete NPC: ${result.error.message}`,
+      };
+    }
+
+    if(result.data!==true){
+      return {ok:false,message:"NPC not found."};
+    }
+
+    return {ok:true,message:"NPC deleted permanently."};
+  }catch(error){
+    return {
+      ok:false,
+      message:error instanceof Error
+        ? error.message
+        : "Unable to delete NPC.",
+    };
+  }
+}
+
 export async function updateNpc(input:{npcId:string;roomId:string;firstName:string;surname?:string;pronouns?:string;portraitUrl?:string;raceId?:string;orderId?:string;isActive:boolean;isLocationActive:boolean;moveHere:boolean}){
   try{
     const {admin,user}=await requireNpcStaff(); await assertRoom(admin,input.roomId);

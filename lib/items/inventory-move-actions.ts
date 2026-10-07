@@ -1,24 +1,21 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-
 import { createClient } from "@/lib/supabase/server";
+
+export type MoveOwnInventoryItemResult = {
+  ok: boolean;
+  message: string;
+  targetContainerId: string | null;
+};
 
 function text(formData: FormData, name: string) {
   const value = formData.get(name);
   return typeof value === "string" ? value.trim() : "";
 }
 
-function fail(message: string): never {
-  const params = new URLSearchParams();
-  params.set("error", message);
-  redirect(`/character?${params.toString()}`);
-}
-
 export async function moveOwnInventoryItem(
   formData: FormData,
-) {
+): Promise<MoveOwnInventoryItemResult> {
   const recordKind = text(formData, "recordKind");
   const recordId = text(formData, "recordId");
   const targetContainerId =
@@ -28,7 +25,11 @@ export async function moveOwnInventoryItem(
     !["standard", "unique"].includes(recordKind) ||
     !recordId
   ) {
-    fail("Invalid Item.");
+    return {
+      ok: false,
+      message: "Invalid Item.",
+      targetContainerId,
+    };
   }
 
   const supabase = await createClient();
@@ -43,9 +44,16 @@ export async function moveOwnInventoryItem(
   );
 
   if (error) {
-    fail(error.message);
+    return {
+      ok: false,
+      message: error.message,
+      targetContainerId,
+    };
   }
 
-  revalidatePath("/character");
-  revalidatePath("/characters");
+  return {
+    ok: true,
+    message: "Item moved.",
+    targetContainerId,
+  };
 }

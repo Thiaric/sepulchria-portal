@@ -1605,7 +1605,7 @@ const selectedAncestryGiftIds =
               </div>
             )}
 
-            {canDeleteCharacter ? (
+            {canDeleteCharacter && !isNpc ? (
             <div id="admin-character-danger-zone" className="scroll-mt-4 mt-8 border-t border-[rgb(var(--sep-colour-6f302b))]/45 pt-6 admin_characters_id_page_div_admin_character_danger_zone">
               <div className="border border-[rgb(var(--sep-colour-843a32))]/60 bg-[rgb(var(--sep-colour-26110f))]/65 p-4 admin_characters_id_page_div_permanently_delete_character">
                 <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-c06d62))] admin_characters_id_page_p_permanently_delete_character">
