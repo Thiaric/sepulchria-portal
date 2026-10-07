@@ -484,6 +484,134 @@ export default function RoomChatForm({
     viewerCharacterId,
   ]);
 
+  const [
+    recentRoomActionCharacterIds,
+    setRecentRoomActionCharacterIds,
+  ] = useState<string[]>([]);
+
+  useEffect(() => {
+    let active = true;
+
+    async function refreshRecentRoomActions() {
+      try {
+        const response =
+          await fetch(
+            `/api/game/recent-room-actions?roomId=${encodeURIComponent(
+              roomId,
+            )}`,
+            {
+              cache: "no-store",
+            },
+          );
+
+        const result =
+          (await response.json()) as {
+            characterIds?: string[];
+            error?: string;
+          };
+
+        if (
+          !active ||
+          !response.ok
+        ) {
+          if (
+            active &&
+            !response.ok
+          ) {
+            console.error(
+              "Unable to refresh recent room actions:",
+              result.error ??
+                response.statusText,
+            );
+          }
+          return;
+        }
+
+        setRecentRoomActionCharacterIds(
+          Array.isArray(result.characterIds)
+            ? result.characterIds
+            : [],
+        );
+      } catch (error) {
+        if (active) {
+          console.error(
+            "Unable to refresh recent room actions:",
+            error,
+          );
+        }
+      }
+    }
+
+    void refreshRecentRoomActions();
+
+    const db = createClient();
+
+    const channel =
+      db
+        .channel(
+          `recent-room-actions-${roomId}-${crypto.randomUUID()}`,
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "room_messages",
+            filter:
+              `room_id=eq.${roomId}`,
+          },
+          () => {
+            void refreshRecentRoomActions();
+          },
+        )
+        .subscribe();
+
+    const timer =
+      window.setInterval(
+        () => {
+          void refreshRecentRoomActions();
+        },
+        30_000,
+      );
+
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+      void db.removeChannel(channel);
+    };
+  }, [roomId]);
+
+  const recentRoomActionIdSet =
+    useMemo(
+      () =>
+        new Set(
+          recentRoomActionCharacterIds,
+        ),
+      [
+        recentRoomActionCharacterIds,
+      ],
+    );
+
+  const viewerHasRecentRoomAction =
+    recentRoomActionIdSet.has(
+      viewerCharacterId,
+    );
+
+  const contextualTargetCharacters =
+    useMemo(
+      () =>
+        presentCharacters.filter(
+          (entry) =>
+            recentRoomActionIdSet.has(
+              entry.id,
+            ),
+        ),
+      [
+        presentCharacters,
+        recentRoomActionIdSet,
+      ],
+    );
+
   const [attributes, setAttributes] = useState<CharacterAttributes>({
     muscles: null,
     reflexes: null,
@@ -802,6 +930,21 @@ export default function RoomChatForm({
         ),
       [
         presentCharacters,
+        beyondEssenceCharacterIdSet,
+      ],
+    );
+
+  const contextualOrdinaryTargetCharacters =
+    useMemo(
+      () =>
+        contextualTargetCharacters.filter(
+          (entry) =>
+            !beyondEssenceCharacterIdSet.has(
+              entry.id,
+            ),
+        ),
+      [
+        contextualTargetCharacters,
         beyondEssenceCharacterIdSet,
       ],
     );
@@ -2722,7 +2865,7 @@ function ignoreSpellingWord() {
                     className="w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2.5 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] outline-none focus:border-[rgb(var(--sep-colour-a17a45))] game_components_roomchatform_select_select_3"
                   >
                     <option className="game_components_roomchatform_option_option_6" value="">No Character target</option>
-                    {ordinaryTargetCharacters.map((entry) => (
+                    {contextualOrdinaryTargetCharacters.map((entry) => (
                       <option className="game_components_roomchatform_option_option_7" key={entry.id} value={entry.id}>
                         {entry.display_name}
                       </option>
@@ -2856,7 +2999,7 @@ function ignoreSpellingWord() {
                 className="mt-2 w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] game_components_roomchatform_select_select_4"
               >
                 <option className="game_components_roomchatform_option_option_8" value="">No Character target</option>
-                {ordinaryTargetCharacters.map((entry) => (
+                {contextualOrdinaryTargetCharacters.map((entry) => (
                   <option className="game_components_roomchatform_option_option_9" key={entry.id} value={entry.id}>
                     {entry.display_name}
                   </option>
@@ -2923,7 +3066,7 @@ function ignoreSpellingWord() {
                 className="mt-2 w-full border border-[rgb(var(--sep-colour-654c31))] bg-[rgb(var(--sep-colour-0f0c09))] px-3 py-2 text-[10px] text-[rgb(var(--sep-colour-d8c29b))] game_components_roomchatform_select_select_5"
               >
                 <option className="game_components_roomchatform_option_option_11" value="">No Character target</option>
-                {ordinaryTargetCharacters.map((entry) => (
+                {contextualOrdinaryTargetCharacters.map((entry) => (
                   <option className="game_components_roomchatform_option_option_12" key={entry.id} value={entry.id}>
                     {entry.display_name}
                   </option>
@@ -3035,7 +3178,7 @@ function ignoreSpellingWord() {
                     ) : (
                       <option className="game_components_roomchatform_option_option_15" value="">Choose character...</option>
                     )}
-                    {ordinaryTargetCharacters.map((entry) => (
+                    {contextualOrdinaryTargetCharacters.map((entry) => (
                       <option className="game_components_roomchatform_option_option_16" key={entry.id} value={entry.id}>
                         {entry.display_name}
                       </option>
@@ -3187,7 +3330,7 @@ function ignoreSpellingWord() {
                   <MechanicalFeatPanel
                     gift={selectedGift}
                     viewerCharacterId={viewerCharacterId}
-                    presentCharacters={ordinaryTargetCharacters}
+                    presentCharacters={contextualOrdinaryTargetCharacters}
                     onResolved={refreshRoomFeats}
                   />
                 ) : selectedGift.effectMode === "passive" ? (
@@ -3230,7 +3373,7 @@ function ignoreSpellingWord() {
         </form>
       ) : utilityMode === "warping" ? (
         <WarpingPanel
-          presentCharacters={presentCharacters}
+          presentCharacters={contextualTargetCharacters}
           beyondEssenceCharacterIds={
             beyondEssenceCharacterIds
           }
@@ -3342,7 +3485,7 @@ function ignoreSpellingWord() {
 
                     {selectedItem.targetMode !==
                     "self"
-                      ? presentCharacters.map(
+                      ? contextualTargetCharacters.map(
                           (entry) => (
                             <option className="game_components_roomchatform_option_option_20"
                               key={entry.id}
@@ -3617,8 +3760,17 @@ if (
 
         <button
           type="button"
-          disabled={viewerDead}
-          title={viewerDead ? "Unavailable while dead." : undefined}
+          disabled={
+            viewerDead ||
+            !viewerHasRecentRoomAction
+          }
+          title={
+            viewerDead
+              ? "Unavailable while dead."
+              : !viewerHasRecentRoomAction
+                ? "Make a proper room action first."
+                : undefined
+          }
           onClick={() =>
             toggleUtility("attributes")
           }
@@ -3631,8 +3783,17 @@ if (
 
         <button
           type="button"
-          disabled={viewerDead}
-          title={viewerDead ? "Unavailable while dead." : undefined}
+          disabled={
+            viewerDead ||
+            !viewerHasRecentRoomAction
+          }
+          title={
+            viewerDead
+              ? "Unavailable while dead."
+              : !viewerHasRecentRoomAction
+                ? "Make a proper room action first."
+                : undefined
+          }
           onClick={() =>
             toggleUtility("feat")
           }
@@ -3645,8 +3806,17 @@ if (
 
         <button
           type="button"
-          disabled={viewerDead}
-          title={viewerDead ? "Unavailable while dead." : undefined}
+          disabled={
+            viewerDead ||
+            !viewerHasRecentRoomAction
+          }
+          title={
+            viewerDead
+              ? "Unavailable while dead."
+              : !viewerHasRecentRoomAction
+                ? "Make a proper room action first."
+                : undefined
+          }
           onClick={() => toggleUtility("warping")}
           className={[((utilityMode === "warping"
               ? utilityButtonActiveClass
@@ -3657,8 +3827,17 @@ if (
 
         <button
           type="button"
-          disabled={viewerDead}
-          title={viewerDead ? "Unavailable while dead." : undefined}
+          disabled={
+            viewerDead ||
+            !viewerHasRecentRoomAction
+          }
+          title={
+            viewerDead
+              ? "Unavailable while dead."
+              : !viewerHasRecentRoomAction
+                ? "Make a proper room action first."
+                : undefined
+          }
           onClick={() =>
             toggleUtility("items")
           }

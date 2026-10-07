@@ -4,6 +4,10 @@ import { revalidatePath } from "next/cache";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { getStaffSession } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
+import {
+  assertRecentRoomAction,
+  getRecentRoomActionCharacterIds,
+} from "@/lib/game/recent-room-actions";
 import { getCharacterShapeAccess } from "@/lib/warping/shape-access";
 import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
 import { resolveImmediateShapeCastForNpc, resolveIncomingShape, resolveIncomingDispel } from "./warping-actions";
@@ -358,10 +362,23 @@ export async function loadNpcMechanicsData(input:{npcId:string;roomId:string}){
       .map((x:any)=>one(x.shape) as any)
       .filter((x:any)=>x&&x.is_active===true);
 
+    const recentActionIds=
+      await getRecentRoomActionCharacterIds(
+        input.roomId,
+      );
+
     const rawTargets=(presenceResult.data??[])
       .filter((x:any)=>x.appear_offline!==true)
       .map((x:any)=>one(x.character) as any)
-      .filter((x:any)=>x&&x.status==="approved"&&x.id!==character.id);
+      .filter(
+        (x:any)=>
+          x&&
+          x.status==="approved"&&
+          x.id!==character.id&&
+          recentActionIds.has(
+            String(x.id),
+          ),
+      );
 
     const systemTargetIds=rawTargets
       .filter((x:any)=>x.is_system===true)
@@ -397,7 +414,18 @@ export async function loadNpcMechanicsData(input:{npcId:string;roomId:string}){
         is_system:x.is_system===true,
       }));
 
-    return {ok:true,characterId:character.id,gifts,items,shapes,targets};
+    return {
+      ok:true,
+      characterId:character.id,
+      canUseContextualMechanics:
+        recentActionIds.has(
+          String(character.id),
+        ),
+      gifts,
+      items,
+      shapes,
+      targets,
+    };
   }catch(e){
     return {ok:false,message:e instanceof Error?e.message:"Unable to load NPC mechanics.",gifts:[],items:[],shapes:[],targets:[]};
   }
@@ -717,6 +745,13 @@ async function buildFullNpcWarpMessage({
 export async function npcWarpShape(input:{npcId:string;roomId:string;shapeId:string;targetIds:string[];writtenTarget?:string}){
   try{
     const {a,userId,speakerCharacterId,npc,character}=await requireStaffNpc(input.npcId,input.roomId);
+
+    await assertRecentRoomAction(
+      input.roomId,
+      character.id,
+      character.display_name,
+    );
+
     const access=await getCharacterShapeAccess(character.id,input.shapeId);
     if(!access.allowed)return {ok:false,message:access.reasons.join(" · ")||"This Shape cannot currently be Warped."};
 
@@ -734,6 +769,25 @@ export async function npcWarpShape(input:{npcId:string;roomId:string;shapeId:str
     if(!isWritten&&!self&&!targetIds.length)return {ok:false,message:"Choose a target."};
     if(s.target_scope!=="multiple"&&targetIds.length>1)targetIds=targetIds.slice(0,1);
     if(s.target_scope==="multiple")targetIds=targetIds.slice(0,Math.max(1,Number(s.max_targets??1)));
+
+    if(!isWritten&&!self){
+      const recentActionIds=
+        await getRecentRoomActionCharacterIds(
+          input.roomId,
+        );
+
+      if(
+        targetIds.some(
+          id=>!recentActionIds.has(id),
+        )
+      ){
+        return {
+          ok:false,
+          message:
+            "One or more selected targets have not made a proper action in this Location within the last hour.",
+        };
+      }
+    }
 
     const cr=await a.from("shape_casts").insert({
       caster_character_id:character.id,shape_id:s.id,room_id:input.roomId,

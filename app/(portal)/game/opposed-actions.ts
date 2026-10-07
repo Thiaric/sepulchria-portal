@@ -13,6 +13,10 @@ import { revalidatePath } from "next/cache";
 import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
 
 import { createClient } from "@/lib/supabase/server";
+import {
+  assertRecentRoomAction,
+  hasRecentRoomAction,
+} from "@/lib/game/recent-room-actions";
 
 import type { ActionState, CharacterAttributeKey } from "@/types/game";
 
@@ -446,6 +450,19 @@ async function roomTarget(roomId: string, targetId: string) {
 
     }
 
+  }
+
+
+
+  if (
+    !(await hasRecentRoomAction(
+      roomId,
+      data.id,
+    ))
+  ) {
+    throw new Error(
+      "That Character has not made a proper action in this Location within the last hour.",
+    );
   }
 
 
@@ -905,6 +922,12 @@ export async function startAttributeOpposedAction(
 
     const { character } = await ownedCharacter(formData);
 
+    await assertRecentRoomAction(
+      character.current_room_id!,
+      character.id,
+      character.display_name,
+    );
+
 
 
     const actionCode = field(
@@ -1065,6 +1088,12 @@ export async function startUnarmedAttack(
 
     const { character } = await ownedCharacter(formData);
 
+    await assertRecentRoomAction(
+      character.current_room_id!,
+      character.id,
+      character.display_name,
+    );
+
     const targetId = field(formData, "opposed_target_character_id");
 
     const otherTarget = field(formData, "opposed_external_target");
@@ -1196,6 +1225,12 @@ export async function startWeaponOpposedAttack(
   try {
 
     const { supabase, character } = await ownedCharacter(formData);
+
+    await assertRecentRoomAction(
+      character.current_room_id!,
+      character.id,
+      character.display_name,
+    );
 
     const recordKind = field(formData, "item_record_kind");
 

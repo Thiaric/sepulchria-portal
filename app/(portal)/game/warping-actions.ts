@@ -13,6 +13,9 @@ import { getCharacterAttributeBreakdown, getEffectiveCharacterAttributes } from 
 import { applyGiftCurrentHealthDelta } from "@/lib/gifts/gift-health-effects";
 
 import { createClient } from "@/lib/supabase/server";
+import {
+  getRecentRoomActionCharacterIds,
+} from "@/lib/game/recent-room-actions";
 
 import {
 
@@ -25,6 +28,94 @@ import {
 
 
 export type WarpingActionState={ok:boolean;message:string;submittedAt?:number};
+
+export async function getCurrentShapeContextEligibility(
+  roomId: string,
+): Promise<{
+  ok: boolean;
+  message: string;
+  characterIds: string[];
+}> {
+  try {
+    const db =
+      await createClient();
+
+    const auth =
+      await db.auth.getUser();
+
+    if (!auth.data.user) {
+      throw new Error(
+        "Authentication required.",
+      );
+    }
+
+    const character =
+      await admin()
+        .from("characters")
+        .select(
+          "id,current_room_id,status",
+        )
+        .eq(
+          "user_id",
+          auth.data.user.id,
+        )
+        .eq(
+          "is_system",
+          false,
+        )
+        .maybeSingle();
+
+    if (
+      character.error ||
+      !character.data
+    ) {
+      throw new Error(
+        character.error?.message ??
+          "Character not found.",
+      );
+    }
+
+    if (
+      character.data.status !== "approved" ||
+      character.data.current_room_id !== roomId
+    ) {
+      throw new Error(
+        "This is not your current Location.",
+      );
+    }
+
+    const ids =
+      await getRecentRoomActionCharacterIds(
+        roomId,
+      );
+
+    if (!ids.has(character.data.id)) {
+      return {
+        ok: false,
+        message:
+          "Make a proper room action before using Shapes.",
+        characterIds:
+          Array.from(ids),
+      };
+    }
+
+    return {
+      ok: true,
+      message: "",
+      characterIds:
+        Array.from(ids),
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Unable to verify Shape eligibility.",
+      characterIds: [],
+    };
+  }
+}
 
 
 

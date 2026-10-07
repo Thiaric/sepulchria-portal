@@ -321,7 +321,36 @@ export function NpcControlPanel({roomId}:{roomId:string}){
       {!mechanics.ok&&mechanicsStatus?<p className="mb-2 text-[9px] text-red-300">{mechanicsStatus}</p>:null}
 
       <div className="flex flex-wrap gap-2">
-        {(["attribute","feat","item","shape","combat","whisper","give"] as const).map(m=><button key={m} type="button" onClick={()=>{setMechanicsMode(mechanicsMode===m?null:m);setMechanicsStatus("");}} className={buttonClass}>{m==="give"?"Give Item":m}</button>)}
+        {(["attribute","feat","item","shape","combat","whisper","give"] as const).map(m=>{
+          const contextual=
+            ["attribute","feat","item","shape","combat"].includes(m);
+
+          const disabled=
+            contextual&&
+            mechanics.canUseContextualMechanics!==true;
+
+          return <button
+            key={m}
+            type="button"
+            disabled={disabled}
+            title={
+              disabled
+                ? "This NPC must make a proper room action first."
+                : undefined
+            }
+            onClick={()=>{
+              setMechanicsMode(
+                mechanicsMode===m
+                  ? null
+                  : m,
+              );
+              setMechanicsStatus("");
+            }}
+            className={`${buttonClass} disabled:cursor-not-allowed disabled:opacity-40`}
+          >
+            {m==="give"?"Give Item":m}
+          </button>;
+        })}
       </div>
 
       {mechanicsMode==="attribute"&&<div className="mt-3 grid gap-2 sm:grid-cols-[1fr_1fr_auto]">

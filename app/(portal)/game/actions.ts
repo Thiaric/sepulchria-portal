@@ -15,6 +15,10 @@ import {
 import { getStaffSession } from "@/lib/auth/require-staff";
 import { createClient } from "@/lib/supabase/server";
 import {
+  assertRecentRoomAction,
+  hasRecentRoomAction,
+} from "@/lib/game/recent-room-actions";
+import {
   assertDeadTargetAllowed,
   assertGhostChatAllowed,
   assertWhisperBetweenCharactersAllowed,
@@ -315,6 +319,17 @@ async function resolveGiftTarget({
   ) {
     throw new Error(
       "That character is no longer present in this Location.",
+    );
+  }
+
+  if (
+    !(await hasRecentRoomAction(
+      roomId,
+      requestedTargetId,
+    ))
+  ) {
+    throw new Error(
+      "That character has not made a proper action in this Location within the last hour.",
     );
   }
 
@@ -1519,6 +1534,12 @@ export async function useRoomGift(
 
     const roomId = character.current_room_id;
 
+    await assertRecentRoomAction(
+      roomId,
+      character.id,
+      character.display_name,
+    );
+
     const { error: staffExpiryError } = await supabase.rpc(
       "reconcile_expired_staff_gifts",
       { p_character_id: character.id },
@@ -1773,6 +1794,12 @@ export async function activateRoomGift(
     }
 
     const roomId = character.current_room_id;
+
+    await assertRecentRoomAction(
+      roomId,
+      character.id,
+      character.display_name,
+    );
 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
@@ -2536,113 +2563,6 @@ export async function heartbeatPresence(): Promise<PresenceActionResult> {
   }
 }
 
-async function leaveLocationForMap(
-  destination:
-    | "aureth"
-    | "sepulchria",
-): Promise<void> {
-  const supabase =
-    await createClient();
-
-  const {
-    data: { user },
-    error: userError,
-  } =
-    await supabase.auth.getUser();
-
-  if (userError || !user) {
-    redirect("/homepage");
-  }
-
-  const {
-    data: character,
-    error: characterError,
-  } = await supabase
-    .from("characters")
-    .select("id")
-    .eq(
-      "user_id",
-      user.id,
-    )
-    .maybeSingle();
-
-  if (characterError) {
-    throw new Error(
-      `Unable to identify the Character before opening the map: ${characterError.message}`,
-    );
-  }
-
-  if (character) {
-    const now =
-      new Date().toISOString();
-
-    const {
-      error: presenceError,
-    } = await supabase
-      .from("character_presence")
-      .upsert(
-        {
-          character_id:
-            character.id,
-          room_id: null,
-          last_seen_at:
-            now,
-        },
-        {
-          onConflict:
-            "character_id",
-        },
-      );
-
-    if (presenceError) {
-      throw new Error(
-        `Unable to leave Location presence before opening the map: ${presenceError.message}`,
-      );
-    }
-
-    const {
-      error: locationError,
-    } = await supabase
-      .from("characters")
-      .update({
-        current_room_id:
-          null,
-        updated_at:
-          now,
-      })
-      .eq(
-        "id",
-        character.id,
-      );
-
-    if (locationError) {
-      throw new Error(
-        `Unable to leave the current Location before opening the map: ${locationError.message}`,
-      );
-    }
-
-  }
-
-  redirect(
-    destination ===
-      "sepulchria"
-      ? "/?map=sepulchria"
-      : "/",
-  );
-}
-
-export async function leaveLocationForAurethMap(): Promise<void> {
-  await leaveLocationForMap(
-    "aureth",
-  );
-}
-
-export async function leaveLocationForSepulchriaMap(): Promise<void> {
-  await leaveLocationForMap(
-    "sepulchria",
-  );
-}
-
 export async function leaveCurrentRoom(): Promise<void> {
   const {
     supabase,
@@ -3009,6 +2929,12 @@ export async function sendRoomAttributeCheck(
           "Your character has no current room.",
       };
     }
+
+    await assertRecentRoomAction(
+      character.current_room_id,
+      character.id,
+      character.display_name,
+    );
 
     const effectiveAttributes =
       await getEffectiveCharacterAttributes(
@@ -3476,6 +3402,12 @@ export async function useRoomItem(
       };
     }
 
+    await assertRecentRoomAction(
+      character.current_room_id,
+      character.id,
+      character.display_name,
+    );
+
     const roomMessageClient =
       await getRoomMessageInsertClient(
         supabase,
@@ -3635,6 +3567,19 @@ export async function useRoomItem(
         return {
           ok: false,
           message: "That character is no longer present in this room.",
+        };
+      }
+
+      if (
+        !(await hasRecentRoomAction(
+          character.current_room_id,
+          targetCharacterId,
+        ))
+      ) {
+        return {
+          ok: false,
+          message:
+            "That character has not made a proper action in this Location within the last hour.",
         };
       }
     }

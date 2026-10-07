@@ -15,6 +15,7 @@ import {
 import { sendRoomMessage } from "../actions";
 import {
   commitShapeCast,
+  getCurrentShapeContextEligibility,
   prepareDispelEffect,
   resolveImmediateShapeCast,
   rollbackFailedShapeCast,
@@ -1035,6 +1036,22 @@ export function WarpingPanel({
         );
       }
 
+      const contextualEligibility =
+        await getCurrentShapeContextEligibility(
+          me.data.current_room_id,
+        );
+
+      if (!contextualEligibility.ok) {
+        throw Error(
+          contextualEligibility.message,
+        );
+      }
+
+      const recentActionIds =
+        new Set(
+          contextualEligibility.characterIds,
+        );
+
       const freshAccess =
         s._item_granted
           ? {
@@ -1108,6 +1125,21 @@ export function WarpingPanel({
       ) {
         throw Error(
           "Choose a Dispel target and an active effect to dispel before Warping.",
+        );
+      }
+
+      if (
+        !wt &&
+        !self &&
+        targets.some(
+          (targetId) =>
+            !recentActionIds.has(
+              targetId,
+            ),
+        )
+      ) {
+        throw Error(
+          "One or more selected targets have not made a proper action in this Location within the last hour.",
         );
       }
 

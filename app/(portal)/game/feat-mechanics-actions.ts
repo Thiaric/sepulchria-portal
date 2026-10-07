@@ -3,6 +3,10 @@
 import { revalidatePath } from "next/cache";
 
 import { createAdminClient } from "@/lib/supabase/admin";
+import {
+  assertRecentRoomAction,
+  getRecentRoomActionCharacterIds,
+} from "@/lib/game/recent-room-actions";
 import { createClient } from "@/lib/supabase/server";
 import { getStaffSession } from "@/lib/auth/require-staff";
 
@@ -128,6 +132,12 @@ export async function useMechanicalFeat(
     if (!character.current_room_id) {
       throw new Error("Enter a Location before using a Feat.");
     }
+
+    await assertRecentRoomAction(
+      character.current_room_id,
+      character.id,
+      character.display_name,
+    );
 
     const {
       data: ownership,
@@ -275,6 +285,22 @@ export async function useMechanicalFeat(
       if (otherIds.some((id) => !present.has(id))) {
         throw new Error(
           "One or more selected targets are no longer present in this Location.",
+        );
+      }
+
+      const recentActionIds =
+        await getRecentRoomActionCharacterIds(
+          character.current_room_id,
+        );
+
+      if (
+        otherIds.some(
+          (id) =>
+            !recentActionIds.has(id),
+        )
+      ) {
+        throw new Error(
+          "One or more selected targets have not made a proper action in this Location within the last hour.",
         );
       }
 
