@@ -353,11 +353,9 @@ export function PublicCharacterProfileView({
   }
 />
 
-                <div className="min-w-0 bg-[rgb(var(--sep-colour-17110d))] px-3 py-2 [&_dt]:text-[7px] [&_dt]:uppercase [&_dt]:tracking-[0.19em] [&_dt]:text-[rgb(var(--sep-colour-796448))] [&_dd]:mt-1 [&_dd]:text-[11px] [&_dd]:leading-5 [&_dd]:text-[rgb(var(--sep-colour-cab89b))] components_characters_public_character_profile_div_container_16">
-                  <PublicCharacterAgeDetail
-                    characterId={character.id}
-                  />
-                </div>
+                <PublicCharacterAgeDetail
+                  characterId={character.id}
+                />
 
                 <CompactDetail
                   label="Birthplace"

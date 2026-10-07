@@ -1,6 +1,8 @@
 "use client";
 
 import {
+  createContext,
+  useContext,
   useEffect,
   useRef,
   useState,
@@ -13,6 +15,10 @@ import {
   saveAdminCharacterAge,
   type AdminAgeConfig,
 } from "@/app/(portal)/admin/characters/age-actions";
+import {
+  AURETH_MONTHS,
+  REAL_MONTHS,
+} from "@/lib/world/calendar";
 
 const ATTRIBUTE_NAMES = [
   "muscles",
@@ -22,6 +28,51 @@ const ATTRIBUTE_NAMES = [
   "shrewd",
   "presence_score",
 ] as const;
+
+type AdminCharacterSaveState = {
+  isSaving: boolean;
+  error: string | null;
+};
+
+const AdminCharacterSaveContext =
+  createContext<AdminCharacterSaveState>({
+    isSaving: false,
+    error: null,
+  });
+
+export function AdminCharacterSaveButton() {
+  const {
+    isSaving,
+    error,
+  } = useContext(
+    AdminCharacterSaveContext,
+  );
+
+  return (
+    <div className="mt-6">
+      <button
+        type="submit"
+        data-admin-character-main-save="true"
+        disabled={isSaving}
+        className="w-full border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))] disabled:cursor-not-allowed disabled:opacity-60 admin_characters_id_page_button_save_character_record"
+      >
+        {isSaving
+          ? "Saving..."
+          : "Save character record"}
+      </button>
+
+      {error ? (
+        <div
+          role="alert"
+          aria-live="assertive"
+          className="mt-3 border border-[rgb(var(--sep-colour-8c463d))] bg-[rgb(var(--sep-colour-2a1513))] p-4 text-sm leading-6 text-[rgb(var(--sep-colour-e4b4aa))]"
+        >
+          {error}
+        </div>
+      ) : null}
+    </div>
+  );
+}
 
 type AdminCharacterEditFormProps = {
   action: (
@@ -47,6 +98,12 @@ export function AdminCharacterEditForm({
   const [ageError, setAgeError] =
     useState<string | null>(null);
 
+  const [submitError, setSubmitError] =
+    useState<string | null>(null);
+
+  const [isSaving, setIsSaving] =
+    useState(false);
+
   const [ageConfig, setAgeConfig] =
     useState<AdminAgeConfig | null>(
       null,
@@ -57,6 +114,16 @@ export function AdminCharacterEditForm({
 
   const [age, setAge] =
     useState("");
+
+  const [
+    birthdayMonth,
+    setBirthdayMonth,
+  ] = useState("");
+
+  const [
+    birthdayDay,
+    setBirthdayDay,
+  ] = useState("");
 
   const [loadingAge, setLoadingAge] =
     useState(true);
@@ -299,6 +366,18 @@ export function AdminCharacterEditForm({
               ? ""
               : String(config.age),
           );
+
+          setBirthdayMonth(
+            config.birthdayMonth === null
+              ? ""
+              : String(config.birthdayMonth),
+          );
+
+          setBirthdayDay(
+            config.birthdayDay === null
+              ? ""
+              : String(config.birthdayDay),
+          );
         })
         .catch((error) => {
           setAgeError(
@@ -511,14 +590,15 @@ export function AdminCharacterEditForm({
       return false;
     }
 
+    /*
+     * max_age is a creation limit only.
+     */
     if (
-      selectedRace.max_age !==
-        null &&
-      numericAge >
-        selectedRace.max_age
+      !birthdayMonth ||
+      !birthdayDay
     ) {
       setAgeError(
-        `${selectedRace.name} characters may be no older than ${selectedRace.max_age} years.`,
+        "Choose the Character's Aureth birth month and day.",
       );
       return false;
     }
@@ -530,68 +610,120 @@ export function AdminCharacterEditForm({
   async function handleSubmit(
     event: FormEvent<HTMLFormElement>,
   ) {
-    /*
-     * NPCs use native React Server Action submission so button-specific
-     * formAction handlers and the main Save action are not swallowed by
-     * the Character-only Age pre-submit pipeline.
-     */
-    if (allowMissingAge) {
-      return;
-    }
+    const nativeEvent =
+      event.nativeEvent as SubmitEvent;
 
-    /*
-     * NPC/system Characters must use the form's native React Server Action
-     * submission. The form contains buttons with their own formAction
-     * (direct NPC Feat assign/remove), and intercepting the submit here
-     * swallows those button-specific actions.
-     */
-    if (allowMissingAge) {
+    const submitter =
+      nativeEvent.submitter;
+
+    const isMainSave =
+      submitter instanceof HTMLButtonElement &&
+      submitter.dataset.adminCharacterMainSave ===
+        "true";
+
+    if (!isMainSave) {
       return;
     }
 
     event.preventDefault();
 
-    const form =
-      event.currentTarget;
-
-    if (!validateAttributes(form)) {
+    if (isSaving) {
       return;
     }
 
-    if (!validateAge()) {
-      return;
+    const form =
+      event.currentTarget;
+
+    setSubmitError(null);
+    setAttributeError(null);
+    setAgeError(null);
+    setIsSaving(true);
+
+    if (!allowMissingAge) {
+      if (!validateAttributes(form)) {
+        setIsSaving(false);
+        return;
+      }
+
+      if (!validateAge()) {
+        setIsSaving(false);
+        return;
+      }
     }
 
     const formData =
       new FormData(form);
 
-    formData.set("age", age);
+    if (!allowMissingAge) {
+      formData.set(
+        "age",
+        age,
+      );
 
-    const result =
-      await saveAdminCharacterAge(
+      const result =
+        await saveAdminCharacterAge(
+          formData,
+        );
+
+      if (!result.ok) {
+        setAgeError(
+          result.error,
+        );
+        setIsSaving(false);
+        return;
+      }
+    }
+
+    try {
+      await action(
         formData,
       );
 
-    if (!result.ok) {
-      setAgeError(result.error);
-      return;
-    }
+      setIsSaving(false);
+    } catch (error) {
+      const digest =
+        error &&
+        typeof error === "object" &&
+        "digest" in error
+          ? String(
+              (
+                error as {
+                  digest?: unknown;
+                }
+              ).digest ?? "",
+            )
+          : "";
 
-    /*
-     * Age + ancestry have now passed server-side validation.
-     *
-     * Do NOT call form.requestSubmit() here. This form's action is a
-     * React/Next Server Action; re-submitting the DOM form from inside
-     * the async submit handler can complete the age pre-save without
-     * reliably invoking updateCharacterAdministration.
-     *
-     * Invoke the supplied Server Action directly with the same FormData.
-     * Its existing redirect/revalidation behaviour remains unchanged.
-     */
-    await action(formData);
+      if (
+        digest.startsWith(
+          "NEXT_REDIRECT",
+        )
+      ) {
+        throw error;
+      }
+
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : "The character record could not be saved.",
+      );
+
+      setIsSaving(false);
+    }
   }
 
+  const visibleError =
+    submitError ??
+    ageError ??
+    attributeError;
+
   return (
+    <AdminCharacterSaveContext.Provider
+      value={{
+        isSaving,
+        error: visibleError,
+      }}
+    >
     <form
       ref={formRef}
       action={action}
@@ -601,24 +733,6 @@ export function AdminCharacterEditForm({
       className={[((className)), "components_admin_admin_character_edit_form_form_action"].filter(Boolean).join(" ")}
       noValidate
     >
-      {attributeError ? (
-        <div
-          role="alert"
-          className="mb-5 border border-[rgb(var(--sep-colour-8c463d))] bg-[rgb(var(--sep-colour-2a1513))] p-4 text-sm leading-6 text-[rgb(var(--sep-colour-e4b4aa))] components_admin_admin_character_edit_form_div_alert"
-        >
-          {attributeError}
-        </div>
-      ) : null}
-
-      {ageError ? (
-        <div
-          role="alert"
-          className="mb-5 border border-[rgb(var(--sep-colour-8c463d))] bg-[rgb(var(--sep-colour-2a1513))] p-4 text-sm leading-6 text-[rgb(var(--sep-colour-e4b4aa))] components_admin_admin_character_edit_form_div_alert_2"
-        >
-          {ageError}
-        </div>
-      ) : null}
-
       {!allowMissingAge ? (
       <section className="mb-5 border border-[rgb(var(--sep-colour-60482e))]/45 bg-[rgb(var(--sep-colour-100c09))] p-4 components_admin_admin_character_edit_form_section_section">
         <p className="text-[8px] uppercase tracking-[0.22em] text-[rgb(var(--sep-colour-806b50))] components_admin_admin_character_edit_form_p_text">
@@ -638,10 +752,6 @@ export function AdminCharacterEditForm({
             selectedRace?.min_age ??
             undefined
           }
-          max={
-            selectedRace?.max_age ??
-            undefined
-          }
           step={1}
           disabled={
             !allowMissingAge &&
@@ -655,6 +765,76 @@ export function AdminCharacterEditForm({
           className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))] disabled:cursor-not-allowed disabled:opacity-45 components_admin_admin_character_edit_form_input_age"
         />
 
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          <label>
+            <span className="block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+              Aureth birth month
+            </span>
+            <select
+              name="birthdayMonth"
+              value={birthdayMonth}
+              onChange={(event) =>
+                setBirthdayMonth(
+                  event.target.value,
+                )
+              }
+              required
+              className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+            >
+              <option value="">
+                Choose month
+              </option>
+              {AURETH_MONTHS.map(
+                (monthName, index) => (
+                  <option
+                    key={monthName}
+                    value={index + 1}
+                  >
+                    {monthName} [{REAL_MONTHS[index]}]
+                  </option>
+                ),
+              )}
+            </select>
+          </label>
+
+          <label>
+            <span className="block text-[8px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-806b50))]">
+              Birth day
+            </span>
+            <select
+              name="birthdayDay"
+              value={birthdayDay}
+              onChange={(event) =>
+                setBirthdayDay(
+                  event.target.value,
+                )
+              }
+              required
+              className="mt-2 w-full border border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-0d0907))] px-3 py-3 text-sm text-[rgb(var(--sep-colour-d7c4a5))] outline-none focus:border-[rgb(var(--sep-colour-a17a49))]"
+            >
+              <option value="">
+                Choose day
+              </option>
+              {Array.from(
+                {
+                  length: 31,
+                },
+                (_, index) =>
+                  index + 1,
+              ).map(
+                (day) => (
+                  <option
+                    key={day}
+                    value={day}
+                  >
+                    {day}
+                  </option>
+                ),
+              )}
+            </select>
+          </label>
+        </div>
+
         <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-colour-8f8271))] components_admin_admin_character_edit_form_p_text_2">
           {loadingAge
             ? "Loading ancestry age rules..."
@@ -666,7 +846,7 @@ export function AdminCharacterEditForm({
                 : selectedRace.max_age ===
                     null
                   ? `${selectedRace.name}: ${selectedRace.min_age}+ years`
-                  : `${selectedRace.name}: ${selectedRace.min_age} - ${selectedRace.max_age} years`}
+                  : `${selectedRace.name}: starting range ${selectedRace.min_age} - ${selectedRace.max_age} years; established Characters may age beyond it`}
         </p>
 
         
@@ -781,6 +961,7 @@ export function AdminCharacterEditForm({
         }
       `}</style>
     </form>
+    </AdminCharacterSaveContext.Provider>
   );
 }
 

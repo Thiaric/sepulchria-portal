@@ -35,6 +35,10 @@ import { createClient } from "@/lib/supabase/server";
 import { cosmeticFrameStyle } from "@/components/cosmetics/cosmetic-frame-overlay";
 import { getEquippedCosmetic } from "@/lib/cosmetics/get-equipped-cosmetic";
 import { getAuthenticatedUser } from "@/lib/auth/get-authenticated-user";
+import {
+  calculateCharacterAge,
+  formatCharacterBirthday,
+} from "@/lib/characters/character-age";
 
 type CharacterStatus =
   | "draft"
@@ -333,6 +337,17 @@ export function Profile({
     (status === "draft" ||
       status === "rejected");
 
+  const effectiveAge =
+    calculateCharacterAge(
+      character.date_of_birth,
+      character.age,
+    );
+
+  const birthday =
+    formatCharacterBirthday(
+      character.date_of_birth,
+    );
+
   const items = [
   [
     "Gender",
@@ -350,10 +365,13 @@ export function Profile({
   ],
   [
     "Age",
-    character.age !== null &&
-    character.age !== undefined
-      ? `${character.age} years`
+    effectiveAge !== null
+      ? `${effectiveAge} years`
       : null,
+  ],
+  [
+    "Birthday",
+    birthday,
   ],
   [
     "Birthplace",

@@ -4,6 +4,14 @@ import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 
 import { CharacterAttributeAllocator } from "@/components/characters/character-attribute-allocator";
+import {
+  AURETH_MONTHS,
+  REAL_MONTHS,
+} from "@/lib/world/calendar";
+import {
+  calculateCharacterAge,
+  getCharacterBirthdayParts,
+} from "@/lib/characters/character-age";
 
 type CharacterData = Record<string, string | number | null | undefined>;
 
@@ -66,7 +74,49 @@ export default function CharacterForm({
   const [step, setStep] = useState(1);
   const [raceId, setRaceId] = useState(String(character?.race_id ?? ""));
   const [ancestryGiftIds, setAncestryGiftIds] = useState<string[]>([]);
-  const [age, setAge] = useState(String(character?.age ?? ""));
+
+  const initialBirthday =
+    getCharacterBirthdayParts(
+      typeof character?.date_of_birth ===
+        "string"
+        ? character.date_of_birth
+        : null,
+    );
+
+  const [age, setAge] =
+    useState(
+      String(
+        calculateCharacterAge(
+          typeof character?.date_of_birth ===
+            "string"
+            ? character.date_of_birth
+            : null,
+          typeof character?.age ===
+            "number"
+            ? character.age
+            : null,
+        ) ?? "",
+      ),
+    );
+
+  const [
+    birthdayMonth,
+    setBirthdayMonth,
+  ] = useState(
+    initialBirthday
+      ? String(initialBirthday.month)
+      : "",
+  );
+
+  const [
+    birthdayDay,
+    setBirthdayDay,
+  ] = useState(
+    initialBirthday
+      ? String(initialBirthday.day)
+      : "",
+  );
+
   const [error, setError] = useState<string | null>(null);
 
   const race = useMemo(
@@ -159,8 +209,35 @@ export default function CharacterForm({
     if (race.min_age === null) return "This ancestry has no playable age range configured.";
     if (!Number.isInteger(numeric)) return "Choose a valid whole-number age.";
     if (numeric < race.min_age) return `${race.name} characters must be at least ${race.min_age} years old.`;
-    if (race.max_age !== null && numeric > race.max_age)
-      return `${race.name} characters may be no older than ${race.max_age} years.`;
+    if (
+      mode === "create" &&
+      race.max_age !== null &&
+      numeric > race.max_age
+    )
+      return `${race.name} characters may be no older than ${race.max_age} years when created.`;
+    return null;
+  }
+
+  function validateBirthday() {
+    const month = Number(birthdayMonth);
+    const day = Number(birthdayDay);
+
+    if (
+      !Number.isInteger(month) ||
+      month < 1 ||
+      month > 12
+    ) {
+      return "Choose your character's birth month.";
+    }
+
+    if (
+      !Number.isInteger(day) ||
+      day < 1 ||
+      day > 31
+    ) {
+      return "Choose your character's birth day.";
+    }
+
     return null;
   }
 
@@ -174,7 +251,9 @@ export default function CharacterForm({
         message = "First name and surname are required.";
       else if (!["male", "female", "non_binary"].includes(value("gender")))
         message = "Choose a gender before continuing.";
-      else message = validateAge();
+      else message =
+        validateAge() ??
+        validateBirthday();
     }
 
 
@@ -367,14 +446,18 @@ export default function CharacterForm({
               defaultValue={character?.sexual_orientation}
             />
             <label className="character_characterform_label_label_2">
-              <Label>Age *</Label>
+              <Label>Starting age *</Label>
               <input
                 name="age"
                 type="number"
                 required
                 value={age}
                 min={race?.min_age ?? undefined}
-                max={race?.max_age ?? undefined}
+                max={
+                  mode === "create"
+                    ? race?.max_age ?? undefined
+                    : undefined
+                }
                 disabled={!race || race.min_age === null}
                 onChange={(event) => setAge(event.target.value)}
                 className={[((inputClass)), "character_characterform_input_age"].filter(Boolean).join(" ")}
@@ -382,10 +465,88 @@ export default function CharacterForm({
               <span className="mt-2 block text-xs text-[rgb(var(--sep-colour-766b5d))] character_characterform_span_text_5">
                 {race?.min_age === null || !race
                   ? "Choose a configured ancestry first."
-                  : race.max_age === null
-                    ? `${race.min_age}+ years`
-                    : `${race.min_age}\u2013${race.max_age} years`}
+                  : mode === "update"
+                    ? "Age increases automatically on this character's birthday."
+                    : race.max_age === null
+                      ? `${race.min_age}+ years at character creation`
+                      : `${race.min_age}–${race.max_age} years at character creation`}
               </span>
+            </label>
+
+            <label className="character_characterform_label_birthday_month">
+              <Label>Birth month *</Label>
+              <select
+                name="birthday_month"
+                required
+                value={birthdayMonth}
+                onChange={(event) =>
+                  setBirthdayMonth(
+                    event.target.value,
+                  )
+                }
+                className={[
+                  inputClass,
+                  "character_characterform_select_birthday_month",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+              >
+                <option value="">
+                  Choose Aureth month
+                </option>
+
+                {AURETH_MONTHS.map(
+                  (monthName, index) => (
+                    <option
+                      key={monthName}
+                      value={index + 1}
+                    >
+                      {monthName} [{REAL_MONTHS[index]}]
+                    </option>
+                  ),
+                )}
+              </select>
+            </label>
+
+            <label className="character_characterform_label_birthday_day">
+              <Label>Birth day *</Label>
+              <select
+                name="birthday_day"
+                required
+                value={birthdayDay}
+                onChange={(event) =>
+                  setBirthdayDay(
+                    event.target.value,
+                  )
+                }
+                className={[
+                  inputClass,
+                  "character_characterform_select_birthday_day",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+              >
+                <option value="">
+                  Choose day
+                </option>
+
+                {Array.from(
+                  {
+                    length: 31,
+                  },
+                  (_, index) =>
+                    index + 1,
+                ).map(
+                  (day) => (
+                    <option
+                      key={day}
+                      value={day}
+                    >
+                      {day}
+                    </option>
+                  ),
+                )}
+              </select>
             </label>
           </div>
         </section>

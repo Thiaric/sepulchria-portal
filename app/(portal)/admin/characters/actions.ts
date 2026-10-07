@@ -429,7 +429,7 @@ export async function updateCharacterAdministration(
       120,
     );
 
-  const dateOfBirth =
+  const submittedDateOfBirth =
     readOptionalText(
       formData.get(
         "dateOfBirth",
@@ -741,6 +741,23 @@ export async function updateCharacterAdministration(
     isNpcCharacter
       ? character.surname
       : surname;
+
+  /*
+   * The normal Character admin form deliberately disables/hides the
+   * legacy dateOfBirth input because Birthday is now managed by the
+   * Age/Birthday controls.
+   *
+   * saveAdminCharacterAge() runs immediately before this action and
+   * writes the calculated date_of_birth. Because disabled form controls
+   * are omitted from FormData, this action must preserve the value that
+   * is already in the database instead of replacing it with null.
+   *
+   * NPC/legacy flows that still explicitly submit dateOfBirth continue
+   * to be honoured.
+   */
+  const effectiveDateOfBirth =
+    submittedDateOfBirth ??
+    character.date_of_birth;
 
   const raceIds = [
   character.race_id,
@@ -1137,7 +1154,7 @@ currentHealth =
       sexual_orientation:
         sexualOrientation,
       date_of_birth:
-        dateOfBirth,
+        effectiveDateOfBirth,
       birthplace,
       origin,
       portrait_url:

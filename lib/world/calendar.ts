@@ -15,6 +15,21 @@ export const AURETH_MONTHS = [
   "Nochern",
 ] as const;
 
+export const REAL_MONTHS = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+] as const;
+
 export const AURETH_WEEKDAYS = [
   "Edrimos",
   "Tharmos",

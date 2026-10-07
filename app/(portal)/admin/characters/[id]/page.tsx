@@ -3,7 +3,10 @@
 import { CharacterGiftsDisplay } from "@/components/characters/character-gifts-display";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { AdminCharacterEditForm } from "@/components/admin/admin-character-edit-form";
+import {
+  AdminCharacterEditForm,
+  AdminCharacterSaveButton,
+} from "@/components/admin/admin-character-edit-form";
 import {
   AdminAncestryGiftSelector,
   type AdminAncestryGiftOption,
@@ -1582,12 +1585,7 @@ const selectedAncestryGiftIds =
                 </div>
               ) : null}
 
-              <button
-                type="submit"
-                className="mt-6 w-full border border-[rgb(var(--sep-colour-987344))] bg-[rgb(var(--sep-colour-3b2919))] px-5 py-3 text-[9px] uppercase tracking-[0.2em] text-[rgb(var(--sep-colour-efd6a8))] transition hover:border-[rgb(var(--sep-colour-b98c50))] hover:bg-[rgb(var(--sep-colour-50371f))] admin_characters_id_page_button_save_character_record"
-              >
-                Save character record
-              </button>
+              <AdminCharacterSaveButton />
               </AdminCharacterEditForm>
 
               {isNpc &&

@@ -9,6 +9,11 @@ import {
   removeGiftOwnershipHealthEffects,
 } from "@/lib/gifts/gift-health-effects";
 import { createAdminClient } from "@/lib/supabase/admin";
+import {
+  buildCharacterDateOfBirth,
+  calculateCharacterAge,
+  getCharacterBirthdayParts,
+} from "@/lib/characters/character-age";
 
 type RaceAgeOption = {
   id: string;
@@ -19,6 +24,8 @@ type RaceAgeOption = {
 
 export type AdminAgeConfig = {
   age: number | null;
+  birthdayMonth: number | null;
+  birthdayDay: number | null;
   races: RaceAgeOption[];
 };
 
@@ -62,7 +69,9 @@ export async function getAdminCharacterAgeConfig(
   ] = await Promise.all([
     supabase
       .from("characters")
-      .select("age")
+      .select(
+        "age, date_of_birth",
+      )
       .eq("id", characterId)
       .maybeSingle(),
 
@@ -92,12 +101,28 @@ export async function getAdminCharacterAgeConfig(
     );
   }
 
+  const birthday =
+    getCharacterBirthdayParts(
+      characterResult.data
+        .date_of_birth,
+    );
+
   return {
     age:
-      typeof characterResult.data
-        .age === "number"
-        ? characterResult.data.age
-        : null,
+      calculateCharacterAge(
+        characterResult.data
+          .date_of_birth,
+        typeof characterResult.data
+          .age === "number"
+          ? characterResult.data.age
+          : null,
+      ),
+
+    birthdayMonth:
+      birthday?.month ?? null,
+
+    birthdayDay:
+      birthday?.day ?? null,
 
     races:
       (racesResult.data ??
@@ -146,6 +171,30 @@ export async function saveAdminCharacterAge(
 
     const age =
       Number(ageRaw);
+
+    const birthdayMonthRaw =
+      String(
+        formData.get(
+          "birthdayMonth",
+        ) ?? "",
+      ).trim();
+
+    const birthdayDayRaw =
+      String(
+        formData.get(
+          "birthdayDay",
+        ) ?? "",
+      ).trim();
+
+    const birthdayMonth =
+      Number(
+        birthdayMonthRaw,
+      );
+
+    const birthdayDay =
+      Number(
+        birthdayDayRaw,
+      );
 
     const selectedGiftIds =
       Array.from(
@@ -301,17 +350,45 @@ export async function saveAdminCharacterAge(
       };
     }
 
+    /*
+     * max_age is a character-creation ceiling only.
+     * Existing Characters may naturally age beyond it.
+     */
+
+    let dateOfBirth:
+      string | null = null;
+
     if (
       ageRaw &&
-      race.max_age !== null &&
-      age >
-        race.max_age
+      !isNpcCharacter
     ) {
-      return {
-        ok: false,
-        error:
-          `${race.name} characters may be no older than ${race.max_age} years.`,
-      };
+      if (
+        !birthdayMonthRaw ||
+        !birthdayDayRaw
+      ) {
+        return {
+          ok: false,
+          error:
+            "Birthday month and day are required.",
+        };
+      }
+
+      try {
+        dateOfBirth =
+          buildCharacterDateOfBirth(
+            age,
+            birthdayMonth,
+            birthdayDay,
+          );
+      } catch (error) {
+        return {
+          ok: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : "Birthday is invalid.",
+        };
+      }
     }
 
     /*
@@ -535,12 +612,8 @@ export async function saveAdminCharacterAge(
         race_id:
           raceId,
 
-        /*
-         * Retire legacy DOB once the
-         * character uses the Age system.
-         */
         date_of_birth:
-          null,
+          dateOfBirth,
 
         updated_at:
           new Date()

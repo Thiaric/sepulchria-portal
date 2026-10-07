@@ -11,6 +11,9 @@ import { createClient } from "@/lib/supabase/server";
 import {
   applyGiftOwnershipHealthEffects,
 } from "@/lib/gifts/gift-health-effects";
+import {
+  buildCharacterDateOfBirth,
+} from "@/lib/characters/character-age";
 
 type CharacterMode = "create" | "update";
 
@@ -140,6 +143,7 @@ function validAge(
   }
 
   if (
+    mode === "create" &&
     race.max_age !== null &&
     age > race.max_age
   ) {
@@ -200,6 +204,43 @@ export async function saveCharacterV2(
     fail(
       mode,
       "Choose a valid whole-number age.",
+    );
+  }
+
+  const birthdayMonth =
+    Number(
+      text(
+        formData,
+        "birthday_month",
+        2,
+      ),
+    );
+
+  const birthdayDay =
+    Number(
+      text(
+        formData,
+        "birthday_day",
+        2,
+      ),
+    );
+
+  let dateOfBirth:
+    string;
+
+  try {
+    dateOfBirth =
+      buildCharacterDateOfBirth(
+        age,
+        birthdayMonth,
+        birthdayDay,
+      );
+  } catch (error) {
+    fail(
+      mode,
+      error instanceof Error
+        ? error.message
+        : "Choose a valid birthday.",
     );
   }
 
@@ -303,6 +344,9 @@ export async function saveCharacterV2(
       ) || null,
 
     age,
+
+    date_of_birth:
+      dateOfBirth,
 
     birthplace: "Sepulchria",
     title: "Citizen",
@@ -595,7 +639,8 @@ export async function saveCharacterV2(
            */
           association_id: null,
 
-          date_of_birth: null,
+          date_of_birth:
+            dateOfBirth,
 
           /*
            * New characters ALWAYS begin
