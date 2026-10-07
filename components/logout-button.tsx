@@ -28,7 +28,9 @@ export function LogoutButton() {
     try {
             try {
         const presenceResult =
-          await clearOwnPresenceForLogout();
+          await clearOwnPresenceForLogout(
+            true,
+          );
 
         if (!presenceResult.ok) {
           console.error(

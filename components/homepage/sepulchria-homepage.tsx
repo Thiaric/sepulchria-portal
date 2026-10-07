@@ -359,7 +359,7 @@ const firstStepsPanelRef =
         className="homepage-fog pointer-events-none fixed -left-[20%] top-[10%] h-[36rem] w-[140%] bg-[radial-gradient(ellipse_at_center,rgba(var(--sep-rgb-194-171-136),0.08),transparent_67%)] blur-3xl components_homepage_sepulchria_homepage_div_container_4"
       />
 
-      <div className="relative z-10 mx-auto flex min-h-[100dvh] w-full max-w-[1600px] flex-col px-3 py-4 sm:px-6 lg:h-full lg:min-h-0 lg:px-8 components_homepage_sepulchria_homepage_div_container_5">
+      <div className="relative z-10 mx-auto flex min-h-[100dvh] w-full max-w-[1600px] flex-col px-3 pt-4 pb-1 sm:px-6 lg:h-full lg:min-h-0 lg:px-8 components_homepage_sepulchria_homepage_div_container_5">
         {/* Header */}
         <header className="shrink-0 text-center components_homepage_sepulchria_homepage_header_sepulchria">
           <p className="text-[8px] uppercase tracking-[0.42em] text-[rgb(var(--sep-colour-896b45))] components_homepage_sepulchria_homepage_p_sepulchria">
@@ -568,21 +568,21 @@ const firstStepsPanelRef =
 
                         <div className="min-w-0 components_homepage_sepulchria_homepage_div_container_21">
                           <p className="text-[8px] uppercase tracking-[0.26em] text-[rgb(var(--sep-colour-8f704b))] components_homepage_sepulchria_homepage_p_text_3">
-                            Chapter{" "}
+                            Step{" "}
                             {chapter.number}
                           </p>
 
-                          <h2 className="mt-1 font-serif text-lg leading-tight text-[rgb(var(--sep-colour-dfc89e))] transition group-hover:text-[rgb(var(--sep-colour-efd8aa))] components_homepage_sepulchria_homepage_h2_heading">
+                          <h2 className="font-serif text-lg leading-tight text-[rgb(var(--sep-colour-dfc89e))] transition group-hover:text-[rgb(var(--sep-colour-efd8aa))] components_homepage_sepulchria_homepage_h2_heading">
                             {chapter.title}
                           </h2>
 
-                          <p className="mt-2 text-[11px] leading-5 text-[rgb(var(--sep-colour-968875))] components_homepage_sepulchria_homepage_p_text_4">
+                          <p className="text-[11px] leading-5 text-[rgb(var(--sep-colour-968875))] components_homepage_sepulchria_homepage_p_text_4">
   {chapter.text}
 
   {chapter.videoHref ? (
     <>
-      {" "}
-      <br></br><span className="homepage-intro-video-link inline font-serif italic">
+      <br />
+      <span className="homepage-intro-video-link inline font-serif italic components_homepage_sepulchria_homepage_p_video_link">
         <b>{chapter.videoLabel}</b>
       </span>
     </>
@@ -812,8 +812,8 @@ const firstStepsPanelRef =
             </nav>
           </div>
 
-          <div className="mt-3 border-t border-[rgb(var(--sep-colour-57412a))]/20 pt-2 pb-2 text-center components_homepage_sepulchria_homepage_div_container_23">
-            <p className="mx-auto max-w-4xl text-[8px] leading-4 text-[rgb(var(--sep-colour-706659))] components_homepage_sepulchria_homepage_p_text_6">
+          <div className="mt-2 border-t border-[rgb(var(--sep-colour-57412a))]/20 pt-2 pb-0 text-center components_homepage_sepulchria_homepage_div_container_23">
+            <p className="w-full text-[8px] leading-4 text-[rgb(var(--sep-colour-706659))] components_homepage_sepulchria_homepage_p_text_6">
               <span className="uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-8b7659))] components_homepage_sepulchria_homepage_span_text_3">
                 AI Content Disclosure —
               </span>{" "}

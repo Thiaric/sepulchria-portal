@@ -8,7 +8,9 @@ type LogoutPresenceResult = {
   message?: string;
 };
 
-export async function clearOwnPresenceForLogout(): Promise<LogoutPresenceResult> {
+export async function clearOwnPresenceForLogout(
+  clearLocation = false,
+): Promise<LogoutPresenceResult> {
   const supabase = await createClient();
 
   const {
@@ -107,6 +109,34 @@ export async function clearOwnPresenceForLogout(): Promise<LogoutPresenceResult>
       message:
         `Unable to clear character presence: ${deleteError.message}`,
     };
+  }
+
+  /*
+   * ONLY the explicit Logout button passes clearLocation=true.
+   * Inactivity logout leaves it false, and the separate window-close
+   * endpoint does not call this action, so those flows preserve Location.
+   */
+  if (clearLocation) {
+    const {
+      error: locationError,
+    } = await admin
+      .from("characters")
+      .update({
+        current_room_id: null,
+        updated_at: now,
+      })
+      .eq(
+        "id",
+        character.id,
+      );
+
+    if (locationError) {
+      return {
+        ok: false,
+        message:
+          `Unable to clear Character Location before logout: ${locationError.message}`,
+      };
+    }
   }
 
   /*

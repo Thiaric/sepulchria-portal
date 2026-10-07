@@ -44,7 +44,6 @@ import {
   sendRoomAttributeCheck,
   sendRoomDiceRoll,
   sendRoomMessage,
-  leaveCurrentRoom,
 } from "../actions";
 import {
   startAttributeOpposedAction,
@@ -58,6 +57,7 @@ import { WarpingPanel } from "./WarpingPanel";
 import { MechanicalFeatPanel } from "./MechanicalFeatPanel";
 import { EffectDispelPicker } from "./EffectDispelPicker";
 import { NpcControlPanel } from "./NpcControlPanel";
+import { TakeLeaveButton } from "./TakeLeaveButton";
 import { CharacterConditionsEditor } from "@/components/characters/character-conditions-editor";
 import {
   loadRoomCombatData,
@@ -3894,9 +3894,7 @@ if (
         ) : null}
 
         {canTakeLeave ? (
-          <form className="game_components_roomchatform_form_form_2" action={leaveCurrentRoom}>
-            <PendingActionButton label={<span className="game_components_roomchatform_span_take_leave" aria-hidden="true">↪</span>} pendingLabel="Leaving..." title="Take Leave" ariaLabel="Take Leave" className="flex h-6 min-w-6 items-center justify-center border border-[rgb(var(--sep-colour-8f3f36))] bg-[rgb(var(--sep-colour-351714))] px-1 text-[8px] uppercase text-[rgb(var(--sep-colour-e6a097))] transition hover:border-[rgb(var(--sep-colour-c65a4d))] hover:text-[rgb(var(--sep-colour-ffd0c9))] disabled:cursor-not-allowed disabled:opacity-40 game_components_roomchatform_button_take_leave" />
-          </form>
+          <TakeLeaveButton />
         ) : null}
       </div>
       ) : null}
