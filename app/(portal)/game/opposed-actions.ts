@@ -13,6 +13,7 @@ import { revalidatePath } from "next/cache";
 import { getEffectiveCharacterAttributes } from "@/lib/characters/get-effective-character-attributes";
 
 import { createClient } from "@/lib/supabase/server";
+import { consumeSecurityRateLimit } from "@/lib/security/rate-limit";
 import {
   assertRecentRoomAction,
   hasRecentRoomAction,
@@ -130,6 +131,26 @@ function privilegedClient() {
 
 }
 
+
+
+async function enforceCombatRateLimit(
+  characterId: string,
+) {
+  const result =
+    await consumeSecurityRateLimit({
+      scope: "combat_action_character",
+      identifier:
+        `character:${characterId}`,
+      limit: 30,
+      windowSeconds: 60,
+    });
+
+  if (!result.allowed) {
+    throw new Error(
+      "You are performing combat actions too quickly. Please wait a moment before trying again.",
+    );
+  }
+}
 
 
 function field(formData: FormData, name: string) {
@@ -922,6 +943,10 @@ export async function startAttributeOpposedAction(
 
     const { character } = await ownedCharacter(formData);
 
+    await enforceCombatRateLimit(
+      character.id,
+    );
+
     await assertRecentRoomAction(
       character.current_room_id!,
       character.id,
@@ -1088,6 +1113,10 @@ export async function startUnarmedAttack(
 
     const { character } = await ownedCharacter(formData);
 
+    await enforceCombatRateLimit(
+      character.id,
+    );
+
     await assertRecentRoomAction(
       character.current_room_id!,
       character.id,
@@ -1225,6 +1254,10 @@ export async function startWeaponOpposedAttack(
   try {
 
     const { supabase, character } = await ownedCharacter(formData);
+
+    await enforceCombatRateLimit(
+      character.id,
+    );
 
     await assertRecentRoomAction(
       character.current_room_id!,
@@ -1643,6 +1676,10 @@ export async function counterOpposedAction(
   try {
 
     const { supabase, character } = await ownedCharacter(formData);
+
+    await enforceCombatRateLimit(
+      character.id,
+    );
 
     const actionId = field(formData, "opposed_action_id");
 

@@ -160,11 +160,7 @@ export function CharacterDirectoryOrderBadge({
 
         <p
           className="truncate text-xs components_characters_character_directory_order_badge_p_text_4"
-          style={{
-            color: order
-              ? colour
-              : "#675e52",
-          }}
+          
         >
           {order?.name ??
             "No Order"}

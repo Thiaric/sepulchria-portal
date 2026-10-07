@@ -3,102 +3,6 @@ Yes. Based on the repo audit we just did, I would **replace the old roadmap enti
 
 # PHASE 8 — COMPLETE ENGINEERING & SECURITY AUDIT
 
-**This is the large cleanup we've deliberately postponed.**
-
-At this point, **feature development stops temporarily**.
-
-### 8.1 — Database integrity audit
-
-Inspect every important database relationship:
-
-* Foreign keys.
-* Cascades.
-* Restricts.
-* `SET NULL`.
-* Unique constraints.
-* Check constraints.
-* Indexes.
-* Orphan prevention.
-
-Especially character/account deletion.
-
-### 8.2 — Transaction audit
-
-Identify every operation touching multiple tables.
-
-Examples:
-
-* Market purchase.
-* Market sale.
-* Player trade.
-* Item transfer.
-* Item use.
-* Character deletion.
-* Mission reward.
-* Combat resolution.
-* Spell casting.
-* Staff economic actions.
-
-Move critical operations into atomic database transactions/RPCs where appropriate.
-
-No more:
-
-> query A succeeds → query B fails → portal is left half-updated.
-
-### 8.3 — Concurrency audit
-
-Test deliberately:
-
-* Double-click purchase.
-* Simultaneous trades.
-* Two browser tabs.
-* Duplicate submissions.
-* Simultaneous item use.
-* Concurrent rewards.
-* Simultaneous combat actions.
-
-Prevent duplication and race conditions.
-
-### 8.4 — Complete RLS/security audit
-
-Review **every table**.
-
-Test separately as:
-
-* Anonymous visitor.
-* Normal player.
-* Moderator.
-* Master.
-* Admin.
-* Owner.
-
-Attempt direct database operations rather than trusting UI visibility.
-
-### 8.5 — Server-action security audit
-
-Every mutation must validate server-side:
-
-* Authentication.
-* Character ownership.
-* Permissions.
-* Input.
-* Current state.
-* Target eligibility.
-
-### 8.6 — Input and content security
-
-Audit:
-
-* Rich text.
-* HTML.
-* URLs.
-* Images.
-* User-generated content.
-* Uploads.
-* Forum.
-* Chat.
-* Profiles.
-* Codex/Rules administration.
 
 ### 8.7 — Rate limiting / abuse prevention
 
@@ -196,26 +100,6 @@ Prioritise critical systems:
 * Reports.
 * Permissions.
 
-### 9.2 — Full lifecycle test
-
-Create a completely fresh account and perform the actual player journey:
-
-Register → create character → approval → enter portal → communicate → play → obtain items → trade → purchase → join event/mission → use magic → combat → receive rewards → progress.
-
-### 9.3 — Multi-user testing
-
-Test several characters simultaneously.
-
-Especially:
-
-* Presence.
-* Chat.
-* Private Locations.
-* Instant Chat.
-* Trading.
-* Market.
-* Combat.
-* Events.
 
 ### 9.4 — Staff lifecycle test
 

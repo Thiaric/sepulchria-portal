@@ -668,11 +668,7 @@ function CodexBadge({
 
         <p
   className="mt-0.5 truncate text-[11px] components_characters_character_directory_p_text_3"
-  style={{
-    color: entry
-      ? colour
-      : "#675e52",
-  }}
+  
 >
   {entry?.name ?? "Not assigned"}
 </p>
