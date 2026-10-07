@@ -391,6 +391,25 @@ last_seen_at:
     );
   }
 
+  if (
+    character.status === "draft" ||
+    character.status === "rejected"
+  ) {
+    return (
+      <Link
+        href="/character/edit"
+        title={
+          character.status === "rejected"
+            ? "Amend your character"
+            : "Continue character creation"
+        }
+        className="text-[10px] uppercase tracking-[0.16em] text-[rgb(var(--sep-colour-c59a5a))] transition hover:text-[rgb(var(--sep-colour-e2bd7a))] 2xl:text-xs 2xl:tracking-[0.18em]"
+      >
+        Create character
+      </Link>
+    );
+  }
+
   const presence =
     PRESENCE_STYLES[
       presenceStatus

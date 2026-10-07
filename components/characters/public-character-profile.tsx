@@ -585,6 +585,7 @@ function CompactHeritageCard({
       className="group flex min-w-0 items-center gap-2.5 border bg-black/15 px-2.5 py-2 transition hover:bg-[rgb(var(--sep-colour-1b140f))]"
       style={{
         borderColor: `${colour}66`,
+        backgroundImage: `linear-gradient(90deg, ${colour}18, transparent 55%)`,
       }}
     >
       <div

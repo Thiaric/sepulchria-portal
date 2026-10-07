@@ -699,6 +699,14 @@ export function AdminCharacterEditForm({
           "NEXT_REDIRECT",
         )
       ) {
+        /*
+         * updateCharacterAdministration redirects back to the same admin
+         * Character page after a successful save. Because this client
+         * component can survive that same-route refresh, leaving
+         * isSaving=true here makes the Save button stay permanently
+         * disabled even though the save succeeded.
+         */
+        setIsSaving(false);
         throw error;
       }
 

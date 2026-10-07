@@ -198,6 +198,18 @@ export default async function CharacterPage({
     redirect("/character/create");
   }
 
+  /*
+   * Draft and rejected Characters are not in their final playable state.
+   * Put them straight back into the full Character wizard so a staff
+   * downgrade from Approved -> Draft/Rejected actually has a purpose.
+   */
+  if (
+    character.status === "draft" ||
+    character.status === "rejected"
+  ) {
+    redirect("/character/edit");
+  }
+
   const [
     equippedSheetFrame,
     effectiveAttributes,
@@ -419,6 +431,17 @@ export function Profile({
 
           <div className="flex flex-wrap items-center justify-end gap-2 character_page_div_container_4">
             {messageAction}
+
+            {canEdit ? (
+              <Link
+                href="/character/edit"
+                className="border border-[rgb(var(--sep-colour-8d6d3e))] bg-[rgb(var(--sep-colour-332719))] px-4 py-2 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-efd9aa))] transition hover:bg-[rgb(var(--sep-colour-49351f))]"
+              >
+                {status === "rejected"
+                  ? "Amend character"
+                  : "Continue character creation"}
+              </Link>
+            ) : null}
 
             {canSubmit ? (
               <form className="character_page_form_submit_character_review" action={submitCharacterForReview}>
@@ -1123,6 +1146,13 @@ function CharacterStatusPanel({
               "No rejection reason was provided. Contact the staff for clarification."}
           </p>
         </div>
+
+        <Link
+          href="/character/edit"
+          className="mt-4 inline-flex border border-[rgb(var(--sep-colour-a75b4f))] bg-[rgb(var(--sep-colour-3b1f1b))] px-5 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-f0c1b8))] transition hover:border-[rgb(var(--sep-colour-d2786d))] hover:bg-[rgb(var(--sep-colour-512721))]"
+        >
+          Open correction wizard
+        </Link>
       </section>
     );
   }
@@ -1143,6 +1173,13 @@ function CharacterStatusPanel({
         section is complete, submit it
         to the staff for approval.
       </p>
+
+      <Link
+        href="/character/edit"
+        className="mt-4 inline-flex border border-[rgb(var(--sep-colour-a47b43))] bg-[rgb(var(--sep-colour-472d18))] px-5 py-3 text-[9px] uppercase tracking-[0.18em] text-[rgb(var(--sep-colour-f3d7a5))] transition hover:border-[rgb(var(--sep-colour-d0a15c))] hover:bg-[rgb(var(--sep-colour-5c391d))]"
+      >
+        Continue character creation
+      </Link>
     </section>
   );
 }
@@ -1266,6 +1303,7 @@ function CompactHeritageCard({
       className="group flex min-w-0 items-center gap-2.5 border bg-black/15 px-2.5 py-2 transition hover:bg-[rgb(var(--sep-colour-1b140f))]"
       style={{
         borderColor: `${colour}66`,
+        backgroundImage: `linear-gradient(90deg, ${colour}18, transparent 55%)`,
       }}
     >
       <div

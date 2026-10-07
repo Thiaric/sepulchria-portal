@@ -886,6 +886,6 @@ export async function saveCharacterV2(
   }
 
   redirect(
-    "/character?updated=true",
+    "/character/edit?updated=true",
   );
 }

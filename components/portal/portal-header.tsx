@@ -1,9 +1,6 @@
 import Link from "next/link";
 
-import { SubmittedCharacterBadge } from "@/components/admin/submitted-character-badge";
-import { RegistrationApplicationBadge } from "@/components/admin/registration-application-badge";
-import { OrderSubmissionBadge } from "@/components/admin/order-submission-badge";
-import { TicketNotificationBadge } from "@/components/support/ticket-notification-badge";
+import { AdminAggregateBadge } from "@/components/admin/admin-aggregate-badge";
 import { PortalSoundToggle } from "@/components/audio/portal-sound-toggle";
 import { PortalSkinSwitcher } from "@/components/portal/portal-skin-switcher";
 import { LogoutButton } from "@/components/logout-button";
@@ -17,7 +14,6 @@ import { PortalModalButton } from "@/components/portal/portal-modal-button";
 import { ScrollText } from "lucide-react";
 import { Settings } from "lucide-react";
 import {
-  canAccessAdminSection,
   getStaffSession,
 } from "@/lib/auth/require-staff";
 import type { PortalContext } from "@/types/portal";
@@ -170,20 +166,7 @@ export async function PortalHeader({ context }: PortalHeaderProps) {
                 className="relative hidden h-8 w-8 items-center justify-center border border-[rgb(var(--sep-colour-7b5d36))] bg-[rgb(var(--sep-colour-24180f))] font-serif text-base text-[rgb(var(--sep-colour-d4ad70))] transition hover:border-[rgb(var(--sep-colour-b1844b))] hover:bg-[rgb(var(--sep-colour-382517))] hover:text-[rgb(var(--sep-colour-ffe0a6))] lg:flex lg:h-9 lg:w-9 2xl:h-10 2xl:w-10 2xl:text-lg"
               >
                 <Settings className="pointer-events-none h-5 w-5" />
-                {canAccessAdminSection(
-                  staffSession.role,
-                  "new_register",
-                ) ? (
-                  <RegistrationApplicationBadge variant="floating" />
-                ) : null}
-                <SubmittedCharacterBadge variant="floating" />
-                {canAccessAdminSection(
-                  staffSession.role,
-                  "orders",
-                ) ? (
-                  <OrderSubmissionBadge variant="floating" />
-                ) : null}
-                <TicketNotificationBadge audience="staff" variant="floating" />
+                <AdminAggregateBadge />
               </Link>
             ) : null}
 
