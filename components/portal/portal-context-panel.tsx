@@ -5235,7 +5235,7 @@ function ContributionHistoryContext() {
             Refunds
           </p>
           <p className="mt-2 text-[10px] leading-5 text-[rgb(var(--sep-global-c1))] contribution_context_card_body">
-            If you need to request a refund, please contact our support team via the "Need Help?" link.
+            If you need to request a refund, please contact our support team via the "Need Help?" link. Refunds can be requested within 15 days of Contribution completion. Refunds are subject to Stripe's refund policy and may take 5-10 business days to process.
           </p>
         </section>
       </div>

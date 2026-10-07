@@ -1603,7 +1603,235 @@ export async function deleteCharacterAdministration(
     );
   }
 
-  // Phase 8.1: all character cleanup runs inside the deletion RPC.
+  const {
+    error: presenceError,
+  } = await supabase
+    .from(
+      "character_presence",
+    )
+    .delete()
+    .eq(
+      "character_id",
+      characterId,
+    );
+
+  if (presenceError) {
+    throw new Error(
+      `Unable to delete character presence: ${presenceError.message}`,
+    );
+  }
+
+  const {
+    error: roomMessagesError,
+  } = await supabase
+    .from("room_messages")
+    .delete()
+    .eq(
+      "character_id",
+      characterId,
+    );
+
+  if (roomMessagesError) {
+    throw new Error(
+      `Unable to delete location messages: ${roomMessagesError.message}`,
+    );
+  }
+
+  const {
+    data: conversationMemberships,
+    error: conversationLookupError,
+  } = await supabase
+    .from(
+      "direct_conversation_participants",
+    )
+    .select("conversation_id")
+    .eq(
+      "character_id",
+      characterId,
+    );
+
+  if (
+    conversationLookupError
+  ) {
+    throw new Error(
+      `Unable to find the character's private conversations: ${conversationLookupError.message}`,
+    );
+  }
+
+  const conversationIds =
+    Array.from(
+      new Set(
+        (
+          conversationMemberships ??
+          []
+        )
+          .map(
+            (membership) =>
+              membership.conversation_id,
+          )
+          .filter(Boolean),
+      ),
+    );
+
+  if (
+    conversationIds.length >
+    0
+  ) {
+    const {
+      error: conversationMessagesError,
+    } = await supabase
+      .from(
+        "direct_messages",
+      )
+      .delete()
+      .in(
+        "conversation_id",
+        conversationIds,
+      );
+
+    if (
+      conversationMessagesError
+    ) {
+      throw new Error(
+        `Unable to delete private-conversation messages: ${conversationMessagesError.message}`,
+      );
+    }
+
+    const {
+      error:
+        conversationParticipantsError,
+    } = await supabase
+      .from(
+        "direct_conversation_participants",
+      )
+      .delete()
+      .in(
+        "conversation_id",
+        conversationIds,
+      );
+
+    if (
+      conversationParticipantsError
+    ) {
+      throw new Error(
+        `Unable to delete private-conversation participants: ${conversationParticipantsError.message}`,
+      );
+    }
+
+    const {
+      error: conversationsError,
+    } = await supabase
+      .from(
+        "direct_conversations",
+      )
+      .delete()
+      .in(
+        "id",
+        conversationIds,
+      );
+
+    if (conversationsError) {
+      throw new Error(
+        `Unable to delete private conversations: ${conversationsError.message}`,
+      );
+    }
+  }
+
+  const {
+    error:
+      remainingDirectMessagesError,
+  } = await supabase
+    .from("direct_messages")
+    .delete()
+    .eq(
+      "sender_character_id",
+      characterId,
+    );
+
+  if (
+    remainingDirectMessagesError
+  ) {
+    throw new Error(
+      `Unable to delete remaining private messages: ${remainingDirectMessagesError.message}`,
+    );
+  }
+
+  const {
+    error:
+      remainingParticipantsError,
+  } = await supabase
+    .from(
+      "direct_conversation_participants",
+    )
+    .delete()
+    .eq(
+      "character_id",
+      characterId,
+    );
+
+  if (
+    remainingParticipantsError
+  ) {
+    throw new Error(
+      `Unable to remove remaining private-conversation memberships: ${remainingParticipantsError.message}`,
+    );
+  }
+
+  const {
+    error:
+      blocksAsBlockerError,
+  } = await supabase
+    .from("character_blocks")
+    .delete()
+    .eq(
+      "blocker_character_id",
+      characterId,
+    );
+
+  if (
+    blocksAsBlockerError
+  ) {
+    throw new Error(
+      `Unable to delete character blocks: ${blocksAsBlockerError.message}`,
+    );
+  }
+
+  const {
+    error:
+      blocksAsBlockedError,
+  } = await supabase
+    .from("character_blocks")
+    .delete()
+    .eq(
+      "blocked_character_id",
+      characterId,
+    );
+
+  if (
+    blocksAsBlockedError
+  ) {
+    throw new Error(
+      `Unable to delete character blocks: ${blocksAsBlockedError.message}`,
+    );
+  }
+
+  const {
+    error: statusHistoryError,
+  } = await supabase
+    .from(
+      "character_status_history",
+    )
+    .delete()
+    .eq(
+      "character_id",
+      characterId,
+    );
+
+  if (statusHistoryError) {
+    throw new Error(
+      `Unable to delete character status history: ${statusHistoryError.message}`,
+    );
+  }
 
   const {
     data: characterDeleted,

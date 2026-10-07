@@ -66,7 +66,6 @@ async function fulfilPaidOrder(
   }
 
   if (order.status === "fulfilled") {
-    if (!order.user_id) return NextResponse.json({ ok: true });
     // Duplicate successful Checkout delivery: fulfilment is already complete.
     // Do not send another receipt or grant anything again.
     await admin.rpc("finalize_store_discount_redemption", {
@@ -176,17 +175,6 @@ async function fulfilPaidOrder(
     );
   }
 
-  // Phase 8.1: a deleted account retains payment records, not new benefits.
-  const { data: currentOrder, error: currentOrderError } = await admin
-    .from("store_orders")
-    .select("user_id")
-    .eq("id", orderId)
-    .maybeSingle();
-  if (currentOrderError) {
-    return NextResponse.json({ error: currentOrderError.message }, { status: 500 });
-  }
-  if (!currentOrder?.user_id) return NextResponse.json({ ok: true });
-
   try {
     await issueStorePostPurchaseOffersAndNotify({
       orderId,
@@ -249,7 +237,7 @@ async function handleRefund(
 
   let query = admin
     .from("store_orders")
-    .select("id, status, user_id");
+    .select("id, status");
 
   query = chargeId
     ? query.eq("stripe_charge_id", chargeId)
@@ -283,7 +271,7 @@ async function handleRefund(
       }
 
       try {
-        if (order.user_id) await sendStoreRefundEmail(order.id);
+        await sendStoreRefundEmail(order.id);
       } catch (emailError) {
         console.error(
           "Refund approved, but Store refund email failed:",

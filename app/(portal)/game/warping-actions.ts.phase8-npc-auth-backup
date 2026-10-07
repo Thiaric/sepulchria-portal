@@ -632,14 +632,23 @@ async function resolveImmediateShapeCastAs(
 
     const a = admin();
 
-    const actorFormData = new FormData();
+    const actorResult = actorCharacterId
 
-    if (actorCharacterId) {
-      actorFormData.set("npc_actor_character_id", actorCharacterId);
-    }
+      ? await a.from("characters")
 
-    // Validate the authenticated actor through the shared player/NPC guard.
-    const caster = await mine(actorFormData);
+          .select("id,display_name,current_room_id,muscles,reflexes,vigor,brains,shrewd,presence_score,life_state")
+
+          .eq("id",actorCharacterId)
+
+          .eq("is_system",true)
+
+          .maybeSingle()
+
+      : null;
+
+    const caster = actorCharacterId ? actorResult?.data : await mine();
+
+    if (!caster) throw Error(actorResult?.error?.message ?? "NPC caster not found.");
 
 
 

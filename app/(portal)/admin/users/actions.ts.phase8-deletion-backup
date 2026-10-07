@@ -514,15 +514,195 @@ export async function deleteUserAccount(
       );
 
   if (characterIds.length > 0) {
-    // Phase 8.1: preserve account deletion conversation semantics atomically.
-    const { error: characterDeleteError } = await admin.rpc(
-      "delete_account_characters",
-      { p_user_id: targetUserId },
-    );
-    if (characterDeleteError) {
-      redirectUserManagementError(
-        `Unable to delete the account characters: ${characterDeleteError.message}`,
+
+    const {
+      data: conversationRows,
+      error:
+        conversationLookupError,
+    } = await admin
+      .from(
+        "direct_conversation_participants",
+      )
+      .select("conversation_id")
+      .in(
+        "character_id",
+        characterIds,
       );
+
+    if (
+      conversationLookupError
+    ) {
+      redirectUserManagementError(
+        `Unable to inspect private conversations: ${conversationLookupError.message}`,
+      );
+    }
+
+    const conversationIds = [
+      ...new Set(
+        (
+          conversationRows ??
+          []
+        ).map(
+          (row) =>
+            row.conversation_id as string,
+        ),
+      ),
+    ];
+
+    const cleanupOperations = [
+      admin
+        .from(
+          "character_presence",
+        )
+        .delete()
+        .in(
+          "character_id",
+          characterIds,
+        ),
+
+      admin
+        .from("room_messages")
+        .delete()
+        .in(
+          "character_id",
+          characterIds,
+        ),
+
+      admin
+        .from("direct_messages")
+        .delete()
+        .in(
+          "sender_character_id",
+          characterIds,
+        ),
+
+      admin
+        .from(
+          "direct_conversation_participants",
+        )
+        .delete()
+        .in(
+          "character_id",
+          characterIds,
+        ),
+
+      admin
+        .from("character_blocks")
+        .delete()
+        .in(
+          "blocker_character_id",
+          characterIds,
+        ),
+
+      admin
+        .from("character_blocks")
+        .delete()
+        .in(
+          "blocked_character_id",
+          characterIds,
+        ),
+    ];
+
+    const cleanupResults =
+      await Promise.all(
+        cleanupOperations,
+      );
+
+    const cleanupFailure =
+      cleanupResults.find(
+        (result) =>
+          result.error,
+      )?.error;
+
+    if (cleanupFailure) {
+      redirectUserManagementError(
+        `Unable to remove character-linked data: ${cleanupFailure.message}`,
+      );
+    }
+
+    for (
+      const conversationId of
+        conversationIds
+    ) {
+      const {
+        count,
+        error:
+          participantCountError,
+      } = await admin
+        .from(
+          "direct_conversation_participants",
+        )
+        .select(
+          "conversation_id",
+          {
+            count: "exact",
+            head: true,
+          },
+        )
+        .eq(
+          "conversation_id",
+          conversationId,
+        );
+
+      if (
+        participantCountError
+      ) {
+        redirectUserManagementError(
+          `Unable to verify a private conversation after cleanup: ${participantCountError.message}`,
+        );
+      }
+
+      if ((count ?? 0) === 0) {
+        const {
+          error:
+            conversationDeleteError,
+        } = await admin
+          .from(
+            "direct_conversations",
+          )
+          .delete()
+          .eq(
+            "id",
+            conversationId,
+          );
+
+        if (
+          conversationDeleteError
+        ) {
+          redirectUserManagementError(
+            `Unable to remove an empty private conversation: ${conversationDeleteError.message}`,
+          );
+        }
+      }
+    }
+
+    for (
+      const characterId of
+        characterIds
+    ) {
+      const {
+        data: characterDeleted,
+        error:
+          characterDeleteError,
+      } = await admin.rpc(
+        "delete_character_completely",
+        {
+          p_character_id:
+            characterId,
+        },
+      );
+
+      if (characterDeleteError) {
+        redirectUserManagementError(
+          `Unable to delete the account character: ${characterDeleteError.message}`,
+        );
+      }
+
+      if (characterDeleted !== true) {
+        redirectUserManagementError(
+          "Unable to delete the account character: no character row was removed.",
+        );
+      }
     }
   }
 
