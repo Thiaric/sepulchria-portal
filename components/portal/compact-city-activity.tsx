@@ -9,7 +9,7 @@ import {
 import { createClient } from "@/lib/supabase/client";
 
 const REFRESH_INTERVAL_MS =
-  20_000;
+  60_000;
 
 const WINDOW_MS =
   60_000;

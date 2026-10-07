@@ -30,8 +30,11 @@ type TopicPageProps = {
 
   searchParams: Promise<{
     quote?: string;
+    page?: string;
   }>;
 };
+
+const FORUM_POST_PAGE_SIZE = 50;
 
 type ForumSectionRecord = {
   id: string;
@@ -235,7 +238,25 @@ export default async function TopicPage({
 
   const {
     quote: requestedQuoteId,
+    page: pageParam,
   } = await searchParams;
+
+  const page =
+    Math.max(
+      1,
+      Number.parseInt(
+        pageParam ?? "1",
+        10,
+      ) || 1,
+    );
+
+  const postFrom =
+    (page - 1) *
+    FORUM_POST_PAGE_SIZE;
+
+  const postTo =
+    postFrom +
+    FORUM_POST_PAGE_SIZE;
 
   const supabase = await createClient();
 
@@ -379,7 +400,11 @@ export default async function TopicPage({
     .eq("topic_id", topic.id)
     .order("created_at", {
       ascending: true,
-    });
+    })
+    .range(
+      postFrom,
+      postTo,
+    );
 
   if (postsError) {
     throw new Error(
@@ -387,9 +412,19 @@ export default async function TopicPage({
     );
   }
 
-  const posts =
+  const fetchedPosts =
     (postRecords ??
       []) as ForumPostRecord[];
+
+  const hasNextPage =
+    fetchedPosts.length >
+    FORUM_POST_PAGE_SIZE;
+
+  const posts =
+    fetchedPosts.slice(
+      0,
+      FORUM_POST_PAGE_SIZE,
+    );
 
   if (posts.length === 0) {
     notFound();
@@ -1409,12 +1444,20 @@ race_colour:
         <dl className="grid grid-cols-2 divide-x divide-[rgb(var(--sep-colour-60482e))]/30 bg-[rgb(var(--sep-colour-100c09))] sm:grid-cols-4">
           <TopicStatistic
             label="Posts"
-            value={mappedPosts.length}
+            value={
+              normalizeCount(
+                topic.replies_count,
+              ) + 1
+            }
           />
 
           <TopicStatistic
             label="Replies"
-            value={visibleReplyCount}
+            value={
+              normalizeCount(
+                topic.replies_count,
+              )
+            }
           />
 
           <TopicStatistic
@@ -1497,6 +1540,28 @@ race_colour:
           },
         )}
       </section>
+
+      {(page > 1 || hasNextPage) ? (
+        <nav className="mt-6 flex items-center justify-between gap-3 text-[9px] uppercase tracking-[0.14em]">
+          {page > 1 ? (
+            <Link
+              href={`/forum/${section.slug}/${topic.slug}?page=${page - 1}`}
+              className="border border-[rgb(var(--sep-colour-60482e))]/45 px-4 py-2"
+            >
+              ← Previous page
+            </Link>
+          ) : <span />}
+
+          {hasNextPage ? (
+            <Link
+              href={`/forum/${section.slug}/${topic.slug}?page=${page + 1}`}
+              className="border border-[rgb(var(--sep-colour-60482e))]/45 px-4 py-2"
+            >
+              Next page →
+            </Link>
+          ) : null}
+        </nav>
+      ) : null}
 
       <section
         id="reply"

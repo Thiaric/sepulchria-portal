@@ -20,7 +20,7 @@ import type {
   PresenceStatus,
 } from "@/types/game";
 
-const REFRESH_INTERVAL_MS = 5_000;
+const REFRESH_INTERVAL_MS = 30_000;
 
 type PresenceRoom = {
   id: string;

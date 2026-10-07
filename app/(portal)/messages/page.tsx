@@ -83,6 +83,15 @@ type DeletionRow = {
   message_id: string;
 };
 
+type InboxSummaryRow = {
+  conversation_id: string;
+  last_message_id: string | null;
+  last_message_body: string | null;
+  last_message_created_at: string | null;
+  last_message_sender_character_id: string | null;
+  unread_count: number | string;
+};
+
 type ConversationCard = {
   id: string;
   updatedAt: string;
@@ -222,6 +231,9 @@ export default async function MessagesPage({
           null,
         );
 
+  membershipQuery =
+    membershipQuery.limit(100);
+
   const {
     data:
       membershipRows = [],
@@ -246,7 +258,7 @@ export default async function MessagesPage({
 
   const [
     otherParticipantsResult,
-    allMessagesResult,
+    summaryResult,
     deletionsResult,
     availableCharactersResult,
     blocksResult,
@@ -301,23 +313,14 @@ export default async function MessagesPage({
         }),
 
     conversationIds.length
-      ? supabase
-          .from(
-            "direct_messages",
-          )
-          .select(
-            "id, conversation_id, body, created_at, sender_character_id",
-          )
-          .in(
-            "conversation_id",
-            conversationIds,
-          )
-          .order(
-            "created_at",
-            {
-              ascending: false,
-            },
-          )
+      ? supabase.rpc(
+          "get_direct_message_inbox_summaries",
+          {
+            p_character_id: character.id,
+            p_archived: showArchived,
+            p_limit: 100,
+          },
+        )
       : Promise.resolve({
           data: [],
           error: null,
@@ -389,7 +392,7 @@ export default async function MessagesPage({
 
   const firstError =
     otherParticipantsResult.error ??
-    allMessagesResult.error ??
+    summaryResult.error ??
     deletionsResult.error ??
     availableCharactersResult.error ??
     blocksResult.error;
@@ -400,26 +403,18 @@ export default async function MessagesPage({
     );
   }
 
-  const deletedMessageIds =
-    new Set(
-      (
-        (deletionsResult.data ??
-          []) as DeletionRow[]
-      ).map(
-        (row) =>
-          row.message_id,
-      ),
-    );
+  const summariesByConversation =
+    new Map<string, InboxSummaryRow>();
 
-  const visibleMessages = (
-    (allMessagesResult.data ??
-      []) as DirectMessageRow[]
-  ).filter(
-    (message) =>
-      !deletedMessageIds.has(
-        message.id,
-      ),
-  );
+  for (
+    const row of
+      (summaryResult.data ?? []) as InboxSummaryRow[]
+  ) {
+    summariesByConversation.set(
+      row.conversation_id,
+      row,
+    );
+  }
 
   const blockedCharacterIds =
     new Set<string>();
@@ -484,29 +479,6 @@ export default async function MessagesPage({
     }
   }
 
-  const messagesByConversation =
-    new Map<
-      string,
-      DirectMessageRow[]
-    >();
-
-  for (
-    const message
-    of visibleMessages
-  ) {
-    const current =
-      messagesByConversation.get(
-        message.conversation_id,
-      ) ?? [];
-
-    current.push(message);
-
-    messagesByConversation.set(
-      message.conversation_id,
-      current,
-    );
-  }
-
   const conversations =
     rows
       .map<
@@ -534,31 +506,27 @@ export default async function MessagesPage({
             characterName,
           );
 
-        const messages =
-          messagesByConversation.get(
+        const summary =
+          summariesByConversation.get(
             row.conversation_id,
-          ) ?? [];
+          ) ?? null;
 
-        const lastMessage =
-          messages[0] ?? null;
-
-        const lastReadTime =
-          row.last_read_at
-            ? Date.parse(
-                row.last_read_at,
-              )
-            : 0;
+        const lastMessage: DirectMessageRow | null =
+          summary?.last_message_id &&
+          summary.last_message_created_at &&
+          summary.last_message_sender_character_id
+            ? {
+                id: summary.last_message_id,
+                conversation_id: row.conversation_id,
+                body: summary.last_message_body ?? "",
+                created_at: summary.last_message_created_at,
+                sender_character_id:
+                  summary.last_message_sender_character_id,
+              }
+            : null;
 
         const unreadCount =
-          messages.filter(
-            (message) =>
-              message.sender_character_id !==
-                character.id &&
-              Date.parse(
-                message.created_at,
-              ) >
-                lastReadTime,
-          ).length;
+          Number(summary?.unread_count ?? 0);
 
         const name =
           conversation.is_group
@@ -573,12 +541,11 @@ export default async function MessagesPage({
           [
             name,
             other?.title,
-            ...messages.map(
-              (message) =>
-                richTextToPlainText(
-                  message.body,
-                ),
-            ),
+            lastMessage
+              ? richTextToPlainText(
+                  lastMessage.body,
+                )
+              : null,
           ]
             .filter(Boolean)
             .join(" ")
@@ -606,15 +573,14 @@ export default async function MessagesPage({
           searchableText,
 
           matchedMessages:
-            messages.map(
-              (message) => ({
-                id: message.id,
-                body:
-                  message.body,
-                createdAt:
-                  message.created_at,
-              }),
-            ),
+            lastMessage
+              ? [{
+                  id: lastMessage.id,
+                  body: lastMessage.body,
+                  createdAt:
+                    lastMessage.created_at,
+                }]
+              : [],
         };
       })
       .filter(

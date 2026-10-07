@@ -364,7 +364,7 @@ export function InstantChatDock({
         () => {
           void loadContacts();
         },
-        10_000,
+        30_000,
       );
 
     return () => {

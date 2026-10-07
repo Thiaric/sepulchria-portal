@@ -273,20 +273,84 @@ export default async function MarketShopPage({ params }: Props) {
 
   const sellableByItem = new Map<string, number>();
 
-  for (
-    const row of
-      (inventoryRows ?? []) as Array<{
-        record_kind: string;
-        item_id: string;
-        quantity: number;
-        parent_container_id: string | null;
-        is_equipped: boolean;
-        transfer_policy: string;
-        is_quest_item: boolean;
-        container_capacity: number | null;
-        record_id: string;
-      }>
-  ) {
+  const inventory =
+    (inventoryRows ?? []) as Array<{
+      record_kind: string;
+      item_id: string;
+      quantity: number;
+      parent_container_id: string | null;
+      is_equipped: boolean;
+      transfer_policy: string;
+      is_quest_item: boolean;
+      container_capacity: number | null;
+      record_id: string;
+    }>;
+
+  const containerIds =
+    inventory
+      .filter(
+        (row) =>
+          row.record_kind === "unique" &&
+          row.container_capacity !== null &&
+          !row.parent_container_id &&
+          !row.is_equipped &&
+          row.transfer_policy === "free" &&
+          !row.is_quest_item,
+      )
+      .map((row) => row.record_id);
+
+  const nonEmptyContainerIds =
+    new Set<string>();
+
+  if (containerIds.length > 0) {
+    const [
+      standardChildrenResult,
+      instanceChildrenResult,
+    ] = await Promise.all([
+      supabase
+        .from("character_items")
+        .select("container_instance_id")
+        .in(
+          "container_instance_id",
+          containerIds,
+        ),
+      supabase
+        .from("character_item_instances")
+        .select("container_instance_id")
+        .in(
+          "container_instance_id",
+          containerIds,
+        ),
+    ]);
+
+    for (
+      const child of
+        standardChildrenResult.data ?? []
+    ) {
+      if (child.container_instance_id) {
+        nonEmptyContainerIds.add(
+          String(
+            child.container_instance_id,
+          ),
+        );
+      }
+    }
+
+    for (
+      const child of
+        instanceChildrenResult.data ?? []
+    ) {
+      if (child.container_instance_id) {
+        nonEmptyContainerIds.add(
+          String(
+            child.container_instance_id,
+          ),
+        );
+      }
+    }
+  }
+
+  for (const row of inventory) {
     const normalStandard =
       row.record_kind === "standard";
 
@@ -304,25 +368,13 @@ export default async function MarketShopPage({ params }: Props) {
       continue;
     }
 
-    if (ordinaryContainer) {
-      const [{ count: standardChildren }, { count: instanceChildren }] =
-        await Promise.all([
-          supabase
-            .from("character_items")
-            .select("id", { count: "exact", head: true })
-            .eq("container_instance_id", row.record_id),
-          supabase
-            .from("character_item_instances")
-            .select("id", { count: "exact", head: true })
-            .eq("container_instance_id", row.record_id),
-        ]);
-
-      if (
-        (standardChildren ?? 0) > 0 ||
-        (instanceChildren ?? 0) > 0
-      ) {
-        continue;
-      }
+    if (
+      ordinaryContainer &&
+      nonEmptyContainerIds.has(
+        row.record_id,
+      )
+    ) {
+      continue;
     }
 
     sellableByItem.set(

@@ -360,7 +360,7 @@ export function GameContextPanel({
     const refreshInterval =
       window.setInterval(() => {
         void loadRoomContext();
-      }, 5_000);
+      }, 30_000);
 
     return () => {
       window.clearInterval(

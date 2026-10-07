@@ -38,12 +38,20 @@ export async function GroupConversationView({
   viewerCharacterId,
   isDead,
   title,
+  page = 1,
 }: {
   conversationId: string;
   viewerCharacterId: string;
   isDead: boolean;
   title: string | null;
+  page?: number;
 }) {
+  const pageSize = 100;
+  const messageFrom =
+    (Math.max(1, page) - 1) *
+    pageSize;
+  const messageTo =
+    messageFrom + pageSize;
   const supabase =
     await createClient();
 
@@ -101,7 +109,10 @@ export async function GroupConversationView({
           ascending: false,
         },
       )
-      .limit(1000),
+      .range(
+        messageFrom,
+        messageTo,
+      ),
     supabase
       .from(
         "direct_message_deletions",
@@ -167,11 +178,19 @@ export async function GroupConversationView({
       ),
     );
 
-  const messages =
+  const fetchedMessages =
     (
       messagesResult.data ??
       []
-    )
+    );
+
+  const hasOlderMessages =
+    fetchedMessages.length >
+    pageSize;
+
+  const messages =
+    fetchedMessages
+      .slice(0, pageSize)
       .filter(
         (message) =>
           !deleted.has(
@@ -298,6 +317,28 @@ export async function GroupConversationView({
               />
             </div>
           </header>
+
+          {(page > 1 || hasOlderMessages) ? (
+            <nav className="flex items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-59432c))]/40 px-4 py-3 text-[9px] uppercase tracking-[0.14em]">
+              {hasOlderMessages ? (
+                <Link
+                  href={`/messages/${conversationId}?page=${page + 1}`}
+                  className="border border-[rgb(var(--sep-colour-59432c))] px-3 py-2"
+                >
+                  ← Older messages
+                </Link>
+              ) : <span />}
+
+              {page > 1 ? (
+                <Link
+                  href={`/messages/${conversationId}?page=${page - 1}`}
+                  className="border border-[rgb(var(--sep-colour-59432c))] px-3 py-2"
+                >
+                  Newer messages →
+                </Link>
+              ) : null}
+            </nav>
+          ) : null}
 
           <ConversationMessageList
             conversationId={

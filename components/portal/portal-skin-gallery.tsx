@@ -80,7 +80,7 @@ export function PortalSkinGallery({
   const isPreviewing =
     skin !== selectedSkin;
 
-  async function useSkin(
+  async function activateSkin(
     target: AppearanceSkin,
   ) {
     if (
@@ -262,7 +262,7 @@ export function PortalSkinGallery({
                           entry.slug
                         }
                         onClick={() =>
-                          void useSkin(
+                          void activateSkin(
                             entry,
                           )
                         }

@@ -26,7 +26,12 @@ type ConversationPageProps = {
   params: Promise<{
     id: string;
   }>;
+  searchParams: Promise<{
+    page?: string;
+  }>;
 };
+
+const MESSAGE_PAGE_SIZE = 100;
 
 type CodexIdentity = {
   id: string;
@@ -59,9 +64,30 @@ type MessageDeletionRow = {
 
 export default async function ConversationPage({
   params,
+  searchParams,
 }: ConversationPageProps) {
   const { id } =
     await params;
+
+  const { page: pageParam } =
+    await searchParams;
+
+  const page =
+    Math.max(
+      1,
+      Number.parseInt(
+        pageParam ?? "1",
+        10,
+      ) || 1,
+    );
+
+  const messageFrom =
+    (page - 1) *
+    MESSAGE_PAGE_SIZE;
+
+  const messageTo =
+    messageFrom +
+    MESSAGE_PAGE_SIZE;
 
   const supabase =
     await createClient();
@@ -169,6 +195,7 @@ export default async function ConversationPage({
         title={
           conversationMeta.title
         }
+        page={page}
       />
     );
   }
@@ -245,7 +272,10 @@ export default async function ConversationPage({
           ascending: false,
         },
       )
-      .limit(1000),
+      .range(
+        messageFrom,
+        messageTo,
+      ),
 
     supabase
       .from(
@@ -339,17 +369,28 @@ export default async function ConversationPage({
       ),
     );
 
-  const rawMessages = (
+  const fetchedMessages = (
     (messagesResult.data ??
       []) as DirectMessage[]
-  )
-    .filter(
-      (message) =>
-        !deletedIds.has(
-          message.id,
-        ),
-    )
-    .reverse();
+  );
+
+  const hasOlderMessages =
+    fetchedMessages.length >
+    MESSAGE_PAGE_SIZE;
+
+  const rawMessages =
+    fetchedMessages
+      .slice(
+        0,
+        MESSAGE_PAGE_SIZE,
+      )
+      .filter(
+        (message) =>
+          !deletedIds.has(
+            message.id,
+          ),
+      )
+      .reverse();
 
   const profileHref =
     !other.is_system &&
@@ -464,6 +505,28 @@ export default async function ConversationPage({
           </div>
 
           
+
+          {(page > 1 || hasOlderMessages) ? (
+            <nav className="flex items-center justify-between gap-3 border-b border-[rgb(var(--sep-colour-59432c))]/40 px-4 py-3 text-[9px] uppercase tracking-[0.14em]">
+              {hasOlderMessages ? (
+                <Link
+                  href={`/messages/${id}?page=${page + 1}`}
+                  className="border border-[rgb(var(--sep-colour-59432c))] px-3 py-2"
+                >
+                  ← Older messages
+                </Link>
+              ) : <span />}
+
+              {page > 1 ? (
+                <Link
+                  href={`/messages/${id}?page=${page - 1}`}
+                  className="border border-[rgb(var(--sep-colour-59432c))] px-3 py-2"
+                >
+                  Newer messages →
+                </Link>
+              ) : null}
+            </nav>
+          ) : null}
 
           <ConversationMessageList
             conversationId={id}
