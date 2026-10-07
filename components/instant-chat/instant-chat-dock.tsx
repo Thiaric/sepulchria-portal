@@ -850,10 +850,10 @@ export function InstantChatDock({
         <section
           className={[(([
             "absolute bottom-[calc(100%+0.35rem)] left-0 right-0",
-            "z-[130] overflow-hidden",
-            "border border-[rgb(var(--sep-colour-765937))]/80",
-            "bg-[rgb(var(--sep-colour-100c09))]",
-            "shadow-[0_-12px_40px_rgba(var(--sep-rgb-0-0-0),0.78)]",
+    "z-[125] overflow-hidden",
+    "border-[1.5px] border-[rgb(var(--sep-colour-765937))]/80",
+    "bg-[rgb(var(--sep-colour-100c09))]",
+    "shadow-[0_6px_18px_rgba(0,0,0,0.65)]",
           ].join(" "))), "components_instant_chat_instant_chat_dock_section_section"].filter(Boolean).join(" ")}
         >
           <header className="flex h-9 items-center gap-1.5 border-b border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-1d160f))] px-2 components_instant_chat_instant_chat_dock_header_header">
@@ -1073,14 +1073,14 @@ export function InstantChatDock({
       enabled &&
       !openChat ? (
         <section
-          className={[(([
-            "absolute bottom-[calc(100%+0.35rem)] left-0 right-0",
-            "z-[125] overflow-hidden",
-            "border border-[rgb(var(--sep-colour-765937))]/80",
-            "bg-[rgb(var(--sep-colour-100c09))]",
-            "shadow-[0_-12px_40px_rgba(var(--sep-rgb-0-0-0),0.78)]",
-          ].join(" "))), "components_instant_chat_instant_chat_dock_section_section_2"].filter(Boolean).join(" ")}
-        >
+  className={[(([
+    "absolute bottom-[calc(100%+0.35rem)] left-0 right-0",
+    "z-[125] overflow-hidden",
+    "border-[1.5px] border-[rgb(var(--sep-colour-765937))]/80",
+    "bg-[rgb(var(--sep-colour-100c09))]",
+    "shadow-[0_6px_18px_rgba(0,0,0,0.65)]",
+  ].join(" "))), "components_instant_chat_instant_chat_dock_section_section_2"].filter(Boolean).join(" ")}
+>
           <header className="flex items-center justify-between border-b border-[rgb(var(--sep-colour-60482e))]/55 bg-[rgb(var(--sep-colour-1d160f))] px-2.5 py-1.5 components_instant_chat_instant_chat_dock_header_header_2">
             <div className="components_instant_chat_instant_chat_dock_div_container_10">
               <p className="font-serif text-[11px] leading-tight text-[rgb(var(--sep-colour-e1c89d))] components_instant_chat_instant_chat_dock_p_text_6">
