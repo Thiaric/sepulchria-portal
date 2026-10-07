@@ -3,6 +3,9 @@ import "server-only";
 import {
   createClient,
 } from "@/lib/supabase/server";
+import {
+  createAdminClient,
+} from "@/lib/supabase/admin";
 
 export type GiftAttributeModifiers = {
   muscles: number;
@@ -45,7 +48,7 @@ export async function getCharacterGiftAttributeModifiers(
     await createClient();
 
   const expiry =
-    await supabase.rpc(
+    await createAdminClient().rpc(
       "reconcile_expired_staff_gifts",
       {
         p_character_id:

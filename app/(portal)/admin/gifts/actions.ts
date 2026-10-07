@@ -15,6 +15,7 @@ import {
   removeGiftOwnershipHealthEffects,
 } from "@/lib/gifts/gift-health-effects";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { wordOfPower } from "@/lib/warping/constants";
 
 function requiredText(formData: FormData, name: string, label: string) {
@@ -959,7 +960,7 @@ export async function assignGiftToCharacter(formData: FormData) {
         ? new Date(Date.now() + assignmentDays * 24 * 60 * 60 * 1000).toISOString()
         : null;
 
-    const { error: expiryError } = await supabase.rpc(
+    const { error: expiryError } = await createAdminClient().rpc(
       "reconcile_expired_staff_gifts",
       { p_character_id: characterId },
     );

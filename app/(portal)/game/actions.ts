@@ -1540,7 +1540,7 @@ export async function useRoomGift(
       character.display_name,
     );
 
-    const { error: staffExpiryError } = await supabase.rpc(
+    const { error: staffExpiryError } = await createPrivilegedClient().rpc(
       "reconcile_expired_staff_gifts",
       { p_character_id: character.id },
     );
@@ -1806,7 +1806,7 @@ export async function activateRoomGift(
       return { ok: false, message: "Your session has expired." };
     }
 
-    const { error: staffExpiryError } = await supabase.rpc(
+    const { error: staffExpiryError } = await createPrivilegedClient().rpc(
       "reconcile_expired_staff_gifts",
       { p_character_id: character.id },
     );

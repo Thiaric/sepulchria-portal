@@ -9,6 +9,7 @@ import {
 } from "@/lib/auth/require-staff";
 import { adjustHealthForVigourModifier } from "@/lib/characters/adjust-health-for-vigour-modifier";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import {
   evictOrderMemberFromHeadquarters,
 } from "@/lib/order-headquarters/evict-member";
@@ -62,7 +63,7 @@ function refresh(characterId?: string) {
   }
 }
 
-async function syncOrderShapes(supabase:Awaited<ReturnType<typeof createClient>>,characterId:string){const {error}=await supabase.rpc("sync_character_order_shapes",{p_character_id:characterId});if(error)throw new Error(`Unable to synchronise Order Shapes: ${error.message}`);}
+async function syncOrderShapes(_supabase:Awaited<ReturnType<typeof createClient>>,characterId:string){const {error}=await createAdminClient().rpc("sync_character_order_shapes",{p_character_id:characterId});if(error)throw new Error(`Unable to synchronise Order Shapes: ${error.message}`);}
 
 async function verifyStructure({
   supabase,

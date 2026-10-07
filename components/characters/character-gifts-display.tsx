@@ -5,6 +5,7 @@ import {
   type GiftCard,
 } from "@/components/gifts/gifts-catalogue";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 function one<T>(
   value: T | T[] | null,
@@ -25,7 +26,7 @@ export async function CharacterGiftsDisplay({
 }) {
   const supabase = await createClient();
 
-  const { error: staffExpiryError } = await supabase.rpc(
+  const { error: staffExpiryError } = await createAdminClient().rpc(
     "reconcile_expired_staff_gifts",
     { p_character_id: characterId },
   );
