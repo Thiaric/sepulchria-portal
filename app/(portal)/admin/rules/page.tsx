@@ -1,3 +1,4 @@
+import { AdminGlossaryList } from "@/components/admin/admin-glossary-list";
 
 
 import { AdminActionForm } from "@/components/admin/admin-action-form";
@@ -93,13 +94,15 @@ export default async function AdminRulesPage() {
 
     supabase
       .from("rule_glossary")
-      .select("*")
+      .select("*", { count: "exact" })
       .order("sort_order", {
         ascending: true,
       })
       .order("term", {
         ascending: true,
-      }),
+      })
+      .order("id", { ascending: true })
+      .range(0, 24),
 
     supabase
       .from("rule_links")
@@ -130,6 +133,8 @@ export default async function AdminRulesPage() {
   const glossary =
     (glossaryResult.data ??
       []) as GlossaryEntry[];
+
+  const totalGlossaryEntries = glossaryResult.count ?? glossary.length;
 
   const links =
     (linksResult.data ??
@@ -642,7 +647,7 @@ export default async function AdminRulesPage() {
           </div>
         </section>
 
-        <section className="mt-5 grid gap-4 lg:grid-cols-2 admin_rules_page_section_section_3">
+        <section className="mt-5 w-full admin_rules_page_section_section_3">
           <div className="admin_rules_page_div_container_14">
             <SectionHeading
               title="Categories"
@@ -738,182 +743,10 @@ export default async function AdminRulesPage() {
             </div>
           </div>
 
-          <div className="admin_rules_page_div_container_16">
-            <SectionHeading
-              title="Glossary"
-              count={glossary.length}
-            />
-
-            <div className="mt-3 space-y-2 admin_rules_page_div_container_17">
-              {glossary.map(
-                (entry) => (
-                  <details
-                    key={entry.id}
-                    id={`glossary-${entry.slug}`}
-                    className="scroll-mt-24 border border-[rgb(var(--sep-colour-60482e))]/40 bg-[rgb(var(--sep-colour-15100d))] admin_rules_page_details_details_2"
-                  >
-                    <summary className="cursor-pointer list-none px-4 py-3 admin_rules_page_summary_summary_2">
-                      <div className="flex items-center justify-between admin_rules_page_div_container_18">
-                        <span className="font-serif text-sm text-[rgb(var(--sep-colour-d1b98e))] admin_rules_page_span_text_3">
-                          {entry.term}
-                        </span>
-                        <StatusBadge
-                          status={
-                            entry.status
-                          }
-                        />
-                      </div>
-                    </summary>
-
-                    <AdminActionForm
-                      action={
-                        updateGlossaryEntry
-                      }
-                      className="space-y-3 border-t border-[rgb(var(--sep-colour-60482e))]/30 p-4"
-                    >
-                      <input className="admin_rules_page_input_id_4"
-                        type="hidden"
-                        name="id"
-                        value={
-                          entry.id
-                        }
-                      />
-
-                      <div className="grid gap-2 sm:grid-cols-2 admin_rules_page_div_container_19">
-                        <AdminField label="Term">
-                          <input
-                            name="term"
-                            defaultValue={
-                              entry.term
-                            }
-                            className={[((inputClass)), "admin_rules_page_input_term_2"].filter(Boolean).join(" ")}
-                          />
-                        </AdminField>
-
-                        <AdminField label="Slug">
-                          <input
-                            name="slug"
-                            defaultValue={
-                              entry.slug
-                            }
-                            className={[((inputClass)), "admin_rules_page_input_slug_6"].filter(Boolean).join(" ")}
-                          />
-                        </AdminField>
-                      </div>
-
-                      <AdminField label="Definition">
-                        <RichTextEditor
-                          name="definition"
-                          defaultValue={
-                            entry.definition
-                          }
-                          minHeight={
-                            110
-                          }
-                          variant="lore"
-                        />
-                      </AdminField>
-
-                      <div className="grid gap-2 sm:grid-cols-3 admin_rules_page_div_container_20">
-                        <AdminField label="Related rule">
-                          <select
-                            name="related_rule_id"
-                            defaultValue={
-                              entry.related_rule_id ??
-                              ""
-                            }
-                            className={[((inputClass)), "admin_rules_page_select_related_rule_id_2"].filter(Boolean).join(" ")}
-                          >
-                            <option className="admin_rules_page_option_related_rule_id_2" value="">
-                              None
-                            </option>
-                            {[...rules]
-                  .sort((a, b) =>
-                    a.title.localeCompare(
-                      b.title,
-                      undefined,
-                      { sensitivity: "base", numeric: true },
-                    ),
-                  )
-                  .map(
-                              (rule) => (
-                                <option className="admin_rules_page_option_option_4"
-                                  key={
-                                    rule.id
-                                  }
-                                  value={
-                                    rule.id
-                                  }
-                                >
-                                  {
-                                    rule.title
-                                  }
-                                </option>
-                              ),
-                            )}
-                          </select>
-                        </AdminField>
-
-                        <AdminField label="Status">
-                          <select
-                            name="status"
-                            defaultValue={
-                              entry.status
-                            }
-                            className={[((inputClass)), "admin_rules_page_select_status_4"].filter(Boolean).join(" ")}
-                          >
-                            <option className="admin_rules_page_option_draft_4" value="draft">
-                              Draft
-                            </option>
-                            <option className="admin_rules_page_option_published_4" value="published">
-                              Published
-                            </option>
-                          </select>
-                        </AdminField>
-
-                        <AdminField label="Order">
-                          <input
-                            name="sort_order"
-                            type="number"
-                            defaultValue={
-                              entry.sort_order
-                            }
-                            className={[((inputClass)), "admin_rules_page_input_sort_order_6"].filter(Boolean).join(" ")}
-                          />
-                        </AdminField>
-                      </div>
-
-                      <SubmitButton>
-                        Save glossary entry
-                      </SubmitButton>
-                    </AdminActionForm>
-
-                    <AdminActionForm
-                      action={
-                        deleteGlossaryEntry
-                      }
-                      className="border-t border-[rgb(var(--sep-colour-60482e))]/25 px-4 py-3 text-right"
-                    >
-                      <input className="admin_rules_page_input_id_5"
-                        type="hidden"
-                        name="id"
-                        value={
-                          entry.id
-                        }
-                      />
-                      <button
-                        type="submit"
-                        className="text-[8px] uppercase tracking-[0.15em] text-[rgb(var(--sep-colour-875a50))] hover:text-[rgb(var(--sep-colour-d88f80))] admin_rules_page_button_delete"
-                      >
-                        Delete
-                      </button>
-                    </AdminActionForm>
-                  </details>
-                ),
-              )}
-            </div>
-          </div>
+          
         </section>
+
+        <AdminGlossaryList initialEntries={glossary} rules={rules} totalCount={totalGlossaryEntries} />
 
         <section className="mt-5 admin_rules_page_section_section_4">
           <SectionHeading

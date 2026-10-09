@@ -140,6 +140,11 @@ export function AdminRulesContext() {
       document.getElementById(anchor);
 
     if (!element) {
+      if (anchor.startsWith("glossary-")) {
+        window.dispatchEvent(new CustomEvent("sepulchria:glossary-jump", {
+          detail: { slug: anchor.slice("glossary-".length) },
+        }));
+      }
       return;
     }
 

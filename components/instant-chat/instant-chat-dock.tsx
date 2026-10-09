@@ -849,7 +849,7 @@ export function InstantChatDock({
       {openChat && other ? (
         <section
           className={[(([
-            "absolute bottom-[calc(100%+0.35rem)] left-0 right-0",
+            "absolute bottom-[calc(100%+0.35rem)] left-[6px] right-[6px]",
     "z-[125] overflow-hidden",
     "border-[1.5px] border-[rgb(var(--sep-colour-765937))]/80",
     "bg-[rgb(var(--sep-colour-100c09))]",
@@ -1074,7 +1074,7 @@ export function InstantChatDock({
       !openChat ? (
         <section
   className={[(([
-    "absolute bottom-[calc(100%+0.35rem)] left-0 right-0",
+    "absolute bottom-[calc(100%+0.35rem)] left-[6px] right-[6px]",
     "z-[125] overflow-hidden",
     "border-[1.5px] border-[rgb(var(--sep-colour-765937))]/80",
     "bg-[rgb(var(--sep-colour-100c09))]",

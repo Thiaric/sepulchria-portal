@@ -3183,7 +3183,7 @@ function handleRichTextPaste(
 ) : null}
 
 <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[rgb(var(--sep-colour-60482e))]/35 bg-[rgb(var(--sep-colour-0b0806))] px-3 py-2 text-[9px] leading-4 text-[rgb(var(--sep-colour-756958))] components_editor_rich_text_editor_div_container_20"><span className="components_editor_rich_text_editor_span_text_7">
-          Paste formatted content directly. Fonts, 8–24px text sizes, colours, links, lists and web images are retained. Staff can also paste clipboard screenshots or reuse uploaded images from the Library. Misspellings are marked with a red wavy underline.
+          Paste formatted content directly. 
         </span>
         <span className="components_editor_rich_text_editor_span_text_8">
           {stripRichTextForPreview(html).trim().split(/\s+/).filter(Boolean).length.toLocaleString("en-GB")} words · {textLength.toLocaleString("en-GB")} / {maxTextLength.toLocaleString("en-GB")} characters

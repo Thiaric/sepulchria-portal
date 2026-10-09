@@ -8,27 +8,6 @@
 
 Now test Sepulchria as a **game**, not individual pages.
 
-### 9.1 — Automated testing
-
-Prioritise critical systems:
-
-* Authentication.
-* Character lifecycle.
-* Market.
-* Trading.
-* Inventory.
-* Combat.
-* Magic.
-* Missions.
-* Rewards.
-* Reports.
-* Permissions.
-
-
-### 9.4 — Staff lifecycle test
-
-Test moderation and administration using actual non-owner staff accounts.
-
 ### 9.5 — Browser/device testing
 
 At least:
