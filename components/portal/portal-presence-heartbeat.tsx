@@ -11,7 +11,6 @@ function isTransientTransportError(
   );
 }
 
-
 import {
   useEffect,
   useRef,
